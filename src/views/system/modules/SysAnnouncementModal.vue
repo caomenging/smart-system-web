@@ -34,6 +34,7 @@
                 :getPopupContainer = "(target) => target.parentNode">
                 <a-select-option value="1">通知公告</a-select-option>
                 <a-select-option value="2">系统消息</a-select-option>
+                <a-select-option value="3">廉政提醒</a-select-option>
               </a-select>
             </a-form-model-item>
           </a-col>
@@ -81,10 +82,10 @@
               :labelCol="labelCol"
               :wrapperCol="wrapperCol"
               prop="msgType"
-              label="通告类型">
+              label="通告对象">
               <a-select
                 v-model="model.msgType"
-                placeholder="请选择通告类型"
+                placeholder="请选择通告对象"
                 :disabled="disableSubmit"
                 @change="chooseMsgType"
                 :getPopupContainer = "(target) => target.parentNode">
@@ -104,8 +105,20 @@
               <a-textarea placeholder="请输入摘要"  v-model="model.msgAbstract" />
             </a-form-model-item>
           </a-col>
+
           <a-col :span="24/2">
-            <a-form-model-item
+            <a-form-model-item 
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+              label="选择用户" prop="userIds"
+              v-if='userType'
+            >
+              <j-select-user-by-dep :multi="true"
+                @change="choseUser"
+              ></j-select-user-by-dep>
+            </a-form-model-item>
+
+            <!-- <a-form-model-item
               :labelCol="labelCol"
               :wrapperCol="wrapperCol"
               label="指定用户"
@@ -119,7 +132,8 @@
                 @change="handleChange"
               >
               </a-select>
-            </a-form-model-item>
+            </a-form-model-item> -->
+
           </a-col>
         </a-row>
         <a-row style="width: 100%;">
@@ -135,7 +149,7 @@
         </a-row>
       </a-form-model>
     </a-spin>
-    <select-user-list-modal ref="UserListModal" @choseUser="choseUser"></select-user-list-modal>
+    <!-- <select-user-list-modal ref="UserListModal" @choseUser="choseUser"></select-user-list-modal> -->
   </a-modal>
 </template>
 
@@ -147,9 +161,10 @@
   import JEditor from '@/components/jeecg/JEditor'
   import SelectUserListModal from "./SelectUserListModal";
   import moment from 'moment'
+  import JSelectUserByDep from '@/components/jeecgbiz/JSelectUserByDep'
 
   export default {
-    components: { JEditor, JDate, SelectUserListModal},
+    components: { JEditor, JDate, SelectUserListModal, JSelectUserByDep},
     name: "SysAnnouncementModal",
     data () {
       return {
@@ -208,6 +223,7 @@
         this.getUser(record);
       },
       getUser(record){
+        console.log(record)
         this.model = Object.assign({}, record);
         // 指定用户
         if(record&&record.msgType === "USER"){
@@ -303,7 +319,8 @@
         }
       },
       // 子modal回调
-      choseUser:function(userList){
+      choseUser(userList){
+        // console.log(userList.length)
         this.selectedUser = [];
         this.userIds = [];
         for(var i=0;i<userList.length;i++){

@@ -18,7 +18,7 @@
         @click="toggle"/>
 
       <span v-if="device === 'desktop'">欢迎进入智慧村务系统</span>
-      <span v-else>Jeecg-Boot</span>
+      <span v-else>智慧村务</span>
 
       <user-menu :theme="theme"/>
     </div>
