@@ -36,7 +36,7 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="会议摘要" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="abs">
-              <a-input v-model="model.abs" placeholder="请输入会议摘要" ></a-input>
+              <j-editor v-model="model.abs" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -50,8 +50,8 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="单位名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departName">
-              <a-input v-model="model.departName" placeholder="请输入单位名称" ></a-input>
+            <a-form-model-item label="单位名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="deptName">
+              <a-input v-model="model.deptName" placeholder="请输入单位名称" ></a-input>
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -122,6 +122,33 @@
         // 新增时子表默认添加几行空数据
         addDefaultRowNum: 1,
         validatorRules: {
+           location: [
+              { required: true, message: '请输入会议地点!'},
+           ],
+           name: [
+              { required: true, message: '请输入会议名称!'},
+           ],
+           hostNo: [
+              { required: true, message: '请输入主持人工号!'},
+           ],
+           inquirePersonNo: [
+              { required: true, message: '请输入受约谈函询人工号!'},
+           ],
+           admonishPersonNo: [
+              { required: true, message: '请输入受诫勉谈话人工号!'},
+           ],
+           punishPersonNo: [
+              { required: true, message: '请输入受党纪处分人工号!'},
+           ],
+           recorderNo: [
+              { required: true, message: '请输入记录人工号!'},
+           ],
+           createrNo: [
+              { required: true, message: '请输入创建人工号!'},
+           ],
+           deptName: [
+              { required: true, message: '请输入单位名称!'},
+           ],
         },
         refKeys: ['smartInnerPartyAnnex', 'smartInnerPartyPacpa', ],
         tableKeys:['smartInnerPartyAnnex', 'smartInnerPartyPacpa', ],
@@ -185,18 +212,19 @@
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
+              validateRules: [{ required: true, message: '${title}不能为空' }],
             },
           ]
         },
         url: {
-          add: "/inner_party_talk/smartInnerPartyTalk/add",
-          edit: "/inner_party_talk/smartInnerPartyTalk/edit",
-          queryById: "/inner_party_talk/smartInnerPartyTalk/queryById",
+          add: "/smartInnerParty/smartInnerPartyTalk/add",
+          edit: "/smartInnerParty/smartInnerPartyTalk/edit",
+          queryById: "/smartInnerParty/smartInnerPartyTalk/queryById",
           smartInnerPartyAnnex: {
-            list: '/inner_party_talk/smartInnerPartyTalk/querySmartInnerPartyAnnexByMainId'
+            list: '/smartInnerParty/smartInnerPartyTalk/querySmartInnerPartyAnnexByMainId'
           },
           smartInnerPartyPacpa: {
-            list: '/inner_party_talk/smartInnerPartyTalk/querySmartInnerPartyPacpaByMainId'
+            list: '/smartInnerParty/smartInnerPartyTalk/querySmartInnerPartyPacpaByMainId'
           },
         }
       }

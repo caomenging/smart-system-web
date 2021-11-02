@@ -17,7 +17,7 @@
           <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="单位名称">
-                <a-input placeholder="请输入单位名称" v-model="queryParam.departName"></a-input>
+                <a-input placeholder="请输入单位名称" v-model="queryParam.deptName"></a-input>
               </a-form-item>
             </a-col>
           </template>
@@ -158,44 +158,9 @@
             dataIndex: 'name'
           },
           {
-            title:'主持人工号',
-            align:"center",
-            dataIndex: 'hostNo'
-          },
-          {
-            title:'受约谈函询人工号',
-            align:"center",
-            dataIndex: 'inquirePersonNo'
-          },
-          {
-            title:'受诫勉谈话人工号',
-            align:"center",
-            dataIndex: 'admonishPersonNo'
-          },
-          {
-            title:'受党纪处分人工号',
-            align:"center",
-            dataIndex: 'punishPersonNo'
-          },
-          {
-            title:'会议摘要',
-            align:"center",
-            dataIndex: 'abs'
-          },
-          {
-            title:'记录人工号',
-            align:"center",
-            dataIndex: 'recorderNo'
-          },
-          {
-            title:'创建人工号',
-            align:"center",
-            dataIndex: 'createrNo'
-          },
-          {
             title:'单位名称',
             align:"center",
-            dataIndex: 'departName'
+            dataIndex: 'deptName'
           },
           {
             title: '操作',
@@ -207,11 +172,11 @@
           }
         ],
         url: {
-          list: "/inner_party_talk/smartInnerPartyTalk/list",
-          delete: "/inner_party_talk/smartInnerPartyTalk/delete",
-          deleteBatch: "/inner_party_talk/smartInnerPartyTalk/deleteBatch",
-          exportXlsUrl: "/inner_party_talk/smartInnerPartyTalk/exportXls",
-          importExcelUrl: "inner_party_talk/smartInnerPartyTalk/importExcel",
+          list: "/smartInnerParty/smartInnerPartyTalk/list",
+          delete: "/smartInnerParty/smartInnerPartyTalk/delete",
+          deleteBatch: "/smartInnerParty/smartInnerPartyTalk/deleteBatch",
+          exportXlsUrl: "/smartInnerParty/smartInnerPartyTalk/exportXls",
+          importExcelUrl: "smartInnerParty/smartInnerPartyTalk/importExcel",
           
         },
         dictOptions:{},
@@ -240,7 +205,7 @@
          fieldList.push({type:'string',value:'abs',text:'会议摘要',dictCode:''})
          fieldList.push({type:'string',value:'recorderNo',text:'记录人工号',dictCode:''})
          fieldList.push({type:'string',value:'createrNo',text:'创建人工号',dictCode:''})
-         fieldList.push({type:'string',value:'departName',text:'单位名称',dictCode:''})
+         fieldList.push({type:'string',value:'deptName',text:'单位名称',dictCode:''})
         this.superFieldList = fieldList
       }
     }
