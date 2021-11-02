@@ -188,12 +188,18 @@
           {
             title:'婚姻登记时间',
             align:"center",
-            dataIndex: 'marryRegistTime'
+            dataIndex: 'marryRegistTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
           },
           {
             title:'婚礼时间',
             align:"center",
-            dataIndex: 'weddingTime'
+            dataIndex: 'weddingTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
           },
           {
             title:'是否同城同地合办',
@@ -263,7 +269,10 @@
           {
             title:'报告时间',
             align:"center",
-            dataIndex: 'reportTime'
+            dataIndex: 'reportTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
           },
           {
             title:'联系电话',
@@ -307,7 +316,7 @@
          fieldList.push({type:'string',value:'peopleNo',text:'人员工号',dictCode:''})
          fieldList.push({type:'string',value:'peopleName',text:'人员姓名',dictCode:''})
          fieldList.push({type:'string',value:'peopleSex',text:'人员性别',dictCode:''})
-         fieldList.push({type:'string',value:'peopleAge',text:'人员年龄',dictCode:''})
+         fieldList.push({type:'int',value:'peopleAge',text:'人员年龄',dictCode:''})
          fieldList.push({type:'string',value:'politicCou',text:'政治面貌',dictCode:''})
          fieldList.push({type:'string',value:'workUint',text:'工作单位',dictCode:''})
          fieldList.push({type:'string',value:'post',text:'职务',dictCode:''})
@@ -317,8 +326,8 @@
          fieldList.push({type:'string',value:'spoPoliticCou',text:'配偶政治面貌',dictCode:''})
          fieldList.push({type:'string',value:'marriedName',text:'结婚人姓名',dictCode:''})
          fieldList.push({type:'string',value:'relationWithMyself',text:'与本人关系',dictCode:''})
-         fieldList.push({type:'string',value:'marryRegistTime',text:'婚姻登记时间',dictCode:''})
-         fieldList.push({type:'string',value:'weddingTime',text:'婚礼时间',dictCode:''})
+         fieldList.push({type:'date',value:'marryRegistTime',text:'婚姻登记时间'})
+         fieldList.push({type:'date',value:'weddingTime',text:'婚礼时间'})
          fieldList.push({type:'string',value:'isSameOrganized',text:'是否同城同地合办',dictCode:''})
          fieldList.push({type:'string',value:'guestsNumber',text:'拟宴请人数',dictCode:''})
          fieldList.push({type:'string',value:'banqPlaceName',text:'婚宴场所名称',dictCode:''})
@@ -332,7 +341,7 @@
          fieldList.push({type:'string',value:'marrySpoParName',text:'结婚人配偶父母姓名',dictCode:''})
          fieldList.push({type:'string',value:'marrySpoParUnitPos',text:'结婚人配偶父母单位职务',dictCode:''})
          fieldList.push({type:'string',value:'otherMattersExp',text:'其他需要说明的事情',dictCode:''})
-         fieldList.push({type:'string',value:'reportTime',text:'报告时间',dictCode:''})
+         fieldList.push({type:'date',value:'reportTime',text:'报告时间'})
          fieldList.push({type:'string',value:'contactNumber',text:'联系电话',dictCode:''})
         this.superFieldList = fieldList
       }

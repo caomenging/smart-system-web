@@ -21,7 +21,7 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="人员年龄" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="peopleAge">
-              <a-input v-model="model.peopleAge" placeholder="请输入人员年龄" ></a-input>
+              <a-input-number v-model="model.peopleAge" placeholder="请输入人员年龄" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -71,12 +71,12 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="婚姻登记时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="marryRegistTime">
-              <a-input v-model="model.marryRegistTime" placeholder="请输入婚姻登记时间" ></a-input>
+              <j-date placeholder="请选择婚姻登记时间" v-model="model.marryRegistTime" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="婚礼时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="weddingTime">
-              <a-input v-model="model.weddingTime" placeholder="请输入婚礼时间" ></a-input>
+              <j-date placeholder="请选择婚礼时间" v-model="model.weddingTime" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -146,7 +146,7 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="报告时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reportTime">
-              <a-input v-model="model.reportTime" placeholder="请输入报告时间" ></a-input>
+              <j-date placeholder="请选择报告时间" v-model="model.reportTime" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -210,6 +210,12 @@
         // 新增时子表默认添加几行空数据
         addDefaultRowNum: 1,
         validatorRules: {
+           peopleNo: [
+              { required: true, message: '请输入人员工号!'},
+           ],
+           peopleName: [
+              { required: true, message: '请输入人员姓名!'},
+           ],
         },
         refKeys: ['smartPremaritalFilingApp', ],
         tableKeys:['smartPremaritalFilingApp', ],
@@ -220,20 +226,13 @@
           dataSource: [],
           columns: [
             {
-              title: '序号',
-              key: 'serialNumber',
-              type: FormTypes.input,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-            },
-            {
               title: '附件说明',
               key: 'appExplain',
               type: FormTypes.input,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
+              validateRules: [{ required: true, message: '${title}不能为空' }],
             },
             {
               title: '附件文件路径',
@@ -242,11 +241,12 @@
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
+              validateRules: [{ required: true, message: '${title}不能为空' }],
             },
             {
               title: '上传时间',
               key: 'uploadTime',
-              type: FormTypes.input,
+              type: FormTypes.date,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
@@ -254,7 +254,7 @@
             {
               title: '下载次数',
               key: 'downloadNum',
-              type: FormTypes.input,
+              type: FormTypes.inputNumber,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
