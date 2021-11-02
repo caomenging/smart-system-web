@@ -148,7 +148,7 @@
           {
             title:'工作单位',
             align:"center",
-            dataIndex: 'workUint'
+            dataIndex: 'workUnit'
           },
           {
             title:'职务',
@@ -318,7 +318,7 @@
          fieldList.push({type:'string',value:'peopleSex',text:'人员性别',dictCode:''})
          fieldList.push({type:'int',value:'peopleAge',text:'人员年龄',dictCode:''})
          fieldList.push({type:'string',value:'politicCou',text:'政治面貌',dictCode:''})
-         fieldList.push({type:'string',value:'workUint',text:'工作单位',dictCode:''})
+         fieldList.push({type:'string',value:'workUnit',text:'工作单位',dictCode:''})
          fieldList.push({type:'string',value:'post',text:'职务',dictCode:''})
          fieldList.push({type:'string',value:'postRank',text:'职级',dictCode:''})
          fieldList.push({type:'string',value:'spoName',text:'配偶姓名',dictCode:''})
@@ -329,7 +329,7 @@
          fieldList.push({type:'date',value:'marryRegistTime',text:'婚姻登记时间'})
          fieldList.push({type:'date',value:'weddingTime',text:'婚礼时间'})
          fieldList.push({type:'string',value:'isSameOrganized',text:'是否同城同地合办',dictCode:''})
-         fieldList.push({type:'string',value:'guestsNumber',text:'拟宴请人数',dictCode:''})
+         fieldList.push({type:'int',value:'guestsNumber',text:'拟宴请人数',dictCode:''})
          fieldList.push({type:'string',value:'banqPlaceName',text:'婚宴场所名称',dictCode:''})
          fieldList.push({type:'string',value:'banqPlaceAddr',text:'婚宴场所地址',dictCode:''})
          fieldList.push({type:'string',value:'banqPersonScope',text:'宴请人员范围',dictCode:''})

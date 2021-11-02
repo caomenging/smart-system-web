@@ -30,8 +30,8 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="工作单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="workUint">
-              <a-input v-model="model.workUint" placeholder="请输入工作单位" ></a-input>
+            <a-form-model-item label="工作单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="workUnit">
+              <a-input v-model="model.workUnit" placeholder="请输入工作单位" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -86,7 +86,7 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="拟宴请人数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="guestsNumber">
-              <a-input v-model="model.guestsNumber" placeholder="请输入拟宴请人数" ></a-input>
+              <a-input-number v-model="model.guestsNumber" placeholder="请输入拟宴请人数" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -216,6 +216,87 @@
            peopleName: [
               { required: true, message: '请输入人员姓名!'},
            ],
+           peopleSex: [
+              { required: true, message: '请输入人员性别!'},
+           ],
+           peopleAge: [
+              { required: true, message: '请输入人员年龄!'},
+           ],
+           politicCou: [
+              { required: true, message: '请输入政治面貌!'},
+           ],
+           workUnit: [
+              { required: true, message: '请输入工作单位!'},
+           ],
+           post: [
+              { required: true, message: '请输入职务!'},
+           ],
+           postRank: [
+              { required: true, message: '请输入职级!'},
+           ],
+           spoName: [
+              { required: true, message: '请输入配偶姓名!'},
+           ],
+           spoUnitPos: [
+              { required: true, message: '请输入配偶单位职务!'},
+           ],
+           spoPoliticCou: [
+              { required: true, message: '请输入配偶政治面貌!'},
+           ],
+           marriedName: [
+              { required: true, message: '请输入结婚人姓名!'},
+           ],
+           relationWithMyself: [
+              { required: true, message: '请输入与本人关系!'},
+           ],
+           marryRegistTime: [
+              { required: true, message: '请输入婚姻登记时间!'},
+           ],
+           weddingTime: [
+              { required: true, message: '请输入婚礼时间!'},
+           ],
+           isSameOrganized: [
+              { required: true, message: '请输入是否同城同地合办!'},
+           ],
+           guestsNumber: [
+              { required: true, message: '请输入拟宴请人数!'},
+           ],
+           banqPlaceName: [
+              { required: true, message: '请输入婚宴场所名称!'},
+           ],
+           banqPlaceAddr: [
+              { required: true, message: '请输入婚宴场所地址!'},
+           ],
+           banqPersonScope: [
+              { required: true, message: '请输入宴请人员范围!'},
+           ],
+           proCarsSource: [
+              { required: true, message: '请输入拟用婚礼车辆来源!'},
+           ],
+           proCarsNum: [
+              { required: true, message: '请输入拟用婚礼车辆数量!'},
+           ],
+           marrySpoName: [
+              { required: true, message: '请输入结婚人配偶姓名!'},
+           ],
+           marrySpoUnit: [
+              { required: true, message: '请输入结婚人配偶单位!'},
+           ],
+           marrySpoUnitPos: [
+              { required: true, message: '请输入结婚人配偶单位职务!'},
+           ],
+           marrySpoParName: [
+              { required: true, message: '请输入结婚人配偶父母姓名!'},
+           ],
+           marrySpoParUnitPos: [
+              { required: true, message: '请输入结婚人配偶父母单位职务!'},
+           ],
+           reportTime: [
+              { required: true, message: '请输入报告时间!'},
+           ],
+           contactNumber: [
+              { required: true, message: '请输入联系电话!'},
+           ],
         },
         refKeys: ['smartPremaritalFilingApp', ],
         tableKeys:['smartPremaritalFilingApp', ],
@@ -250,6 +331,7 @@
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
+              validateRules: [{ required: true, message: '${title}不能为空' }],
             },
             {
               title: '下载次数',
@@ -258,6 +340,7 @@
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
+              validateRules: [{ required: true, message: '${title}不能为空' }],
             },
           ]
         },
