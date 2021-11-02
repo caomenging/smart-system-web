@@ -121,9 +121,24 @@
             }
           },
           {
+            title:'人员工号',
+            align:"center",
+            dataIndex: 'peopleNo'
+          },
+          {
+            title:'人员姓名',
+            align:"center",
+            dataIndex: 'peopleName'
+          },
+          {
             title:'人员性别',
             align:"center",
             dataIndex: 'peopleSex'
+          },
+          {
+            title:'人员年龄',
+            align:"center",
+            dataIndex: 'peopleAge'
           },
           {
             title:'政治面貌',
@@ -289,7 +304,10 @@
       },
       getSuperFieldList(){
         let fieldList=[];
+         fieldList.push({type:'string',value:'peopleNo',text:'人员工号',dictCode:''})
+         fieldList.push({type:'string',value:'peopleName',text:'人员姓名',dictCode:''})
          fieldList.push({type:'string',value:'peopleSex',text:'人员性别',dictCode:''})
+         fieldList.push({type:'string',value:'peopleAge',text:'人员年龄',dictCode:''})
          fieldList.push({type:'string',value:'politicCou',text:'政治面貌',dictCode:''})
          fieldList.push({type:'string',value:'workUint',text:'工作单位',dictCode:''})
          fieldList.push({type:'string',value:'post',text:'职务',dictCode:''})

@@ -5,8 +5,23 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24" >
+            <a-form-model-item label="人员工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="peopleNo">
+              <a-input v-model="model.peopleNo" placeholder="请输入人员工号" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="人员姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="peopleName">
+              <a-input v-model="model.peopleName" placeholder="请输入人员姓名" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
             <a-form-model-item label="人员性别" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="peopleSex">
               <a-input v-model="model.peopleSex" placeholder="请输入人员性别" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="人员年龄" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="peopleAge">
+              <a-input v-model="model.peopleAge" placeholder="请输入人员年龄" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -204,6 +219,22 @@
           loading: false,
           dataSource: [],
           columns: [
+            {
+              title: '序号',
+              key: 'serialNumber',
+              type: FormTypes.input,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
+            },
+            {
+              title: '附件说明',
+              key: 'appExplain',
+              type: FormTypes.input,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
+            },
             {
               title: '附件文件路径',
               key: 'appFilePath',
