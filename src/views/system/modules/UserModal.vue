@@ -107,6 +107,34 @@
           </a-select>
         </a-form-model-item>
 
+        <a-form-model-item
+        :labelCol="labelCol"
+        :wrapperCol="wrapperCol"
+        prop="politicalStatus"
+        required
+        label="政治面貌"
+        >
+        <j-dict-select-tag
+          placeholder="请选择政治面貌"
+          dictCode="political_status"
+          v-model="model.politicalStatus"
+        />
+        </a-form-model-item>
+
+        <a-form-model-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          prop="ethnicity"
+          required
+          label="民族"
+        >
+          <j-dict-select-tag
+            placeholder="请选择民族"
+            dictCode="ethnicity"
+            v-model="model.ethnicity"
+          />
+        </a-form-model-item>
+
         <a-form-model-item label="邮箱" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="email">
           <a-input placeholder="请输入邮箱" v-model="model.email" />
         </a-form-model-item>
@@ -173,7 +201,9 @@
           roles:{},
           workNo:[ { required: true, message: '请输入工号' },
                   { validator: this.validateWorkNo }],
-          telephone: [{ pattern: /^0\d{2,3}-[1-9]\d{6,7}$/, message: '请输入正确的座机号码' },]
+          telephone: [{ pattern: /^0\d{2,3}-[1-9]\d{6,7}$/, message: '请输入正确的座机号码' },],
+          ethnicity:  [{ required: true, message: '请选择民族' }],
+          politicalStatus:  [{ required: true, message: '请选择政治面貌' }]
         },
         departIdShow:false,
         title:"操作",
