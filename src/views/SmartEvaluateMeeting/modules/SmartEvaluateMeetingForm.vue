@@ -5,18 +5,8 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24" >
-            <a-form-model-item label="创建人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="createBy">
-              <a-input v-model="model.createBy" placeholder="请输入创建人" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="单位ID" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departId">
-              <a-input v-model="model.departId" placeholder="请输入单位ID" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="检查时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="checkTime">
-              <j-date placeholder="请选择检查时间" v-model="model.checkTime" style="width: 100%" />
+            <a-form-model-item label="会议名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingName">
+              <a-input v-model="model.meetingName" placeholder="请输入会议名称" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -25,13 +15,23 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="会议名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingName">
-              <a-input v-model="model.meetingName" placeholder="请输入会议名称" ></a-input>
+            <a-form-model-item label="检查时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="checkTime">
+              <j-date placeholder="请选择检查时间" v-model="model.checkTime" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="对象类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="peopleType">
               <a-input v-model="model.peopleType" placeholder="请输入对象类型" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="创建人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="createBy">
+              <a-input v-model="model.createBy" placeholder="请输入创建人" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="单位ID" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departId">
+              <a-input v-model="model.departId" placeholder="请输入单位ID" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -107,20 +107,20 @@
         // 新增时子表默认添加几行空数据
         addDefaultRowNum: 1,
         validatorRules: {
-           departId: [
-              { required: true, message: '请输入单位ID!'},
-           ],
-           checkTime: [
-              { required: true, message: '请输入检查时间!'},
+           meetingName: [
+              { required: true, message: '请输入会议名称!'},
            ],
            meetingPlace: [
               { required: true, message: '请输入地址!'},
            ],
-           meetingName: [
-              { required: true, message: '请输入会议名称!'},
+           checkTime: [
+              { required: true, message: '请输入检查时间!'},
            ],
            peopleType: [
               { required: true, message: '请输入对象类型!'},
+           ],
+           departId: [
+              { required: true, message: '请输入单位ID!'},
            ],
         },
         refKeys: ['smartEvaluateMeetingPacpa', 'smartEvaluateMeetingAnnex', ],

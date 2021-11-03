@@ -4,6 +4,26 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="会议名称">
+              <a-input placeholder="请输入会议名称" v-model="queryParam.meetingName"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="地址">
+              <a-input placeholder="请输入地址" v-model="queryParam.meetingPlace"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a @click="handleToggleSearch" style="margin-left: 8px">
+                {{ toggleSearchStatus ? '收起' : '展开' }}
+                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
+              </a>
+            </span>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -121,6 +141,29 @@
             }
           },
           {
+            title:'会议名称',
+            align:"center",
+            dataIndex: 'meetingName'
+          },
+          {
+            title:'地址',
+            align:"center",
+            dataIndex: 'meetingPlace'
+          },
+          {
+            title:'检查时间',
+            align:"center",
+            dataIndex: 'checkTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
+          },
+          {
+            title:'对象类型',
+            align:"center",
+            dataIndex: 'peopleType'
+          },
+          {
             title:'创建人',
             align:"center",
             dataIndex: 'createBy'
@@ -134,29 +177,6 @@
             title:'单位ID',
             align:"center",
             dataIndex: 'departId'
-          },
-          {
-            title:'检查时间',
-            align:"center",
-            dataIndex: 'checkTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
-          },
-          {
-            title:'地址',
-            align:"center",
-            dataIndex: 'meetingPlace'
-          },
-          {
-            title:'会议名称',
-            align:"center",
-            dataIndex: 'meetingName'
-          },
-          {
-            title:'对象类型',
-            align:"center",
-            dataIndex: 'peopleType'
           },
           {
             title:'备注',
@@ -198,13 +218,13 @@
       },
       getSuperFieldList(){
         let fieldList=[];
+         fieldList.push({type:'string',value:'meetingName',text:'会议名称',dictCode:''})
+         fieldList.push({type:'string',value:'meetingPlace',text:'地址',dictCode:''})
+         fieldList.push({type:'date',value:'checkTime',text:'检查时间'})
+         fieldList.push({type:'string',value:'peopleType',text:'对象类型',dictCode:''})
          fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
          fieldList.push({type:'datetime',value:'createTime',text:'创建日期'})
          fieldList.push({type:'string',value:'departId',text:'单位ID',dictCode:''})
-         fieldList.push({type:'date',value:'checkTime',text:'检查时间'})
-         fieldList.push({type:'string',value:'meetingPlace',text:'地址',dictCode:''})
-         fieldList.push({type:'string',value:'meetingName',text:'会议名称',dictCode:''})
-         fieldList.push({type:'string',value:'peopleType',text:'对象类型',dictCode:''})
          fieldList.push({type:'Text',value:'meetingRemarks',text:'备注',dictCode:''})
         this.superFieldList = fieldList
       }
