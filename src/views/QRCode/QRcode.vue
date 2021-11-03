@@ -1,24 +1,18 @@
 <template>
   <div>
     <canvas id="aa" width="450" height="500"></canvas>
-    <div>
-      <input v-model="url"/>
-    </div>
-    <div>
-      <input v-model="name"/>
-    </div>
-      <button @click="initQrCode">生成二维码</button>
+      <button v-show=false @click="initQrCode">生成二维码</button>
   </div>
 </template>
 
 <script>
   import { getAction } from '@/api/manage'
   export default {
-    props: ['sex','name'],
+    // props: ['sex','name'],
     data () {
       return {
-        url: 'https://cdn.jsdelivr.net/gh/looly/hutool-site/docs/extra/images/qrcodeCustom.jpg',
-        name: '',
+        url: 'http://localhost:8080/smart-system/qrCode/generate/v3?content=http://localhost:3000/review',
+        name: '阳光评廉',
         formLayout: 'horizontal',
         model: {},
         rules: {
@@ -40,12 +34,12 @@
         img.src = this.url;
 
         img.onload = function () {
-            bb.drawImage(img, 70,70);
+            bb.drawImage(img, 70,70);//二维码的位置
         }
 
         bb.fillStyle = '#fff';
-        bb.font = '40px Adobe Ming Std';
-        bb.fillText(this.name,120,450);
+        bb.font = '30px Adobe Ming Std';//字体样式和大小
+        bb.fillText(this.name,150,450);//字体位置
 
         bb.stroke();
       }
