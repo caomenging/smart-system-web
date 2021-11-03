@@ -184,10 +184,7 @@
           {
             title:'创建时间',
             align:"center",
-            dataIndex: 'creatTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
+            dataIndex: 'creatTime'
           },
           {
             title: '操作',
@@ -235,7 +232,7 @@
          fieldList.push({type:'string',value:'meetingAbstract',text:'会议内容摘要',dictCode:''})
          fieldList.push({type:'string',value:'meetingRemarks',text:'备注',dictCode:''})
          fieldList.push({type:'string',value:'creatBy',text:'创建人',dictCode:''})
-         fieldList.push({type:'date',value:'creatTime',text:'创建时间'})
+         fieldList.push({type:'datetime',value:'creatTime',text:'创建时间'})
         this.superFieldList = fieldList
       }
     }
