@@ -44,7 +44,7 @@
         }
 
         bb.fillStyle = '#000';//字体颜色
-        bb.font = '20px Adobe Ming Std';//字体大小
+        bb.font = '20px Adobe Ming Std';//字体样式大小
         bb.fillText(this.name,180,450);//位置
 
         bb.stroke();

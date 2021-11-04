@@ -43,9 +43,9 @@
             bb.drawImage(img, 70,70);
         }
 
-        bb.fillStyle = '#000';
-        bb.font = '20px Adobe Ming Std';
-        bb.fillText(this.name,180,450);
+        bb.fillStyle = '#000';//字体颜色
+        bb.font = '20px Adobe Ming Std';//字体样式大小
+        bb.fillText(this.name,180,450);//位置
 
         bb.stroke();
       }
