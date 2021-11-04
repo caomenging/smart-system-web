@@ -4,6 +4,26 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="会议名称">
+              <a-input placeholder="请输入会议名称" v-model="queryParam.meetingName"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="地址">
+              <a-input placeholder="请输入地址" v-model="queryParam.meetingPlace"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a @click="handleToggleSearch" style="margin-left: 8px">
+                {{ toggleSearchStatus ? '收起' : '展开' }}
+                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
+              </a>
+            </span>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -12,7 +32,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('三重一大表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('述责述廉表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -89,26 +109,25 @@
       </a-table>
     </div>
 
-    <smart-triple-importance-one-greatness-modal ref="modalForm" @ok="modalFormOk"/>
+    <smart-evaluate-meeting-modal ref="modalForm" @ok="modalFormOk"/>
   </a-card>
 </template>
 
 <script>
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartTripleImportanceOneGreatnessModal from './modules/SmartTripleImportanceOneGreatnessModal'
-  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
+  import SmartEvaluateMeetingModal from './modules/SmartEvaluateMeetingModal'
   import '@/assets/less/TableExpand.less'
 
   export default {
-    name: "SmartTripleImportanceOneGreatnessList",
+    name: "SmartEvaluateMeetingList",
     mixins:[JeecgListMixin],
     components: {
-      SmartTripleImportanceOneGreatnessModal
+      SmartEvaluateMeetingModal
     },
     data () {
       return {
-        description: '三重一大表管理页面',
+        description: '述责述廉表管理页面',
         // 表头
         columns: [
           {
@@ -122,72 +141,48 @@
             }
           },
           {
-            title:'单位ID',
-            align:"center",
-            dataIndex: 'docementid'
-          },
-          {
-            title:'名称',
+            title:'会议名称',
             align:"center",
             dataIndex: 'meetingName'
           },
           {
-            title:'地点',
+            title:'地址',
             align:"center",
             dataIndex: 'meetingPlace'
           },
           {
-            title:'时间',
+            title:'检查时间',
             align:"center",
-            dataIndex: 'meetingStarttime'
+            dataIndex: 'checkTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
           },
           {
-            title:'类型',
+            title:'对象类型',
             align:"center",
-            dataIndex: 'meetingType_dictText'
-          },
-          {
-            title:'参会人数',
-            align:"center",
-            dataIndex: 'meetingNumber'
-          },
-          {
-            title:'参会人员',
-            align:"center",
-            dataIndex: 'meetingPeople'
-          },
-          {
-            title:'主持人',
-            align:"center",
-            dataIndex: 'meetingHoster'
-          },
-          {
-            title:'记录人',
-            align:"center",
-            dataIndex: 'meetingRecorer'
-          },
-          {
-            title:'会议内容摘要',
-            align:"center",
-            dataIndex: 'meetingAbstract'
-          },
-          {
-            title:'备注',
-            align:"center",
-            dataIndex: 'meetingRemarks'
+            dataIndex: 'peopleType'
           },
           {
             title:'创建人',
             align:"center",
-            dataIndex: 'creatBy'
+            dataIndex: 'createBy'
           },
           {
-            title:'创建时间',
+            title:'创建日期',
             align:"center",
-            dataIndex: 'creatTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
+            dataIndex: 'createTime'
+          },
+          {
+            title:'单位ID',
+            align:"center",
+            dataIndex: 'departId'
+          },
+          {
+            title:'备注',
+            align:"center",
+            dataIndex: 'meetingRemarks',
+            scopedSlots: {customRender: 'htmlSlot'}
           },
           {
             title: '操作',
@@ -199,11 +194,11 @@
           }
         ],
         url: {
-          list: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/list",
-          delete: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/delete",
-          deleteBatch: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/deleteBatch",
-          exportXlsUrl: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/exportXls",
-          importExcelUrl: "smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/importExcel",
+          list: "/smartEvaluateMeeting/smartEvaluateMeeting/list",
+          delete: "/smartEvaluateMeeting/smartEvaluateMeeting/delete",
+          deleteBatch: "/smartEvaluateMeeting/smartEvaluateMeeting/deleteBatch",
+          exportXlsUrl: "/smartEvaluateMeeting/smartEvaluateMeeting/exportXls",
+          importExcelUrl: "smartEvaluateMeeting/smartEvaluateMeeting/importExcel",
           
         },
         dictOptions:{},
@@ -223,19 +218,14 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'docementid',text:'单位ID',dictCode:''})
-         fieldList.push({type:'string',value:'meetingName',text:'名称',dictCode:''})
-         fieldList.push({type:'string',value:'meetingPlace',text:'地点',dictCode:''})
-         fieldList.push({type:'datetime',value:'meetingStarttime',text:'时间'})
-         fieldList.push({type:'string',value:'meetingType',text:'类型',dictCode:'meeting_type'})
-         fieldList.push({type:'int',value:'meetingNumber',text:'参会人数',dictCode:''})
-         fieldList.push({type:'string',value:'meetingPeople',text:'参会人员',dictCode:''})
-         fieldList.push({type:'string',value:'meetingHoster',text:'主持人',dictCode:''})
-         fieldList.push({type:'string',value:'meetingRecorer',text:'记录人',dictCode:''})
-         fieldList.push({type:'string',value:'meetingAbstract',text:'会议内容摘要',dictCode:''})
-         fieldList.push({type:'string',value:'meetingRemarks',text:'备注',dictCode:''})
-         fieldList.push({type:'string',value:'creatBy',text:'创建人',dictCode:''})
-         fieldList.push({type:'date',value:'creatTime',text:'创建时间'})
+         fieldList.push({type:'string',value:'meetingName',text:'会议名称',dictCode:''})
+         fieldList.push({type:'string',value:'meetingPlace',text:'地址',dictCode:''})
+         fieldList.push({type:'date',value:'checkTime',text:'检查时间'})
+         fieldList.push({type:'string',value:'peopleType',text:'对象类型',dictCode:''})
+         fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
+         fieldList.push({type:'datetime',value:'createTime',text:'创建日期'})
+         fieldList.push({type:'string',value:'departId',text:'单位ID',dictCode:''})
+         fieldList.push({type:'Text',value:'meetingRemarks',text:'备注',dictCode:''})
         this.superFieldList = fieldList
       }
     }
