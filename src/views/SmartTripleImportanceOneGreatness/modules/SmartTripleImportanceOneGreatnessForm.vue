@@ -5,8 +5,8 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24" >
-            <a-form-model-item label="单位ID" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="sysOrgCode">
-              <a-input v-model="model.sysOrgCode" placeholder="请输入单位ID" ></a-input>
+            <a-form-model-item label="单位ID" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="documentid">
+              <a-input v-model="model.documentid" placeholder="请输入单位ID" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -125,7 +125,7 @@
         // 新增时子表默认添加几行空数据
         addDefaultRowNum: 1,
         validatorRules: {
-           sysOrgCode: [
+           documentid: [
               { required: true, message: '请输入单位ID!'},
            ],
            meetingStarttime: [
