@@ -17,7 +17,7 @@
     props: ['sex','name'],
     data () {
       return {
-        url: 'https://cdn.jsdelivr.net/gh/looly/hutool-site/docs/extra/images/qrcodeCustom.jpg',
+        url: 'http://localhost:8080/smart-system/qrCode/generate/v3?content=http://localhost:3000/review',
         name: '',
         formLayout: 'horizontal',
         model: {},
