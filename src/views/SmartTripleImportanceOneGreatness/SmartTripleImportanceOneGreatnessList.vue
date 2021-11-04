@@ -124,7 +124,7 @@
           {
             title:'单位ID',
             align:"center",
-            dataIndex: 'docementid'
+            dataIndex: 'sysOrgCode'
           },
           {
             title:'名称',
@@ -220,7 +220,7 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'docementid',text:'单位ID',dictCode:''})
+         fieldList.push({type:'string',value:'sysOrgCode',text:'单位ID',dictCode:''})
          fieldList.push({type:'string',value:'meetingName',text:'名称',dictCode:''})
          fieldList.push({type:'string',value:'meetingPlace',text:'地点',dictCode:''})
          fieldList.push({type:'datetime',value:'meetingStarttime',text:'时间'})
