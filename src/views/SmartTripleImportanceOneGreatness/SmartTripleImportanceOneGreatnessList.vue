@@ -18,12 +18,6 @@
       </a-upload>
       <!-- 高级查询区域 -->
       <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
-      <a-dropdown v-if="selectedRowKeys.length > 0">
-        <a-menu slot="overlay">
-          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
-        </a-menu>
-        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
-      </a-dropdown>
     </div>
 
     <!-- table区域-begin -->
@@ -44,7 +38,8 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange, type:'radio'}"
+        :customRow="clickThenSelect"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -75,9 +70,6 @@
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
-                <a @click="handleDetail(record)">详情</a>
-              </a-menu-item>
-              <a-menu-item>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
                   <a>删除</a>
                 </a-popconfirm>
@@ -89,7 +81,13 @@
       </a-table>
     </div>
 
-    <smart-triple-importance-one-greatness-modal ref="modalForm" @ok="modalFormOk"/>
+    <a-tabs defaultActiveKey="1">
+      <a-tab-pane tab="三重一大附件表" key="1" >
+        <SmartTripleImportanceOneGreatnessDecriptionList :mainId="selectedMainId" />
+      </a-tab-pane>
+    </a-tabs>
+
+    <smartTripleImportanceOneGreatness-modal ref="modalForm" @ok="modalFormOk"></smartTripleImportanceOneGreatness-modal>
   </a-card>
 </template>
 
@@ -97,13 +95,16 @@
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SmartTripleImportanceOneGreatnessModal from './modules/SmartTripleImportanceOneGreatnessModal'
-  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
+  import { getAction } from '@/api/manage'
+  import SmartTripleImportanceOneGreatnessDecriptionList from './SmartTripleImportanceOneGreatnessDecriptionList'
+  import {initDictOptions,filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import '@/assets/less/TableExpand.less'
 
   export default {
     name: "SmartTripleImportanceOneGreatnessList",
     mixins:[JeecgListMixin],
     components: {
+      SmartTripleImportanceOneGreatnessDecriptionList,
       SmartTripleImportanceOneGreatnessModal
     },
     data () {
@@ -111,16 +112,6 @@
         description: '三重一大表管理页面',
         // 表头
         columns: [
-          {
-            title: '#',
-            dataIndex: '',
-            key:'rowIndex',
-            width:60,
-            align:"center",
-            customRender:function (t,r,index) {
-              return parseInt(index)+1;
-            }
-          },
           {
             title:'单位ID',
             align:"center",
@@ -144,7 +135,7 @@
           {
             title:'类型',
             align:"center",
-            dataIndex: 'meetingType_dictText'
+            dataIndex: 'meetingType_dictText',
           },
           {
             title:'参会人数',
@@ -201,9 +192,23 @@
           deleteBatch: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/deleteBatch",
           exportXlsUrl: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/exportXls",
           importExcelUrl: "smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/importExcel",
-          
         },
-        dictOptions:{},
+        dictOptions:{
+         meetingType:[],
+        },
+        /* 分页参数 */
+        ipagination:{
+          current: 1,
+          pageSize: 5,
+          pageSizeOptions: ['5', '10', '50'],
+          showTotal: (total, range) => {
+            return range[0] + "-" + range[1] + " 共" + total + "条"
+          },
+          showQuickJumper: true,
+          showSizeChanger: true,
+          total: 0
+        },
+        selectedMainId:'',
         superFieldList:[],
       }
     },
@@ -217,27 +222,74 @@
     },
     methods: {
       initDictConfig(){
+        initDictOptions('meeting_type').then((res) => {
+          if (res.success) {
+            this.$set(this.dictOptions, 'meetingType', res.result)
+          }
+        })
+      },
+      clickThenSelect(record) {
+        return {
+          on: {
+            click: () => {
+              this.onSelectChange(record.id.split(","), [record]);
+            }
+          }
+        }
+      },
+      onClearSelected() {
+        this.selectedRowKeys = [];
+        this.selectionRows = [];
+        this.selectedMainId=''
+      },
+      onSelectChange(selectedRowKeys, selectionRows) {
+        this.selectedMainId=selectedRowKeys[0]
+        this.selectedRowKeys = selectedRowKeys;
+        this.selectionRows = selectionRows;
+      },
+      loadData(arg) {
+        if(!this.url.list){
+          this.$message.error("请设置url.list属性!")
+          return
+        }
+        //加载数据 若传入参数1则加载第一页的内容
+        if (arg === 1) {
+          this.ipagination.current = 1;
+        }
+        this.onClearSelected()
+        var params = this.getQueryParams();//查询条件
+        this.loading = true;
+        getAction(this.url.list, params).then((res) => {
+          if (res.success) {
+            this.dataSource = res.result.records;
+            this.ipagination.total = res.result.total;
+          }
+          if(res.code===510){
+            this.$message.warning(res.message)
+          }
+          this.loading = false;
+        })
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'documentid',text:'单位ID',dictCode:''})
-         fieldList.push({type:'string',value:'meetingName',text:'名称',dictCode:''})
-         fieldList.push({type:'string',value:'meetingPlace',text:'地点',dictCode:''})
-         fieldList.push({type:'datetime',value:'meetingStarttime',text:'时间'})
-         fieldList.push({type:'string',value:'meetingType',text:'类型',dictCode:'meeting_type'})
-         fieldList.push({type:'int',value:'meetingNumber',text:'参会人数',dictCode:''})
-         fieldList.push({type:'string',value:'meetingPeople',text:'参会人员',dictCode:''})
-         fieldList.push({type:'string',value:'meetingHoster',text:'主持人',dictCode:''})
-         fieldList.push({type:'string',value:'meetingRecorer',text:'记录人',dictCode:''})
-         fieldList.push({type:'string',value:'meetingAbstract',text:'会议内容摘要',dictCode:''})
-         fieldList.push({type:'string',value:'meetingRemarks',text:'备注',dictCode:''})
-         fieldList.push({type:'string',value:'creatBy',text:'创建人',dictCode:''})
-         fieldList.push({type:'datetime',value:'creatTime',text:'创建时间'})
+        fieldList.push({type:'string',value:'documentid',text:'单位ID',dictCode:''})
+        fieldList.push({type:'string',value:'meetingName',text:'名称',dictCode:''})
+        fieldList.push({type:'string',value:'meetingPlace',text:'地点',dictCode:''})
+        fieldList.push({type:'datetime',value:'meetingStarttime',text:'时间'})
+        fieldList.push({type:'string',value:'meetingType',text:'类型',dictCode:'meeting_type'})
+        fieldList.push({type:'int',value:'meetingNumber',text:'参会人数',dictCode:''})
+        fieldList.push({type:'string',value:'meetingPeople',text:'参会人员',dictCode:''})
+        fieldList.push({type:'string',value:'meetingHoster',text:'主持人',dictCode:''})
+        fieldList.push({type:'string',value:'meetingRecorer',text:'记录人',dictCode:''})
+        fieldList.push({type:'string',value:'meetingAbstract',text:'会议内容摘要',dictCode:''})
+        fieldList.push({type:'string',value:'meetingRemarks',text:'备注',dictCode:''})
+        fieldList.push({type:'string',value:'creatBy',text:'创建人',dictCode:''})
+        fieldList.push({type:'datetime',value:'creatTime',text:'创建时间'})
         this.superFieldList = fieldList
       }
     }
   }
 </script>
 <style scoped>
-  @import '~@assets/less/common.less';
+  @import '~@assets/less/common.less'
 </style>
