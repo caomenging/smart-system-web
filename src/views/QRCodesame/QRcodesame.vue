@@ -17,7 +17,7 @@
     //props: ['sex','name'],
     data () {
       return {
-        url: 'http://localhost:8080/smart-system/qrCode/generate/v3?content=http://localhost:3000/review',
+        url: 'http://localhost:8080/smart-system/qrCode/generate/v3?content=http://localhost:3000/corrcet',
         name: '纠治四风',
         formLayout: 'horizontal',
         model: {},
@@ -43,9 +43,9 @@
             bb.drawImage(img, 70,70);
         }
 
-        bb.fillStyle = '#fff';
-        bb.font = '40px Adobe Ming Std';
-        bb.fillText(this.name,120,450);
+        bb.fillStyle = '#000';
+        bb.font = '20px Adobe Ming Std';
+        bb.fillText(this.name,180,450);
 
         bb.stroke();
       }
