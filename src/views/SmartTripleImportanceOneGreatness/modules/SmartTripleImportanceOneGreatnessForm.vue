@@ -80,7 +80,7 @@
           :loading="smartTripleImportanceOneGreatnessDecriptionTable.loading"
           :columns="smartTripleImportanceOneGreatnessDecriptionTable.columns"
           :dataSource="smartTripleImportanceOneGreatnessDecriptionTable.dataSource"
-          :maxHeight="300"
+          :maxHeight="400"
           :disabled="formDisabled"
           :rowNumber="true"
           :rowSelection="true"
@@ -160,11 +160,9 @@
             {
               title: '附件说明路径',
               key: 'descriptionPath',
-              type: FormTypes.file,
-              token:true,
-              responseName:"message",
-              width:"200px",
-              placeholder: '请选择文件',
+              type: FormTypes.input,
+              width:"250px",
+              placeholder: '请输入${title}',
               defaultValue:'',
             },
             {
