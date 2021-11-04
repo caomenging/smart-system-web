@@ -97,6 +97,7 @@
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SmartPremaritalFilingModal from './modules/SmartPremaritalFilingModal'
+  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import '@/assets/less/TableExpand.less'
 
   export default {
@@ -133,7 +134,7 @@
           {
             title:'人员性别',
             align:"center",
-            dataIndex: 'peopleSex'
+            dataIndex: 'peopleSex_dictText'
           },
           {
             title:'人员年龄',
@@ -143,7 +144,7 @@
           {
             title:'政治面貌',
             align:"center",
-            dataIndex: 'politicCou'
+            dataIndex: 'politicCou_dictText'
           },
           {
             title:'工作单位',
@@ -153,12 +154,12 @@
           {
             title:'职务',
             align:"center",
-            dataIndex: 'post'
+            dataIndex: 'post_dictText'
           },
           {
             title:'职级',
             align:"center",
-            dataIndex: 'postRank'
+            dataIndex: 'postRank_dictText'
           },
           {
             title:'配偶姓名',
@@ -168,7 +169,7 @@
           {
             title:'配偶单位职务',
             align:"center",
-            dataIndex: 'spoUnitPos'
+            dataIndex: 'spoUnitPos_dictText'
           },
           {
             title:'配偶政治面貌',
@@ -249,17 +250,17 @@
           {
             title:'结婚人配偶单位职务',
             align:"center",
-            dataIndex: 'marrySpoUnitPos'
+            dataIndex: 'marrySpoUnitPos_dictText'
           },
           {
             title:'结婚人配偶父母姓名',
             align:"center",
-            dataIndex: 'marrySpoParName'
+            dataIndex: 'marrySpoParName_dictText'
           },
           {
             title:'结婚人配偶父母单位职务',
             align:"center",
-            dataIndex: 'marrySpoParUnitPos'
+            dataIndex: 'marrySpoParUnitPos_dictText'
           },
           {
             title:'其他需要说明的事情',
@@ -315,14 +316,14 @@
         let fieldList=[];
          fieldList.push({type:'string',value:'peopleNo',text:'人员工号',dictCode:''})
          fieldList.push({type:'string',value:'peopleName',text:'人员姓名',dictCode:''})
-         fieldList.push({type:'string',value:'peopleSex',text:'人员性别',dictCode:''})
+         fieldList.push({type:'string',value:'peopleSex',text:'人员性别',dictCode:'	sex'})
          fieldList.push({type:'int',value:'peopleAge',text:'人员年龄',dictCode:''})
-         fieldList.push({type:'string',value:'politicCou',text:'政治面貌',dictCode:''})
+         fieldList.push({type:'string',value:'politicCou',text:'政治面貌',dictCode:'political_status'})
          fieldList.push({type:'string',value:'workUnit',text:'工作单位',dictCode:''})
-         fieldList.push({type:'string',value:'post',text:'职务',dictCode:''})
-         fieldList.push({type:'string',value:'postRank',text:'职级',dictCode:''})
+         fieldList.push({type:'string',value:'post',text:'职务',dictCode:'sys_position,name,code'})
+         fieldList.push({type:'string',value:'postRank',text:'职级',dictCode:'position_rank'})
          fieldList.push({type:'string',value:'spoName',text:'配偶姓名',dictCode:''})
-         fieldList.push({type:'string',value:'spoUnitPos',text:'配偶单位职务',dictCode:''})
+         fieldList.push({type:'string',value:'spoUnitPos',text:'配偶单位职务',dictCode:'sys_position,name,code'})
          fieldList.push({type:'string',value:'spoPoliticCou',text:'配偶政治面貌',dictCode:''})
          fieldList.push({type:'string',value:'marriedName',text:'结婚人姓名',dictCode:''})
          fieldList.push({type:'string',value:'relationWithMyself',text:'与本人关系',dictCode:''})
@@ -337,9 +338,9 @@
          fieldList.push({type:'string',value:'proCarsNum',text:'拟用婚礼车辆数量',dictCode:''})
          fieldList.push({type:'string',value:'marrySpoName',text:'结婚人配偶姓名',dictCode:''})
          fieldList.push({type:'string',value:'marrySpoUnit',text:'结婚人配偶单位',dictCode:''})
-         fieldList.push({type:'string',value:'marrySpoUnitPos',text:'结婚人配偶单位职务',dictCode:''})
+         fieldList.push({type:'string',value:'marrySpoUnitPos',text:'结婚人配偶单位职务',dictCode:'sys_position,name,code'})
          fieldList.push({type:'string',value:'marrySpoParName',text:'结婚人配偶父母姓名',dictCode:''})
-         fieldList.push({type:'string',value:'marrySpoParUnitPos',text:'结婚人配偶父母单位职务',dictCode:''})
+         fieldList.push({type:'string',value:'marrySpoParUnitPos',text:'结婚人配偶父母单位职务',dictCode:'sys_position,name,code'})
          fieldList.push({type:'string',value:'otherMattersExp',text:'其他需要说明的事情',dictCode:''})
          fieldList.push({type:'date',value:'reportTime',text:'报告时间'})
          fieldList.push({type:'string',value:'contactNumber',text:'联系电话',dictCode:''})
