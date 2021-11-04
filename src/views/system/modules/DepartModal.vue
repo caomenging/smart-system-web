@@ -31,6 +31,9 @@
           :disabled="condition">
         </a-tree-select>
         </a-form-model-item>
+        <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" :hidden="seen" label="上级业务部门" hasFeedback>
+            <j-select-depart v-model="model.workParentId" :multi="true" @back="backDepartInfo" :backDepart="true" :treeOpera="true">></j-select-depart>
+          </a-form-model-item>
         <a-form-model-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
