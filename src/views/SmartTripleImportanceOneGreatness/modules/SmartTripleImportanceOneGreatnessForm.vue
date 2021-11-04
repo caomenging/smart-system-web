@@ -49,14 +49,14 @@
               <a-input v-model="model.meetingRecorer" placeholder="请输入记录人" ></a-input>
             </a-form-model-item>
           </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="会议内容摘要" :labelCol="labelCol2" :wrapperCol="wrapperCol2" prop="meetingAbstract">
-              <a-textarea v-model="model.meetingAbstract" rows="4" placeholder="请输入会议内容摘要" />
+          <a-col :span="24" >
+            <a-form-model-item label="会议内容摘要" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingAbstract">
+              <a-input v-model="model.meetingAbstract" placeholder="请输入会议内容摘要" ></a-input>
             </a-form-model-item>
           </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="备注" :labelCol="labelCol2" :wrapperCol="wrapperCol2" prop="meetingRemarks">
-              <a-textarea v-model="model.meetingRemarks" rows="4" placeholder="请输入备注" />
+          <a-col :span="24" >
+            <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingRemarks">
+              <a-input v-model="model.meetingRemarks" placeholder="请输入备注" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -66,7 +66,7 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="创建时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="creatTime">
-              <j-date placeholder="请选择创建时间" v-model="model.creatTime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
+              <j-date placeholder="请选择创建时间" v-model="model.creatTime" style="width: 100%" />
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -125,21 +125,6 @@
         // 新增时子表默认添加几行空数据
         addDefaultRowNum: 1,
         validatorRules: {
-           docementid: [
-              { required: true, message: '请输入单位ID!'},
-           ],
-           meetingStarttime: [
-              { required: true, message: '请输入时间!'},
-           ],
-           meetingType: [
-              { required: true, message: '请输入类型!'},
-           ],
-           meetingNumber: [
-              { required: true, message: '请输入参会人数!'},
-           ],
-           creatTime: [
-              { required: true, message: '请输入创建时间!'},
-           ],
         },
         refKeys: ['smartTripleImportanceOneGreatnessDecription', ],
         tableKeys:['smartTripleImportanceOneGreatnessDecription', ],
@@ -149,6 +134,14 @@
           loading: false,
           dataSource: [],
           columns: [
+            {
+              title: '序号',
+              key: 'serialNumber',
+              type: FormTypes.input,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
+            },
             {
               title: '附件说明',
               key: 'attachmentDescription',
@@ -160,11 +153,9 @@
             {
               title: '附件说明路径',
               key: 'descriptionPath',
-              type: FormTypes.file,
-              token:true,
-              responseName:"message",
+              type: FormTypes.input,
               width:"200px",
-              placeholder: '请选择文件',
+              placeholder: '请输入${title}',
               defaultValue:'',
             },
             {
@@ -174,7 +165,14 @@
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
+            },
+            {
+              title: '下载次数',
+              key: 'dowmloadTimes',
+              type: FormTypes.inputNumber,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
             },
           ]
         },
