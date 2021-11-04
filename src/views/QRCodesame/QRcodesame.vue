@@ -18,7 +18,7 @@
     data () {
       return {
         url: 'http://localhost:8080/smart-system/qrCode/generate/v3?content=http://localhost:3000/review',
-        name: '阳光评廉',
+        name: '纠治四风',
         formLayout: 'horizontal',
         model: {},
         rules: {
