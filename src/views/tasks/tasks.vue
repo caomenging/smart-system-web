@@ -11,7 +11,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <!-- <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button> -->
-      <a-button type="primary" icon="download" @click="handleExportXls('8项规定婚前报备表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('审核列表')">导出</a-button>
       <a-upload
         name="file"
         :showUploadList="false"
@@ -108,6 +108,7 @@
 
 <script>
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import TasksModal from './modules/TasksModal'
 //   import SmartPremaritalFilingModal from './modules/SmartPremaritalFilingModal'
   import '@/assets/less/TableExpand.less'
 
@@ -122,6 +123,9 @@
   export default {
     name: "TaskList",
     mixins:[JeecgListMixin],
+    components: {
+      TasksModal
+    },
     data () {
       return {
         description: '待审核任务列表',
