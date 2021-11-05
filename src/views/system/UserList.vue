@@ -273,12 +273,12 @@
             width: 100,
             dataIndex: 'phone'
           },
-          {
+/*          {
             title: 'code',
             align: "center",
             width: 180,
             dataIndex: 'orgCode'
-          },
+          },*/
           {
             title: '单位',
             align: "center",
