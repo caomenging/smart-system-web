@@ -14,12 +14,12 @@
               <a-input placeholder="请输入会议名称" v-model="queryParam.name"></a-input>
             </a-form-item>
           </a-col>
-          <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="单位名称">
                 <a-input placeholder="请输入单位名称" v-model="queryParam.deptName"></a-input>
               </a-form-item>
             </a-col>
+            <template v-if="toggleSearchStatus">
           </template>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
