@@ -41,7 +41,7 @@
          <template v-if="seen">
             <a-radio-group v-model="model.orgCategory" placeholder="请选择机构类型">
               <a-radio value="1">
-                公司
+                单位
               </a-radio>
             </a-radio-group>
           </template>
