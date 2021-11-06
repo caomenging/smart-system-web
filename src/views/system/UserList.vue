@@ -9,11 +9,12 @@
           <a-col :md="6" :sm="12">
             <a-form-item label="账号">
               <!--<a-input placeholder="请输入账号查询" v-model="queryParam.username"></a-input>-->
-              <j-input placeholder="输入账号模糊查询" v-model="queryParam.username"></j-input>
+              <!--模糊查询:j-input-->
+              <j-input placeholder="输入账号" v-model="queryParam.username"></j-input>
             </a-form-item>
           </a-col>
 
-          <a-col :md="6" :sm="8">
+<!--          <a-col :md="6" :sm="8">
             <a-form-item label="性别">
               <a-select v-model="queryParam.sex" placeholder="请选择性别">
                 <a-select-option value="">请选择</a-select-option>
@@ -21,22 +22,35 @@
                 <a-select-option value="2">女</a-select-option>
               </a-select>
             </a-form-item>
-          </a-col>
+          </a-col>-->
 
-
-          <template v-if="toggleSearchStatus">
             <a-col :md="6" :sm="8">
-              <a-form-item label="真实名字">
-                <a-input placeholder="请输入真实名字" v-model="queryParam.realname"></a-input>
+              <a-form-item label="姓名">
+                <j-input placeholder="请输入姓名" v-model="queryParam.realname"></j-input>
               </a-form-item>
             </a-col>
 
             <a-col :md="6" :sm="8">
               <a-form-item label="手机号码">
-                <a-input placeholder="请输入手机号码查询" v-model="queryParam.phone"></a-input>
+                <j-input placeholder="请输入手机号码" v-model="queryParam.phone"></j-input>
               </a-form-item>
             </a-col>
 
+          <!--TODO 按照单位查询 (设置返回值，默认返回ID：customReturnField='orgCode')-->
+          <a-col :md="6" :sm="8">
+            <a-form-item label="单位">
+              <j-select-depart placeholder="请选择单位"  v-model="queryParam.orgCode" customReturnField='orgCode' :multi="true"   :treeOpera="true"></j-select-depart>
+            </a-form-item>
+          </a-col>
+
+          <!--下拉搜索（可配置字典）：j-search-select-tag -->
+            <a-col :md="6" :sm="8">
+              <a-form-item label="职级">
+                <j-search-select-tag placeholder="请输入或选择职级" v-model="queryParam.positionRank" dict="position_rank"/>
+              </a-form-item>
+            </a-col>
+
+          <template v-if="toggleSearchStatus">
             <a-col :md="6" :sm="8">
               <a-form-item label="用户状态">
                 <a-select v-model="queryParam.status" placeholder="请选择">
@@ -135,7 +149,7 @@
               </a-menu-item>
 
               <a-menu-item>
-                <a href="javascript:;" @click="handleChangePassword(record.username)">密码</a>
+                <a href="javascript:;" @click="handleChangePassword(record.username)">修改密码</a>
               </a-menu-item>
 
               <a-menu-item>
@@ -188,11 +202,13 @@
   import UserRecycleBinModal from './modules/UserRecycleBinModal'
   import JSuperQuery from '@/components/jeecg/JSuperQuery'
   import JThirdAppButton from '@/components/jeecgbiz/thirdApp/JThirdAppButton'
+  import JSelectDepartModal from '../../components/jeecgbiz/modal/JSelectDepartModal'
 
   export default {
     name: "UserList",
     mixins: [JeecgListMixin],
     components: {
+      JSelectDepartModal,
       JThirdAppButton,
       SysUserAgentModal,
       UserModal,
@@ -257,17 +273,29 @@
             width: 100,
             dataIndex: 'phone'
           },
+/*          {
+            title: 'code',
+            align: "center",
+            width: 180,
+            dataIndex: 'orgCode'
+          },*/
           {
-            title: '部门',
+            title: '单位',
             align: "center",
             width: 180,
             dataIndex: 'orgCodeTxt'
           },
           {
-            title: '负责部门',
+            title: '负责单位',
             align: "center",
             width: 180,
             dataIndex: 'departIds_dictText'
+          },
+          {
+            title: '职级',
+            align: "center",
+            width: 180,
+            dataIndex: 'positionRank_dictText'
           },
           {
             title: '状态',
@@ -287,7 +315,8 @@
         superQueryFieldList: [
           { type: 'input', value: 'username', text: '用户账号', },
           { type: 'input', value: 'realname', text: '用户姓名', },
-          { type: 'select', value: 'sex', dbType: 'int', text: '性别', dictCode: 'sex' },
+          //{ type: 'select', value: 'sex', dbType: 'int', text: '性别', dictCode: 'sex' },
+          { type: 'input', value: 'phone',  text: '手机号'},
         ],
         url: {
           syncUser: "/act/process/extActProcess/doSyncUser",
