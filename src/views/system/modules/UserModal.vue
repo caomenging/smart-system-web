@@ -48,6 +48,18 @@
           <j-select-position placeholder="请选择职务" :multiple="false" v-model="model.post"/>
         </a-form-model-item>
 
+        <a-form-model-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          prop="positionRank"
+          label="职级"
+        >
+          <j-dict-select-tag
+            placeholder="请选择职级"
+            dictCode="position_rank"
+            v-model="model.positionRank"
+          />
+        </a-form-model-item>
         <a-form-model-item label="角色分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!roleDisabled" >
           <j-multi-select-tag
             :disabled="disableSubmit"
@@ -58,32 +70,32 @@
         </a-form-model-item>
 
         <!--部门分配-->
-        <a-form-model-item label="部门分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">
+        <a-form-model-item label="单位分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">
           <j-select-depart v-model="model.selecteddeparts" :multi="true" @back="backDepartInfo" :backDepart="true" :treeOpera="true">></j-select-depart>
         </a-form-model-item>
 
         <!--租户分配-->
-        <a-form-model-item label="租户分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">
+        <!--<a-form-model-item label="租户分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">
           <j-multi-select-tag
             :disabled="disableSubmit"
             v-model="model.relTenantIds"
             :options="tenantsOptions"
             placeholder="请选择租户">
           </j-multi-select-tag>
-        </a-form-model-item>
+        </a-form-model-item>-->
 
         <a-form-model-item label="身份" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-radio-group  v-model="model.userIdentity"  @change="identityChange">
-            <a-radio :value="1">普通用户</a-radio>
-            <a-radio :value="2">上级</a-radio>
+            <a-radio :value="1">非单位负责人</a-radio>
+            <a-radio :value="2">单位负责人</a-radio>
           </a-radio-group>
         </a-form-model-item>
-        <a-form-model-item label="负责部门" :labelCol="labelCol" :wrapperCol="wrapperCol"  v-if="departIdShow==true">
+        <a-form-model-item label="负责单位" :labelCol="labelCol" :wrapperCol="wrapperCol"  v-if="departIdShow==true">
           <j-multi-select-tag
             :disabled="disableSubmit"
             v-model="model.departIds"
             :options="nextDepartOptions"
-            placeholder="请选择负责部门">
+            placeholder="请选择负责单位">
           </j-multi-select-tag>
         </a-form-model-item>
 
@@ -121,11 +133,19 @@
         />
         </a-form-model-item>
 
+        <a-form-model-item label="入党日期" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-date-picker
+            style="width: 100%"
+            placeholder="请选择入党日期"
+            v-model="model.joinPartyDate"
+            :format="dateFormat"
+            :getCalendarContainer="node => node.parentNode"/>
+        </a-form-model-item>
+
         <a-form-model-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           prop="ethnicity"
-          required
           label="民族"
         >
           <j-dict-select-tag
@@ -321,6 +341,7 @@
           }
         });
       },
+      //获取编辑用户负责部门
       getUserDeparts(userid){
         let that = this;
         getAction(that.url.userWithDepart,{userId:userid}).then((res)=>{
@@ -378,6 +399,7 @@
               obj=addUser(this.model);
             }else{
               obj=editUser(this.model);
+              console.log(this.model);
             }
             obj.then((res)=>{
               if(res.success){
