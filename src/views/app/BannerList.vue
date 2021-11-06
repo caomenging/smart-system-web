@@ -12,7 +12,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('app banner管理')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('app功能管理')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -108,7 +108,7 @@
     },
     data () {
       return {
-        description: 'app banner管理管理页面',
+        description: 'app功能管理管理页面',
         // 表头
         columns: [
           {
@@ -127,13 +127,13 @@
             dataIndex: 'title'
           },
           {
-            title:'banner图链接，要求图片16:9',
+            title:'banner图',
             align:"center",
             dataIndex: 'url',
             scopedSlots: {customRender: 'imgSlot'}
           },
           {
-            title:'banner排序',
+            title:'排序',
             align:"center",
             sorter: true,
             dataIndex: 'sort'
@@ -173,8 +173,8 @@
       getSuperFieldList(){
         let fieldList=[];
         fieldList.push({type:'string',value:'title',text:'banner描述',dictCode:''})
-        fieldList.push({type:'string',value:'url',text:'banner图链接，要求图片16:9',dictCode:''})
-        fieldList.push({type:'int',value:'sort',text:'banner排序',dictCode:''})
+        fieldList.push({type:'string',value:'url',text:'banner图',dictCode:''})
+        fieldList.push({type:'string',value:'sort',text:'排序',dictCode:''})
         this.superFieldList = fieldList
       }
     }

@@ -9,13 +9,13 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="banner图链接，要求图片16:9" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="url">
+            <a-form-model-item label="banner图" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="url">
               <j-image-upload isMultiple  v-model="model.url" ></j-image-upload>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="banner排序" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="sort">
-              <a-input-number v-model="model.sort" placeholder="请输入banner排序" style="width: 100%" />
+            <a-form-model-item label="排序" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="sort">
+              <a-input v-model="model.sort" placeholder="请输入排序"  ></a-input>
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -59,10 +59,10 @@
               { required: true, message: '请输入banner描述!'},
            ],
            url: [
-              { required: true, message: '请输入banner图链接，要求图片16:9!'},
+              { required: true, message: '请输入banner图!'},
            ],
            sort: [
-              { required: true, message: '请输入banner排序!'},
+              { required: true, message: '请输入排序!'},
            ],
         },
         url: {
