@@ -2597,6 +2597,14 @@
         }
       },
       handleClickDownFileByUrl(id){
+        const rootUrl = this.rootUrl + '/downloadCount'
+        const params = {
+          id: id.slice(16),
+          downloadTimes: 1
+        }
+        putAction(rootUrl, params)
+        console.log(rootUrl)
+        console.log(id.slice(16))
         let { url,path } = this.uploadValues[id] || {}
         if (!url || url.length===0) {
           if(path && path.length>0){
