@@ -850,8 +850,7 @@
         // 当前实例是否是行编辑
         isJEditableTable: true,
         // caseId，用于防止有多个实例的时候会冲突
-        caseId: '',
-        // `_jet-${randomString(6)}-`,
+        caseId: `_jet-${randomString(6)}-`,
         // 临时ID标识，凡是以该标识结尾的ID都是临时ID，不添加到数据库中
         tempId: `_tid-${randomString(6)}`,
         // 存储document element 对象
@@ -929,7 +928,6 @@
           addIndex: 0,
           // 添加后滚动到底部
           addScrollToBottom: false,
-          rootUrl: this.rootUrl
         },
       }
     },
@@ -2614,12 +2612,12 @@
       handleClickDownFileByUrl(id){
         const rootUrl = this.rootUrl + '/downloadCount'
         const params = {
-          id: id.slice(4),
+          id: id.slice(16),
           downloadTimes: 1
         }
         putAction(rootUrl, params)
         console.log(rootUrl)
-        console.log(id)
+        console.log(id.slice(16))
         let { url,path } = this.uploadValues[id] || {}
         if (!url || url.length===0) {
           if(path && path.length>0){
