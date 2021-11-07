@@ -145,17 +145,17 @@
           {
             title:'任务类型',
             align:"center",
-            dataIndex: 'type'
+            dataIndex: 'taskType'
           },
           {
             title:'填报单位',
             align:"center",
-            dataIndex: 'depart'
+            dataIndex: 'sysOrgCode'
           },
           {
             title:'填报日期',
             align:"center",
-            dataIndex: 'date'
+            dataIndex: 'createTime'
           },
           {
             title: '操作',
@@ -166,6 +166,9 @@
             scopedSlots: { customRender: 'action' },
           }
         ],
+        url: {
+          list: "/tasks/smartVerifyTask/list",
+        },
       }
     },
   }

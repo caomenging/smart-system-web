@@ -748,6 +748,7 @@
   import JInputPop from '@/components/jeecg/minipop/JInputPop'
   import JFilePop from '@/components/jeecg/minipop/JFilePop'
   import { getNoAuthCols } from '@/utils/authFilter'
+  import { putAction } from '@/api/manage'
 
   // 行高，需要在实例加载完成前用到
   let rowHeight = 61
@@ -834,9 +835,16 @@
         required: false,
         default: ''
       },
+      // 增加根路径
+      rootUrl: {
+        type: String,
+        require: false,
+        default: ''
+      },
     },
     data() {
       return {
+        rUrl: '',
         // 是否首次运行
         isFirst: true,
         // 当前实例是否是行编辑
@@ -1003,6 +1011,10 @@
     },
     // 侦听器
     watch: {
+      rootUrl: function(newValue, oldValue) {
+          this.rUrl = newValue
+          // this.handleClickDownFileByUrl()
+        },
       rows: {
         immediate: true,
         handler(val, old) {
@@ -2590,6 +2602,7 @@
         this.uploadValues[id] = null
       },
       handleClickDownloadFile(id) {
+        console.log(id)
         let { path } = this.uploadValues[id] || {}
         if (path) {
           let url = getFileAccessHttpUrl(path)
@@ -2609,6 +2622,7 @@
         if (!url || url.length===0) {
           if(path && path.length>0){
             url = getFileAccessHttpUrl(path.split(',')[0])
+            // console.log(url)
           }
         }
         if(url){
