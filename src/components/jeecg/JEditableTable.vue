@@ -1228,6 +1228,7 @@
        *
        */
       _pushByDataSource(dataSource, insertIndexes = null, update = true, rows = null, setDefaultValue = false) {
+        // console.log(dataSource)
         if (!(rows instanceof Array)) {
           rows = [...this.rows] || []
         }
@@ -2612,12 +2613,13 @@
       handleClickDownFileByUrl(id){
         const rootUrl = this.rootUrl + '/downloadCount'
         const params = {
-          id: id.slice(16),
+          id: id.split('-').slice(-1)[0],
           downloadTimes: 1
         }
         putAction(rootUrl, params)
-        console.log(rootUrl)
-        console.log(id.slice(16))
+        // console.log("case_id:",id.split('-').slice(-1)[0])
+        // console.log(this.dataSource)
+        // console.log(rootUrl)
         let { url,path } = this.uploadValues[id] || {}
         if (!url || url.length===0) {
           if(path && path.length>0){
