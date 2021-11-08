@@ -1,23 +1,22 @@
 <template>
   <div>
     <canvas id="aa" width="450" height="500"></canvas>
-<!--    <div>
-      <input v-model="url"/>
-    </div>
-    <div>
-      <input v-model="name"/>
-    </div>-->
+
+
       <button v-show=false @click="initQrCode">生成二维码</button>
   </div>
 </template>
 
+<!--显示纠治四风二维码-->
+
 <script>
   import { getAction } from '@/api/manage'
   export default {
+
     //props: ['sex','name'],
     data () {
       return {
-        url: 'http://localhost:8080/smart-system/qrCode/generate/v3?content=http://localhost:3000/corrcet',
+        url: 'http://localhost:8080/smart-system/qrCode/generate/v3?content=http://localhost:3000/SmartReportingInformationDetails/SmartReportingInformationDetailsList',
         name: '纠治四风',
         formLayout: 'horizontal',
         model: {},
@@ -33,8 +32,8 @@
         var aa = document.getElementById('aa');
         var bb = aa.getContext('2d');
 
-        bb.fillStyle = '#99f';    //   填充颜色
-        bb.fillRect(0,0,450,480);
+        bb.fillStyle = '#fff';    //   填充颜色
+        bb.fillRect(0,0,450,470);
 
         var img = new Image;
         img.src = this.url;

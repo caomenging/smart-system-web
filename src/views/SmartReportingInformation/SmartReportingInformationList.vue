@@ -4,30 +4,15 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="单位ID">
-              <a-input placeholder="请输入单位ID" v-model="queryParam.documentid"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a @click="handleToggleSearch" style="margin-left: 8px">
-                {{ toggleSearchStatus ? '收起' : '展开' }}
-                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>
-            </span>
-          </a-col>
         </a-row>
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('三重一大表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('举报信息表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -51,15 +36,15 @@
       <a-table
         ref="table"
         size="middle"
+        :scroll="{x:true}"
         bordered
         rowKey="id"
-        class="j-table-force-nowrap"
-        :scroll="{x:true}"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        class="j-table-force-nowrap"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -104,26 +89,27 @@
       </a-table>
     </div>
 
-    <smart-triple-importance-one-greatness-modal ref="modalForm" @ok="modalFormOk"/>
+    <smart-reporting-information-modal ref="modalForm" @ok="modalFormOk"></smart-reporting-information-modal>
   </a-card>
 </template>
 
 <script>
 
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartTripleImportanceOneGreatnessModal from './modules/SmartTripleImportanceOneGreatnessModal'
-  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import '@/assets/less/TableExpand.less'
+  import { mixinDevice } from '@/utils/mixin'
+  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import SmartReportingInformationModal from './modules/SmartReportingInformationModal'
+  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
 
   export default {
-    name: "SmartTripleImportanceOneGreatnessList",
-    mixins:[JeecgListMixin],
+    name: 'SmartReportingInformationList',
+    mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartTripleImportanceOneGreatnessModal
+      SmartReportingInformationModal
     },
     data () {
       return {
-        description: '三重一大表管理页面',
+        description: '举报信息表管理页面',
         // 表头
         columns: [
           {
@@ -137,69 +123,24 @@
             }
           },
           {
-            title:'名称',
+            title:'被反映人信息',
             align:"center",
-            dataIndex: 'meetingName'
+            dataIndex: 'reflectedInformation'
           },
           {
-            title:'地点',
+            title:'被反映人单位',
             align:"center",
-            dataIndex: 'meetingPlace'
+            dataIndex: 'reflectedDocumentid'
           },
           {
-            title:'时间',
+            title:'举报时间',
             align:"center",
-            dataIndex: 'meetingStarttime'
+            dataIndex: 'reportingTime'
           },
           {
-            title:'类型',
+            title:'处理类型',
             align:"center",
-            dataIndex: 'meetingType_dictText'
-          },
-          {
-            title:'参会人数',
-            align:"center",
-            dataIndex: 'meetingNumber'
-          },
-          {
-            title:'参会人员',
-            align:"center",
-            dataIndex: 'meetingPeople'
-          },
-          {
-            title:'主持人',
-            align:"center",
-            dataIndex: 'meetingHoster'
-          },
-          {
-            title:'记录人',
-            align:"center",
-            dataIndex: 'meetingRecorer'
-          },
-          {
-            title:'会议内容摘要',
-            align:"center",
-            dataIndex: 'meetingAbstract'
-          },
-          {
-            title:'备注',
-            align:"center",
-            dataIndex: 'meetingRemarks'
-          },
-          {
-            title:'创建人',
-            align:"center",
-            dataIndex: 'createBy'
-          },
-          {
-            title:'创建时间',
-            align:"center",
-            dataIndex: 'createTime'
-          },
-          {
-            title:'删除标志',
-            align:"center",
-            dataIndex: 'delFlag'
+            dataIndex: 'processingType_dictText'
           },
           {
             title: '操作',
@@ -207,15 +148,15 @@
             align:"center",
             fixed:"right",
             width:147,
-            scopedSlots: { customRender: 'action' },
+            scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
-          list: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/list",
-          delete: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/delete",
-          deleteBatch: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/deleteBatch",
-          exportXlsUrl: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/exportXls",
-          importExcelUrl: "smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/importExcel",
+          list: "/smartReportingInformation/smartReportingInformation/list",
+          delete: "/smartReportingInformation/smartReportingInformation/delete",
+          deleteBatch: "/smartReportingInformation/smartReportingInformation/deleteBatch",
+          exportXlsUrl: "/smartReportingInformation/smartReportingInformation/exportXls",
+          importExcelUrl: "smartReportingInformation/smartReportingInformation/importExcel",
           
         },
         dictOptions:{},
@@ -223,32 +164,22 @@
       }
     },
     created() {
-      this.getSuperFieldList();
+    this.getSuperFieldList();
     },
     computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      }
+      },
     },
     methods: {
       initDictConfig(){
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'documentid',text:'单位ID',dictCode:''})
-         fieldList.push({type:'string',value:'meetingName',text:'名称',dictCode:''})
-         fieldList.push({type:'string',value:'meetingPlace',text:'地点',dictCode:''})
-         fieldList.push({type:'datetime',value:'meetingStarttime',text:'时间'})
-         fieldList.push({type:'string',value:'meetingType',text:'类型',dictCode:'meeting_type'})
-         fieldList.push({type:'int',value:'meetingNumber',text:'参会人数',dictCode:''})
-         fieldList.push({type:'string',value:'meetingPeople',text:'参会人员',dictCode:''})
-         fieldList.push({type:'string',value:'meetingHoster',text:'主持人',dictCode:''})
-         fieldList.push({type:'string',value:'meetingRecorer',text:'记录人',dictCode:''})
-         fieldList.push({type:'string',value:'meetingAbstract',text:'会议内容摘要',dictCode:''})
-         fieldList.push({type:'string',value:'meetingRemarks',text:'备注',dictCode:''})
-         fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
-         fieldList.push({type:'datetime',value:'createTime',text:'创建时间'})
-         fieldList.push({type:'int',value:'delFlag',text:'删除标志',dictCode:''})
+        fieldList.push({type:'string',value:'reflectedInformation',text:'被反映人信息',dictCode:''})
+        fieldList.push({type:'string',value:'reflectedDocumentid',text:'被反映人单位',dictCode:''})
+        fieldList.push({type:'datetime',value:'reportingTime',text:'举报时间'})
+        fieldList.push({type:'string',value:'processingType',text:'处理类型',dictCode:'processing_type'})
         this.superFieldList = fieldList
       }
     }
