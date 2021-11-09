@@ -61,6 +61,11 @@ export default {
         type: Boolean,
         default: false
       },
+      //附件
+      attach: {
+        type: String,
+        default: ''
+      },
       // 是否允许切换全屏（允许后右上角会出现一个按钮）
       switchFullscreen: {
         type: Boolean,
