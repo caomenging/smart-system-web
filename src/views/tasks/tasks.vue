@@ -84,7 +84,7 @@
           
           <a-divider type="vertical" />
 
-          <a @click="handleEdit(record)">审核</a>
+          <a @click="handleVerify(record)">审核</a>
 
           <!-- <a-divider type="vertical" /> -->
           <!-- <a-dropdown>
@@ -103,7 +103,10 @@
         </span>
       </a-table>
     </div>
-    <tasks-modal ref="modalForm" @ok="modalFormOk"></tasks-modal>
+    <tasks-modal 
+      ref="modalForm" 
+      @ok="modalFormOk">
+    </tasks-modal>
   </a-card>
 </template>
 

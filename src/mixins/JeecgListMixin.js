@@ -224,6 +224,12 @@ export const JeecgListMixin = {
       this.$refs.modalForm.title = "编辑";
       this.$refs.modalForm.disableSubmit = false;
     },
+    handleVerify: function (record) {
+      this.$refs.modalForm.edit(record);
+      this.$refs.modalForm.title = "审核";
+      this.$refs.modalForm.disableSubmit = true;
+      this.$refs.modalForm.verifyDisableSubmit = false;
+    },
     handleAdd: function () {
       this.$refs.modalForm.add();
       this.$refs.modalForm.title = "新增";
@@ -254,7 +260,7 @@ export const JeecgListMixin = {
       this.onClearSelected()
     },
     handleDetail:function(record){
-      console.log(record)
+      // console.log(record)
       this.$refs.modalForm.edit(record);
       this.$refs.modalForm.title="详情";
       this.$refs.modalForm.disableSubmit = true;
