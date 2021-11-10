@@ -12,7 +12,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('8项规定婚前报备表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('8项规定婚后报备表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -89,25 +89,25 @@
       </a-table>
     </div>
 
-    <smart-premarital-filing-modal ref="modalForm" @ok="modalFormOk"/>
+    <smart-post-marriage-report-modal ref="modalForm" @ok="modalFormOk"/>
   </a-card>
 </template>
 
 <script>
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartPremaritalFilingModal from './modules/SmartPremaritalFilingModal'
+  import SmartPostMarriageReportModal from './modules/SmartPostMarriageReportModal'
   import '@/assets/less/TableExpand.less'
 
   export default {
-    name: "SmartPremaritalFilingList",
+    name: "SmartPostMarriageReportList",
     mixins:[JeecgListMixin],
     components: {
-      SmartPremaritalFilingModal
+      SmartPostMarriageReportModal
     },
     data () {
       return {
-        description: '8项规定婚前报备表管理页面',
+        description: '8项规定婚后报备表管理页面',
         // 表头
         columns: [
           {
@@ -123,148 +123,97 @@
           {
             title:'人员工号',
             align:"center",
-            dataIndex: 'peopleNo'
+            dataIndex: 'workNo'
           },
           {
-            title:'人员姓名',
+            title:'姓名',
             align:"center",
-            dataIndex: 'peopleName'
+            dataIndex: 'name'
           },
           {
-            title:'人员性别',
+            title:'性别',
             align:"center",
-            dataIndex: 'peopleSex'
+            dataIndex: 'sex'
           },
           {
-            title:'人员年龄',
+            title:'年龄',
             align:"center",
-            dataIndex: 'peopleAge'
+            dataIndex: 'age'
           },
           {
             title:'政治面貌',
             align:"center",
-            dataIndex: 'politicCou'
+            dataIndex: 'politicsStatus'
           },
           {
             title:'工作单位',
             align:"center",
-            dataIndex: 'workUnit'
+            dataIndex: 'workDepartment'
           },
           {
             title:'职务',
             align:"center",
-            dataIndex: 'post'
+            dataIndex: 'job'
           },
           {
             title:'职级',
             align:"center",
-            dataIndex: 'postRank'
+            dataIndex: 'jobLevel'
           },
           {
-            title:'配偶姓名',
+            title:'婚宴场所名',
             align:"center",
-            dataIndex: 'spoName'
-          },
-          {
-            title:'配偶单位职务',
-            align:"center",
-            dataIndex: 'spoUnitPos'
-          },
-          {
-            title:'配偶政治面貌',
-            align:"center",
-            dataIndex: 'spoPoliticCou'
-          },
-          {
-            title:'结婚人姓名',
-            align:"center",
-            dataIndex: 'marriedName'
-          },
-          {
-            title:'与本人关系',
-            align:"center",
-            dataIndex: 'relationWithMyself'
-          },
-          {
-            title:'婚姻登记时间',
-            align:"center",
-            dataIndex: 'marryRegistTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
-          },
-          {
-            title:'婚礼时间',
-            align:"center",
-            dataIndex: 'weddingTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
-          },
-          {
-            title:'是否同城同地合办',
-            align:"center",
-            dataIndex: 'isSameOrganized'
-          },
-          {
-            title:'拟宴请人数',
-            align:"center",
-            dataIndex: 'guestsNumber'
-          },
-          {
-            title:'婚宴场所名称',
-            align:"center",
-            dataIndex: 'banqPlaceName'
+            dataIndex: 'weddingVenue'
           },
           {
             title:'婚宴场所地址',
             align:"center",
-            dataIndex: 'banqPlaceAddr'
+            dataIndex: 'weddingVenueAddr'
+          },
+          {
+            title:'宴请人数',
+            align:"center",
+            dataIndex: 'guestsNumber'
           },
           {
             title:'宴请人员范围',
             align:"center",
-            dataIndex: 'banqPersonScope'
+            dataIndex: 'guestsScope'
           },
           {
-            title:'拟用婚礼车辆来源',
+            title:'宴请费用',
             align:"center",
-            dataIndex: 'proCarsSource'
+            dataIndex: 'weddingCost'
           },
           {
-            title:'拟用婚礼车辆数量',
+            title:'婚礼用车数量',
             align:"center",
-            dataIndex: 'proCarsNum'
+            dataIndex: 'weddingCarNumber'
           },
           {
-            title:'结婚人配偶姓名',
+            title:'公车数量（婚礼用车中有多少辆公车）',
             align:"center",
-            dataIndex: 'marrySpoName'
+            dataIndex: 'govCarNumber'
           },
           {
-            title:'结婚人配偶单位',
+            title:'不符合规定收受礼金',
             align:"center",
-            dataIndex: 'marrySpoUnit'
+            dataIndex: 'illegalMoney'
           },
           {
-            title:'结婚人配偶单位职务',
+            title:'不符合规定收受礼品件数',
             align:"center",
-            dataIndex: 'marrySpoUnitPos'
+            dataIndex: 'illegalGiftNumber'
           },
           {
-            title:'结婚人配偶父母姓名',
+            title:'违规收礼品处置情况',
             align:"center",
-            dataIndex: 'marrySpoParName'
+            dataIndex: 'disposalDescribe'
           },
           {
-            title:'结婚人配偶父母单位职务',
+            title:'有无其他违诺行为',
             align:"center",
-            dataIndex: 'marrySpoParUnitPos'
-          },
-          {
-            title:'其他需要说明的事情',
-            align:"center",
-            dataIndex: 'otherMattersExp'
+            dataIndex: 'otherViolations'
           },
           {
             title:'报告时间',
@@ -277,7 +226,7 @@
           {
             title:'联系电话',
             align:"center",
-            dataIndex: 'contactNumber'
+            dataIndex: 'phoneNumber'
           },
           {
             title: '操作',
@@ -289,11 +238,11 @@
           }
         ],
         url: {
-          list: "/smartPremaritalFiling/smartPremaritalFiling/list",
-          delete: "/smartPremaritalFiling/smartPremaritalFiling/delete",
-          deleteBatch: "/smartPremaritalFiling/smartPremaritalFiling/deleteBatch",
-          exportXlsUrl: "/smartPremaritalFiling/smartPremaritalFiling/exportXls",
-          importExcelUrl: "smartPremaritalFiling/smartPremaritalFiling/importExcel",
+          list: "/smartPostMarriage/smartPostMarriageReport/list",
+          delete: "/smartPostMarriage/smartPostMarriageReport/delete",
+          deleteBatch: "/smartPostMarriage/smartPostMarriageReport/deleteBatch",
+          exportXlsUrl: "/smartPostMarriage/smartPostMarriageReport/exportXls",
+          importExcelUrl: "smartPostMarriage/smartPostMarriageReport/importExcel",
           
         },
         dictOptions:{},
@@ -313,36 +262,27 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'peopleNo',text:'人员工号',dictCode:''})
-         fieldList.push({type:'string',value:'peopleName',text:'人员姓名',dictCode:''})
-         fieldList.push({type:'string',value:'peopleSex',text:'人员性别',dictCode:''})
-         fieldList.push({type:'int',value:'peopleAge',text:'人员年龄',dictCode:''})
-         fieldList.push({type:'string',value:'politicCou',text:'政治面貌',dictCode:''})
-         fieldList.push({type:'string',value:'workUnit',text:'工作单位',dictCode:''})
-         fieldList.push({type:'string',value:'post',text:'职务',dictCode:''})
-         fieldList.push({type:'string',value:'postRank',text:'职级',dictCode:''})
-         fieldList.push({type:'string',value:'spoName',text:'配偶姓名',dictCode:''})
-         fieldList.push({type:'string',value:'spoUnitPos',text:'配偶单位职务',dictCode:''})
-         fieldList.push({type:'string',value:'spoPoliticCou',text:'配偶政治面貌',dictCode:''})
-         fieldList.push({type:'string',value:'marriedName',text:'结婚人姓名',dictCode:''})
-         fieldList.push({type:'string',value:'relationWithMyself',text:'与本人关系',dictCode:''})
-         fieldList.push({type:'date',value:'marryRegistTime',text:'婚姻登记时间'})
-         fieldList.push({type:'date',value:'weddingTime',text:'婚礼时间'})
-         fieldList.push({type:'string',value:'isSameOrganized',text:'是否同城同地合办',dictCode:''})
-         fieldList.push({type:'int',value:'guestsNumber',text:'拟宴请人数',dictCode:''})
-         fieldList.push({type:'string',value:'banqPlaceName',text:'婚宴场所名称',dictCode:''})
-         fieldList.push({type:'string',value:'banqPlaceAddr',text:'婚宴场所地址',dictCode:''})
-         fieldList.push({type:'string',value:'banqPersonScope',text:'宴请人员范围',dictCode:''})
-         fieldList.push({type:'string',value:'proCarsSource',text:'拟用婚礼车辆来源',dictCode:''})
-         fieldList.push({type:'string',value:'proCarsNum',text:'拟用婚礼车辆数量',dictCode:''})
-         fieldList.push({type:'string',value:'marrySpoName',text:'结婚人配偶姓名',dictCode:''})
-         fieldList.push({type:'string',value:'marrySpoUnit',text:'结婚人配偶单位',dictCode:''})
-         fieldList.push({type:'string',value:'marrySpoUnitPos',text:'结婚人配偶单位职务',dictCode:''})
-         fieldList.push({type:'string',value:'marrySpoParName',text:'结婚人配偶父母姓名',dictCode:''})
-         fieldList.push({type:'string',value:'marrySpoParUnitPos',text:'结婚人配偶父母单位职务',dictCode:''})
-         fieldList.push({type:'string',value:'otherMattersExp',text:'其他需要说明的事情',dictCode:''})
+         fieldList.push({type:'int',value:'workNo',text:'人员工号',dictCode:''})
+         fieldList.push({type:'string',value:'name',text:'姓名',dictCode:''})
+         fieldList.push({type:'string',value:'sex',text:'性别',dictCode:''})
+         fieldList.push({type:'int',value:'age',text:'年龄',dictCode:''})
+         fieldList.push({type:'string',value:'politicsStatus',text:'政治面貌',dictCode:''})
+         fieldList.push({type:'string',value:'workDepartment',text:'工作单位',dictCode:''})
+         fieldList.push({type:'string',value:'job',text:'职务',dictCode:''})
+         fieldList.push({type:'string',value:'jobLevel',text:'职级',dictCode:''})
+         fieldList.push({type:'string',value:'weddingVenue',text:'婚宴场所名',dictCode:''})
+         fieldList.push({type:'string',value:'weddingVenueAddr',text:'婚宴场所地址',dictCode:''})
+         fieldList.push({type:'int',value:'guestsNumber',text:'宴请人数',dictCode:''})
+         fieldList.push({type:'string',value:'guestsScope',text:'宴请人员范围',dictCode:''})
+         fieldList.push({type:'int',value:'weddingCost',text:'宴请费用',dictCode:''})
+         fieldList.push({type:'int',value:'weddingCarNumber',text:'婚礼用车数量',dictCode:''})
+         fieldList.push({type:'int',value:'govCarNumber',text:'公车数量（婚礼用车中有多少辆公车）',dictCode:''})
+         fieldList.push({type:'int',value:'illegalMoney',text:'不符合规定收受礼金',dictCode:''})
+         fieldList.push({type:'int',value:'illegalGiftNumber',text:'不符合规定收受礼品件数',dictCode:''})
+         fieldList.push({type:'string',value:'disposalDescribe',text:'违规收礼品处置情况',dictCode:''})
+         fieldList.push({type:'string',value:'otherViolations',text:'有无其他违诺行为',dictCode:''})
          fieldList.push({type:'date',value:'reportTime',text:'报告时间'})
-         fieldList.push({type:'string',value:'contactNumber',text:'联系电话',dictCode:''})
+         fieldList.push({type:'string',value:'phoneNumber',text:'联系电话',dictCode:''})
         this.superFieldList = fieldList
       }
     }

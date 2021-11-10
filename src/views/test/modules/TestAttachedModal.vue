@@ -8,18 +8,18 @@
     @ok="handleOk"
     :okButtonProps="{ class:{'jee-hidden': disableSubmit} }"
     @cancel="handleCancel">
-    <smart-inner-party-talk-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"/>
+    <test-attached-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"/>
   </j-modal>
 </template>
 
 <script>
 
-  import SmartInnerPartyTalkForm from './SmartInnerPartyTalkForm'
+  import TestAttachedForm from './TestAttachedForm'
 
   export default {
-    name: 'SmartInnerPartyTalkModal',
+    name: 'TestAttachedModal',
     components: {
-      SmartInnerPartyTalkForm
+      TestAttachedForm
     },
     data() {
       return {
