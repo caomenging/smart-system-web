@@ -4,6 +4,21 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="banner备注标题">
+              <a-input placeholder="请输入banner备注标题" v-model="queryParam.title"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a @click="handleToggleSearch" style="margin-left: 8px">
+                {{ toggleSearchStatus ? '收起' : '展开' }}
+                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
+              </a>
+            </span>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -12,7 +27,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('app功能管理')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('app功能模块')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -108,7 +123,7 @@
     },
     data () {
       return {
-        description: 'app功能管理管理页面',
+        description: 'app功能模块管理页面',
         // 表头
         columns: [
           {
@@ -122,12 +137,12 @@
             }
           },
           {
-            title:'banner描述',
+            title:'banner备注标题',
             align:"center",
             dataIndex: 'title'
           },
           {
-            title:'banner图',
+            title:'图片链接',
             align:"center",
             dataIndex: 'url',
             scopedSlots: {customRender: 'imgSlot'}
@@ -172,8 +187,8 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-        fieldList.push({type:'string',value:'title',text:'banner描述',dictCode:''})
-        fieldList.push({type:'string',value:'url',text:'banner图',dictCode:''})
+        fieldList.push({type:'string',value:'title',text:'banner备注标题',dictCode:''})
+        fieldList.push({type:'string',value:'url',text:'图片链接',dictCode:''})
         fieldList.push({type:'string',value:'sort',text:'排序',dictCode:''})
         this.superFieldList = fieldList
       }

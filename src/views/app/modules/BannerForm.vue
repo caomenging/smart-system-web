@@ -4,12 +4,12 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24">
-            <a-form-model-item label="banner描述" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="title">
-              <a-input v-model="model.title" placeholder="请输入banner描述"  ></a-input>
+            <a-form-model-item label="banner备注标题" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="title">
+              <a-input v-model="model.title" placeholder="请输入banner备注标题"  ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="banner图" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="url">
+            <a-form-model-item label="图片链接" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="url">
               <j-image-upload isMultiple  v-model="model.url" ></j-image-upload>
             </a-form-model-item>
           </a-col>
@@ -56,10 +56,10 @@
         confirmLoading: false,
         validatorRules: {
            title: [
-              { required: true, message: '请输入banner描述!'},
+              { required: true, message: '请输入banner备注标题!'},
            ],
            url: [
-              { required: true, message: '请输入banner图!'},
+              { required: true, message: '请输入图片链接!'},
            ],
            sort: [
               { required: true, message: '请输入排序!'},
