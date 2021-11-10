@@ -29,7 +29,7 @@
         label="机构类型">
           <a-radio-group :disabled="true" v-model="model.orgCategory" read-only>
             <a-radio value="1">
-              公司
+              单位
             </a-radio>
             <a-radio value="2">
               部门

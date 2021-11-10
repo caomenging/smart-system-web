@@ -21,41 +21,50 @@
           hasFeedback >
           <a-input id="departName" placeholder="请输入机构/部门名称" v-model="model.departName"/>
         </a-form-model-item>
-        <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" :hidden="seen" label="上级部门" hasFeedback>
+        <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" :hidden="seen" label="上级业务部门" hasFeedback>
         <a-tree-select
           style="width:100%"
           :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
           :treeData="departTree"
           v-model="model.parentId"
-          placeholder="请选择上级部门"
-          :disabled="condition">
+          placeholder="请选择上级业务部门"
+          allow-clear
+          tree-default-expand-all>
         </a-tree-select>
         </a-form-model-item>
-        <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" :hidden="seen" label="上级业务部门" hasFeedback>
-            <j-select-depart v-model="model.workParentId" :multi="true" @back="backDepartInfo" :backDepart="true" :treeOpera="true">></j-select-depart>
-          </a-form-model-item>
-        <a-form-model-item
-          :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-          label="机构类型">
-         <template v-if="seen">
-            <a-radio-group v-model="model.orgCategory" placeholder="请选择机构类型">
-              <a-radio value="1">
-                公司
-              </a-radio>
-            </a-radio-group>
-          </template>
-          <template v-else>
-            <a-radio-group v-model="model.orgCategory" placeholder="请选择机构类型">
-              <a-radio value="2">
-                部门
-              </a-radio>
-              <a-radio value="3">
-                岗位
-              </a-radio>
-            </a-radio-group>
-       </template>
+        <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" :hidden="seen" label="上级部门" hasFeedback>
+          <a-tree-select
+            style="width:100%"
+            :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
+            :treeData="naturalDepartTree"
+            v-model="model.businessParentId"
+            placeholder="请选择上级部门"
+            allow-clear
+            tree-default-expand-all>
+          </a-tree-select>
         </a-form-model-item>
+<!--        <a-form-model-item-->
+<!--          :labelCol="labelCol"-->
+<!--          :wrapperCol="wrapperCol"-->
+<!--          label="机构类型">-->
+<!--         <template v-if="seen">-->
+<!--            <a-radio-group v-model="model.orgCategory" placeholder="请选择机构类型">-->
+<!--              <a-radio value="1">-->
+<!--                单位-->
+<!--              </a-radio>-->
+<!--            </a-radio-group>-->
+<!--          </template>-->
+<!--          <template v-else>-->
+<!--            <a-radio-group v-model="model.orgCategory" placeholder="请选择机构类型">-->
+<!--              <a-radio value="2">-->
+<!--                部门-->
+<!--              </a-radio>-->
+<!--              <a-radio value="3">-->
+<!--                岗位-->
+<!--              </a-radio>-->
+<!--            </a-radio-group>-->
+<!--       </template>-->
+<!--        </a-form-model-item>-->
         <a-form-model-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
@@ -96,6 +105,7 @@
 <script>
   import { httpAction } from '@/api/manage'
   import { queryIdTree } from '@/api/api'
+  import { queryNaturalIdTree } from '@/api/api'
   import pick from 'lodash.pick'
   import ATextarea from 'ant-design-vue/es/input/TextArea'
   export default {
@@ -104,6 +114,7 @@
     data () {
       return {
         departTree:[],
+        naturalDepartTree:[],
         orgTypeData:[],
         phoneWarning:'',
         departName:"",
@@ -157,26 +168,42 @@
 
         })
       },
+      loadNaturalTreeData(){
+        var that = this;
+        queryNaturalIdTree().then((result)=>{
+          if(result.success){
+            that.naturalDepartTree = [];
+            for (let j = 0; j < result.result.length; j++) {
+              let temp2 = result.result[j];
+              that.naturalDepartTree.push(temp2);
+            }
+          }
+
+        })
+      },
       add (depart) {
         if(depart){
           this.seen = false;
           this.dictDisabled = false;
         }else{
-          this.seen = true;
-          this.dictDisabled = true;
+          this.seen = false;
+          this.dictDisabled = false;
         }
         this.edit(depart);
       },
       edit (record) {
-          this.visible = true;
-          this.model = Object.assign({}, this.defaultModel, record)
+
+          // this.model = Object.assign({}, this.defaultModel, record)
           this.loadTreeData();
-          this.model.parentId = record!=null?record.toString():null;
-           if(this.seen){
-             this.model.orgCategory = '1';
-           }else{
-             this.model.orgCategory = '2';
-           }
+        this.loadNaturalTreeData();
+        this.visible = true;
+          // this.loadNaturalTreeData();
+          // this.model.parentId = record!=null?record.toString():null;
+          //  if(this.seen){
+          //    this.model.orgCategory = '1';
+          //  }else{
+          //    this.model.orgCategory = '2';
+          //  }
       },
       close () {
         this.$emit('close');
@@ -194,6 +221,7 @@
               if(res.success){
                 that.$message.success(res.message);
                 that.loadTreeData();
+                that.loadNaturalTreeData();
                 that.$emit('ok');
               }else{
                 that.$message.warning(res.message);
