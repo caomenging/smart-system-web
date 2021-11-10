@@ -12,12 +12,13 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-<!--      <a-button type="primary" icon="download" @click="handleExportXls('举报信息详情表')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
+      <a-button type="primary" icon="download" @click="handleExportXls('举报信息详情表')">导出</a-button>
+
+<!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>-->
-      <!-- 高级查询区域 -->
-<!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
+      </a-upload>
+      &lt;!&ndash; 高级查询区域 &ndash;&gt;
+      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
@@ -27,7 +28,7 @@
     </div>
 
     <!-- table区域-begin -->
-    <div>
+  <div>
 <!--      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
         <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
@@ -89,7 +90,7 @@
       </a-table>
     </div>
 
-    <smart-reporting-information-details-modal ref="modalForm" @ok="modalFormOk"></smart-reporting-information-details-modal>
+    <smart-reporting-information-detail-modal ref="modalForm" @ok="modalFormOk"></smart-reporting-information-detail-modal>
   </a-card>
 </template>
 
@@ -98,13 +99,13 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartReportingInformationDetailsModal from './modules/SmartReportingInformationDetailsModal'
+  import SmartReportingInformationDetailModal from './modules/SmartReportingInformationDetailModal'
 
   export default {
-    name: 'SmartReportingInformationDetailsList',
+    name: 'SmartReportingInformationDetailList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartReportingInformationDetailsModal
+      SmartReportingInformationDetailModal
     },
     data () {
       return {
@@ -157,21 +158,21 @@
             align:"center",
             dataIndex: 'reportingTime'
           },
-          /*{
+          {
             title: '操作',
             dataIndex: 'action',
             align:"center",
             fixed:"right",
             width:147,
             scopedSlots: { customRender: 'action' }
-          }*/
+          }
         ],
         url: {
-          list: "/smartReportingInformationDetails/smartReportingInformationDetails/list",
-          delete: "/smartReportingInformationDetails/smartReportingInformationDetails/delete",
-          deleteBatch: "/smartReportingInformationDetails/smartReportingInformationDetails/deleteBatch",
-          exportXlsUrl: "/smartReportingInformationDetails/smartReportingInformationDetails/exportXls",
-          importExcelUrl: "smartReportingInformationDetails/smartReportingInformationDetails/importExcel",
+          list: "/smartReportingInformationDetail/smartReportingInformationDetail/list",
+          delete: "/smartReportingInformationDetail/smartReportingInformationDetail/delete",
+          deleteBatch: "/smartReportingInformationDetail/smartReportingInformationDetail/deleteBatch",
+          exportXlsUrl: "/smartReportingInformationDetail/smartReportingInformationDetail/exportXls",
+          importExcelUrl: "smartReportingInformationDetail/smartReportingInformationDetail/importExcel",
 
         },
         dictOptions:{},

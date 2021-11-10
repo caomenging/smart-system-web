@@ -14,7 +14,7 @@
 <script>
   import { getAction } from '@/api/manage'
   export default {
-    //props: ['sex','name'],
+
     data () {
       return {
         url: 'http://localhost:8080/smart-system/qrCode/generate/v3?content=http://localhost:3000/review',
@@ -53,7 +53,8 @@
     mounted() {
       this.initQrCode()
     },
-    created (){
+
+    /*created (){
       console.log('============= online href common props ============= ');
       console.log('props sex: ',this.sex);
       console.log('props name: ',this.name);
@@ -68,6 +69,7 @@
           console.log('$route sex: ', sex);
         }
       }
-    },
+    },*/
+
   }
 </script>

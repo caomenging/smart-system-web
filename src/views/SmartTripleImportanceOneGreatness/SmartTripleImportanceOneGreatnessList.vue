@@ -197,11 +197,6 @@
             dataIndex: 'createTime'
           },
           {
-            title:'删除标志',
-            align:"center",
-            dataIndex: 'delFlag'
-          },
-          {
             title: '操作',
             dataIndex: 'action',
             align:"center",
@@ -248,7 +243,6 @@
          fieldList.push({type:'string',value:'meetingRemarks',text:'备注',dictCode:''})
          fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
          fieldList.push({type:'datetime',value:'createTime',text:'创建时间'})
-         fieldList.push({type:'int',value:'delFlag',text:'删除标志',dictCode:''})
         this.superFieldList = fieldList
       }
     }

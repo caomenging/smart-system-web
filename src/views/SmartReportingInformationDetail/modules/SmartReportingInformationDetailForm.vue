@@ -50,7 +50,7 @@
   import { validateDuplicateValue } from '@/utils/util'
 
   export default {
-    name: 'SmartReportingInformationDetailsForm',
+    name: 'SmartReportingInformationDetailForm',
     components: {
     },
     props: {
@@ -78,14 +78,17 @@
            majorProblem: [
               { required: true, message: '请输入主要问题!'},
            ],
+           contactNumber: [
+              { required: true, message: '请输入联系电话!'},
+           ],
            reportingTime: [
               { required: true, message: '请输入举报时间!'},
            ],
         },
         url: {
-          add: "/smartReportingInformationDetails/smartReportingInformationDetails/add",
-          edit: "/smartReportingInformationDetails/smartReportingInformationDetails/edit",
-          queryById: "/smartReportingInformationDetails/smartReportingInformationDetails/queryById"
+          add: "/smartReportingInformationDetail/smartReportingInformationDetail/add",
+          edit: "/smartReportingInformationDetail/smartReportingInformationDetail/edit",
+          queryById: "/smartReportingInformationDetail/smartReportingInformationDetail/queryById"
         }
       }
     },

@@ -16,7 +16,7 @@
     //props: ['sex','name'],
     data () {
       return {
-        url: 'http://localhost:8080/smart-system/qrCode/generate/v3?content=http://localhost:3000/SmartReportingInformationDetails/SmartReportingInformationDetailsList',
+        url: 'http://localhost:8080/smart-system/qrCode/generate/v3?content=http://localhost:3000/InsertReportingInformation/InsertReportingInformationDetail',
         name: '纠治四风',
         formLayout: 'horizontal',
         model: {},
@@ -32,7 +32,7 @@
         var aa = document.getElementById('aa');
         var bb = aa.getContext('2d');
 
-        bb.fillStyle = '#fff';    //   填充颜色
+        bb.fillStyle = '#fff';    //   填充背景框颜色
         bb.fillRect(0,0,450,470);
 
         var img = new Image;
