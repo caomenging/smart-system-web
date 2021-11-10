@@ -4,6 +4,21 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="所属部门">
+              <a-input placeholder="请输入所属部门" v-model="queryParam.sysOrgCode"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a @click="handleToggleSearch" style="margin-left: 8px">
+                {{ toggleSearchStatus ? '收起' : '展开' }}
+                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
+              </a>
+            </span>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -144,9 +159,14 @@
             }
           },
           {
-            title:'创建人工号',
+            title:'创建人员工号',
             align:"center",
             dataIndex: 'creatorNo'
+          },
+          {
+            title:"所属部门",
+            align:"center",
+            dataIndex:"sysOrgCode"
           },
           {
             title: '操作',
@@ -184,10 +204,12 @@
         let fieldList=[];
          fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
          fieldList.push({type:'datetime',value:'createTime',text:'创建日期'})
+         fieldList.push({type:'string',value:'departId',text:'部门ID',dictCode:''})
          fieldList.push({type:'string',value:'title',text:'标题',dictCode:''})
          fieldList.push({type:'Text',value:'content',text:'正文',dictCode:''})
          fieldList.push({type:'date',value:'supervisionTime',text:'监督检查时间'})
-         fieldList.push({type:'string',value:'creatorNo',text:'创建人工号',dictCode:''})
+         fieldList.push({type:'string',value:'creatorNo',text:'创建人员工号',dictCode:''})
+         fieldList.push({type:'string',value:'sysOrgCode',text:'所属部门',dictCode:''})
         this.superFieldList = fieldList
       }
     }

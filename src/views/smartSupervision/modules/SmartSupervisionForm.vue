@@ -20,8 +20,8 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="创建人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="creatorNo">
-              <a-input v-model="model.creatorNo" placeholder="请输入创建人工号" ></a-input>
+            <a-form-model-item label="创建人员工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="creatorNo">
+              <a-input v-model="model.creatorNo" placeholder="请输入创建人员工号" ></a-input>
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -39,8 +39,7 @@
           :disabled="formDisabled"
           :rowNumber="true"
           :rowSelection="true"
-          :actionButton="true"
-          :rootUrl="rootUrl"/>
+          :actionButton="true"/>
       </a-tab-pane>
     </a-tabs>
   </a-spin>
@@ -60,7 +59,6 @@
     },
     data() {
       return {
-        rootUrl: "/smartSupervision/smartSupervision",
         labelCol: {
           xs: { span: 24 },
           sm: { span: 6 },
@@ -82,6 +80,15 @@
         // 新增时子表默认添加几行空数据
         addDefaultRowNum: 1,
         validatorRules: {
+           title: [
+              { required: true, message: '请输入标题!'},
+           ],
+           supervisionTime: [
+              { required: true, message: '请输入监督检查时间!'},
+           ],
+           creatorNo: [
+              { required: true, message: '请输入创建人员工号!'},
+           ],
         },
         refKeys: ['smartSupervisionAnnex', ],
         tableKeys:['smartSupervisionAnnex', ],
@@ -91,6 +98,14 @@
           loading: false,
           dataSource: [],
           columns: [
+            {
+              title: '上传时间',
+              key: 'createTime',
+              type: FormTypes.datetime,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
+            },
             {
               title: '附件说明',
               key: 'annexDesc',
