@@ -64,11 +64,6 @@
               <j-date placeholder="请选择创建时间" v-model="model.createTime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
             </a-form-model-item>
           </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="删除标志" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="delFlag">
-              <a-input-number v-model="model.delFlag" placeholder="请输入删除标志" style="width: 100%" />
-            </a-form-model-item>
-          </a-col>
         </a-row>
       </a-form-model>
     </j-form-container>
@@ -84,8 +79,7 @@
           :disabled="formDisabled"
           :rowNumber="true"
           :rowSelection="true"
-          :actionButton="true"
-          :rootUrl="rootUrl"/>
+          :actionButton="true"/>
       </a-tab-pane>
     </a-tabs>
   </a-spin>
@@ -105,7 +99,6 @@
     },
     data() {
       return {
-        rootUrl:"/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness",
         labelCol: {
           xs: { span: 24 },
           sm: { span: 6 },
@@ -162,7 +155,6 @@
               type: FormTypes.file,
               token:true,
               responseName:"message",
-              disabled:true,
               width:"200px",
               placeholder: '请选择文件',
               defaultValue:'',
@@ -171,6 +163,16 @@
               title: '上传时间',
               key: 'uploadTime',
               type: FormTypes.datetime,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
+              validateRules: [{ required: true, message: '${title}不能为空' }],
+            },
+            {
+              title: '下载次数',
+              key: 'downloadTimes',
+              type: FormTypes.inputNumber,
+              disabled:true,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
