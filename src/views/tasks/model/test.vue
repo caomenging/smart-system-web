@@ -388,7 +388,7 @@
           getAction(this.url.queryById,params).then(res => {
               if(res.success){
                 this.model = res.result
-                console.log(model)
+                // console.log(model)
               }
             }
           )
