@@ -71,7 +71,16 @@
 
         <!--部门分配-->
         <a-form-model-item label="单位分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">
-          <j-select-depart v-model="model.selecteddeparts" :multi="true" @back="backDepartInfo" :backDepart="true" :treeOpera="true">></j-select-depart>
+          <j-select-depart v-model="model.selecteddeparts" :multi="false" @back="backDepartInfo" :backDepart="true" :treeOpera="true"/>
+          <!--<a-tree-select
+            style="width:100%"
+            :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
+            :treeData="naturalDepartTree"
+            v-model="model.selecteddeparts"
+            placeholder="请选择上级部门"
+            allow-clear
+            tree-default-expand-all>
+          </a-tree-select>-->
         </a-form-model-item>
 
         <!--租户分配-->

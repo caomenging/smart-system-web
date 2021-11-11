@@ -71,12 +71,17 @@
         },
         columns: [
           {
-            title: '用户账号',
+            title: '工号',
+            align: 'center',
+            dataIndex: 'workNo'
+          },
+          {
+            title: '账号',
             align: 'center',
             dataIndex: 'username'
           },
           {
-            title: '用户姓名',
+            title: '姓名',
             align: 'center',
             dataIndex: 'realname'
           },
@@ -99,11 +104,18 @@
             align: 'center',
             dataIndex: 'phone'
           },
-          {
-            title: '部门',
+          {  title: '单位',
             align: 'center',
             dataIndex: 'orgCodeTxt'
-          }
+          },
+          {  title: '职务',
+            align: 'center',
+            dataIndex: 'post_dictText'
+          },
+          {  title: '职级',
+            align: 'center',
+            dataIndex: 'positionRank_dictText'
+          },
         ],
         scrollTrigger: {},
         dataSource: [],
@@ -111,7 +123,7 @@
         selectedRowKeys: [],
         selectUserRows: [],
         selectUserIds: [],
-        title: '根据部门选择用户',
+        title: '根据单位选择用户',
         ipagination: {
           current: 1,
           pageSize: 10,

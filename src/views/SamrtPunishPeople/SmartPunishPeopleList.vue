@@ -5,19 +5,24 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="单位">
-              <j-select-depart placeholder="请选择单位" v-model="queryParam.deptId"/>
+            <a-form-item label="处分人工号">
+              <j-select-user-by-dep placeholder="请选择处分人工号" v-model="queryParam.punishNo" :multi="false" text="work_no" store="work_no" />
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="会议地点">
-              <a-input placeholder="请输入会议地点" v-model="queryParam.location"></a-input>
+            <a-form-item label="单位">
+              <a-input placeholder="请输入单位" v-model="queryParam.departName"></a-input>
             </a-form-item>
           </a-col>
-          <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-item label="会议名称">
-                <a-input placeholder="请输入会议名称" v-model="queryParam.name"></a-input>
+              <a-form-item label="职级">
+                <a-input placeholder="请输入职级" v-model="queryParam.positionRank"></a-input>
+              </a-form-item>
+            </a-col>
+            <template v-if="toggleSearchStatus">
+            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+              <a-form-item label="手机号">
+                <a-input placeholder="请输入手机号" v-model="queryParam.phone"></a-input>
               </a-form-item>
             </a-col>
           </template>
@@ -35,11 +40,11 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('党内谈话表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('处分人员表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -63,15 +68,15 @@
       <a-table
         ref="table"
         size="middle"
+        :scroll="{x:true}"
         bordered
         rowKey="id"
-        class="j-table-force-nowrap"
-        :scroll="{x:true}"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        class="j-table-force-nowrap"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -116,25 +121,27 @@
       </a-table>
     </div>
 
-    <smart-inner-party-talk-modal ref="modalForm" @ok="modalFormOk"/>
+    <smart-punish-people-modal ref="modalForm" @ok="modalFormOk"></smart-punish-people-modal>
   </a-card>
 </template>
 
 <script>
 
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartInnerPartyTalkModal from './modules/SmartInnerPartyTalkModal'
   import '@/assets/less/TableExpand.less'
+  import { mixinDevice } from '@/utils/mixin'
+  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import SmartPunishPeopleModal from './modules/SmartPunishPeopleModal'
+  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
 
   export default {
-    name: "SmartInnerParty",
-    mixins:[JeecgListMixin],
+    name: 'SmartPunishPeopleList',
+    mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartInnerPartyTalkModal
+      SmartPunishPeopleModal
     },
     data () {
       return {
-        description: '党内谈话表管理页面',
+        description: '处分人员表管理页面',
         // 表头
         columns: [
           {
@@ -148,27 +155,52 @@
             }
           },
           {
-            title:'单位',
+            title:'处分人工号',
             align:"center",
-            dataIndex: 'deptId_dictText'
+            dataIndex: 'punishNo'
           },
           {
-            title:'会议时间',
+            title:'处分人姓名',
             align:"center",
-            dataIndex: 'meetTime',
+            dataIndex: 'punishName'
+          },
+          /*{
+            title:'单位ID',
+            align:"center",
+            dataIndex: 'departId'
+          },*/
+          {
+            title:'单位',
+            align:"center",
+            dataIndex: 'departName'
+          },
+          {
+            title:'职务',
+            align:"center",
+            dataIndex: 'position'
+          },
+          {
+            title:'职级',
+            align:"center",
+            dataIndex: 'positionRank'
+          },
+          {
+            title:'手机号',
+            align:"center",
+            dataIndex: 'phone'
+          },
+          {
+            title:'处分类型',
+            align:"center",
+            dataIndex: 'punishType_dictText'
+          },
+          {
+            title:'解除处分时间',
+            align:"center",
+            dataIndex: 'removeTime',
             customRender:function (text) {
               return !text?"":(text.length>10?text.substr(0,10):text)
             }
-          },
-          {
-            title:'会议地点',
-            align:"center",
-            dataIndex: 'location'
-          },
-          {
-            title:'会议名称',
-            align:"center",
-            dataIndex: 'name'
           },
           {
             title: '操作',
@@ -176,15 +208,15 @@
             align:"center",
             fixed:"right",
             width:147,
-            scopedSlots: { customRender: 'action' },
+            scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
-          list: "/SmartInnerPartyTalk/smartInnerPartyTalk/list",
-          delete: "/SmartInnerPartyTalk/smartInnerPartyTalk/delete",
-          deleteBatch: "/SmartInnerPartyTalk/smartInnerPartyTalk/deleteBatch",
-          exportXlsUrl: "/SmartInnerPartyTalk/smartInnerPartyTalk/exportXls",
-          importExcelUrl: "SmartInnerPartyTalk/smartInnerPartyTalk/importExcel",
+          list: "/SmartPunishPeople/smartPunishPeople/list",
+          delete: "/SmartPunishPeople/smartPunishPeople/delete",
+          deleteBatch: "/SmartPunishPeople/smartPunishPeople/deleteBatch",
+          exportXlsUrl: "/SmartPunishPeople/smartPunishPeople/exportXls",
+          importExcelUrl: "SmartPunishPeople/smartPunishPeople/importExcel",
           
         },
         dictOptions:{},
@@ -192,31 +224,30 @@
       }
     },
     created() {
-      this.getSuperFieldList();
+    this.getSuperFieldList();
     },
     computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      }
+      },
     },
     methods: {
       initDictConfig(){
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'sel_depart',value:'deptId',text:'单位'})
-         fieldList.push({type:'date',value:'meetTime',text:'会议时间'})
-         fieldList.push({type:'string',value:'location',text:'会议地点',dictCode:''})
-         fieldList.push({type:'string',value:'name',text:'会议名称',dictCode:''})
-         fieldList.push({type:'string',value:'hostNo',text:'主持人工号',dictCode:''})
-         fieldList.push({type:'string',value:'talkNo',text:'受约谈函询人工号',dictCode:''})
-         fieldList.push({type:'string',value:'inquirNo',text:'受诫勉谈话人工号',dictCode:''})
-         fieldList.push({type:'string',value:'punishNo',text:'受党纪处分人工号',dictCode:''})
-         fieldList.push({type:'string',value:'abs',text:'会议摘要',dictCode:''})
-         fieldList.push({type:'string',value:'recorderNo',text:'记录人工号',dictCode:''})
-         fieldList.push({type:'string',value:'createrNo',text:'创建人工号',dictCode:''})
+        fieldList.push({type:'sel_user',value:'punishNo',text:'处分人工号'})
+        fieldList.push({type:'string',value:'punishName',text:'处分人姓名',dictCode:''})
+        fieldList.push({type:'string',value:'departId',text:'单位ID',dictCode:''})
+        fieldList.push({type:'string',value:'departName',text:'单位',dictCode:''})
+        fieldList.push({type:'string',value:'position',text:'职务',dictCode:''})
+        fieldList.push({type:'string',value:'positionRank',text:'职级',dictCode:''})
+        fieldList.push({type:'string',value:'phone',text:'手机号',dictCode:''})
+        fieldList.push({type:'string',value:'punishType',text:'处分类型',dictCode:'punish_type'})
+        fieldList.push({type:'date',value:'removeTime',text:'解除处分时间'})
         this.superFieldList = fieldList
-      }
+      },
+
     }
   }
 </script>

@@ -2,11 +2,11 @@
   <div>
     <a-input-search
       v-model="textVals"
-      placeholder="请先选择用户"
+      placeholder="请选择人员"
       readOnly
       unselectable="on"
       @search="onSearchDepUser">
-      <a-button slot="enterButton" :disabled="disabled">选择用户</a-button>
+      <a-button slot="enterButton" :disabled="disabled">选择人员</a-button>
     </a-input-search>
     <j-select-user-by-dep-modal
       ref="selectModal"
@@ -16,12 +16,14 @@
       :user-ids="value"
       :store="storeField"
       :text="textField"
-      @initComp="initComp"/>
+      @initComp="initComp"
+    />
   </div>
 </template>
 
 <script>
   import JSelectUserByDepModal from './modal/JSelectUserByDepModal'
+  // 下划线转换驼峰
   import { underLinetoHump } from '@/components/_util/StringUtil'
 
   export default {
@@ -63,12 +65,18 @@
         type: String,
         default: 'realname',
         required: false
+      },
+      info: {
+        type: Object,
+        default: '',
+        required: false
       }
     },
     data() {
       return {
         storeVals: '', //[key values]
-        textVals: '' //[label values]
+        textVals: '', //[label values]
+        info:''
       }
     },
     computed:{
@@ -112,6 +120,7 @@
                 text: arr2[i]
               })
             }
+            console.log(info)
             this.$emit('back', info)
           }
         }
@@ -131,9 +140,10 @@
             temp1.push(item[this.storeField])
             temp2.push(item[this.textField])
           }
-          this.storeVals = temp1.join(',')
-          this.textVals = temp2.join(',')
+          this.storeVals = temp1.join(',')//存储值
+          this.textVals = temp2.join(',')//显示值
         }
+        //子组件使用this.$emit()向父组件传值
         this.$emit("change", this.storeVals)
       }
     }
