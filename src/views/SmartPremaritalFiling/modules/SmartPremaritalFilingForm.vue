@@ -30,11 +30,6 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="工作单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="workUnit">
-              <a-input v-model="model.workUnit" placeholder="请输入工作单位" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
             <a-form-model-item label="职务" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="post">
               <j-dict-select-tag type="list" v-model="model.post" dictCode="sys_position,name,code" placeholder="请选择职务" />
             </a-form-model-item>
@@ -154,6 +149,11 @@
               <a-input v-model="model.contactNumber" placeholder="请输入联系电话" ></a-input>
             </a-form-model-item>
           </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="删除状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="delFlag">
+              <a-input-number v-model="model.delFlag" placeholder="请输入删除状态" style="width: 100%" />
+            </a-form-model-item>
+          </a-col>
         </a-row>
       </a-form-model>
     </j-form-container>
@@ -228,9 +228,6 @@
            ],
            politicCou: [
               { required: true, message: '请输入政治面貌!'},
-           ],
-           workUnit: [
-              { required: true, message: '请输入工作单位!'},
            ],
            post: [
               { required: true, message: '请输入职务!'},
@@ -325,9 +322,11 @@
             {
               title: '附件文件路径',
               key: 'appFilePath',
-              type: FormTypes.input,
+              type: FormTypes.file,
+              token:true,
+              responseName:"message",
               width:"200px",
-              placeholder: '请输入${title}',
+              placeholder: '请选择文件',
               defaultValue:'',
               validateRules: [{ required: true, message: '${title}不能为空' }],
             },
@@ -348,7 +347,6 @@
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
             },
           ]
         },

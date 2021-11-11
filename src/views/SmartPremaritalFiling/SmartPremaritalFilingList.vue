@@ -5,8 +5,8 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="工作单位">
-              <a-input placeholder="请输入工作单位" v-model="queryParam.workUnit"></a-input>
+            <a-form-item label="单位ID">
+              <a-input placeholder="请输入单位ID" v-model="queryParam.departId"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -162,11 +162,6 @@
             dataIndex: 'politicCou_dictText'
           },
           {
-            title:'工作单位',
-            align:"center",
-            dataIndex: 'workUnit'
-          },
-          {
             title:'职务',
             align:"center",
             dataIndex: 'post_dictText'
@@ -296,6 +291,11 @@
             dataIndex: 'contactNumber'
           },
           {
+            title:'删除状态',
+            align:"center",
+            dataIndex: 'delFlag'
+          },
+          {
             title: '操作',
             dataIndex: 'action',
             align:"center",
@@ -334,7 +334,7 @@
          fieldList.push({type:'string',value:'peopleSex',text:'人员性别',dictCode:'	sex'})
          fieldList.push({type:'int',value:'peopleAge',text:'人员年龄',dictCode:''})
          fieldList.push({type:'string',value:'politicCou',text:'政治面貌',dictCode:'political_status'})
-         fieldList.push({type:'string',value:'workUnit',text:'工作单位',dictCode:''})
+         fieldList.push({type:'string',value:'departId',text:'单位ID',dictCode:''})
          fieldList.push({type:'string',value:'post',text:'职务',dictCode:'sys_position,name,code'})
          fieldList.push({type:'string',value:'postRank',text:'职级',dictCode:'position_rank'})
          fieldList.push({type:'string',value:'spoName',text:'配偶姓名',dictCode:''})
@@ -359,6 +359,7 @@
          fieldList.push({type:'string',value:'otherMattersExp',text:'其他需要说明的事情',dictCode:''})
          fieldList.push({type:'date',value:'reportTime',text:'报告时间'})
          fieldList.push({type:'string',value:'contactNumber',text:'联系电话',dictCode:''})
+         fieldList.push({type:'int',value:'delFlag',text:'删除状态',dictCode:''})
         this.superFieldList = fieldList
       }
     }
