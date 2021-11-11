@@ -5,22 +5,10 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="单位">
-              <j-select-depart placeholder="请选择单位"  v-model="queryParam.departId" customReturnField='id' :multi="false" :treeOpera="true"></j-select-depart>
+            <a-form-item label="banner备注标题">
+              <a-input placeholder="请输入banner备注标题" v-model="queryParam.title"></a-input>
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="标题">
-              <a-input placeholder="请输入标题" v-model="queryParam.title"></a-input>
-            </a-form-item>
-          </a-col>
-          <template v-if="toggleSearchStatus">
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-item label="收支类型">
-                <a-input placeholder="请输入收支类型" v-model="queryParam.financeType"></a-input>
-              </a-form-item>
-            </a-col>
-          </template>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
@@ -39,7 +27,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('8项规定财物收支表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('app功能模块')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -63,15 +51,15 @@
       <a-table
         ref="table"
         size="middle"
+        :scroll="{x:true}"
         bordered
         rowKey="id"
-        class="j-table-force-nowrap"
-        :scroll="{x:true}"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        class="j-table-force-nowrap"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -116,25 +104,26 @@
       </a-table>
     </div>
 
-    <smart-finance-result-modal ref="modalForm" @ok="modalFormOk"/>
+    <banner-modal ref="modalForm" @ok="modalFormOk"></banner-modal>
   </a-card>
 </template>
 
 <script>
 
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartFinanceResultModal from './modules/SmartFinanceResultModal'
   import '@/assets/less/TableExpand.less'
+  import { mixinDevice } from '@/utils/mixin'
+  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import BannerModal from './modules/BannerModal'
 
   export default {
-    name: "SmartFinanceResultList",
-    mixins:[JeecgListMixin],
+    name: 'BannerList',
+    mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartFinanceResultModal
+      BannerModal
     },
     data () {
       return {
-        description: '8项规定财物收支表管理页面',
+        description: 'app功能模块管理页面',
         // 表头
         columns: [
           {
@@ -148,34 +137,21 @@
             }
           },
           {
-            title:'单位',
-            align:"center",
-            dataIndex: 'departId'
-          },
-          {
-            title:'标题',
+            title:'banner备注标题',
             align:"center",
             dataIndex: 'title'
           },
           {
-            title:'收支类型',
+            title:'图片链接',
             align:"center",
-            dataIndex: 'financeType'
+            dataIndex: 'url',
+            scopedSlots: {customRender: 'imgSlot'}
           },
           {
-            title:'收支时间',
+            title:'排序',
             align:"center",
-            dataIndex: 'financeTime'
-          },
-          {
-            title:'创建时间',
-            align:"center",
-            dataIndex: 'createTime'
-          },
-          {
-            title:'创建人',
-            align:"center",
-            dataIndex: 'createBy'
+            sorter: true,
+            dataIndex: 'sort'
           },
           {
             title: '操作',
@@ -183,40 +159,37 @@
             align:"center",
             fixed:"right",
             width:147,
-            scopedSlots: { customRender: 'action' },
+            scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
-          list: "/smartFinanceResult/smartFinanceResult/list",
-          delete: "/smartFinanceResult/smartFinanceResult/delete",
-          deleteBatch: "/smartFinanceResult/smartFinanceResult/deleteBatch",
-          exportXlsUrl: "/smartFinanceResult/smartFinanceResult/exportXls",
-          importExcelUrl: "smartFinanceResult/smartFinanceResult/importExcel",
-
+          list: "/app/banner/list",
+          delete: "/app/banner/delete",
+          deleteBatch: "/app/banner/deleteBatch",
+          exportXlsUrl: "/app/banner/exportXls",
+          importExcelUrl: "app/banner/importExcel",
+          
         },
         dictOptions:{},
         superFieldList:[],
       }
     },
     created() {
-      this.getSuperFieldList();
+    this.getSuperFieldList();
     },
     computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      }
+      },
     },
     methods: {
       initDictConfig(){
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'departId',text:'单位',dictCode:''})
-         fieldList.push({type:'string',value:'title',text:'标题',dictCode:''})
-         fieldList.push({type:'string',value:'financeType',text:'收支类型',dictCode:''})
-         fieldList.push({type:'datetime',value:'financeTime',text:'收支时间'})
-         fieldList.push({type:'datetime',value:'createTime',text:'创建时间'})
-         fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
+        fieldList.push({type:'string',value:'title',text:'banner备注标题',dictCode:''})
+        fieldList.push({type:'string',value:'url',text:'图片链接',dictCode:''})
+        fieldList.push({type:'string',value:'sort',text:'排序',dictCode:''})
         this.superFieldList = fieldList
       }
     }

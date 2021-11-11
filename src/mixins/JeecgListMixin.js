@@ -224,6 +224,13 @@ export const JeecgListMixin = {
       this.$refs.modalForm.title = "编辑";
       this.$refs.modalForm.disableSubmit = false;
     },
+    // 添加审核表单
+    handleVerify: function (record) {
+      this.$refs.modalForm.edit(record);
+      this.$refs.modalForm.title = "审核";
+      this.$refs.modalForm.disableSubmit = true;
+      this.$refs.modalForm.verifyDisableSubmit = false;
+    },
     handleAdd: function () {
       this.$refs.modalForm.add();
       this.$refs.modalForm.title = "新增";
@@ -248,12 +255,14 @@ export const JeecgListMixin = {
       return fields.split(',')[0]
     },
     modalFormOk() {
+      console.log('aaa')
       // 新增/修改 成功时，重载列表
       this.loadData();
       //清空列表选中
       this.onClearSelected()
     },
     handleDetail:function(record){
+      // console.log(record)
       this.$refs.modalForm.edit(record);
       this.$refs.modalForm.title="详情";
       this.$refs.modalForm.disableSubmit = true;

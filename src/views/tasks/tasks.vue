@@ -80,11 +80,11 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleDetail(record)">详情</a>
+          <a @click="aa(record)">详情</a>
           
           <a-divider type="vertical" />
 
-          <a @click="handleEdit(record)">审核</a>
+          <a @click="handleVerify(record)">审核</a>
 
           <!-- <a-divider type="vertical" /> -->
           <!-- <a-dropdown>
@@ -103,6 +103,10 @@
         </span>
       </a-table>
     </div>
+    <tasks-modal 
+      ref="modalForm" 
+      @ok="modalFormOk">
+    </tasks-modal>
   </a-card>
 </template>
 
@@ -111,14 +115,6 @@
   import TasksModal from './modules/TasksModal'
 //   import SmartPremaritalFilingModal from './modules/SmartPremaritalFilingModal'
   import '@/assets/less/TableExpand.less'
-
-  const dataSource = [
-    {
-      type: '婚前报备',
-      depart: 'xx单位',
-      date: '2021-11-02'
-    }
-  ]
 
   export default {
     name: "TaskList",
@@ -129,7 +125,6 @@
     data () {
       return {
         description: '待审核任务列表',
-        dataSource,
         // 表头
         columns: [
           {
@@ -153,6 +148,21 @@
             dataIndex: 'sysOrgCode'
           },
           {
+            title:'单位类型',
+            align:"center",
+            dataIndex: 'departType'
+          },
+          {
+            title:'填报人',
+            align:"center",
+            dataIndex: 'fillPerson'
+          },
+          {
+            title:'审核状态',
+            align:"center",
+            dataIndex: 'flowStatus'
+          },
+          {
             title:'填报日期',
             align:"center",
             dataIndex: 'createTime'
@@ -164,13 +174,22 @@
             fixed:"right",
             width:147,
             scopedSlots: { customRender: 'action' },
-          }
+          },
         ],
         url: {
           list: "/tasks/smartVerifyTask/list",
         },
+        dictOptions:{},
+        superFieldList:[],
       }
     },
+    methods: {
+      aa(record) {
+        console.log(record.flowNo)
+        
+        this.handleDetail(record)
+      }
+    }
   }
 </script>
 <style scoped>
