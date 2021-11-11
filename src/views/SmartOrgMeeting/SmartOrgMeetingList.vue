@@ -6,7 +6,7 @@
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="单位">
-              <a-input placeholder="请输入单位" v-model="queryParam.departId"></a-input>
+              <j-select-depart placeholder="请选择单位"  v-model="queryParam.departId" customReturnField='id' :multi="false" :treeOpera="true"></j-select-depart>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -28,7 +28,7 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
@@ -210,7 +210,7 @@
           deleteBatch: "/smartOrgMeeting/smartOrgMeeting/deleteBatch",
           exportXlsUrl: "/smartOrgMeeting/smartOrgMeeting/exportXls",
           importExcelUrl: "smartOrgMeeting/smartOrgMeeting/importExcel",
-          
+
         },
         dictOptions:{},
         superFieldList:[],
