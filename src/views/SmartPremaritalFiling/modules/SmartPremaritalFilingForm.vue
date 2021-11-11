@@ -383,6 +383,7 @@
         })
         // 加载子表数据
         if (this.model.id) {
+          console.log(this.model)
           let params = { id: this.model.id }
           this.requestSubTableData(this.url.smartPremaritalFilingApp.list, params, this.smartPremaritalFilingAppTable)
         }
