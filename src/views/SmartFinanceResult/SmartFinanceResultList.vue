@@ -6,7 +6,7 @@
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="单位">
-              <j-select-depart placeholder="请选择单位"  v-model="queryParam.departId" customReturnField='id' :multi="false"   :treeOpera="true"></j-select-depart>
+              <a-input placeholder="请输入单位" v-model="queryParam.departId"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -35,7 +35,7 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-
+    
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
@@ -178,11 +178,6 @@
             dataIndex: 'createBy'
           },
           {
-            title:'删除状态（0，正常，1已删除）',
-            align:"center",
-            dataIndex: 'delFlag'
-          },
-          {
             title: '操作',
             dataIndex: 'action',
             align:"center",
@@ -197,7 +192,7 @@
           deleteBatch: "/smartFinanceResult/smartFinanceResult/deleteBatch",
           exportXlsUrl: "/smartFinanceResult/smartFinanceResult/exportXls",
           importExcelUrl: "smartFinanceResult/smartFinanceResult/importExcel",
-
+          
         },
         dictOptions:{},
         superFieldList:[],
@@ -222,7 +217,6 @@
          fieldList.push({type:'datetime',value:'financeTime',text:'收支时间'})
          fieldList.push({type:'datetime',value:'createTime',text:'创建时间'})
          fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
-         fieldList.push({type:'int',value:'delFlag',text:'删除状态（0，正常，1已删除）',dictCode:''})
         this.superFieldList = fieldList
       }
     }
