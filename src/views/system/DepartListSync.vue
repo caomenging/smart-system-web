@@ -82,6 +82,13 @@
                 <a-tree-select style="width:100%" :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"  :treeData="treeData" :disabled="disable" v-model="model.parentId"  placeholder="无">
                 </a-tree-select>
               </a-form-model-item>
+<!--              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="上级业务部门" >-->
+<!--                <a-tree-select style="width:100%" :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"  :treeData="treeData" :disabled="disable" v-model="model.workParentId"  placeholder="无">-->
+<!--                </a-tree-select>-->
+<!--              </a-form-model-item>-->
+              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" :hidden="seen" label="上级业务部门" hasFeedback>
+                <j-select-depart v-model="model.workParentId" :multi="true" @back="backDepartInfo" :backDepart="true" :treeOpera="true" :disabled="disable">></j-select-depart>
+              </a-form-model-item>
               <a-form-model-item  :labelCol="labelCol" :wrapperCol="wrapperCol" label="机构编码" prop="orgCode">
                 <a-input disabled placeholder="请输入机构编码" v-model="model.orgCode"/>
               </a-form-model-item>
@@ -89,7 +96,7 @@
                 <template v-if="orgCategoryDisabled">
                   <a-radio-group v-model="model.orgCategory" placeholder="请选择机构类型">
                     <a-radio value="1">
-                      公司
+                      单位
                     </a-radio>
                   </a-radio-group>
                 </template>
@@ -428,6 +435,7 @@
         this.model = this.currSelected
         this.selectedKeys = [record.key]
         this.model.parentId = record.parentId
+        this.model.workParentId = record.workParentId
         this.setValuesToForm(record)
         this.$refs.departAuth.show(record.id);
 

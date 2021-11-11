@@ -5,8 +5,7 @@
 
         <!-- 按钮操作区域 -->
         <a-row style="margin-left: 14px">
-          <a-button @click="handleAdd(1)" type="primary">添加部门</a-button>
-          <a-button @click="handleAdd(2)" type="primary">添加下级</a-button>
+          <a-button @click="handleAdd(2)" type="primary">添加机构</a-button>
           <a-button type="primary" icon="download" @click="handleExportXls('部门信息')">导出</a-button>
           <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
             <a-button type="primary" icon="import">导入</a-button>
@@ -23,14 +22,15 @@
           </a-alert>
           <a-input-search @search="onSearch" style="width:100%;margin-top: 10px" placeholder="请输入部门名称"/>
           <!-- 树-->
-          <a-col :md="10" :sm="24">
+
+          <a-col :md="24" :sm="24">
             <template>
               <a-dropdown :trigger="[this.dropTrigger]" @visibleChange="dropStatus">
                <span style="user-select: none">
             <a-tree
               checkable
               multiple
-              @select="onSelect"
+              @select="onSelect"a
               @check="onCheck"
               @rightClick="rightHandle"
               :selectedKeys="selectedKeys"
@@ -38,18 +38,47 @@
               :treeData="departTree"
               :checkStrictly="checkStrictly"
               :expandedKeys="iExpandedKeys"
-              :autoExpandParent="autoExpandParent"
               @expand="onExpand"/>
                 </span>
                 <!--新增右键点击事件,和增加添加和删除功能-->
                 <a-menu slot="overlay">
-                  <a-menu-item @click="handleAdd(3)" key="1">添加</a-menu-item>
+<!--                  <a-menu-item @click="handleAdd(3)" key="1">添加</a-menu-item>-->
                   <a-menu-item @click="handleDelete" key="2">删除</a-menu-item>
                   <a-menu-item @click="closeDrop" key="3">取消</a-menu-item>
                 </a-menu>
               </a-dropdown>
             </template>
           </a-col>
+
+          <!-- 自然层级树-->
+
+          <a-col :md="24" :sm="24">
+             <template>
+             <a-dropdown :trigger="[this.dropTrigger]" @visibleChange="dropStatus">
+               <span >
+            <a-tree
+              checkable
+              multiple
+              @select="onSelect"a
+              @check="onCheck"
+              @rightClick="rightHandle"
+              :selectedKeys="selectedKeys"
+              :checkedKeys="checkedKeys"
+              :treeData="naturalDepartTree"
+              :checkStrictly="checkStrictly"
+              :expandedKeys="iExpandedKeys"
+              @expand="onExpand"/>
+                  </span>
+                 <!--新增右键点击事件,和增加添加和删除功能-->
+                <a-menu slot="overlay">
+<!--                  <a-menu-item @click="handleAdd(3)" key="1">添加</a-menu-item>-->
+                  <a-menu-item @click="handleDelete" key="2">删除</a-menu-item>
+                  <a-menu-item @click="closeDrop" key="3">取消</a-menu-item>
+                </a-menu>
+              </a-dropdown>
+              </template>
+           </a-col>
+
         </div>
       </a-card>
       <!---- author:os_chengtgen -- date:20190827 --  for:切换父子勾选模式 =======------>
@@ -70,6 +99,7 @@
       </div>
       <!---- author:os_chengtgen -- date:20190827 --  for:切换父子勾选模式 =======------>
     </a-col>
+
     <a-col :md="12" :sm="24">
       <a-tabs defaultActiveKey="1">
         <a-tab-pane tab="基本信息" key="1" >
@@ -78,38 +108,53 @@
               <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departName" label="机构名称">
                 <a-input placeholder="请输入机构/部门名称" v-model="model.departName" />
               </a-form-model-item>
-              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="上级部门">
+              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="上级业务部门">
                 <a-tree-select
                   style="width:100%"
                   :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
                   :treeData="treeData"
-                  :disabled="disable"
                   v-model="model.parentId"
-                  placeholder="无">
+                  placeholder="无"
+                  allow-clear
+                  tree-default-expand-all>
+                </a-tree-select>
+              </a-form-model-item>
+              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="上级部门">
+                <a-tree-select
+                  style="width:100%"
+                  :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
+                  :treeData="naturalTreeData"
+                  v-model="model.businessParentId"
+                  placeholder="无"
+                  allow-clear
+                  tree-default-expand-all>
                 </a-tree-select>
               </a-form-model-item>
               <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCode" label="机构编码">
-                <a-input disabled placeholder="请输入机构编码" v-model="model.orgCode" />
+                <a-input disabled placeholder="无" v-model="model.orgCode" />
               </a-form-model-item>
-              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCategory" label="机构类型">
-                <template v-if="orgCategoryDisabled">
-                  <a-radio-group v-model="model.orgCategory" placeholder="请选择机构类型">
-                    <a-radio value="1">
-                      公司
-                    </a-radio>
-                  </a-radio-group>
-                </template>
-                <template v-else>
-                  <a-radio-group v-model="model.orgCategory" placeholder="请选择机构类型">
-                    <a-radio value="2">
-                      部门
-                    </a-radio>
-                    <a-radio value="3">
-                      岗位
-                    </a-radio>
-                  </a-radio-group>
-                </template>
+              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="机构类型">
+                <a-input placeholder="无" v-model="model.departType" />
               </a-form-model-item>
+<!--              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCategory" label="机构类型">-->
+<!--                <template v-if="orgCategoryDisabled">-->
+<!--                  <a-radio-group v-model="model.orgCategory" placeholder="请选择机构类型">-->
+<!--                    <a-radio value="1">-->
+<!--                      公司-->
+<!--                    </a-radio>-->
+<!--                  </a-radio-group>-->
+<!--                </template>-->
+<!--                <template v-else>-->
+<!--                  <a-radio-group v-model="model.orgCategory" placeholder="请选择机构类型">-->
+<!--                    <a-radio value="2">-->
+<!--                      部门-->
+<!--                    </a-radio>-->
+<!--                    <a-radio value="3">-->
+<!--                      岗位-->
+<!--                    </a-radio>-->
+<!--                  </a-radio-group>-->
+<!--                </template>-->
+<!--              </a-form-model-item>-->
               <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="排序">
                 <a-input-number v-model="model.departOrder" />
               </a-form-model-item>
@@ -140,15 +185,17 @@
       </a-tabs>
 
     </a-col>
-    <depart-modal ref="departModal" @ok="loadTree"></depart-modal>
+    <depart-modal ref="departModal" @ok="loadData" ></depart-modal>
+
   </a-row>
 </template>
 <script>
   import DepartModal from './modules/DepartModal'
-  import {queryDepartTreeList, searchByKeywords, deleteByDepartId} from '@/api/api'
+  import {queryDepartTreeList,searchByKeywords, deleteByDepartId, queryNaturalDepartTreeList} from '@/api/api'
   import {httpAction, deleteAction} from '@/api/manage'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import DepartAuthModal from './modules/DepartAuthModal'
+
   // 表头
   const columns = [
     {
@@ -204,8 +251,10 @@
         currFlowName: '',
         disable: true,
         treeData: [],
+        naturalTreeData: [],
         visible: false,
         departTree: [],
+        naturalDepartTree: [],
         rightClickSelectedKey: '',
         rightClickSelectedOrgCode: '',
         hiding: true,
@@ -258,9 +307,11 @@
         this.refresh();
       },
       loadTree() {
+        this.loading = true;
         var that = this
         that.treeData = []
         that.departTree = []
+
         queryDepartTreeList().then((res) => {
           if (res.success) {
             //部门全选后，再添加部门，选中数量增多
@@ -273,8 +324,33 @@
               that.getAllKeys(temp);
               // console.log(temp.id)
             }
-            this.loading = false
+            // this.loading = false
           }
+          this.loading = false;
+        })
+
+      },
+      loadNaturalTree() {
+        var that = this
+        this.loading = true;
+        that.naturalTreeData = []
+        that.naturalDepartTree = []
+        queryNaturalDepartTreeList().then((result) => {
+          if (result.success) {
+            //部门全选后，再添加部门，选中数量增多
+            // this.allTreeKeys = [];
+            for (let j = 0; j < result.result.length; j++) {
+              let temp2 = result.result[j]
+              that.naturalTreeData.push(temp2)
+              that.naturalDepartTree.push(temp2)
+              // that.setThisExpandedKeys(temp2)
+              // that.getAllKeys(temp2);
+              // console.log(temp.id)
+
+            }
+            // this.loading = false
+          }
+          this.loading = false;
         })
       },
       setThisExpandedKeys(node) {
@@ -288,6 +364,7 @@
       refresh() {
         this.loading = true
         this.loadTree()
+        this.loadNaturalTree()
       },
       // 右键操作方法
       rightHandle(node) {
@@ -365,6 +442,7 @@
       },
       nodeModalOk() {
         this.loadTree()
+        this.loadNaturalTree()
       },
       nodeModalClose() {
       },
@@ -461,12 +539,13 @@
           this.$refs.departModal.add()
           this.$refs.departModal.title = '新增'
         } else if (num == 2) {
-          let key = this.currSelected.key
-          if (!key) {
-            this.$message.warning('请先点击选中上级部门！')
-            return false
-          }
-          this.$refs.departModal.add(this.selectedKeys)
+          // let key = this.currSelected.key
+          // if (!key) {
+          //   this.$message.warning('请先点击选中上级部门！')
+          //   return false
+          // }
+          // this.$refs.departModal.add(this.selectedKeys)
+          this.$refs.departModal.add()
           this.$refs.departModal.title = '新增'
         } else {
           this.$refs.departModal.add(this.rightClickSelectedKey)
@@ -555,7 +634,7 @@
     created() {
       this.currFlowId = this.$route.params.id
       this.currFlowName = this.$route.params.name
-      // this.loadTree()
+      // this.loadData()
     },
 
   }

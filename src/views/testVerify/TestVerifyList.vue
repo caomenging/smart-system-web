@@ -4,30 +4,15 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="所属部门">
-              <a-input placeholder="请输入所属部门" v-model="queryParam.sysOrgCode"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a @click="handleToggleSearch" style="margin-left: 8px">
-                {{ toggleSearchStatus ? '收起' : '展开' }}
-                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>
-            </span>
-          </a-col>
         </a-row>
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('八项规定监督检查表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('审核测试')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -51,15 +36,15 @@
       <a-table
         ref="table"
         size="middle"
+        :scroll="{x:true}"
         bordered
         rowKey="id"
-        class="j-table-force-nowrap"
-        :scroll="{x:true}"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        class="j-table-force-nowrap"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -104,25 +89,26 @@
       </a-table>
     </div>
 
-    <smart-supervision-modal ref="modalForm" @ok="modalFormOk"/>
+    <test-verify-modal ref="modalForm" @ok="modalFormOk"></test-verify-modal>
   </a-card>
 </template>
 
 <script>
 
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartSupervisionModal from './modules/SmartSupervisionModal'
   import '@/assets/less/TableExpand.less'
+  import { mixinDevice } from '@/utils/mixin'
+  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import TestVerifyModal from './modules/TestVerifyModal'
 
   export default {
-    name: "SmartSupervisionList",
-    mixins:[JeecgListMixin],
+    name: 'TestVerifyList',
+    mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartSupervisionModal
+      TestVerifyModal
     },
     data () {
       return {
-        description: '八项规定监督检查表管理页面',
+        description: '审核测试管理页面',
         // 表头
         columns: [
           {
@@ -136,37 +122,22 @@
             }
           },
           {
-            title:'创建人',
+            title:'结婚时间',
             align:"center",
-            dataIndex: 'createBy'
-          },
-          {
-            title:'创建日期',
-            align:"center",
-            dataIndex: 'createTime'
-          },
-          {
-            title:'标题',
-            align:"center",
-            dataIndex: 'title'
-          },
-          {
-            title:'监督检查时间',
-            align:"center",
-            dataIndex: 'supervisionTime',
+            dataIndex: 'marriageTime',
             customRender:function (text) {
               return !text?"":(text.length>10?text.substr(0,10):text)
             }
           },
           {
-            title:'创建人员工号',
+            title:'地点',
             align:"center",
-            dataIndex: 'creatorNo'
+            dataIndex: 'location'
           },
           {
-            title:"所属部门",
+            title:'理由',
             align:"center",
-            dataIndex:"sysOrgCode"
+            dataIndex: 'reason'
           },
           {
             title: '操作',
@@ -174,15 +145,15 @@
             align:"center",
             fixed:"right",
             width:147,
-            scopedSlots: { customRender: 'action' },
+            scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
-          list: "/smartSupervision/smartSupervision/list",
-          delete: "/smartSupervision/smartSupervision/delete",
-          deleteBatch: "/smartSupervision/smartSupervision/deleteBatch",
-          exportXlsUrl: "/smartSupervision/smartSupervision/exportXls",
-          importExcelUrl: "smartSupervision/smartSupervision/importExcel",
+          list: "/testVerify/testVerify/list",
+          delete: "/testVerify/testVerify/delete",
+          deleteBatch: "/testVerify/testVerify/deleteBatch",
+          exportXlsUrl: "/testVerify/testVerify/exportXls",
+          importExcelUrl: "testVerify/testVerify/importExcel",
           
         },
         dictOptions:{},
@@ -190,26 +161,21 @@
       }
     },
     created() {
-      this.getSuperFieldList();
+    this.getSuperFieldList();
     },
     computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      }
+      },
     },
     methods: {
       initDictConfig(){
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
-         fieldList.push({type:'datetime',value:'createTime',text:'创建日期'})
-         fieldList.push({type:'string',value:'departId',text:'部门ID',dictCode:''})
-         fieldList.push({type:'string',value:'title',text:'标题',dictCode:''})
-         fieldList.push({type:'Text',value:'content',text:'正文',dictCode:''})
-         fieldList.push({type:'date',value:'supervisionTime',text:'监督检查时间'})
-         fieldList.push({type:'string',value:'creatorNo',text:'创建人员工号',dictCode:''})
-         fieldList.push({type:'string',value:'sysOrgCode',text:'所属部门',dictCode:''})
+        fieldList.push({type:'date',value:'marriageTime',text:'结婚时间'})
+        fieldList.push({type:'string',value:'location',text:'地点',dictCode:''})
+        fieldList.push({type:'string',value:'reason',text:'理由',dictCode:''})
         this.superFieldList = fieldList
       }
     }
