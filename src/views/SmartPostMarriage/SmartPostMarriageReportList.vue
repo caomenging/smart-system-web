@@ -4,6 +4,33 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="人员工号">
+              <a-input placeholder="请输入人员工号" v-model="queryParam.workNo"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="姓名">
+              <a-input placeholder="请输入姓名" v-model="queryParam.name"></a-input>
+            </a-form-item>
+          </a-col>
+          <template v-if="toggleSearchStatus">
+            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+              <a-form-item label="单位id">
+                <a-input placeholder="请输入单位id" v-model="queryParam.workDepartment"></a-input>
+              </a-form-item>
+            </a-col>
+          </template>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a @click="handleToggleSearch" style="margin-left: 8px">
+                {{ toggleSearchStatus ? '收起' : '展开' }}
+                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
+              </a>
+            </span>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -146,11 +173,6 @@
             dataIndex: 'politicsStatus'
           },
           {
-            title:'工作单位',
-            align:"center",
-            dataIndex: 'workDepartment'
-          },
-          {
             title:'职务',
             align:"center",
             dataIndex: 'job'
@@ -262,12 +284,12 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'int',value:'workNo',text:'人员工号',dictCode:''})
+         fieldList.push({type:'string',value:'workNo',text:'人员工号',dictCode:''})
          fieldList.push({type:'string',value:'name',text:'姓名',dictCode:''})
          fieldList.push({type:'string',value:'sex',text:'性别',dictCode:''})
          fieldList.push({type:'int',value:'age',text:'年龄',dictCode:''})
          fieldList.push({type:'string',value:'politicsStatus',text:'政治面貌',dictCode:''})
-         fieldList.push({type:'string',value:'workDepartment',text:'工作单位',dictCode:''})
+         fieldList.push({type:'string',value:'workDepartment',text:'单位id',dictCode:''})
          fieldList.push({type:'string',value:'job',text:'职务',dictCode:''})
          fieldList.push({type:'string',value:'jobLevel',text:'职级',dictCode:''})
          fieldList.push({type:'string',value:'weddingVenue',text:'婚宴场所名',dictCode:''})

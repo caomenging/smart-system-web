@@ -6,7 +6,7 @@
         <a-row>
           <a-col :span="24" >
             <a-form-model-item label="人员工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="workNo">
-              <a-input-number v-model="model.workNo" placeholder="请输入人员工号" style="width: 100%" />
+              <a-input v-model="model.workNo" placeholder="请输入人员工号" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -27,11 +27,6 @@
           <a-col :span="24" >
             <a-form-model-item label="政治面貌" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="politicsStatus">
               <a-input v-model="model.politicsStatus" placeholder="请输入政治面貌" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="工作单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="workDepartment">
-              <a-input v-model="model.workDepartment" placeholder="请输入工作单位" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -180,9 +175,6 @@
            politicsStatus: [
               { required: true, message: '请输入政治面貌!'},
            ],
-           workDepartment: [
-              { required: true, message: '请输入工作单位!'},
-           ],
            job: [
               { required: true, message: '请输入职务!'},
            ],
@@ -238,15 +230,6 @@
           dataSource: [],
           columns: [
             {
-              title: '主表ID',
-              key: 'mainTableId',
-              type: FormTypes.input,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
-            },
-            {
               title: '序号',
               key: 'serialNumber',
               type: FormTypes.inputNumber,
@@ -267,9 +250,11 @@
             {
               title: '附件文件路径',
               key: 'filePath',
-              type: FormTypes.input,
+              type: FormTypes.file,
+              token:true,
+              responseName:"message",
               width:"200px",
-              placeholder: '请输入${title}',
+              placeholder: '请选择文件',
               defaultValue:'',
               validateRules: [{ required: true, message: '${title}不能为空' }],
             },
@@ -286,6 +271,7 @@
               title: '下载次数',
               key: 'downloadCount',
               type: FormTypes.inputNumber,
+              disabled:true,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
