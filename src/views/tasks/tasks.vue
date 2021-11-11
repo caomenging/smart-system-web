@@ -145,12 +145,12 @@
           {
             title:'填报单位',
             align:"center",
-            dataIndex: 'fillDepart'
+            dataIndex: 'sysOrgCode'
           },
           {
             title:'单位类型',
             align:"center",
-            dataIndex: ''
+            dataIndex: 'departType'
           },
           {
             title:'填报人',

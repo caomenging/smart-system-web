@@ -14,7 +14,7 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="审核意见" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="remark">
-              <a-textarea v-model="model.suggestion" rows="4" placeholder="请输入审核意见" />
+              <a-textarea v-model="model.remark" rows="4" placeholder="请输入审核意见" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { getAction } from '@/api/manage'
+import { getAction, putAction } from '@/api/manage'
 import { FormTypes, getRefPromise, VALIDATE_NO_PASSED } from '@/utils/JEditableTableUtil'
 import { validateDuplicateValue } from '@/utils/util'
 import JDate from '@/components/jeecg/JDate'
@@ -63,7 +63,7 @@ export default {
       },
       url: {
         // add: '/smartSupervision/smartSupervision/add',
-        edit: '/tasks/smartVerifyTask/edit',
+        edit: '/tasks/smartVerifyTask/updateStatus',
         queryById: '/tasks/smartVerifyTask/queryById',
       },
       rules: {
@@ -94,7 +94,15 @@ export default {
   methods: {
     handleOk() {
       this.model.flowNo = this.flowNo
-      console.log(this.model.value)
+      putAction(this.url.edit,this.model).then(res => {
+        console.log(res)
+        if(res.success){
+          this.$message.success('提交成功')
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+      console.log(this.model)
       this.$emit('ok')
     }, 
     getAllTable() {
