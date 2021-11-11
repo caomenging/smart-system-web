@@ -53,7 +53,7 @@ export default {
       this.visible = true
       this.$nextTick(() => {
         let realRecord = record
-        realRecord.id = '1456130292371910657'
+        realRecord.id = record.flowNo
         this.flowNo = realRecord.id
         console.log(realRecord)
         // this.$refs.verifyForm.edit(realRecord)

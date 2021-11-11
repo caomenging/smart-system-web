@@ -79,6 +79,23 @@
       edit (record) {
         this.model = Object.assign({}, record);
         this.visible = true;
+        this.editAfter();
+      },
+      /** 调用完edit()方法之后会自动调用此方法 */
+      editAfter() {
+        this.$nextTick(() => {
+        })
+        if (this.model.id) {
+          console.log(this.model)
+          let params = { id: this.model.id }
+          getAction(this.url.queryById,params).then(res => {
+              if(res.success){
+                this.model = res.result
+                // console.log(model)
+              }
+            }
+          )
+        }
       },
       submitForm () {
         const that = this;
