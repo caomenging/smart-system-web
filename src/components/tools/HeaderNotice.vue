@@ -63,6 +63,24 @@
               </div>
             </a-list>
           </a-tab-pane>
+          <a-tab-pane :tab="msg3Title" key="3">
+            <a-list>
+              <a-list-item :key="index" v-for="(record, index) in announcement3">
+                <div style="margin-left: 5%;width: 80%">
+                  <p><a @click="showAnnouncement(record)">{{ record.titile }}</a></p>
+                  <p style="color: rgba(0,0,0,.45);margin-bottom: 0px">{{ record.createTime }} 发布</p>
+                </div>
+                <div style="text-align: right">
+                  <a-tag @click="showAnnouncement(record)" v-if="record.priority === 'L'" color="blue">一般消息</a-tag>
+                  <a-tag @click="showAnnouncement(record)" v-if="record.priority === 'M'" color="orange">重要消息</a-tag>
+                  <a-tag @click="showAnnouncement(record)" v-if="record.priority === 'H'" color="red">紧急消息</a-tag>
+                </div>
+              </a-list-item>
+              <div style="margin-top: 5px;text-align: center">
+                <a-button @click="toMyAnnouncement()" type="dashed" block>查看更多</a-button>
+              </div>
+            </a-list>
+          </a-tab-pane>
         </a-tabs>
       </a-spin>
     </template>
@@ -149,6 +167,10 @@
               this.announcement2 = res.result.sysMsgList;
               this.msg2Count = res.result.sysMsgTotal;
               this.msg2Title = "系统消息(" + res.result.sysMsgTotal + ")";
+              // TO DO：获取任务列表
+              this.announcement3 = res.result.taskList;
+              this.msg3Count = res.result.sysMsgTotal;
+              this.msg3Title = "任务下发(" + res.result.sysMsgTotal + ")";
             }
           }).catch(error => {
             console.log("系统消息通知异常",error);//这行打印permissionName is undefined

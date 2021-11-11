@@ -10,8 +10,13 @@
     :okButtonProps="{ class: { 'jee-hidden': verifyDisableSubmit } }"
     @cancel="handleCancel"
   >
-    <test-verify-form ref="realForm" :disabled="disableSubmit" />
-    <h1>审核区域</h1>
+    <test-verify-form v-if="type==='婚前报备'" ref="realForm" :disabled="disableSubmit" />
+    <!-- <test v-if="type==='婚前报备'" ref="realForm" :disabled="disableSubmit" /> -->
+    <smart-premarital-filing-form v-if="type==='婚报备'" ref="realForm" :disabled="disableSubmit" />
+    <smart-supervision-form v-if="type==='监督检查'" ref="realForm" :disabled="disableSubmit" />
+    <smart-post-marriage-report-form v-if="type==='婚后报备'" ref="realForm" :disabled="disableSubmit" />
+
+    <h2 :style="{ padding: '24px', background: '#9cdcfe', textAlign: 'center' }" >审核区域</h2>
     <tasks-form ref="verifyForm" @ok="submitCallback" :disabled="verifyDisableSubmit" :flowNo="flowNo" />
   </j-modal>
 </template>
@@ -21,6 +26,8 @@ import SmartPremaritalFilingForm from '../../SmartPremaritalFiling/modules/Smart
 import Test from '../model/test.vue'
 import TasksForm from './TasksForm'
 import TestVerifyForm from '@/views/testVerify/modules/TestVerifyForm'
+import SmartSupervisionForm from '../../smartSupervision/modules/SmartSupervisionForm.vue'
+import SmartPostMarriageReportForm from '../../SmartPostMarriage/modules/SmartPostMarriageReportForm.vue'
 
 export default {
   name: 'TaskModal',
@@ -28,6 +35,9 @@ export default {
     TasksForm,
     TestVerifyForm,
     Test,
+    SmartPremaritalFilingForm,
+    SmartSupervisionForm,
+    SmartPostMarriageReportForm,
   },
   data() {
     return {
@@ -36,7 +46,8 @@ export default {
       visible: false,
       disableSubmit: false,
       verifyDisableSubmit: true,
-      flowNo:''
+      flowNo:'',
+      type:''
     }
   },
   beforeCreate() {
@@ -51,6 +62,7 @@ export default {
     },
     edit(record) {
       this.visible = true
+      this.type = record.taskType
       this.$nextTick(() => {
         let realRecord = record
         realRecord.id = record.flowNo
