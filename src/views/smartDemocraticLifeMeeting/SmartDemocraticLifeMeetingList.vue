@@ -4,6 +4,11 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="单位">
+              <j-select-depart placeholder="请选择单位"  v-model="queryParam.departId" customReturnField='id' :multi="false" :treeOpera="true"></j-select-depart>
+            </a-form-item>
+          </a-col>
           <a-col :xl="10" :lg="11" :md="12" :sm="24">
             <a-form-item label="会议时间">
               <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.meetingTime_begin"></j-date>
@@ -11,11 +16,13 @@
               <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.meetingTime_end"></j-date>
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="会议名称">
-              <a-input placeholder="请输入会议名称" v-model="queryParam.meetingName"></a-input>
-            </a-form-item>
-          </a-col>
+          <template v-if="toggleSearchStatus">
+            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+              <a-form-item label="会议名称">
+                <a-input placeholder="请输入会议名称" v-model="queryParam.meetingName"></a-input>
+              </a-form-item>
+            </a-col>
+          </template>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
@@ -30,7 +37,7 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
@@ -40,6 +47,12 @@
       </a-upload>
       <!-- 高级查询区域 -->
       <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
+      <a-dropdown v-if="selectedRowKeys.length > 0">
+        <a-menu slot="overlay">
+          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
+        </a-menu>
+        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
+      </a-dropdown>
     </div>
 
     <!-- table区域-begin -->
@@ -60,8 +73,7 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange, type:'radio'}"
-        :customRow="clickThenSelect"
+        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -92,6 +104,9 @@
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
+                <a @click="handleDetail(record)">详情</a>
+              </a-menu-item>
+              <a-menu-item>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
                   <a>删除</a>
                 </a-popconfirm>
@@ -103,16 +118,7 @@
       </a-table>
     </div>
 
-    <a-tabs defaultActiveKey="1">
-      <a-tab-pane tab="民主生活会参会人员表" key="1" >
-        <SmartDemocraticLifePeopleList :mainId="selectedMainId" />
-      </a-tab-pane>
-      <a-tab-pane tab="民主生活会附件表" key="2" forceRender>
-        <SmartDemocraticLifeEnclosureList :mainId="selectedMainId" />
-      </a-tab-pane>
-    </a-tabs>
-
-    <smartDemocraticLifeMeeting-modal ref="modalForm" @ok="modalFormOk"></smartDemocraticLifeMeeting-modal>
+    <smart-democratic-life-meeting-modal ref="modalForm" @ok="modalFormOk"/>
   </a-card>
 </template>
 
@@ -120,17 +126,12 @@
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SmartDemocraticLifeMeetingModal from './modules/SmartDemocraticLifeMeetingModal'
-  import { getAction } from '@/api/manage'
-  import SmartDemocraticLifePeopleList from './SmartDemocraticLifePeopleList'
-  import SmartDemocraticLifeEnclosureList from './SmartDemocraticLifeEnclosureList'
   import '@/assets/less/TableExpand.less'
 
   export default {
     name: "SmartDemocraticLifeMeetingList",
     mixins:[JeecgListMixin],
     components: {
-      SmartDemocraticLifePeopleList,
-      SmartDemocraticLifeEnclosureList,
       SmartDemocraticLifeMeetingModal
     },
     data () {
@@ -139,7 +140,17 @@
         // 表头
         columns: [
           {
-            title:'单位ID',
+            title: '#',
+            dataIndex: '',
+            key:'rowIndex',
+            width:60,
+            align:"center",
+            customRender:function (t,r,index) {
+              return parseInt(index)+1;
+            }
+          },
+          {
+            title:'单位',
             align:"center",
             dataIndex: 'departId'
           },
@@ -176,8 +187,7 @@
           {
             title:'会议内容摘要',
             align:"center",
-            dataIndex: 'summary',
-            scopedSlots: {customRender: 'htmlSlot'}
+            dataIndex: 'summary'
           },
           {
             title:'会议记录',
@@ -185,9 +195,9 @@
             dataIndex: 'record'
           },
           {
-            title:'创建人工号',
+            title:'创建人',
             align:"center",
-            dataIndex: 'creatorId'
+            dataIndex: 'createBy'
           },
           {
             title:'创建时间',
@@ -209,22 +219,9 @@
           deleteBatch: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/deleteBatch",
           exportXlsUrl: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/exportXls",
           importExcelUrl: "smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/importExcel",
+
         },
-        dictOptions:{
-        },
-        /* 分页参数 */
-        ipagination:{
-          current: 1,
-          pageSize: 5,
-          pageSizeOptions: ['5', '10', '50'],
-          showTotal: (total, range) => {
-            return range[0] + "-" + range[1] + " 共" + total + "条"
-          },
-          showQuickJumper: true,
-          showSizeChanger: true,
-          total: 0
-        },
-        selectedMainId:'',
+        dictOptions:{},
         superFieldList:[],
       }
     },
@@ -239,66 +236,24 @@
     methods: {
       initDictConfig(){
       },
-      clickThenSelect(record) {
-        return {
-          on: {
-            click: () => {
-              this.onSelectChange(record.id.split(","), [record]);
-            }
-          }
-        }
-      },
-      onClearSelected() {
-        this.selectedRowKeys = [];
-        this.selectionRows = [];
-        this.selectedMainId=''
-      },
-      onSelectChange(selectedRowKeys, selectionRows) {
-        this.selectedMainId=selectedRowKeys[0]
-        this.selectedRowKeys = selectedRowKeys;
-        this.selectionRows = selectionRows;
-      },
-      loadData(arg) {
-        if(!this.url.list){
-          this.$message.error("请设置url.list属性!")
-          return
-        }
-        //加载数据 若传入参数1则加载第一页的内容
-        if (arg === 1) {
-          this.ipagination.current = 1;
-        }
-        this.onClearSelected()
-        var params = this.getQueryParams();//查询条件
-        this.loading = true;
-        getAction(this.url.list, params).then((res) => {
-          if (res.success) {
-            this.dataSource = res.result.records;
-            this.ipagination.total = res.result.total;
-          }
-          if(res.code===510){
-            this.$message.warning(res.message)
-          }
-          this.loading = false;
-        })
-      },
       getSuperFieldList(){
         let fieldList=[];
-        fieldList.push({type:'string',value:'departId',text:'单位ID',dictCode:''})
-        fieldList.push({type:'datetime',value:'meetingTime',text:'会议时间'})
-        fieldList.push({type:'string',value:'meetingName',text:'会议名称',dictCode:''})
-        fieldList.push({type:'string',value:'address',text:'会议地点',dictCode:''})
-        fieldList.push({type:'string',value:'hostId',text:'主持人工号',dictCode:''})
-        fieldList.push({type:'datetime',value:'reportingTime',text:'上报时间'})
-        fieldList.push({type:'string',value:'recorderId',text:'会议记录人工号',dictCode:''})
-        fieldList.push({type:'Text',value:'summary',text:'会议内容摘要',dictCode:''})
-        fieldList.push({type:'Text',value:'record',text:'会议记录',dictCode:''})
-        fieldList.push({type:'string',value:'creatorId',text:'创建人工号',dictCode:''})
-        fieldList.push({type:'datetime',value:'createTime',text:'创建时间'})
+         fieldList.push({type:'string',value:'departId',text:'单位',dictCode:''})
+         fieldList.push({type:'datetime',value:'meetingTime',text:'会议时间'})
+         fieldList.push({type:'string',value:'meetingName',text:'会议名称',dictCode:''})
+         fieldList.push({type:'string',value:'address',text:'会议地点',dictCode:''})
+         fieldList.push({type:'string',value:'hostId',text:'主持人工号',dictCode:''})
+         fieldList.push({type:'datetime',value:'reportingTime',text:'上报时间'})
+         fieldList.push({type:'string',value:'recorderId',text:'会议记录人工号',dictCode:''})
+         fieldList.push({type:'Text',value:'summary',text:'会议内容摘要',dictCode:''})
+         fieldList.push({type:'Text',value:'record',text:'会议记录',dictCode:''})
+         fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
+         fieldList.push({type:'datetime',value:'createTime',text:'创建时间'})
         this.superFieldList = fieldList
       }
     }
   }
 </script>
 <style scoped>
-  @import '~@assets/less/common.less'
+  @import '~@assets/less/common.less';
 </style>
