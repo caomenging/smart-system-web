@@ -5,11 +5,6 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24" >
-            <a-form-model-item label="单位ID" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="docementid">
-              <a-input v-model="model.docementid" placeholder="请输入单位ID" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
             <a-form-model-item label="名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingName">
               <a-input v-model="model.meetingName" placeholder="请输入名称" ></a-input>
             </a-form-model-item>
@@ -49,24 +44,24 @@
               <a-input v-model="model.meetingRecorer" placeholder="请输入记录人" ></a-input>
             </a-form-model-item>
           </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="会议内容摘要" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingAbstract">
-              <a-input v-model="model.meetingAbstract" placeholder="请输入会议内容摘要" ></a-input>
+          <a-col :span="24">
+            <a-form-model-item label="会议内容摘要" :labelCol="labelCol2" :wrapperCol="wrapperCol2" prop="meetingAbstract">
+              <a-textarea v-model="model.meetingAbstract" rows="4" placeholder="请输入会议内容摘要" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="备注" :labelCol="labelCol2" :wrapperCol="wrapperCol2" prop="meetingRemarks">
+              <a-textarea v-model="model.meetingRemarks" rows="4" placeholder="请输入备注" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingRemarks">
-              <a-input v-model="model.meetingRemarks" placeholder="请输入备注" ></a-input>
+            <a-form-model-item label="创建人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="createBy">
+              <a-input v-model="model.createBy" placeholder="请输入创建人" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="创建人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="creatBy">
-              <a-input v-model="model.creatBy" placeholder="请输入创建人" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="创建时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="creatTime">
-              <j-date placeholder="请选择创建时间" v-model="model.creatTime" style="width: 100%" />
+            <a-form-model-item label="创建时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="createTime">
+              <j-date placeholder="请选择创建时间" v-model="model.createTime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -77,14 +72,15 @@
       <a-tab-pane tab="三重一大附件表" :key="refKeys[0]" :forceRender="true">
         <j-editable-table
           :ref="refKeys[0]"
-          :loading="smartTripleImportanceOneGreatnessDecriptionTable.loading"
-          :columns="smartTripleImportanceOneGreatnessDecriptionTable.columns"
-          :dataSource="smartTripleImportanceOneGreatnessDecriptionTable.dataSource"
-          :maxHeight="400"
+          :loading="smartTripleImportanceOneGreatnessDescriptionTable.loading"
+          :columns="smartTripleImportanceOneGreatnessDescriptionTable.columns"
+          :dataSource="smartTripleImportanceOneGreatnessDescriptionTable.dataSource"
+          :maxHeight="300"
           :disabled="formDisabled"
           :rowNumber="true"
           :rowSelection="true"
-          :actionButton="true"/>
+          :actionButton="true"
+          :rootUrl="rootUrl"/>
       </a-tab-pane>
     </a-tabs>
   </a-spin>
@@ -103,7 +99,9 @@
     components: {
     },
     data() {
+
       return {
+        rootUrl:"/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness",
         labelCol: {
           xs: { span: 24 },
           sm: { span: 6 },
@@ -125,23 +123,27 @@
         // 新增时子表默认添加几行空数据
         addDefaultRowNum: 1,
         validatorRules: {
+           meetingStarttime: [
+              { required: true, message: '请输入时间!'},
+           ],
+           meetingType: [
+              { required: true, message: '请输入类型!'},
+           ],
+           meetingNumber: [
+              { required: true, message: '请输入参会人数!'},
+           ],
+           createTime: [
+              { required: true, message: '请输入创建时间!'},
+           ],
         },
-        refKeys: ['smartTripleImportanceOneGreatnessDecription', ],
-        tableKeys:['smartTripleImportanceOneGreatnessDecription', ],
-        activeKey: 'smartTripleImportanceOneGreatnessDecription',
+        refKeys: ['smartTripleImportanceOneGreatnessDescription', ],
+        tableKeys:['smartTripleImportanceOneGreatnessDescription', ],
+        activeKey: 'smartTripleImportanceOneGreatnessDescription',
         // 三重一大附件表
-        smartTripleImportanceOneGreatnessDecriptionTable: {
+        smartTripleImportanceOneGreatnessDescriptionTable: {
           loading: false,
           dataSource: [],
           columns: [
-            {
-              title: '序号',
-              key: 'serialNumber',
-              type: FormTypes.input,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-            },
             {
               title: '附件说明',
               key: 'attachmentDescription',
@@ -153,9 +155,11 @@
             {
               title: '附件说明路径',
               key: 'descriptionPath',
-              type: FormTypes.input,
-              width:"250px",
-              placeholder: '请输入${title}',
+              type: FormTypes.file,
+              token:true,
+              responseName:"message",
+              width:"200px",
+              placeholder: '请选择文件',
               defaultValue:'',
             },
             {
@@ -165,14 +169,17 @@
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
+              validateRules: [{ required: true, message: '${title}不能为空' }],
             },
             {
               title: '下载次数',
-              key: 'dowmloadTimes',
+              key: 'downloadTimes',
               type: FormTypes.inputNumber,
+              disabled:true,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
+              validateRules: [{ required: true, message: '${title}不能为空' }],
             },
           ]
         },
@@ -180,8 +187,8 @@
           add: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/add",
           edit: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/edit",
           queryById: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/queryById",
-          smartTripleImportanceOneGreatnessDecription: {
-            list: '/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/querySmartTripleImportanceOneGreatnessDecriptionByMainId'
+          smartTripleImportanceOneGreatnessDescription: {
+            list: '/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/querySmartTripleImportanceOneGreatnessDescriptionByMainId'
           },
         }
       }
@@ -203,7 +210,7 @@
     },
     methods: {
       addBefore(){
-        this.smartTripleImportanceOneGreatnessDecriptionTable.dataSource=[]
+        this.smartTripleImportanceOneGreatnessDescriptionTable.dataSource=[]
       },
       getAllTable() {
         let values = this.tableKeys.map(key => getRefPromise(this, key))
@@ -215,8 +222,16 @@
         })
         // 加载子表数据
         if (this.model.id) {
+          console.log(this.model)
           let params = { id: this.model.id }
-          this.requestSubTableData(this.url.smartTripleImportanceOneGreatnessDecription.list, params, this.smartTripleImportanceOneGreatnessDecriptionTable)
+          getAction(this.url.queryById,params).then(res=>{
+             if(res.success){
+               this.model=res.result
+             }
+           }
+
+          )
+          this.requestSubTableData(this.url.smartTripleImportanceOneGreatnessDescription.list, params, this.smartTripleImportanceOneGreatnessDescriptionTable)
         }
       },
       //校验所有一对一子表表单
@@ -240,7 +255,7 @@
         let main = Object.assign(this.model, allValues.formValue)
         return {
           ...main, // 展开
-          smartTripleImportanceOneGreatnessDecriptionList: allValues.tablesValue[0].values,
+          smartTripleImportanceOneGreatnessDescriptionList: allValues.tablesValue[0].values,
         }
       },
       validateError(msg){
