@@ -71,16 +71,16 @@
 
         <!--部门分配-->
         <a-form-model-item label="单位分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">
-          <j-select-depart v-model="model.selecteddeparts" :multi="false" @back="backDepartInfo" :backDepart="true" :treeOpera="true"/>
-          <!--<a-tree-select
+         <!-- <j-select-depart v-model="model.selecteddeparts" :multi="false" @back="backDepartInfo" :backDepart="true" :treeOpera="true"/>-->
+          <a-tree-select
             style="width:100%"
             :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
             :treeData="naturalDepartTree"
             v-model="model.selecteddeparts"
-            placeholder="请选择上级部门"
+            placeholder="请选择部门"
             allow-clear
             tree-default-expand-all>
-          </a-tree-select>-->
+          </a-tree-select>
         </a-form-model-item>
 
         <!--租户分配-->
@@ -100,12 +100,22 @@
           </a-radio-group>
         </a-form-model-item>
         <a-form-model-item label="负责单位" :labelCol="labelCol" :wrapperCol="wrapperCol"  v-if="departIdShow==true">
-          <j-multi-select-tag
+          <!--<j-select-depart v-model="model.departIds" :multi="true" @back="backDepartInfo" :backDepart="true" :treeOpera="true"></j-select-depart>-->
+          <a-tree-select
+            style="width:100%"
+            :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
+            :treeData="naturalDepartTree"
+            v-model="model.departIds"
+            placeholder="请选择部门"
+            allow-clear
+            tree-default-expand-all>
+          </a-tree-select>
+          <!--<j-multi-select-tag
             :disabled="disableSubmit"
             v-model="model.departIds"
             :options="nextDepartOptions"
             placeholder="请选择负责单位">
-          </j-multi-select-tag>
+          </j-multi-select-tag>-->
         </a-form-model-item>
 
         <a-form-model-item label="头像" :labelCol="labelCol" :wrapperCol="wrapperCol">
@@ -200,14 +210,14 @@
   import { getAction } from '@/api/manage'
   import { addUser,editUser,queryUserRole,queryall } from '@/api/api'
   import { disabledAuthFilter } from "@/utils/authFilter"
-  import { duplicateCheck } from '@/api/api'
-
+  import { duplicateCheck ,queryNaturalIdTree} from '@/api/api'
   export default {
     name: "UserModal",
     components: {
     },
     data () {
       return {
+        naturalDepartTree:[],
         departDisabled: false, //是否是我的部门调用该页面
         roleDisabled: false, //是否是角色维护调用该页面
         modalWidth:800,
@@ -273,12 +283,27 @@
       }
     },
     methods: {
+      loadNaturalTreeData(){
+        var that = this;
+        queryNaturalIdTree().then((result)=>{
+          if(result.success){
+            that.naturalDepartTree = [];
+            for (let j = 0; j < result.result.length; j++) {
+              let temp2 = result.result[j];
+              that.naturalDepartTree.push(temp2);
+            }
+          }
+
+        })
+      },
       add () {
+        this.loadNaturalTreeData();
         this.refresh();
         this.edit({activitiSync:'1',userIdentity:1});
       },
       edit (record) {
         let that = this;
+        that.loadNaturalTreeData();
         that.visible = true;
         //根据屏幕宽度自适应抽屉宽度
         this.resetScreenSize();

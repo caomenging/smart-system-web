@@ -10,7 +10,8 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="处分人姓名"  :labelCol="labelCol" :wrapperCol="wrapperCol" prop="punishName">
-              <a-input v-model="model.punishName" placeholder="处分人姓名" readOnly
+              <a-input v-model="model.punishName" placeholder="处分人姓名"
+                       readOnly
                        unselectable="on"></a-input>
             </a-form-model-item>
           </a-col>
@@ -62,7 +63,7 @@
   import { httpAction, getAction } from '@/api/manage'
   import { validateDuplicateValue } from '@/utils/util'
   import Template1 from '../../jeecg/JVxeDemo/layout-demo/Template1'
-  import SelectUserByDep from '../modules/SelectUserByDep'
+  import SelectUserByDep from '@/components/jeecgbiz/modal/SelectUserByDep'
 
   export default {
     name: 'SmartPunishPeopleForm',
@@ -86,8 +87,8 @@
           position: '',
           positionRank: '',
           phone: '',
-          punishType: '',
-          removeTime: '',
+          /*punishType: '',
+          removeTime: '',*/
          },
         labelCol: {
           xs: { span: 24 },
@@ -160,6 +161,7 @@
         this.model.punishNo = back[0].workNo
         this.model.punishName = back[0].realname
         this.model.departName = back[0].orgCodeTxt
+        this.model.phone = back[0].phone
         this.model.position = back[0].post_dictText
         this.model.positionRank = back[0].positionRank_dictText
       }

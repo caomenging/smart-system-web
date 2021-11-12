@@ -149,7 +149,7 @@
               type: FormTypes.datetime,
               disabled:true,
               width:"200px",
-              placeholder: '请输入${title}',
+              placeholder: '${title}',
               defaultValue:'',
             },
             {
@@ -176,7 +176,7 @@
               type: FormTypes.inputNumber,
               disabled:true,
               width:"200px",
-              placeholder: '请输入${title}',
+              placeholder: '${title}',
               defaultValue:'',
             },
           ]
@@ -218,13 +218,25 @@
         let values = this.tableKeys.map(key => getRefPromise(this, key))
         return Promise.all(values)
       },
+      edit(record){
+        this.model = Object.assign({},record);
+        this.visible = true;
+        console.log(this.model)
+        this.editAfter();
+      },
       /** 调用完edit()方法之后会自动调用此方法 */
       editAfter() {
         this.$nextTick(() => {
         })
         // 加载子表数据
         if (this.model.id) {
+          //console.log(this.model)
           let params = { id: this.model.id }
+          getAction(this.url.queryById,params).then(res => {
+            if(res.success){
+              this.model = res.result
+            }
+          })
           this.requestSubTableData(this.url.smartInnerPartyPacpa.list, params, this.smartInnerPartyPacpaTable)
           this.requestSubTableData(this.url.smartInnerPartyAnnex.list, params, this.smartInnerPartyAnnexTable)
         }

@@ -14,6 +14,11 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
+            <a-form-model-item label="简要案情" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="caseAbs">
+              <a-textarea v-model="model.caseAbs" rows="4" placeholder="请输入简要案情" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
             <a-form-model-item label="被谈话人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="intervieweeNo">
               <select-user-by-dep v-model="model.intervieweeNo" @info="getInterviewee" text="work_no" store="work_no" :multi="false" />
             </a-form-model-item>
@@ -114,12 +119,7 @@
               <a-input v-model="model.talkerPostrank" placeholder="谈话人职级" readOnly
                        unselectable="on" ></a-input>
             </a-form-model-item>
-          </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="简要案情" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="caseAbs">
-              <a-textarea v-model="model.caseAbs" rows="4" placeholder="请输入简要案情" />
-            </a-form-model-item>
-          </a-col>
+          </a-col>>
           <a-col :span="24">
             <a-form-model-item label="办理部门" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="handlerDepart">
               <j-select-depart v-model="model.handlerDepart" multi  />
@@ -178,7 +178,7 @@
 
   import { httpAction, getAction } from '@/api/manage'
   import { validateDuplicateValue } from '@/utils/util'
-  import SelectUserByDep from '../../SamrtPunishPeople/modules/SelectUserByDep'
+  import SelectUserByDep from '../../../components/jeecgbiz/modal/SelectUserByDep'
 
   export default {
     name: 'SmartFirstFormPeopleForm',
@@ -220,9 +220,9 @@
         },
         confirmLoading: false,
         validatorRules: {
-           annex: [
+           /*annex: [
               { required: true, message: '请输入附件!'},
-           ],
+           ],*/
         },
         url: {
           add: "/SmartFirstFormPeople/smartFirstFormPeople/add",
@@ -247,6 +247,24 @@
       edit (record) {
         this.model = Object.assign({}, record);
         this.visible = true;
+        this.editAfter();
+      },
+      /** 调用完edit()方法之后会自动调用此方法 */
+      editAfter() {
+        this.$nextTick(() => {
+        })
+        // 加载子表数据
+        if (this.model.id) {
+          console.log(this.model)
+          let params = { id: this.model.id }
+          getAction(this.url.queryById,params).then(res => {
+            if(res.success){
+              this.model = res.result
+            }
+          })
+          this.requestSubTableData(this.url.smartInnerPartyPacpa.list, params, this.smartInnerPartyPacpaTable)
+          this.requestSubTableData(this.url.smartInnerPartyAnnex.list, params, this.smartInnerPartyAnnexTable)
+        }
       },
       submitForm () {
         const that = this;

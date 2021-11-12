@@ -6,7 +6,7 @@
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="处分人工号">
-              <j-select-user-by-dep placeholder="请选择处分人工号" v-model="queryParam.punishNo" :multi="false" text="work_no" store="work_no" />
+              <select-user-by-dep placeholder="请选择处分人工号" v-model="queryParam.punishNo" :multi="false" text="work_no" store="work_no" />
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -132,12 +132,13 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SmartPunishPeopleModal from './modules/SmartPunishPeopleModal'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
+  import SelectUserByDep from '@/components/jeecgbiz/modal/SelectUserByDep'
 
   export default {
     name: 'SmartPunishPeopleList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartPunishPeopleModal
+      SmartPunishPeopleModal,SelectUserByDep
     },
     data () {
       return {

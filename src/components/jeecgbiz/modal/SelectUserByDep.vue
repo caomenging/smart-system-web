@@ -9,7 +9,7 @@
       :labelCol="labelCol" :wrapperCol="wrapperCol">
       <a-button slot="enterButton" :disabled="disabled">选择人员</a-button>
     </a-input-search>
-    <j-select-user-by-dep-modal
+    <select-user-by-dep-modal
       ref="selectModal"
       :modal-width="modalWidth"
       :multi="multi"
@@ -19,54 +19,19 @@
       :text="textField"
       @initComp="initComp"
     />
-    <div v-for="(item,index) in info">
-      <span>基本信息</span>
-      <hr/>
-    <a-form-model :model="item" ref="InfoForm" :form="form" >
-      <a-col :span="15">
-        <a-form-model-item label="处分人姓名"  :labelCol="labelCol" :wrapperCol="wrapperCol" prop="punishName">
-          <a-input v-model="item.realname" placeholder="处分人姓名" readOnly
-                   unselectable="on"></a-input>
-        </a-form-model-item>
-      </a-col>
-      <a-col :span="15">
-        <a-form-model-item label="单位" prop="departName" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-model="item.orgCodeTxt" placeholder="单位"  readOnly unselectable="on"></a-input>
-        </a-form-model-item>
-      </a-col>
-      <a-col :span="15">
-        <a-form-model-item label="职务"  prop="position" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-model="item.post_dictText" placeholder="职务"  readOnly
-                   unselectable="on"></a-input>
-        </a-form-model-item>
-      </a-col>
-      <a-col :span="15">
-        <a-form-model-item label="职级" prop="positionRank" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-model="item.positionRank_dictText" placeholder="职级"  readOnly
-                   unselectable="on"></a-input>
-        </a-form-model-item>
-      </a-col>
-      <a-col :span="15">
-        <a-form-model-item label="手机号"  prop="phone" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-model="item.phone" placeholder="手机号" readOnly
-                   unselectable="on"></a-input>
-        </a-form-model-item>
-      </a-col>
-    </a-form-model>
-    </div>
   </div>
 </template>
 
 <script>
-  import JSelectUserByDepModal from '@/components/jeecgbiz/modal/JSelectUserByDepModal'
+  import SelectUserByDepModal from '@/components/jeecgbiz/modal/SelectUserByDepModal'
   // 下划线转换驼峰
   import { underLinetoHump } from '@/components/_util/StringUtil'
-  import DictDeleteList from '../../system/DictDeleteList'
+  import DictDeleteList from '../../../views/system/DictDeleteList'
   import AFormModelItem from 'ant-design-vue/es/form-model/FormItem'
 
   export default {
     name: 'SelectUserByDep',
-    components: { AFormModelItem, DictDeleteList, JSelectUserByDepModal},
+    components: { AFormModelItem, DictDeleteList, SelectUserByDepModal},
     props: {
       modalWidth: {
         type: Number,
