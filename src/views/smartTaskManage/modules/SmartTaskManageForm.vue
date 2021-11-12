@@ -4,23 +4,46 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24">
-            <a-form-model-item label="被反映人信息" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reflectedInformation">
-              <a-input v-model="model.reflectedInformation" placeholder="请输入被反映人信息"  ></a-input>
+            <a-form-model-item label="任务名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="taskName">
+              <a-input v-model="model.taskName" placeholder="请输入任务名" disabled ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="被反映人单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reflectedDocumentid">
-              <a-input v-model="model.reflectedDocumentid" placeholder="请输入被反映人单位"  ></a-input>
+            <a-form-model-item label="任务描述" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="taskDesc">
+              <a-input v-model="model.taskDesc" placeholder="请输入任务描述" disabled ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="举报时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reportingTime">
-              <j-date placeholder="请选择举报时间"  v-model="model.reportingTime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
+            <a-form-model-item label="使用中的模板名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="templateName">
+              <j-popup
+                v-model="model.templateName"
+                field="templateName"
+                org-fields="template_name,template_code,template_content"
+                dest-fields="templateName,templateCode,templateContent"
+                code="tem_test"
+                :multi="true"
+                @input="popupCallback"
+                />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="处理类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="processingType">
-              <j-dict-select-tag type="list" v-model="model.processingType" dictCode="processing_type" placeholder="请选择处理类型" />
+            <a-form-model-item label="使用中的模板编码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="templateCode">
+              <a-input v-model="model.templateCode" placeholder="请输入使用中的模板编码" disabled ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="提醒方式" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="sendType">
+              <j-dict-select-tag type="list" v-model="model.sendType" dictCode="msgType" placeholder="请选择发送方式" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="任务状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="status">
+              <a-input v-model="model.status" placeholder="请输入任务状态" disabled ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="模板内容" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="templateContent">
+              <a-input v-model="model.templateContent" placeholder="请输入模板内容" disabled ></a-input>
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -35,7 +58,7 @@
   import { validateDuplicateValue } from '@/utils/util'
 
   export default {
-    name: 'SmartReportingInformationForm',
+    name: 'SmartTaskManageForm',
     components: {
     },
     props: {
@@ -60,17 +83,11 @@
         },
         confirmLoading: false,
         validatorRules: {
-           reportingTime: [
-              { required: true, message: '请输入举报时间!'},
-           ],
-           processingType: [
-              { required: true, message: '请输入处理类型!'},
-           ],
         },
         url: {
-          add: "/smartReportingInformation/smartReportingInformation/add",
-          edit: "/smartReportingInformation/smartReportingInformation/edit",
-          queryById: "/smartReportingInformation/smartReportingInformation/queryById"
+          add: "/smartTaskManage/smartTaskManage/add",
+          edit: "/smartTaskManage/smartTaskManage/edit",
+          queryById: "/smartTaskManage/smartTaskManage/queryById"
         }
       }
     },
@@ -90,22 +107,6 @@
       edit (record) {
         this.model = Object.assign({}, record);
         this.visible = true;
-        this.editAfter();
-      },
-      editAfter() {
-        this.$nextTick(() => {
-        })
-        // 加载子表数据
-        if (this.model.id) {
-          console.log(this.model)
-          let params = { id: this.model.id }
-          getAction(this.url.queryById,params).then(res=>{
-              if(res.success){
-                this.model=res.result
-              }
-            }
-          )
-        }
       },
       submitForm () {
         const that = this;
@@ -133,8 +134,11 @@
               that.confirmLoading = false;
             })
           }
-
+         
         })
+      },
+      popupCallback(value,row){
+         this.model = Object.assign(this.model, row);
       },
     }
   }

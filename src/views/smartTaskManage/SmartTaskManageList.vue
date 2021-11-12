@@ -10,29 +10,28 @@
     <!-- 查询区域-END -->
 
     <!-- 操作按钮区域 -->
-    <div class="table-operator">
+    <!-- <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('举报信息详情表')">导出</a-button>
-
-<!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
+      <a-button type="primary" icon="download" @click="handleExportXls('定时任务管理')">导出</a-button>
+      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>
-      &lt;!&ndash; 高级查询区域 &ndash;&gt;
-      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
+      </a-upload> -->
+      <!-- 高级查询区域 -->
+      <!-- <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
         </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
-      </a-dropdown>-->
-    </div>
+      </a-dropdown>
+    </div> -->
 
     <!-- table区域-begin -->
-  <div>
-<!--      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
+    <div>
+      <!-- <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
         <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
-      </div>-->
+      </div> -->
 
       <a-table
         ref="table"
@@ -68,10 +67,10 @@
           </a-button>
         </template>
 
-       <span slot="action" slot-scope="text, record">
+        <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)">编辑</a>
 
-          <a-divider type="vertical" />
+          <!-- <a-divider type="vertical" />
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
@@ -84,13 +83,13 @@
                 </a-popconfirm>
               </a-menu-item>
             </a-menu>
-          </a-dropdown>
+          </a-dropdown> -->
         </span>
 
       </a-table>
     </div>
 
-    <smart-reporting-information-detail-modal ref="modalForm" @ok="modalFormOk"></smart-reporting-information-detail-modal>
+    <smart-task-manage-modal ref="modalForm" @ok="modalFormOk"></smart-task-manage-modal>
   </a-card>
 </template>
 
@@ -99,17 +98,18 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartReportingInformationDetailModal from './modules/SmartReportingInformationDetailModal'
+  import SmartTaskManageModal from './modules/SmartTaskManageModal'
+  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
 
   export default {
-    name: 'SmartReportingInformationDetailList',
+    name: 'SmartTaskManageList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartReportingInformationDetailModal
+      SmartTaskManageModal
     },
     data () {
       return {
-        description: '举报信息详情表管理页面',
+        description: '定时任务管理管理页面',
         // 表头
         columns: [
           {
@@ -123,57 +123,56 @@
             }
           },
           {
-            title:'被反映人姓名',
+            title:'任务名',
             align:"center",
-            dataIndex: 'reflectedName'
+            dataIndex: 'taskName'
           },
           {
-            title:'被反映人单位',
+            title:'任务描述',
             align:"center",
-            dataIndex: 'reflectedDocumentid'
+            dataIndex: 'taskDesc'
           },
           {
-            title:'主要问题',
+            title:'使用中的模板名',
             align:"center",
-            dataIndex: 'majorProblem'
+            dataIndex: 'templateName'
           },
           {
-            title:'附件',
+            title:'使用中的模板编码',
             align:"center",
-            dataIndex: 'description',
-            scopedSlots: {customRender: 'fileSlot'}
+            dataIndex: 'templateCode'
           },
           {
-            title:'举报人姓名',
+            title:'提醒方式',
             align:"center",
-            dataIndex: 'reporterName'
+            dataIndex: 'sendType_dictText'
           },
           {
-            title:'联系电话',
+            title:'任务状态',
             align:"center",
-            dataIndex: 'contactNumber'
+            dataIndex: 'status'
           },
           {
-            title:'举报时间',
+            title:'模板内容',
             align:"center",
-            dataIndex: 'reportingTime'
+            dataIndex: 'templateContent'
           },
           {
             title: '操作',
             dataIndex: 'action',
             align:"center",
             fixed:"right",
-            width:147,
+            // width:147,
             scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
-          list: "/smartReportingInformationDetail/smartReportingInformationDetail/list",
-          delete: "/smartReportingInformationDetail/smartReportingInformationDetail/delete",
-          deleteBatch: "/smartReportingInformationDetail/smartReportingInformationDetail/deleteBatch",
-          exportXlsUrl: "/smartReportingInformationDetail/smartReportingInformationDetail/exportXls",
-          importExcelUrl: "smartReportingInformationDetail/smartReportingInformationDetail/importExcel",
-
+          list: "/smartTaskManage/smartTaskManage/list",
+          delete: "/smartTaskManage/smartTaskManage/delete",
+          deleteBatch: "/smartTaskManage/smartTaskManage/deleteBatch",
+          exportXlsUrl: "/smartTaskManage/smartTaskManage/exportXls",
+          importExcelUrl: "smartTaskManage/smartTaskManage/importExcel",
+          
         },
         dictOptions:{},
         superFieldList:[],
@@ -192,13 +191,13 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-        fieldList.push({type:'string',value:'reflectedName',text:'被反映人姓名',dictCode:''})
-        fieldList.push({type:'string',value:'reflectedDocumentid',text:'被反映人单位',dictCode:''})
-        fieldList.push({type:'string',value:'majorProblem',text:'主要问题',dictCode:''})
-        fieldList.push({type:'string',value:'description',text:'附件',dictCode:''})
-        fieldList.push({type:'string',value:'reporterName',text:'举报人姓名',dictCode:''})
-        fieldList.push({type:'string',value:'contactNumber',text:'联系电话',dictCode:''})
-        fieldList.push({type:'datetime',value:'reportingTime',text:'举报时间'})
+        fieldList.push({type:'string',value:'taskName',text:'任务名',dictCode:''})
+        fieldList.push({type:'string',value:'taskDesc',text:'任务描述',dictCode:''})
+        fieldList.push({type:'popup',value:'templateName',text:'使用中的模板名', popup:{code:'tem_test',field:'template_name',orgFields:'template_name',destFields:'template_name'}})
+        fieldList.push({type:'string',value:'templateCode',text:'使用中的模板编码',dictCode:''})
+        fieldList.push({type:'string',value:'sendType',text:'发送方式',dictCode:'msgType'})
+        fieldList.push({type:'string',value:'status',text:'任务状态',dictCode:''})
+        fieldList.push({type:'string',value:'templateContent',text:'模板内容',dictCode:''})
         this.superFieldList = fieldList
       }
     }
