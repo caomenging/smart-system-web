@@ -124,6 +124,7 @@
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SmartPostMarriageReportModal from './modules/SmartPostMarriageReportModal'
+  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import '@/assets/less/TableExpand.less'
 
   export default {
@@ -160,7 +161,7 @@
           {
             title:'性别',
             align:"center",
-            dataIndex: 'sex'
+            dataIndex: 'sex_dictText'
           },
           {
             title:'年龄',
@@ -170,17 +171,17 @@
           {
             title:'政治面貌',
             align:"center",
-            dataIndex: 'politicsStatus'
+            dataIndex: 'politicsStatus_dictText'
           },
           {
             title:'职务',
             align:"center",
-            dataIndex: 'job'
+            dataIndex: 'job_dictText'
           },
           {
             title:'职级',
             align:"center",
-            dataIndex: 'jobLevel'
+            dataIndex: 'jobLevel_dictText'
           },
           {
             title:'婚宴场所名',
@@ -286,12 +287,12 @@
         let fieldList=[];
          fieldList.push({type:'string',value:'workNo',text:'人员工号',dictCode:''})
          fieldList.push({type:'string',value:'name',text:'姓名',dictCode:''})
-         fieldList.push({type:'string',value:'sex',text:'性别',dictCode:''})
+         fieldList.push({type:'string',value:'sex',text:'性别',dictCode:'sex'})
          fieldList.push({type:'int',value:'age',text:'年龄',dictCode:''})
-         fieldList.push({type:'string',value:'politicsStatus',text:'政治面貌',dictCode:''})
+         fieldList.push({type:'string',value:'politicsStatus',text:'政治面貌',dictCode:'political_status'})
          fieldList.push({type:'string',value:'workDepartment',text:'单位id',dictCode:''})
-         fieldList.push({type:'string',value:'job',text:'职务',dictCode:''})
-         fieldList.push({type:'string',value:'jobLevel',text:'职级',dictCode:''})
+         fieldList.push({type:'string',value:'job',text:'职务',dictCode:'sys_position,name,code'})
+         fieldList.push({type:'string',value:'jobLevel',text:'职级',dictCode:'position_rank'})
          fieldList.push({type:'string',value:'weddingVenue',text:'婚宴场所名',dictCode:''})
          fieldList.push({type:'string',value:'weddingVenueAddr',text:'婚宴场所地址',dictCode:''})
          fieldList.push({type:'int',value:'guestsNumber',text:'宴请人数',dictCode:''})

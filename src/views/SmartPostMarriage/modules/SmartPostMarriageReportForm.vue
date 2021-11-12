@@ -16,7 +16,7 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="性别" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="sex">
-              <a-input v-model="model.sex" placeholder="请输入性别" ></a-input>
+              <j-dict-select-tag type="list" v-model="model.sex" dictCode="sex" placeholder="请选择性别" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -26,17 +26,17 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="政治面貌" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="politicsStatus">
-              <a-input v-model="model.politicsStatus" placeholder="请输入政治面貌" ></a-input>
+              <j-dict-select-tag type="list" v-model="model.politicsStatus" dictCode="political_status" placeholder="请选择政治面貌" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="职务" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="job">
-              <a-input v-model="model.job" placeholder="请输入职务" ></a-input>
+              <j-dict-select-tag type="list" v-model="model.job" dictCode="sys_position,name,code" placeholder="请选择职务" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="职级" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="jobLevel">
-              <a-input v-model="model.jobLevel" placeholder="请输入职级" ></a-input>
+              <j-dict-select-tag type="list" v-model="model.jobLevel" dictCode="position_rank" placeholder="请选择职级" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -119,7 +119,8 @@
           :disabled="formDisabled"
           :rowNumber="true"
           :rowSelection="true"
-          :actionButton="true"/>
+          :actionButton="true"
+          :rootUrl="rootUrl"/>
       </a-tab-pane>
     </a-tabs>
   </a-spin>
@@ -139,6 +140,7 @@
     },
     data() {
       return {
+        rootUrl: "/smartPostMarriage/smartPostMarriageReport",
         labelCol: {
           xs: { span: 24 },
           sm: { span: 6 },
@@ -171,6 +173,7 @@
            ],
            age: [
               { required: true, message: '请输入年龄!'},
+              { pattern: /^-?\d+\.?\d*$/, message: '请输入数字!'},
            ],
            politicsStatus: [
               { required: true, message: '请输入政治面貌!'},
@@ -189,6 +192,7 @@
            ],
            guestsNumber: [
               { required: true, message: '请输入宴请人数!'},
+              { pattern: /^-?\d+$/, message: '请输入整数!'},
            ],
            guestsScope: [
               { required: true, message: '请输入宴请人员范围!'},
@@ -198,9 +202,11 @@
            ],
            weddingCarNumber: [
               { required: true, message: '请输入婚礼用车数量!'},
+              { pattern: /^-?\d+$/, message: '请输入整数!'},
            ],
            govCarNumber: [
               { required: true, message: '请输入公车数量（婚礼用车中有多少辆公车）!'},
+              { pattern: /^-?\d+$/, message: '请输入整数!'},
            ],
            illegalMoney: [
               { required: true, message: '请输入不符合规定收受礼金!'},
@@ -219,6 +225,7 @@
            ],
            phoneNumber: [
               { required: true, message: '请输入联系电话!'},
+              { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!'},
            ],
         },
         refKeys: ['smartPostMarriageReportFile', ],
@@ -275,7 +282,6 @@
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
             },
           ]
         },
@@ -316,6 +322,18 @@
       editAfter() {
         this.$nextTick(() => {
         })
+
+        //审核功能
+        if(this.model.id){
+          console.log(this.model)
+          let params = { id: this.model.id }
+          getAction(this.url.queryById,params).then(res=>{
+            if(res.success){
+              this.model = res.result
+            }
+          })
+        }
+
         // 加载子表数据
         if (this.model.id) {
           let params = { id: this.model.id }
