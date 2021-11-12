@@ -5,9 +5,12 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="所属部门">
-              <a-input placeholder="请输入所属部门" v-model="queryParam.sysOrgCode"></a-input>
+            <a-form-item label="单位">
+              <j-select-depart placeholder="请选择单位"  v-model="queryParam.departId" customReturnField='id' :multi="false" :treeOpera="true"></j-select-depart>
             </a-form-item>
+            <!-- <a-form-item label="所属部门">
+              <a-input placeholder="请输入所属部门" v-model="queryParam.sysOrgCode"></a-input>
+            </a-form-item> -->
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
@@ -163,11 +166,11 @@
             align:"center",
             dataIndex: 'creatorNo'
           },
-          {
-            title:"所属部门",
-            align:"center",
-            dataIndex:"sysOrgCode"
-          },
+          // {
+          //   title:"所属部门",
+          //   align:"center",
+          //   dataIndex:"sysOrgCode"
+          // },
           {
             title: '操作',
             dataIndex: 'action',

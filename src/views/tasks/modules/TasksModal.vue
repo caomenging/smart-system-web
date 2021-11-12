@@ -18,6 +18,7 @@
 
     <h2 :style="{ padding: '24px', background: '#9cdcfe', textAlign: 'center' }" >审核区域</h2>
     <tasks-form ref="verifyForm" @ok="submitCallback" :disabled="verifyDisableSubmit" :flowNo="flowNo" />
+    <smart-triple-importance-one-greatness-form v-if="type==='三重一大'" ref="realForm" :disabled="disableSubmit" />
   </j-modal>
 </template>
 
@@ -28,6 +29,7 @@ import TasksForm from './TasksForm'
 import TestVerifyForm from '@/views/testVerify/modules/TestVerifyForm'
 import SmartSupervisionForm from '../../smartSupervision/modules/SmartSupervisionForm.vue'
 import SmartPostMarriageReportForm from '../../SmartPostMarriage/modules/SmartPostMarriageReportForm.vue'
+import SmartTripleImportanceOneGreatnessForm from '../../SmartTripleImportanceOneGreatness/modules/SmartTripleImportanceOneGreatnessForm.vue'
 
 export default {
   name: 'TaskModal',
@@ -38,6 +40,7 @@ export default {
     SmartPremaritalFilingForm,
     SmartSupervisionForm,
     SmartPostMarriageReportForm,
+    SmartTripleImportanceOneGreatnessForm,
   },
   data() {
     return {
