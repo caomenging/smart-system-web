@@ -35,12 +35,12 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="会议内容摘要" :labelCol="labelCol2" :wrapperCol="wrapperCol2" prop="summary">
+            <a-form-model-item label="会议内容摘要" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="summary">
               <a-textarea v-model="model.summary" rows="4" placeholder="请输入会议内容摘要" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="会议记录" :labelCol="labelCol2" :wrapperCol="wrapperCol2" prop="record">
+            <a-form-model-item label="会议记录" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="record">
               <a-textarea v-model="model.record" rows="4" placeholder="请输入会议记录" />
             </a-form-model-item>
           </a-col>
