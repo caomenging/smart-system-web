@@ -16,7 +16,7 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="人员性别" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="peopleSex">
-              <a-input v-model="model.peopleSex" placeholder="请输入人员性别" ></a-input>
+              <j-dict-select-tag type="list" v-model="model.peopleSex" dictCode="	sex" placeholder="请选择人员性别" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -26,22 +26,17 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="政治面貌" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="politicCou">
-              <a-input v-model="model.politicCou" placeholder="请输入政治面貌" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="工作单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="workUnit">
-              <a-input v-model="model.workUnit" placeholder="请输入工作单位" ></a-input>
+              <j-dict-select-tag type="list" v-model="model.politicCou" dictCode="political_status" placeholder="请选择政治面貌" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="职务" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="post">
-              <a-input v-model="model.post" placeholder="请输入职务" ></a-input>
+              <j-dict-select-tag type="list" v-model="model.post" dictCode="sys_position,name,code" placeholder="请选择职务" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="职级" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="postRank">
-              <a-input v-model="model.postRank" placeholder="请输入职级" ></a-input>
+              <j-dict-select-tag type="list" v-model="model.postRank" dictCode="position_rank" placeholder="请选择职级" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -51,7 +46,7 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="配偶单位职务" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="spoUnitPos">
-              <a-input v-model="model.spoUnitPos" placeholder="请输入配偶单位职务" ></a-input>
+              <j-dict-select-tag type="list" v-model="model.spoUnitPos" dictCode="sys_position,name,code" placeholder="请选择配偶单位职务" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -126,17 +121,17 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="结婚人配偶单位职务" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="marrySpoUnitPos">
-              <a-input v-model="model.marrySpoUnitPos" placeholder="请输入结婚人配偶单位职务" ></a-input>
+              <j-dict-select-tag type="list" v-model="model.marrySpoUnitPos" dictCode="sys_position,name,code" placeholder="请选择结婚人配偶单位职务" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="结婚人配偶父母姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="marrySpoParName">
-              <a-input v-model="model.marrySpoParName" placeholder="请输入结婚人配偶父母姓名" ></a-input>
+              <j-dict-select-tag type="list" v-model="model.marrySpoParName" dictCode="" placeholder="请选择结婚人配偶父母姓名" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="结婚人配偶父母单位职务" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="marrySpoParUnitPos">
-              <a-input v-model="model.marrySpoParUnitPos" placeholder="请输入结婚人配偶父母单位职务" ></a-input>
+              <j-dict-select-tag type="list" v-model="model.marrySpoParUnitPos" dictCode="sys_position,name,code" placeholder="请选择结婚人配偶父母单位职务" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -154,6 +149,11 @@
               <a-input v-model="model.contactNumber" placeholder="请输入联系电话" ></a-input>
             </a-form-model-item>
           </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="删除状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="delFlag">
+              <a-input-number v-model="model.delFlag" placeholder="请输入删除状态" style="width: 100%" />
+            </a-form-model-item>
+          </a-col>
         </a-row>
       </a-form-model>
     </j-form-container>
@@ -169,7 +169,8 @@
           :disabled="formDisabled"
           :rowNumber="true"
           :rowSelection="true"
-          :actionButton="true"/>
+          :actionButton="true"
+          :rootUrl:"rootUrl"/>
       </a-tab-pane>
     </a-tabs>
   </a-spin>
@@ -189,6 +190,7 @@
     },
     data() {
       return {
+        rootUrl:"/smartPremaritalFiling/smartPremaritalFiling",
         labelCol: {
           xs: { span: 24 },
           sm: { span: 6 },
@@ -212,6 +214,7 @@
         validatorRules: {
            peopleNo: [
               { required: true, message: '请输入人员工号!'},
+              { pattern: /^.{6,18}$/, message: '请输入6到18位任意字符!'},
            ],
            peopleName: [
               { required: true, message: '请输入人员姓名!'},
@@ -221,12 +224,10 @@
            ],
            peopleAge: [
               { required: true, message: '请输入人员年龄!'},
+              { pattern: /^-?\d+\.?\d*$/, message: '请输入数字!'},
            ],
            politicCou: [
               { required: true, message: '请输入政治面貌!'},
-           ],
-           workUnit: [
-              { required: true, message: '请输入工作单位!'},
            ],
            post: [
               { required: true, message: '请输入职务!'},
@@ -260,6 +261,7 @@
            ],
            guestsNumber: [
               { required: true, message: '请输入拟宴请人数!'},
+              { pattern: /^-?\d+$/, message: '请输入整数!'},
            ],
            banqPlaceName: [
               { required: true, message: '请输入婚宴场所名称!'},
@@ -275,6 +277,7 @@
            ],
            proCarsNum: [
               { required: true, message: '请输入拟用婚礼车辆数量!'},
+              { pattern: /^-?\d+$/, message: '请输入整数!'},
            ],
            marrySpoName: [
               { required: true, message: '请输入结婚人配偶姓名!'},
@@ -296,6 +299,7 @@
            ],
            contactNumber: [
               { required: true, message: '请输入联系电话!'},
+              { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!'},
            ],
         },
         refKeys: ['smartPremaritalFilingApp', ],
@@ -318,9 +322,11 @@
             {
               title: '附件文件路径',
               key: 'appFilePath',
-              type: FormTypes.input,
+              type: FormTypes.file,
+              token:true,
+              responseName:"message",
               width:"200px",
-              placeholder: '请输入${title}',
+              placeholder: '请选择文件',
               defaultValue:'',
               validateRules: [{ required: true, message: '${title}不能为空' }],
             },
@@ -335,12 +341,12 @@
             },
             {
               title: '下载次数',
-              key: 'downloadNum',
+              key: 'downloadCount',
               type: FormTypes.inputNumber,
+              disabled:true,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
             },
           ]
         },
@@ -381,9 +387,19 @@
       editAfter() {
         this.$nextTick(() => {
         })
+       if (this.model.id) {
+          console.log(this.model)
+          let params = { id: this.model.id }
+          getAction(this.url.queryById,params).then(res => {
+              if(res.success){
+                this.model = res.result
+                // console.log(model)
+              }
+            }
+          )
+       }
         // 加载子表数据
         if (this.model.id) {
-          console.log(this.model)
           let params = { id: this.model.id }
           this.requestSubTableData(this.url.smartPremaritalFilingApp.list, params, this.smartPremaritalFilingAppTable)
         }
