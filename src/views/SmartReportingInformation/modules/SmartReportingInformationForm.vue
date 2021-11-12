@@ -90,6 +90,22 @@
       edit (record) {
         this.model = Object.assign({}, record);
         this.visible = true;
+        this.editAfter();
+      },
+      editAfter() {
+        this.$nextTick(() => {
+        })
+        // 加载子表数据
+        if (this.model.id) {
+          console.log(this.model)
+          let params = { id: this.model.id }
+          getAction(this.url.queryById,params).then(res=>{
+              if(res.success){
+                this.model=res.result
+              }
+            }
+          )
+        }
       },
       submitForm () {
         const that = this;
@@ -117,7 +133,7 @@
               that.confirmLoading = false;
             })
           }
-         
+
         })
       },
     }

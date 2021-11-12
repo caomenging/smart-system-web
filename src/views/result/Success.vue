@@ -48,7 +48,7 @@
               clearInterval(this.timer);
               this.timer = null;
               //跳转的页面写在此处
-              this.$router.push({path: '/InsertReportingInformation/InsertReportingInformationDetail'});
+              this.$router.push({path: '/QRCodesame/QRcodesame'});
             }
           },1000)
         }
