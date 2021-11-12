@@ -3,7 +3,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator" v-if="mainId">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('民主生活会参会人员表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('民主生活参会人员表')">导出</a-button>
       <a-upload
         name="file"
         :showUploadList="false"
@@ -124,7 +124,7 @@
             }
           },
           {
-            title:'参会人员工号',
+            title:'参会人员ID',
             align:"center",
             dataIndex: 'participantId'
           },
