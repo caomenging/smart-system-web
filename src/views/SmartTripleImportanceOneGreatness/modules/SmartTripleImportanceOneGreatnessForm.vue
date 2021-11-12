@@ -72,14 +72,15 @@
       <a-tab-pane tab="三重一大附件表" :key="refKeys[0]" :forceRender="true">
         <j-editable-table
           :ref="refKeys[0]"
-          :loading="smartTripleImportanceOneGreatnessDecriptionTable.loading"
-          :columns="smartTripleImportanceOneGreatnessDecriptionTable.columns"
-          :dataSource="smartTripleImportanceOneGreatnessDecriptionTable.dataSource"
+          :loading="smartTripleImportanceOneGreatnessDescriptionTable.loading"
+          :columns="smartTripleImportanceOneGreatnessDescriptionTable.columns"
+          :dataSource="smartTripleImportanceOneGreatnessDescriptionTable.dataSource"
           :maxHeight="300"
           :disabled="formDisabled"
           :rowNumber="true"
           :rowSelection="true"
-          :actionButton="true"/>
+          :actionButton="true"
+          :rootUrl="rootUrl"/>
       </a-tab-pane>
     </a-tabs>
   </a-spin>
@@ -98,7 +99,9 @@
     components: {
     },
     data() {
+
       return {
+        rootUrl:"/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness",
         labelCol: {
           xs: { span: 24 },
           sm: { span: 6 },
@@ -133,11 +136,11 @@
               { required: true, message: '请输入创建时间!'},
            ],
         },
-        refKeys: ['smartTripleImportanceOneGreatnessDecription', ],
-        tableKeys:['smartTripleImportanceOneGreatnessDecription', ],
-        activeKey: 'smartTripleImportanceOneGreatnessDecription',
+        refKeys: ['smartTripleImportanceOneGreatnessDescription', ],
+        tableKeys:['smartTripleImportanceOneGreatnessDescription', ],
+        activeKey: 'smartTripleImportanceOneGreatnessDescription',
         // 三重一大附件表
-        smartTripleImportanceOneGreatnessDecriptionTable: {
+        smartTripleImportanceOneGreatnessDescriptionTable: {
           loading: false,
           dataSource: [],
           columns: [
@@ -184,8 +187,8 @@
           add: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/add",
           edit: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/edit",
           queryById: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/queryById",
-          smartTripleImportanceOneGreatnessDecription: {
-            list: '/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/querySmartTripleImportanceOneGreatnessDecriptionByMainId'
+          smartTripleImportanceOneGreatnessDescription: {
+            list: '/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/querySmartTripleImportanceOneGreatnessDescriptionByMainId'
           },
         }
       }
@@ -207,7 +210,7 @@
     },
     methods: {
       addBefore(){
-        this.smartTripleImportanceOneGreatnessDecriptionTable.dataSource=[]
+        this.smartTripleImportanceOneGreatnessDescriptionTable.dataSource=[]
       },
       getAllTable() {
         let values = this.tableKeys.map(key => getRefPromise(this, key))
@@ -219,8 +222,16 @@
         })
         // 加载子表数据
         if (this.model.id) {
+          console.log(this.model)
           let params = { id: this.model.id }
-          this.requestSubTableData(this.url.smartTripleImportanceOneGreatnessDecription.list, params, this.smartTripleImportanceOneGreatnessDecriptionTable)
+          getAction(this.url.queryById,params).then(res=>{
+             if(res.success){
+               this.model=res.result
+             }
+           }
+
+          )
+          this.requestSubTableData(this.url.smartTripleImportanceOneGreatnessDescription.list, params, this.smartTripleImportanceOneGreatnessDescriptionTable)
         }
       },
       //校验所有一对一子表表单
@@ -244,7 +255,7 @@
         let main = Object.assign(this.model, allValues.formValue)
         return {
           ...main, // 展开
-          smartTripleImportanceOneGreatnessDecriptionList: allValues.tablesValue[0].values,
+          smartTripleImportanceOneGreatnessDescriptionList: allValues.tablesValue[0].values,
         }
       },
       validateError(msg){
