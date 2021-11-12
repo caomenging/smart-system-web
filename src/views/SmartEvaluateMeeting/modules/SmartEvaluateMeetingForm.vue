@@ -10,13 +10,13 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="地址" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingPlace">
-              <a-input v-model="model.meetingPlace" placeholder="请输入地址" ></a-input>
+            <a-form-model-item label="会议地点" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingPlace">
+              <a-input v-model="model.meetingPlace" placeholder="请输入会议地点" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="检查时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="checkTime">
-              <j-date placeholder="请选择检查时间" v-model="model.checkTime" style="width: 100%" />
+              <j-date placeholder="请选择检查时间" v-model="model.checkTime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -24,19 +24,9 @@
               <a-input v-model="model.peopleType" placeholder="请输入对象类型" ></a-input>
             </a-form-model-item>
           </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="创建人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="createBy">
-              <a-input v-model="model.createBy" placeholder="请输入创建人" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="单位ID" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departId">
-              <a-input v-model="model.departId" placeholder="请输入单位ID" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
+          <a-col :span="24">
             <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingRemarks">
-              <j-editor v-model="model.meetingRemarks" />
+              <a-textarea v-model="model.meetingRemarks" rows="4" placeholder="请输入备注" />
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -111,16 +101,13 @@
               { required: true, message: '请输入会议名称!'},
            ],
            meetingPlace: [
-              { required: true, message: '请输入地址!'},
+              { required: true, message: '请输入会议地点!'},
            ],
            checkTime: [
               { required: true, message: '请输入检查时间!'},
            ],
            peopleType: [
               { required: true, message: '请输入对象类型!'},
-           ],
-           departId: [
-              { required: true, message: '请输入单位ID!'},
            ],
         },
         refKeys: ['smartEvaluateMeetingPacpa', 'smartEvaluateMeetingAnnex', ],
@@ -138,7 +125,6 @@
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
             },
           ]
         },
@@ -163,15 +149,36 @@
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
+              validateRules: [{ required: true, message: '${title}不能为空' }],
             },
             {
               title: '附件文件路径',
               key: 'annexPath',
-              type: FormTypes.input,
+              type: FormTypes.file,
+              token:true,
+              responseName:"message",
+              width:"200px",
+              placeholder: '请选择文件',
+              defaultValue:'',
+              validateRules: [{ required: true, message: '${title}不能为空' }],
+            },
+            {
+              title: '上传时间',
+              key: 'createTime',
+              type: FormTypes.datetime,
+              disabled:true,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
+            },
+            {
+              title: '下载次数',
+              key: 'downloadTimes',
+              type: FormTypes.inputNumber,
+              disabled:true,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
             },
           ]
         },
@@ -219,6 +226,12 @@
         // 加载子表数据
         if (this.model.id) {
           let params = { id: this.model.id }
+            getAction(this.url.queryById,params).then(res =>{
+                if(res.success){
+                  this.model = res.result
+                }
+              }
+            )
           this.requestSubTableData(this.url.smartEvaluateMeetingPacpa.list, params, this.smartEvaluateMeetingPacpaTable)
           this.requestSubTableData(this.url.smartEvaluateMeetingAnnex.list, params, this.smartEvaluateMeetingAnnexTable)
         }
