@@ -124,11 +124,12 @@
             }
           }
         },
-        {
-          title:'附件',
-          align:"center",
-          dataIndex: 'fileList',
-        },
+        // {
+        //   title:'附件',
+        //   align:"center",
+        //   dataIndex: 'fileList',
+        //   colSpan: 0,
+        // },
         {
           title: '操作',
           dataIndex: 'action',

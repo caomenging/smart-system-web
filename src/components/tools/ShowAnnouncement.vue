@@ -16,13 +16,10 @@
       </a-card-meta>
       <a-divider />
       <span v-html="record.msgContent" class="article-content"></span>
-      <div v-if="record.fileList !== ''">
+      <div v-if="fieldList !== {}">
         <a-divider />
         <div>附件</div>
-        <a-upload>
-          
-        </a-upload>
-        <a>aaa</a>
+        <a-upload :fileList="fileList"></a-upload>
       </div>
     </a-card>
   </j-modal>
@@ -35,6 +32,8 @@ export default {
   data() {
     return {
       title: '通知消息',
+      upurl: window._CONFIG['domianURL'] + '/sys/common/static/',
+      fileList: {},
       record: {},
       labelCol: {
         xs: { span: 24 },
@@ -67,13 +66,21 @@ export default {
     this.displayFile();
   },
   mounted() {
-    console.log(this.record)
+    
   },
   methods: {
     detail(record) {
       this.visible = true
       this.record = record
       console.log(record)
+      const fileList = record.fileList.split(',').map((item,index) => {
+        return item = {
+          uid: index,
+          name:item.split('/').slice(-1)[0],
+          url: this.upurl + item
+        }
+      })
+      this.fileList = fileList
     },
     handleCancel() {
       this.visible = false
@@ -97,8 +104,8 @@ export default {
         this.$router.push({ path: this.record.openPage })
       }
     },
-    displayFile(record) {
-      const fileList = record
+    displayFile() {
+      fileList = this.record.fileList.split(',')
       console.log(fileList)
     }
   },

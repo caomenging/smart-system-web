@@ -109,19 +109,17 @@
     <!-- 表单区域 -->
     <sysAnnouncement-modal ref="modalForm" @ok="modalFormOk"></sysAnnouncement-modal>
     <!-- 查看详情 -->
-    <div class="detail-modal">
-      haha
-      <j-modal
-        title="查看详情"
-        :visible.sync="detailModal.visible"
-        :top="50"
-        :width="600"
-        switchFullscreen
-        :footer="null"
-      >
-        <iframe v-if="detailModal.url" class="detail-iframe" :src="detailModal.url" />
-      </j-modal>
-    </div>
+    <j-modal
+      class="detail-modal"
+      title="查看详情"
+      :visible.sync="detailModal.visible"
+      :top="50"
+      :width="600"
+      switchFullscreen
+      :footer="null"
+    >
+      <iframe v-if="detailModal.url" class="detail-iframe" :src="detailModal.url" />
+    </j-modal>
   </a-card>
 </template>
 
@@ -141,6 +139,7 @@ export default {
   data() {
     return {
       description: '系统通告表管理页面',
+      upurl: window._CONFIG['domianURL'] + '/sys/common/static/',
       // 查询条件
       queryParam: {},
       // 表头
@@ -248,6 +247,24 @@ export default {
           align: 'center',
           dataIndex: 'cancelTime',
         },
+        // {
+        //   title: '附件',
+        //   align: 'center',
+        //   dataIndex: 'fileList',
+        //   ellipsis: true,
+        //   customRender: function (text) {
+        //     console.log(text)
+        //     if (text) {
+        //       const fileList = text.split(',')
+        //       console.log(fileList)
+        //       for(let i of fileList){
+        //         const url = window._CONFIG['domianURL'] + '/sys/common/static/' + i
+        //         return <a href='url'>{i}</a>
+        //       }
+              
+        //     }
+        //   }
+        // },
         /*{
                 title: '删除状态（0，正常，1已删除）',
                 align:"center",
