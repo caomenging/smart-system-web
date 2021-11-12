@@ -51,7 +51,8 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="配偶政治面貌" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="spoPoliticCou">
-              <a-input v-model="model.spoPoliticCou" placeholder="请输入配偶政治面貌" ></a-input>
+              <j-dict-select-tag type="list" v-model="model.spoPoliticCou" dictCode="political_status" placeholder="请选择配偶政治面貌" />
+              <!-- //<a-input v-model="model.spoPoliticCou" placeholder="请输入配偶政治面貌" ></a-input> -->
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -126,7 +127,7 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="结婚人配偶父母姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="marrySpoParName">
-              <j-dict-select-tag type="list" v-model="model.marrySpoParName" dictCode="" placeholder="请选择结婚人配偶父母姓名" />
+              <a-input v-model="model.marrySpoParName"  placeholder="请选择结婚人配偶父母姓名" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -170,7 +171,7 @@
           :rowNumber="true"
           :rowSelection="true"
           :actionButton="true"
-          :rootUrl:"rootUrl"/>
+          :rootUrl="rootUrl"/>
       </a-tab-pane>
     </a-tabs>
   </a-spin>

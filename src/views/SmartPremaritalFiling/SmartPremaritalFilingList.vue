@@ -5,18 +5,20 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="单位ID">
-              <a-input placeholder="请输入单位ID" v-model="queryParam.departId"></a-input>
+            <a-form-item label="单位">
+              <j-select-depart placeholder="请选择单位"  v-model="queryParam.departId" customReturnField='id' :multi="false" :treeOpera="true"></j-select-depart>
+              <!-- <j-dict-select-tag type="list" v-model="model.politicCou" dictCode="political_status" placeholder="请选择政治面貌" />
+              <a-input placeholder="请输入单位ID" v-model="queryParam.departId"></a-input> -->
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a @click="handleToggleSearch" style="margin-left: 8px">
+              <!-- <a @click="handleToggleSearch" style="margin-left: 8px">
                 {{ toggleSearchStatus ? '收起' : '展开' }}
                 <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>
+              </a> -->
             </span>
           </a-col>
         </a-row>
@@ -83,9 +85,9 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
+          <a @click="handleEdit(record)">详情</a>
 
-          <a-divider type="vertical" />
+          <!-- <a-divider type="vertical" />
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
@@ -98,7 +100,7 @@
                 </a-popconfirm>
               </a-menu-item>
             </a-menu>
-          </a-dropdown>
+          </a-dropdown> -->
         </span>
 
       </a-table>
@@ -184,7 +186,7 @@
           {
             title:'配偶政治面貌',
             align:"center",
-            dataIndex: 'spoPoliticCou'
+            dataIndex: 'politicCou_dictText'
           },
           {
             title:'结婚人姓名',
@@ -339,7 +341,7 @@
          fieldList.push({type:'string',value:'postRank',text:'职级',dictCode:'position_rank'})
          fieldList.push({type:'string',value:'spoName',text:'配偶姓名',dictCode:''})
          fieldList.push({type:'string',value:'spoUnitPos',text:'配偶单位职务',dictCode:'sys_position,name,code'})
-         fieldList.push({type:'string',value:'spoPoliticCou',text:'配偶政治面貌',dictCode:''})
+         fieldList.push({type:'string',value:'spoPoliticCou',text:'配偶政治面貌',dictCode:'political_status'})
          fieldList.push({type:'string',value:'marriedName',text:'结婚人姓名',dictCode:''})
          fieldList.push({type:'string',value:'relationWithMyself',text:'与本人关系',dictCode:''})
          fieldList.push({type:'date',value:'marryRegistTime',text:'婚姻登记时间'})
