@@ -5,19 +5,19 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="单位">
+              <j-select-depart placeholder="请输入单位" v-model="queryParam.workDepartment" customReturnField='id' :multi="false" :treeOpera="true"></j-select-depart>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="人员工号">
               <a-input placeholder="请输入人员工号" v-model="queryParam.workNo"></a-input>
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="姓名">
-              <a-input placeholder="请输入姓名" v-model="queryParam.name"></a-input>
-            </a-form-item>
-          </a-col>
           <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-item label="单位id">
-                <a-input placeholder="请输入单位id" v-model="queryParam.workDepartment"></a-input>
+              <a-form-item label="姓名">
+                <a-input placeholder="请输入姓名" v-model="queryParam.name"></a-input>
               </a-form-item>
             </a-col>
           </template>
@@ -285,12 +285,12 @@
       },
       getSuperFieldList(){
         let fieldList=[];
+         fieldList.push({type:'string',value:'workDepartment',text:'单位',dictCode:''})
          fieldList.push({type:'string',value:'workNo',text:'人员工号',dictCode:''})
          fieldList.push({type:'string',value:'name',text:'姓名',dictCode:''})
          fieldList.push({type:'string',value:'sex',text:'性别',dictCode:'sex'})
          fieldList.push({type:'int',value:'age',text:'年龄',dictCode:''})
          fieldList.push({type:'string',value:'politicsStatus',text:'政治面貌',dictCode:'political_status'})
-         fieldList.push({type:'string',value:'workDepartment',text:'单位id',dictCode:''})
          fieldList.push({type:'string',value:'job',text:'职务',dictCode:'sys_position,name,code'})
          fieldList.push({type:'string',value:'jobLevel',text:'职级',dictCode:'position_rank'})
          fieldList.push({type:'string',value:'weddingVenue',text:'婚宴场所名',dictCode:''})
