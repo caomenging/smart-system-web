@@ -10,11 +10,11 @@
     <!-- 查询区域-END -->
 
     <!-- 操作按钮区域 -->
-    <div class="table-operator">
+<!--    <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
       <a-button type="primary" icon="download" @click="handleExportXls('举报信息详情表')">导出</a-button>
 
-<!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
+    <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
       &lt;!&ndash; 高级查询区域 &ndash;&gt;
@@ -24,8 +24,8 @@
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
         </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
-      </a-dropdown>-->
-    </div>
+      </a-dropdown>
+    </div>-->
 
     <!-- table区域-begin -->
   <div>
@@ -68,6 +68,7 @@
           </a-button>
         </template>
 
+<!--
        <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)">编辑</a>
 
@@ -86,6 +87,7 @@
             </a-menu>
           </a-dropdown>
         </span>
+-->
 
       </a-table>
     </div>
@@ -158,14 +160,14 @@
             align:"center",
             dataIndex: 'reportingTime'
           },
-          {
+          /*{
             title: '操作',
             dataIndex: 'action',
             align:"center",
             fixed:"right",
             width:147,
             scopedSlots: { customRender: 'action' }
-          }
+          }*/
         ],
         url: {
           list: "/smartReportingInformationDetail/smartReportingInformationDetail/list",
@@ -190,7 +192,7 @@
     methods: {
       initDictConfig(){
       },
-      getSuperFieldList(){
+     /* getSuperFieldList(){
         let fieldList=[];
         fieldList.push({type:'string',value:'reflectedName',text:'被反映人姓名',dictCode:''})
         fieldList.push({type:'string',value:'reflectedDocumentid',text:'被反映人单位',dictCode:''})
@@ -200,7 +202,7 @@
         fieldList.push({type:'string',value:'contactNumber',text:'联系电话',dictCode:''})
         fieldList.push({type:'datetime',value:'reportingTime',text:'举报时间'})
         this.superFieldList = fieldList
-      }
+      }*/
     }
   }
 </script>
