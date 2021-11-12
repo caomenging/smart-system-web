@@ -184,7 +184,7 @@
           {
             title:'配偶政治面貌',
             align:"center",
-            dataIndex: 'spoPoliticCou'
+            dataIndex: 'politicCou_dictText'
           },
           {
             title:'结婚人姓名',
@@ -339,7 +339,7 @@
          fieldList.push({type:'string',value:'postRank',text:'职级',dictCode:'position_rank'})
          fieldList.push({type:'string',value:'spoName',text:'配偶姓名',dictCode:''})
          fieldList.push({type:'string',value:'spoUnitPos',text:'配偶单位职务',dictCode:'sys_position,name,code'})
-         fieldList.push({type:'string',value:'spoPoliticCou',text:'配偶政治面貌',dictCode:''})
+         fieldList.push({type:'string',value:'spoPoliticCou',text:'配偶政治面貌',dictCode:'political_status'})
          fieldList.push({type:'string',value:'marriedName',text:'结婚人姓名',dictCode:''})
          fieldList.push({type:'string',value:'relationWithMyself',text:'与本人关系',dictCode:''})
          fieldList.push({type:'date',value:'marryRegistTime',text:'婚姻登记时间'})
