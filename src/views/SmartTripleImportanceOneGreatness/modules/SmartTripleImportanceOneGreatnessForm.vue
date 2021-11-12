@@ -221,7 +221,15 @@
         })
         // 加载子表数据
         if (this.model.id) {
+          console.log(this.model)
           let params = { id: this.model.id }
+          getAction(this.url.queryById,params).then(res=>{
+             if(res.success){
+               this.model=res.result
+             }
+           }
+
+          )
           this.requestSubTableData(this.url.smartTripleImportanceOneGreatnessDescription.list, params, this.smartTripleImportanceOneGreatnessDescriptionTable)
         }
       },
