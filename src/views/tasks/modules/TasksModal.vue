@@ -10,37 +10,40 @@
     :okButtonProps="{ class: { 'jee-hidden': verifyDisableSubmit } }"
     @cancel="handleCancel"
   >
-    <test-verify-form v-if="type==='婚前报备'" ref="realForm" :disabled="disableSubmit" />
+    <!-- <test-verify-form v-if="type==='婚前报备'" ref="realForm" :disabled="disableSubmit" /> -->
     <!-- <test v-if="type==='婚前报备'" ref="realForm" :disabled="disableSubmit" /> -->
-    <smart-premarital-filing-form v-if="type==='婚报备'" ref="realForm" :disabled="disableSubmit" />
+    <smart-premarital-filing-form v-if="type==='婚前报备'" ref="realForm" :disabled="disableSubmit" />
     <smart-supervision-form v-if="type==='监督检查'" ref="realForm" :disabled="disableSubmit" />
     <smart-post-marriage-report-form v-if="type==='婚后报备'" ref="realForm" :disabled="disableSubmit" />
-
-    <h2 :style="{ padding: '24px', background: '#9cdcfe', textAlign: 'center' }" >审核区域</h2>
-    <tasks-form ref="verifyForm" @ok="submitCallback" :disabled="verifyDisableSubmit" :flowNo="flowNo" />
+    <smart-create-advice-form v-if="type==='制发建议'" ref="realForm" :disabled="disableSubmit" />
+    
     <smart-triple-importance-one-greatness-form v-if="type==='三重一大'" ref="realForm" :disabled="disableSubmit" />
+
+    <h3 :style="{ padding: '24px', background: '#9cdcfe', textAlign: 'center' }" >审核区域</h3>
+
+    <tasks-form ref="verifyForm" @ok="submitCallback" :disabled="verifyDisableSubmit" :flowNo="flowNo" />
   </j-modal>
 </template>
 
 <script>
 import SmartPremaritalFilingForm from '../../SmartPremaritalFiling/modules/SmartPremaritalFilingForm.vue'
-import Test from '../model/test.vue'
 import TasksForm from './TasksForm'
 import TestVerifyForm from '@/views/testVerify/modules/TestVerifyForm'
 import SmartSupervisionForm from '../../smartSupervision/modules/SmartSupervisionForm.vue'
 import SmartPostMarriageReportForm from '../../SmartPostMarriage/modules/SmartPostMarriageReportForm.vue'
 import SmartTripleImportanceOneGreatnessForm from '../../SmartTripleImportanceOneGreatness/modules/SmartTripleImportanceOneGreatnessForm.vue'
+import SmartCreateAdviceForm from '../../SmartSuggestion/modules/SmartCreateAdviceForm'
 
 export default {
   name: 'TaskModal',
   components: {
     TasksForm,
     TestVerifyForm,
-    Test,
     SmartPremaritalFilingForm,
     SmartSupervisionForm,
     SmartPostMarriageReportForm,
     SmartTripleImportanceOneGreatnessForm,
+    SmartCreateAdviceForm
   },
   data() {
     return {
@@ -66,7 +69,9 @@ export default {
     edit(record) {
       this.visible = true
       this.type = record.taskType
+      
       this.$nextTick(() => {
+        this.title = record.taskType + '条目' + this.title
         let realRecord = record
         realRecord.id = record.flowNo
         this.flowNo = realRecord.id

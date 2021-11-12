@@ -160,7 +160,16 @@
           {
             title:'审核状态',
             align:"center",
-            dataIndex: 'flowStatus'
+            dataIndex: 'flowStatus',
+            customRender: function (text) {
+              if (text == 1) {
+                return '通过'
+              } else if (text == 2) {
+                return '待审核'
+              } else if (text == 0) {
+                return '驳回'
+              }
+            }
           },
           {
             title:'填报日期',
