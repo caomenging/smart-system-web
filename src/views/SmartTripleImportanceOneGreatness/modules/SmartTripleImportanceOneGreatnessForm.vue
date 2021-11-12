@@ -179,6 +179,7 @@
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
+              validateRules: [{ required: true, message: '${title}不能为空' }],
             },
           ]
         },
