@@ -104,7 +104,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <!--<a @click="handleEdit(record)">编辑</a>-->
+          <a @click="handleEdit(record)">编辑</a>
           <a @click="handleDetail(record)">详情</a>
           <!--<a-divider type="vertical" />
           <a-dropdown>
@@ -173,30 +173,35 @@
             align:"center",
             dataIndex: 'meetName'
           },
-          {
-            title:'主持人工号',
+/*          {
+            title:'主持人ID',
             align:"center",
-            dataIndex: 'hostNo_dictText'
+            dataIndex: 'hostId_dictText'
+          },*/
+          {
+            title:'主持人姓名',
+            align:"center",
+            dataIndex: 'hostName'
           },
           {
-            title:'受约谈函询人工号',
+            title:'受约谈函询人姓名',
             align:"center",
-            dataIndex: 'talkedNo_dictText'
+            dataIndex: 'talkedName'
           },
           {
-            title:'受诫勉谈话人工号',
+            title:'受诫勉谈话人姓名',
             align:"center",
-            dataIndex: 'inquirerNo_dictText'
+            dataIndex: 'inquirerName'
           },
           {
-            title:'受党纪处分人工号',
+            title:'受党纪处分人姓名',
             align:"center",
-            dataIndex: 'punisherNo_dictText'
+            dataIndex: 'punisherName'
           },
           {
-            title:'记录人工号',
+            title:'记录人姓名',
             align:"center",
-            dataIndex: 'recorderNo_dictText'
+            dataIndex: 'recorderName'
           },
           {
             title: '操作',
@@ -236,12 +241,17 @@
          fieldList.push({type:'datetime',value:'meetTime',text:'会议时间'})
          fieldList.push({type:'string',value:'meetLocation',text:'会议地点',dictCode:''})
          fieldList.push({type:'string',value:'meetName',text:'会议名称',dictCode:''})
-         fieldList.push({type:'sel_user',value:'hostNo',text:'主持人工号'})
-         fieldList.push({type:'sel_user',value:'talkedNo',text:'受约谈函询人工号'})
-         fieldList.push({type:'sel_user',value:'inquirerNo',text:'受诫勉谈话人工号'})
-         fieldList.push({type:'sel_user',value:'punisherNo',text:'受党纪处分人工号'})
+         fieldList.push({type:'string',value:'hostId',text:'主持人'})
+         fieldList.push({type:'string',value:'hostName',text:'主持人姓名'})
+         fieldList.push({type:'string',value:'talkedId',text:'受约谈函询人'})
+         fieldList.push({type:'string',value:'talkedName',text:'受约谈函询人姓名'})
+         fieldList.push({type:'string',value:'inquirerId',text:'受诫勉谈话人'})
+         fieldList.push({type:'string',value:'inquirerName',text:'受诫勉谈话人姓名'})
+         fieldList.push({type:'string',value:'punisherId',text:'受党纪处分人'})
+         fieldList.push({type:'string',value:'punisherName',text:'受诫勉谈话人姓名'})
          fieldList.push({type:'string',value:'abs',text:'会议摘要',dictCode:''})
-         fieldList.push({type:'sel_user',value:'recorderNo',text:'记录人工号'})
+         fieldList.push({type:'string',value:'recorderId',text:'记录人'})
+        fieldList.push({type:'string',value:'recorderName',text:'记录人姓名'})
         this.superFieldList = fieldList
       }
     }

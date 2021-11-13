@@ -148,7 +148,7 @@
             dataIndex: 'exeDept'
           },
           {
-            title:'政务服务大厅名称',
+            title:'窗口服务大厅名称',
             align:"center",
             dataIndex: 'windowsName'
           },
@@ -212,7 +212,7 @@
       getSuperFieldList(){
         let fieldList=[];
         fieldList.push({type:'string',value:'exeDept',text:'主管单位',dictCode:''})
-        fieldList.push({type:'string',value:'windowsName',text:'政务服务大厅名称',dictCode:''})
+        fieldList.push({type:'string',value:'windowsName',text:'窗口服务大厅名称',dictCode:''})
         fieldList.push({type:'string',value:'personName',text:'人员名称',dictCode:''})
         fieldList.push({type:'string',value:'evaluateResult',text:'评价结果',dictCode:'evaluate_grade'})
         fieldList.push({type:'string',value:'evaluateName',text:'评价人',dictCode:''})

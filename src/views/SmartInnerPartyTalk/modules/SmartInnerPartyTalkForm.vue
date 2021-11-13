@@ -20,35 +20,60 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="主持人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="hostNo">
-              <j-select-user-by-dep v-model="model.hostNo" />
+            <a-form-model-item label="主持人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="hostId">
+              <select-user-by-dep v-model="model.hostId"  @info="getHostUser" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="受约谈函询人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="talkedNo">
-              <j-select-user-by-dep v-model="model.talkedNo" />
+            <a-form-model-item label="主持人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="hostName" v-show="false">
+              <a-input v-model="model.hostName" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="受诫勉谈话人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="inquirerNo">
-              <j-select-user-by-dep v-model="model.inquirerNo" />
+            <a-form-model-item label="受约谈函询人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="talkedId">
+              <select-user-by-dep v-model="model.talkedId"  @info="getTalkerUser" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="受党纪处分人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="punisherNo">
-              <j-select-user-by-dep v-model="model.punisherNo" />
+              <a-form-model-item label="受约谈函询人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="talkedName" v-show="false">
+                <a-input v-model="model.talkedName" />
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24" >
+            <a-form-model-item label="受诫勉谈话人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="inquirerId">
+              <select-user-by-dep v-model="model.inquirerId" @info="getInquirerUser"/>
             </a-form-model-item>
           </a-col>
+            <a-col :span="24" >
+              <a-form-model-item label="受诫勉谈话人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="inquirerName" v-show="false">
+                <a-input v-model="model.inquirerName" />
+              </a-form-model-item>
+            </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="受党纪处分人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="punisherId">
+              <select-user-by-dep v-model="model.punisherId"  @info="getPunisherUser"/>
+            </a-form-model-item>
+          </a-col>
+            <a-col :span="24" >
+              <a-form-model-item label="受党纪处分人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="punisherName" v-show="false">
+                <a-input v-model="model.punisherName"  />
+              </a-form-model-item>
+            </a-col>
           <a-col :span="24" >
             <a-form-model-item label="会议摘要" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="abs">
               <j-editor v-model="model.abs" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="记录人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="recorderNo">
-              <j-select-user-by-dep v-model="model.recorderNo" />
+            <a-form-model-item label="记录人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="recorderId">
+              <select-user-by-dep v-model="model.recorderId"  @info="getRecorderUser"/>
             </a-form-model-item>
           </a-col>
+            <a-col :span="24" >
+              <a-form-model-item label="记录人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="recorderName" v-show="false">
+                <a-input v-model="model.recorderName" />
+              </a-form-model-item>
+            </a-col>
         </a-row>
       </a-form-model>
     </j-form-container>
@@ -89,14 +114,27 @@
   import { FormTypes,getRefPromise,VALIDATE_NO_PASSED } from '@/utils/JEditableTableUtil'
   import { JEditableTableModelMixin } from '@/mixins/JEditableTableModelMixin'
   import { validateDuplicateValue } from '@/utils/util'
+  import SelectUserByDep from '@/components/jeecgbiz/modal/SelectUserByDep'
 
   export default {
     name: 'SmartInnerPartyTalkForm',
     mixins: [JEditableTableModelMixin],
-    components: {
-    },
+    components: {SelectUserByDep},
     data() {
       return {
+        model:{
+          hostId:'',
+          hostName:'',
+          talkedId:'',
+          talkedName:'',
+          inquirerId:'',
+          inquirerName:'',
+          punisherId:'',
+          punisherName:'',
+          recorderId:'',
+          recorderName:''
+
+        },
         rootUrl:'/SmartInnerPartyTalk/smartInnerPartyTalk',
         labelCol: {
           xs: { span: 24 },
@@ -114,8 +152,6 @@
           xs: { span: 24 },
           sm: { span: 20 },
         },
-        model:{
-        },
         // 新增时子表默认添加几行空数据
         addDefaultRowNum: 1,
         validatorRules: {
@@ -129,11 +165,11 @@
           dataSource: [],
           columns: [
             {
-              title: '参会人员工号',
-              key: 'papcNo',
-              type: FormTypes.input,
+              title: '参会人员',
+              key: 'papcId',
+              type: FormTypes.sel_user,
               width:"200px",
-              placeholder: '请输入${title}',
+              placeholder: '请选择${title}',
               defaultValue:'',
             },
           ]
@@ -222,6 +258,7 @@
         this.model = Object.assign({},record);
         this.visible = true;
         console.log(this.model)
+
         this.editAfter();
       },
       /** 调用完edit()方法之后会自动调用此方法 */
@@ -269,6 +306,46 @@
       validateError(msg){
         this.$message.error(msg)
       },
+      getHostUser(back){
+        let that = this
+        console.log(back)
+        //this.model = back[0]
+        //console.log(this.model)
+        that.model.hostId= back[0].id
+        that.model.hostName = back[0].realname
+      },
+      getTalkerUser(back){
+        let that = this
+        console.log(back)
+        //this.model = back[0]
+        //console.log(this.model)
+        that.model.talkedId = back[0].id
+        that.model.talkedName = back[0].realname
+      },
+      getInquirerUser(back){
+        let that = this
+        console.log(back)
+        //this.model = back[0]
+        //console.log(this.model)
+        that.model.inquirerId = back[0].id
+        that.model.inquirerName = back[0].realname
+      },
+      getPunisherUser(back){
+        let that = this
+        console.log(back)
+        //this.model = back[0]
+        //console.log(this.model)
+        that.model.punisherId = back[0].id
+        that.model.punisherName = back[0].realname
+      },
+      getRecorderUser(back){
+        let that = this
+        console.log(back)
+        //this.model = back[0]
+        //console.log(this.model)
+        that.model.recorderId = back[0].id
+        that.model.recorderName = back[0].realname
+      }
 
     }
   }

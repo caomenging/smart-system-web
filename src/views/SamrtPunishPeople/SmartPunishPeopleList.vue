@@ -155,11 +155,11 @@
               return parseInt(index)+1;
             }
           },
-          {
-            title:'处分人工号',
+/*          {
+            title:'处分人Id',
             align:"center",
-            dataIndex: 'punishNo'
-          },
+            dataIndex: 'punishId'
+          },*/
           {
             title:'处分人姓名',
             align:"center",
@@ -237,7 +237,7 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-        fieldList.push({type:'sel_user',value:'punishNo',text:'处分人工号'})
+        fieldList.push({type:'string',value:'punishId',text:'处分人'})
         fieldList.push({type:'string',value:'punishName',text:'处分人姓名',dictCode:''})
         fieldList.push({type:'string',value:'departId',text:'单位ID',dictCode:''})
         fieldList.push({type:'string',value:'departName',text:'单位',dictCode:''})
