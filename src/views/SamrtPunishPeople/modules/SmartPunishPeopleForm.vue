@@ -4,12 +4,12 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24">
-            <a-form-model-item label="处分人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="punishNo">
-              <select-user-by-dep v-model="model.punishNo" @info="getUser" text="work_no" store="work_no" :multi="false" />
+            <a-form-model-item label="处分人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="punishId">
+              <select-user-by-dep v-model="model.punishId" @info="getUser"  :multi="false" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="处分人姓名"  :labelCol="labelCol" :wrapperCol="wrapperCol" prop="punishName">
+            <a-form-model-item label="处分人姓名"  :labelCol="labelCol" :wrapperCol="wrapperCol" prop="punishName" v-show="false">
               <a-input v-model="model.punishName" placeholder="处分人姓名"
                        readOnly
                        unselectable="on"></a-input>
@@ -158,7 +158,7 @@
         console.log(back)
         //this.model = back[0]
         //console.log(this.model)
-        this.model.punishNo = back[0].workNo
+        this.model.punishId = back[0].id
         this.model.punishName = back[0].realname
         this.model.departName = back[0].orgCodeTxt
         this.model.phone = back[0].phone

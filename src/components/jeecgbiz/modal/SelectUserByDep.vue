@@ -60,7 +60,7 @@
       // 存储字段 [key field]
       store: {
         type: String,
-        default: 'username',
+        default: 'id',
         required: false
       },
       // 显示字段 [label field]
