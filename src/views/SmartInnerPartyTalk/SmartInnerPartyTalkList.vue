@@ -4,22 +4,31 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <!--<a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="单位ID">
+              <a-input placeholder="请输入单位ID" v-model="queryParam.departId"></a-input>
+            </a-form-item>
+          </a-col>-->
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="单位">
-              <j-select-depart placeholder="请选择单位" v-model="queryParam.deptId"/>
+            <a-form-item label="会议时间">
+              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.meetTime_begin"></j-date>
+              <!--<span class="query-group-split-cust"></span>-->
+              <a-col :xl="6" :lg="7" :md="8" :sm="24">
+              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.meetTime_end"></j-date>
+              </a-col>
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="会议地点">
-              <a-input placeholder="请输入会议地点" v-model="queryParam.location"></a-input>
-            </a-form-item>
-          </a-col>
-          <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-item label="会议名称">
-                <a-input placeholder="请输入会议名称" v-model="queryParam.name"></a-input>
+              <a-form-item label="会议地点">
+                <a-input placeholder="请输入会议地点" v-model="queryParam.meetLocation"></a-input>
               </a-form-item>
             </a-col>
+            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+              <a-form-item label="会议名称">
+                <a-input placeholder="请输入会议名称" v-model="queryParam.meetName"></a-input>
+              </a-form-item>
+            </a-col>
+          <template v-if="toggleSearchStatus">
           </template>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
@@ -95,9 +104,9 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
-
-          <a-divider type="vertical" />
+          <!--<a @click="handleEdit(record)">编辑</a>-->
+          <a @click="handleDetail(record)">详情</a>
+          <!--<a-divider type="vertical" />
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
@@ -110,7 +119,7 @@
                 </a-popconfirm>
               </a-menu-item>
             </a-menu>
-          </a-dropdown>
+          </a-dropdown>-->
         </span>
 
       </a-table>
@@ -125,11 +134,13 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SmartInnerPartyTalkModal from './modules/SmartInnerPartyTalkModal'
   import '@/assets/less/TableExpand.less'
+  import AFormItem from 'ant-design-vue/es/form/FormItem'
 
   export default {
-    name: "SmartInnerParty",
+    name: "SmartInnerPartyTalkList",
     mixins:[JeecgListMixin],
     components: {
+      AFormItem,
       SmartInnerPartyTalkModal
     },
     data () {
@@ -148,27 +159,44 @@
             }
           },
           {
-            title:'单位',
-            align:"center",
-            dataIndex: 'deptId_dictText'
-          },
-          {
             title:'会议时间',
             align:"center",
             dataIndex: 'meetTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
           },
           {
             title:'会议地点',
             align:"center",
-            dataIndex: 'location'
+            dataIndex: 'meetLocation'
           },
           {
             title:'会议名称',
             align:"center",
-            dataIndex: 'name'
+            dataIndex: 'meetName'
+          },
+          {
+            title:'主持人工号',
+            align:"center",
+            dataIndex: 'hostNo_dictText'
+          },
+          {
+            title:'受约谈函询人工号',
+            align:"center",
+            dataIndex: 'talkedNo_dictText'
+          },
+          {
+            title:'受诫勉谈话人工号',
+            align:"center",
+            dataIndex: 'inquirerNo_dictText'
+          },
+          {
+            title:'受党纪处分人工号',
+            align:"center",
+            dataIndex: 'punisherNo_dictText'
+          },
+          {
+            title:'记录人工号',
+            align:"center",
+            dataIndex: 'recorderNo_dictText'
           },
           {
             title: '操作',
@@ -204,17 +232,16 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'sel_depart',value:'deptId',text:'单位'})
-         fieldList.push({type:'date',value:'meetTime',text:'会议时间'})
-         fieldList.push({type:'string',value:'location',text:'会议地点',dictCode:''})
-         fieldList.push({type:'string',value:'name',text:'会议名称',dictCode:''})
-         fieldList.push({type:'string',value:'hostNo',text:'主持人工号',dictCode:''})
-         fieldList.push({type:'string',value:'talkNo',text:'受约谈函询人工号',dictCode:''})
-         fieldList.push({type:'string',value:'inquirNo',text:'受诫勉谈话人工号',dictCode:''})
-         fieldList.push({type:'string',value:'punishNo',text:'受党纪处分人工号',dictCode:''})
+         fieldList.push({type:'string',value:'departId',text:'单位ID',dictCode:''})
+         fieldList.push({type:'datetime',value:'meetTime',text:'会议时间'})
+         fieldList.push({type:'string',value:'meetLocation',text:'会议地点',dictCode:''})
+         fieldList.push({type:'string',value:'meetName',text:'会议名称',dictCode:''})
+         fieldList.push({type:'sel_user',value:'hostNo',text:'主持人工号'})
+         fieldList.push({type:'sel_user',value:'talkedNo',text:'受约谈函询人工号'})
+         fieldList.push({type:'sel_user',value:'inquirerNo',text:'受诫勉谈话人工号'})
+         fieldList.push({type:'sel_user',value:'punisherNo',text:'受党纪处分人工号'})
          fieldList.push({type:'string',value:'abs',text:'会议摘要',dictCode:''})
-         fieldList.push({type:'string',value:'recorderNo',text:'记录人工号',dictCode:''})
-         fieldList.push({type:'string',value:'createrNo',text:'创建人工号',dictCode:''})
+         fieldList.push({type:'sel_user',value:'recorderNo',text:'记录人工号'})
         this.superFieldList = fieldList
       }
     }

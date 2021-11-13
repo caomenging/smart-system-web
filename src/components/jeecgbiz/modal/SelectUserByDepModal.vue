@@ -19,7 +19,7 @@
             :selectedKeys="selectedDepIds"
             :checkStrictly="true"
             :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
-            :treeData="departTree"
+            :treeData="naturalDepartTree"
             :expandAction="false"
             :expandedKeys.sync="expandedKeys"
             @select="onDepSelect"
@@ -57,15 +57,16 @@
 
 <script>
   import { pushIfNotExist, filterObj } from '@/utils/util'
-  import {queryDepartTreeList, getUserList, queryUserByDepId} from '@/api/api'
+  import {queryDepartTreeList, getUserList, queryUserByDepId,queryNaturalDepartTreeList} from '@/api/api'
   import { getAction } from '@/api/manage'
 
   export default {
-    name: 'JSelectUserByDepModal',
+    name: 'SelectUserByDepModal',
     components: {},
     props: ['modalWidth', 'multi', 'userIds', 'store', 'text'],
     data() {
       return {
+        naturalDepartTree: [],
         queryParam: {
           username: "",
         },
@@ -164,7 +165,8 @@
     created() {
       // 该方法触发屏幕自适应
       this.resetScreenSize();
-      this.loadData()
+      this.loadData();
+      this.loadNaturalTree()
     },
     methods: {
       initUserNames() {
@@ -308,7 +310,30 @@
           this.loading = false
         })
       },
-      queryDepartTree() {
+      loadNaturalTree() {
+        var that = this
+        this.loading = true;
+        that.naturalTreeData = []
+        that.naturalDepartTree = []
+        queryNaturalDepartTreeList().then((result) => {
+          if (result.success) {
+            //部门全选后，再添加部门，选中数量增多
+            // this.allTreeKeys = [];
+            for (let j = 0; j < result.result.length; j++) {
+              let temp2 = result.result[j]
+              that.naturalTreeData.push(temp2)
+              that.naturalDepartTree.push(temp2)
+              // that.setThisExpandedKeys(temp2)
+              // that.getAllKeys(temp2);
+              // console.log(temp.id)
+
+            }
+            // this.loading = false
+          }
+          this.loading = false;
+        })
+      },
+     /* queryDepartTree() {
         queryDepartTreeList().then((res) => {
           if (res.success) {
             this.departTree = res.result;
@@ -316,7 +341,7 @@
             this.expandedKeys = this.departTree.map(item => item.id)
           }
         })
-      },
+      },*/
       modalFormOk() {
         this.loadData();
       }
