@@ -14,7 +14,6 @@
       <a-col :md="6" :sm="24">
         <a-card :bordered="false">
           <!--组织机构-->
-          <!--修改为自然机构-->
           <a-directory-tree
             selectable
             :selectedKeys="selectedDepIds"
@@ -25,16 +24,6 @@
             :expandedKeys.sync="expandedKeys"
             @select="onDepSelect"
           />
-          <!--<a-directory-tree
-            selectable
-            :selectedKeys="selectedDepIds"
-            :checkStrictly="true"
-            :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
-            :treeData="departTree"
-            :expandAction="false"
-            :expandedKeys.sync="expandedKeys"
-            @select="onDepSelect"
-          />-->
         </a-card>
       </a-col>
       <a-col :md="18" :sm="24">
@@ -72,7 +61,7 @@
   import { getAction } from '@/api/manage'
 
   export default {
-    name: 'JSelectUserByDepModal',
+    name: 'SelectUserByDepModal',
     components: {},
     props: ['modalWidth', 'multi', 'userIds', 'store', 'text'],
     data() {
@@ -177,7 +166,7 @@
       // 该方法触发屏幕自适应
       this.resetScreenSize();
       this.loadData();
-      this.loadNaturalTree();
+      this.loadNaturalTree()
     },
     methods: {
       initUserNames() {
@@ -185,8 +174,6 @@
           // 这里最后加一个 , 的原因是因为无论如何都要使用 in 查询，防止后台进行了模糊匹配，导致查询结果不准确
           let values = this.userIds.split(',') + ','
           let param = {[this.store]: values}
-          console.log(this.userIds)
-          console.log(this.store)
           getAction('/sys/user/getMultiUser', param).then((list)=>{
             this.selectionRows = []
             let selectedRowKeys = []
@@ -323,17 +310,6 @@
           this.loading = false
         })
       },
-      //原-机构树
-      queryDepartTree() {
-        queryDepartTreeList().then((res) => {
-          if (res.success) {
-            this.departTree = res.result;
-            // 默认展开父节点
-            this.expandedKeys = this.departTree.map(item => item.id)
-          }
-        })
-      },
-      //自然机构树
       loadNaturalTree() {
         var that = this
         this.loading = true;
@@ -357,6 +333,15 @@
           this.loading = false;
         })
       },
+     /* queryDepartTree() {
+        queryDepartTreeList().then((res) => {
+          if (res.success) {
+            this.departTree = res.result;
+            // 默认展开父节点
+            this.expandedKeys = this.departTree.map(item => item.id)
+          }
+        })
+      },*/
       modalFormOk() {
         this.loadData();
       }

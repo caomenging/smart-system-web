@@ -8,9 +8,6 @@
             <a-form-item label="单位">
               <j-select-depart placeholder="请选择单位"  v-model="queryParam.departId" customReturnField='id' :multi="false" :treeOpera="true"></j-select-depart>
             </a-form-item>
-            <!-- <a-form-item label="所属部门">
-              <a-input placeholder="请输入所属部门" v-model="queryParam.sysOrgCode"></a-input>
-            </a-form-item> -->
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
@@ -30,7 +27,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('八项规定监督检查表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('制发建议表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -107,25 +104,25 @@
       </a-table>
     </div>
 
-    <smart-supervision-modal ref="modalForm" @ok="modalFormOk"/>
+    <smart-create-advice-modal ref="modalForm" @ok="modalFormOk"/>
   </a-card>
 </template>
 
 <script>
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartSupervisionModal from './modules/SmartSupervisionModal'
+  import SmartCreateAdviceModal from './modules/SmartCreateAdviceModal'
   import '@/assets/less/TableExpand.less'
 
   export default {
-    name: "SmartSupervisionList",
+    name: "SmartCreateAdviceList",
     mixins:[JeecgListMixin],
     components: {
-      SmartSupervisionModal
+      SmartCreateAdviceModal
     },
     data () {
       return {
-        description: '八项规定监督检查表管理页面',
+        description: '制发建议表管理页面',
         // 表头
         columns: [
           {
@@ -139,38 +136,20 @@
             }
           },
           {
-            title:'创建人',
+            title:'基本情况',
             align:"center",
-            dataIndex: 'createBy'
+            dataIndex: 'basicDesc'
           },
           {
-            title:'创建日期',
+            title:'存在问题',
             align:"center",
-            dataIndex: 'createTime'
+            dataIndex: 'problem'
           },
           {
-            title:'标题',
+            title:'主要措施',
             align:"center",
-            dataIndex: 'title'
+            dataIndex: 'mainSolution'
           },
-          {
-            title:'监督检查时间',
-            align:"center",
-            dataIndex: 'supervisionTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
-          },
-          {
-            title:'创建人员工号',
-            align:"center",
-            dataIndex: 'creatorNo'
-          },
-          // {
-          //   title:"所属部门",
-          //   align:"center",
-          //   dataIndex:"sysOrgCode"
-          // },
           {
             title: '操作',
             dataIndex: 'action',
@@ -181,11 +160,11 @@
           }
         ],
         url: {
-          list: "/smartSupervision/smartSupervision/list",
-          delete: "/smartSupervision/smartSupervision/delete",
-          deleteBatch: "/smartSupervision/smartSupervision/deleteBatch",
-          exportXlsUrl: "/smartSupervision/smartSupervision/exportXls",
-          importExcelUrl: "smartSupervision/smartSupervision/importExcel",
+          list: "/smartCreateAdvice/smartCreateAdvice/list",
+          delete: "/smartCreateAdvice/smartCreateAdvice/delete",
+          deleteBatch: "/smartCreateAdvice/smartCreateAdvice/deleteBatch",
+          exportXlsUrl: "/smartCreateAdvice/smartCreateAdvice/exportXls",
+          importExcelUrl: "smartCreateAdvice/smartCreateAdvice/importExcel",
           
         },
         dictOptions:{},
@@ -205,14 +184,10 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
-         fieldList.push({type:'datetime',value:'createTime',text:'创建日期'})
-         fieldList.push({type:'string',value:'departId',text:'部门ID',dictCode:''})
-         fieldList.push({type:'string',value:'title',text:'标题',dictCode:''})
-         fieldList.push({type:'Text',value:'content',text:'正文',dictCode:''})
-         fieldList.push({type:'date',value:'supervisionTime',text:'监督检查时间'})
-         fieldList.push({type:'string',value:'creatorNo',text:'创建人员工号',dictCode:''})
-         fieldList.push({type:'string',value:'sysOrgCode',text:'所属部门',dictCode:''})
+         fieldList.push({type:'string',value:'basicDesc',text:'基本情况',dictCode:''})
+         fieldList.push({type:'string',value:'problem',text:'存在问题',dictCode:''})
+         fieldList.push({type:'string',value:'mainSolution',text:'主要措施',dictCode:''})
+         fieldList.push({type:'string',value:'departId',text:'单位',dictCode:''})
         this.superFieldList = fieldList
       }
     }

@@ -4,24 +4,31 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <!--<a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="单位ID">
+              <a-input placeholder="请输入单位ID" v-model="queryParam.departId"></a-input>
+            </a-form-item>
+          </a-col>-->
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="单位">
-              <j-select-depart placeholder="请选择单位"  v-model="queryParam.departId" customReturnField='id' :multi="false" :treeOpera="true"></j-select-depart>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="10" :lg="11" :md="12" :sm="24">
             <a-form-item label="会议时间">
-              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.meetingTime_begin"></j-date>
-              <span class="query-group-split-cust"></span>
-              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.meetingTime_end"></j-date>
+              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.meetTime_begin"></j-date>
+              <!--<span class="query-group-split-cust"></span>-->
+              <a-col :xl="6" :lg="7" :md="8" :sm="24">
+              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.meetTime_end"></j-date>
+              </a-col>
             </a-form-item>
           </a-col>
-          <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-item label="会议名称">
-                <a-input placeholder="请输入会议名称" v-model="queryParam.meetingName"></a-input>
+              <a-form-item label="会议地点">
+                <a-input placeholder="请输入会议地点" v-model="queryParam.meetLocation"></a-input>
               </a-form-item>
             </a-col>
+            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+              <a-form-item label="会议名称">
+                <a-input placeholder="请输入会议名称" v-model="queryParam.meetName"></a-input>
+              </a-form-item>
+            </a-col>
+          <template v-if="toggleSearchStatus">
           </template>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
@@ -37,11 +44,11 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-
+    
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('民主生活会表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('党内谈话表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -98,8 +105,8 @@
 
         <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)">编辑</a>
-
-          <a-divider type="vertical" />
+          <a @click="handleDetail(record)">详情</a>
+          <!--<a-divider type="vertical" />
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
@@ -112,31 +119,33 @@
                 </a-popconfirm>
               </a-menu-item>
             </a-menu>
-          </a-dropdown>
+          </a-dropdown>-->
         </span>
 
       </a-table>
     </div>
 
-    <smart-democratic-life-meeting-modal ref="modalForm" @ok="modalFormOk"/>
+    <smart-inner-party-talk-modal ref="modalForm" @ok="modalFormOk"/>
   </a-card>
 </template>
 
 <script>
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartDemocraticLifeMeetingModal from './modules/SmartDemocraticLifeMeetingModal'
+  import SmartInnerPartyTalkModal from './modules/SmartInnerPartyTalkModal'
   import '@/assets/less/TableExpand.less'
+  import AFormItem from 'ant-design-vue/es/form/FormItem'
 
   export default {
-    name: "SmartDemocraticLifeMeetingList",
+    name: "SmartInnerPartyTalkList",
     mixins:[JeecgListMixin],
     components: {
-      SmartDemocraticLifeMeetingModal
+      AFormItem,
+      SmartInnerPartyTalkModal
     },
     data () {
       return {
-        description: '民主生活会表管理页面',
+        description: '党内谈话表管理页面',
         // 表头
         columns: [
           {
@@ -150,59 +159,49 @@
             }
           },
           {
-            title:'单位',
-            align:"center",
-            dataIndex: 'departId'
-          },
-          {
             title:'会议时间',
             align:"center",
-            dataIndex: 'meetingTime'
-          },
-          {
-            title:'会议名称',
-            align:"center",
-            dataIndex: 'meetingName'
+            dataIndex: 'meetTime',
           },
           {
             title:'会议地点',
             align:"center",
-            dataIndex: 'address'
+            dataIndex: 'meetLocation'
           },
           {
-            title:'主持人工号',
+            title:'会议名称',
             align:"center",
-            dataIndex: 'hostId'
+            dataIndex: 'meetName'
+          },
+/*          {
+            title:'主持人ID',
+            align:"center",
+            dataIndex: 'hostId_dictText'
+          },*/
+          {
+            title:'主持人姓名',
+            align:"center",
+            dataIndex: 'hostName'
           },
           {
-            title:'上报时间',
+            title:'受约谈函询人姓名',
             align:"center",
-            dataIndex: 'reportingTime'
+            dataIndex: 'talkedName'
           },
           {
-            title:'会议记录人工号',
+            title:'受诫勉谈话人姓名',
             align:"center",
-            dataIndex: 'recorderId'
+            dataIndex: 'inquirerName'
           },
           {
-            title:'会议内容摘要',
+            title:'受党纪处分人姓名',
             align:"center",
-            dataIndex: 'summary'
+            dataIndex: 'punisherName'
           },
           {
-            title:'会议记录',
+            title:'记录人姓名',
             align:"center",
-            dataIndex: 'record'
-          },
-          {
-            title:'创建人',
-            align:"center",
-            dataIndex: 'createBy'
-          },
-          {
-            title:'创建时间',
-            align:"center",
-            dataIndex: 'createTime'
+            dataIndex: 'recorderName'
           },
           {
             title: '操作',
@@ -214,12 +213,12 @@
           }
         ],
         url: {
-          list: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/list",
-          delete: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/delete",
-          deleteBatch: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/deleteBatch",
-          exportXlsUrl: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/exportXls",
-          importExcelUrl: "smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/importExcel",
-
+          list: "/SmartInnerPartyTalk/smartInnerPartyTalk/list",
+          delete: "/SmartInnerPartyTalk/smartInnerPartyTalk/delete",
+          deleteBatch: "/SmartInnerPartyTalk/smartInnerPartyTalk/deleteBatch",
+          exportXlsUrl: "/SmartInnerPartyTalk/smartInnerPartyTalk/exportXls",
+          importExcelUrl: "SmartInnerPartyTalk/smartInnerPartyTalk/importExcel",
+          
         },
         dictOptions:{},
         superFieldList:[],
@@ -238,17 +237,21 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'departId',text:'单位',dictCode:''})
-         fieldList.push({type:'datetime',value:'meetingTime',text:'会议时间'})
-         fieldList.push({type:'string',value:'meetingName',text:'会议名称',dictCode:''})
-         fieldList.push({type:'string',value:'address',text:'会议地点',dictCode:''})
-         fieldList.push({type:'string',value:'hostId',text:'主持人工号',dictCode:''})
-         fieldList.push({type:'datetime',value:'reportingTime',text:'上报时间'})
-         fieldList.push({type:'string',value:'recorderId',text:'会议记录人工号',dictCode:''})
-         fieldList.push({type:'Text',value:'summary',text:'会议内容摘要',dictCode:''})
-         fieldList.push({type:'Text',value:'record',text:'会议记录',dictCode:''})
-         fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
-         fieldList.push({type:'datetime',value:'createTime',text:'创建时间'})
+         fieldList.push({type:'string',value:'departId',text:'单位ID',dictCode:''})
+         fieldList.push({type:'datetime',value:'meetTime',text:'会议时间'})
+         fieldList.push({type:'string',value:'meetLocation',text:'会议地点',dictCode:''})
+         fieldList.push({type:'string',value:'meetName',text:'会议名称',dictCode:''})
+         fieldList.push({type:'string',value:'hostId',text:'主持人'})
+         fieldList.push({type:'string',value:'hostName',text:'主持人姓名'})
+         fieldList.push({type:'string',value:'talkedId',text:'受约谈函询人'})
+         fieldList.push({type:'string',value:'talkedName',text:'受约谈函询人姓名'})
+         fieldList.push({type:'string',value:'inquirerId',text:'受诫勉谈话人'})
+         fieldList.push({type:'string',value:'inquirerName',text:'受诫勉谈话人姓名'})
+         fieldList.push({type:'string',value:'punisherId',text:'受党纪处分人'})
+         fieldList.push({type:'string',value:'punisherName',text:'受诫勉谈话人姓名'})
+         fieldList.push({type:'string',value:'abs',text:'会议摘要',dictCode:''})
+         fieldList.push({type:'string',value:'recorderId',text:'记录人'})
+        fieldList.push({type:'string',value:'recorderName',text:'记录人姓名'})
         this.superFieldList = fieldList
       }
     }

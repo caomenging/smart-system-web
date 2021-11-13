@@ -81,6 +81,8 @@
               return "通知公告";
             } else if (text == "2") {
               return "系统消息";
+            } else if (text == "3"){
+              return "任务下发";
             } else {
               return text;
             }
@@ -121,7 +123,14 @@
               return text;
             }
           }
-        },{
+        },
+        // {
+        //   title:'附件',
+        //   align:"center",
+        //   dataIndex: 'fileList',
+        //   colSpan: 0,
+        // },
+        {
           title: '操作',
           dataIndex: 'action',
           align:"center",

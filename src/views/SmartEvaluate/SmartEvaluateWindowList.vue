@@ -5,24 +5,15 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="单位">
-              <j-select-depart placeholder="请选择单位"  v-model="queryParam.departId" customReturnField='id' :multi="false" :treeOpera="true"></j-select-depart>
+            <a-form-item label="主管单位">
+              <a-input placeholder="请输入主管单位" v-model="queryParam.exeDept"></a-input>
             </a-form-item>
           </a-col>
-          <a-col :xl="10" :lg="11" :md="12" :sm="24">
-            <a-form-item label="会议时间">
-              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.meetingTime_begin"></j-date>
-              <span class="query-group-split-cust"></span>
-              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.meetingTime_end"></j-date>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="政务服务大厅名称">
+              <a-input placeholder="请输入政务服务大厅名称" v-model="queryParam.windowsName"></a-input>
             </a-form-item>
           </a-col>
-          <template v-if="toggleSearchStatus">
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-item label="会议名称">
-                <a-input placeholder="请输入会议名称" v-model="queryParam.meetingName"></a-input>
-              </a-form-item>
-            </a-col>
-          </template>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
@@ -40,8 +31,8 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('民主生活会表')">导出</a-button>
+      <!--<a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
+      <a-button type="primary" icon="download" @click="handleExportXls('阳光评廉表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -65,15 +56,15 @@
       <a-table
         ref="table"
         size="middle"
+        :scroll="{x:true}"
         bordered
         rowKey="id"
-        class="j-table-force-nowrap"
-        :scroll="{x:true}"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        class="j-table-force-nowrap"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -118,25 +109,27 @@
       </a-table>
     </div>
 
-    <smart-democratic-life-meeting-modal ref="modalForm" @ok="modalFormOk"/>
+    <smart-evaluate-window-modal ref="modalForm" @ok="modalFormOk"></smart-evaluate-window-modal>
   </a-card>
 </template>
 
 <script>
 
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartDemocraticLifeMeetingModal from './modules/SmartDemocraticLifeMeetingModal'
   import '@/assets/less/TableExpand.less'
+  import { mixinDevice } from '@/utils/mixin'
+  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import SmartEvaluateWindowModal from './modules/SmartEvaluateWindowModal'
+  import SmartEvaluateForm from './modules/SmartEvaluateForm'
 
   export default {
-    name: "SmartDemocraticLifeMeetingList",
-    mixins:[JeecgListMixin],
+    name: 'SmartEvaluateWindowList',
+    mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartDemocraticLifeMeetingModal
+      SmartEvaluateWindowModal,SmartEvaluateForm
     },
     data () {
       return {
-        description: '民主生活会表管理页面',
+        description: '阳光评廉表管理页面',
         // 表头
         columns: [
           {
@@ -150,59 +143,39 @@
             }
           },
           {
-            title:'单位',
+            title:'主管单位',
             align:"center",
-            dataIndex: 'departId'
+            dataIndex: 'exeDept'
           },
           {
-            title:'会议时间',
+            title:'窗口服务大厅名称',
             align:"center",
-            dataIndex: 'meetingTime'
+            dataIndex: 'windowsName'
           },
           {
-            title:'会议名称',
+            title:'人员名称',
             align:"center",
-            dataIndex: 'meetingName'
+            dataIndex: 'personName'
           },
           {
-            title:'会议地点',
+            title:'评价人',
             align:"center",
-            dataIndex: 'address'
+            dataIndex: 'evaluateName'
           },
           {
-            title:'主持人工号',
+            title:'评价人手机号',
             align:"center",
-            dataIndex: 'hostId'
+            dataIndex: 'evaluatePhone'
           },
           {
-            title:'上报时间',
+            title:'评价时间',
             align:"center",
-            dataIndex: 'reportingTime'
+            dataIndex: 'evaluateTime'
           },
           {
-            title:'会议记录人工号',
+            title:'评价结果',
             align:"center",
-            dataIndex: 'recorderId'
-          },
-          {
-            title:'会议内容摘要',
-            align:"center",
-            dataIndex: 'summary'
-          },
-          {
-            title:'会议记录',
-            align:"center",
-            dataIndex: 'record'
-          },
-          {
-            title:'创建人',
-            align:"center",
-            dataIndex: 'createBy'
-          },
-          {
-            title:'创建时间',
-            align:"center",
-            dataIndex: 'createTime'
+            dataIndex: 'evaluateResult_dictText'
           },
           {
             title: '操作',
@@ -210,45 +183,41 @@
             align:"center",
             fixed:"right",
             width:147,
-            scopedSlots: { customRender: 'action' },
+            scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
-          list: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/list",
-          delete: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/delete",
-          deleteBatch: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/deleteBatch",
-          exportXlsUrl: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/exportXls",
-          importExcelUrl: "smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/importExcel",
-
+          list: "/smartEvaluateList/smartEvaluateWindow/list",
+          delete: "/smartEvaluateList/smartEvaluateWindow/delete",
+          deleteBatch: "/smartEvaluateList/smartEvaluateWindow/deleteBatch",
+          exportXlsUrl: "/smartEvaluateList/smartEvaluateWindow/exportXls",
+          importExcelUrl: "smartEvaluateList/smartEvaluateWindow/importExcel",
+          
         },
         dictOptions:{},
         superFieldList:[],
       }
     },
     created() {
-      this.getSuperFieldList();
+    this.getSuperFieldList();
     },
     computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      }
+      },
     },
     methods: {
       initDictConfig(){
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'departId',text:'单位',dictCode:''})
-         fieldList.push({type:'datetime',value:'meetingTime',text:'会议时间'})
-         fieldList.push({type:'string',value:'meetingName',text:'会议名称',dictCode:''})
-         fieldList.push({type:'string',value:'address',text:'会议地点',dictCode:''})
-         fieldList.push({type:'string',value:'hostId',text:'主持人工号',dictCode:''})
-         fieldList.push({type:'datetime',value:'reportingTime',text:'上报时间'})
-         fieldList.push({type:'string',value:'recorderId',text:'会议记录人工号',dictCode:''})
-         fieldList.push({type:'Text',value:'summary',text:'会议内容摘要',dictCode:''})
-         fieldList.push({type:'Text',value:'record',text:'会议记录',dictCode:''})
-         fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
-         fieldList.push({type:'datetime',value:'createTime',text:'创建时间'})
+        fieldList.push({type:'string',value:'exeDept',text:'主管单位',dictCode:''})
+        fieldList.push({type:'string',value:'windowsName',text:'窗口服务大厅名称',dictCode:''})
+        fieldList.push({type:'string',value:'personName',text:'人员名称',dictCode:''})
+        fieldList.push({type:'string',value:'evaluateResult',text:'评价结果',dictCode:'evaluate_grade'})
+        fieldList.push({type:'string',value:'evaluateName',text:'评价人',dictCode:''})
+        fieldList.push({type:'string',value:'evaluatePhone',text:'评价人手机号',dictCode:''})
+        fieldList.push({type:'datetime',value:'evaluateTime',text:'评价时间'})
         this.superFieldList = fieldList
       }
     }

@@ -4,24 +4,19 @@
       <!-- 主表单区域 -->
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
-          <a-col :span="24" >
-            <a-form-model-item label="标题" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="title">
-              <a-input v-model="model.title" placeholder="请输入标题" ></a-input>
+          <a-col :span="24">
+            <a-form-model-item label="基本情况" :labelCol="labelCol2" :wrapperCol="wrapperCol2" prop="basicDesc">
+              <a-textarea v-model="model.basicDesc" rows="4" placeholder="请输入基本情况" />
             </a-form-model-item>
           </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="正文" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="content">
-              <j-editor v-model="model.content" />
+          <a-col :span="24">
+            <a-form-model-item label="存在问题" :labelCol="labelCol2" :wrapperCol="wrapperCol2" prop="problem">
+              <a-textarea v-model="model.problem" rows="4" placeholder="请输入存在问题" />
             </a-form-model-item>
           </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="监督检查时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="supervisionTime">
-              <j-date placeholder="请选择监督检查时间" v-model="model.supervisionTime" style="width: 100%" />
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="创建人员工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="creatorNo">
-              <a-input v-model="model.creatorNo" placeholder="请输入创建人员工号" ></a-input>
+          <a-col :span="24">
+            <a-form-model-item label="主要措施" :labelCol="labelCol2" :wrapperCol="wrapperCol2" prop="mainSolution">
+              <a-textarea v-model="model.mainSolution" rows="4" placeholder="请输入主要措施" />
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -29,12 +24,12 @@
     </j-form-container>
       <!-- 子表单区域 -->
     <a-tabs v-model="activeKey" @change="handleChangeTabs">
-      <a-tab-pane tab="8项规定监督检查附件表" :key="refKeys[0]" :forceRender="true">
+      <a-tab-pane tab="制发建议附件表" :key="refKeys[0]" :forceRender="true">
         <j-editable-table
           :ref="refKeys[0]"
-          :loading="smartSupervisionAnnexTable.loading"
-          :columns="smartSupervisionAnnexTable.columns"
-          :dataSource="smartSupervisionAnnexTable.dataSource"
+          :loading="smartCreateAdviceAnnexTable.loading"
+          :columns="smartCreateAdviceAnnexTable.columns"
+          :dataSource="smartCreateAdviceAnnexTable.dataSource"
           :maxHeight="300"
           :disabled="formDisabled"
           :rowNumber="true"
@@ -53,7 +48,7 @@
   import { validateDuplicateValue } from '@/utils/util'
 
   export default {
-    name: 'SmartSupervisionForm',
+    name: 'SmartCreateAdviceForm',
     mixins: [JEditableTableModelMixin],
     components: {
     },
@@ -80,21 +75,21 @@
         // 新增时子表默认添加几行空数据
         addDefaultRowNum: 1,
         validatorRules: {
-           title: [
-              { required: true, message: '请输入标题!'},
+           basicDesc: [
+              { required: true, message: '请输入基本情况!'},
            ],
-           supervisionTime: [
-              { required: true, message: '请输入监督检查时间!'},
+           problem: [
+              { required: true, message: '请输入存在问题!'},
            ],
-           creatorNo: [
-              { required: true, message: '请输入创建人员工号!'},
+           mainSolution: [
+              { required: true, message: '请输入主要措施!'},
            ],
         },
-        refKeys: ['smartSupervisionAnnex', ],
-        tableKeys:['smartSupervisionAnnex', ],
-        activeKey: 'smartSupervisionAnnex',
-        // 8项规定监督检查附件表
-        smartSupervisionAnnexTable: {
+        refKeys: ['smartCreateAdviceAnnex', ],
+        tableKeys:['smartCreateAdviceAnnex', ],
+        activeKey: 'smartCreateAdviceAnnex',
+        // 制发建议附件表
+        smartCreateAdviceAnnexTable: {
           loading: false,
           dataSource: [],
           columns: [
@@ -115,7 +110,7 @@
               defaultValue:'',
             },
             {
-              title: '文件路径',
+              title: '附件路径',
               key: 'annexPath',
               type: FormTypes.file,
               token:true,
@@ -126,7 +121,7 @@
             },
             {
               title: '下载次数',
-              key: 'downloadCount',
+              key: 'downCount',
               type: FormTypes.inputNumber,
               disabled:true,
               width:"200px",
@@ -136,11 +131,11 @@
           ]
         },
         url: {
-          add: "/smartSupervision/smartSupervision/add",
-          edit: "/smartSupervision/smartSupervision/edit",
-          queryById: "/smartSupervision/smartSupervision/queryById",
-          smartSupervisionAnnex: {
-            list: '/smartSupervision/smartSupervision/querySmartSupervisionAnnexByMainId'
+          add: "/smartCreateAdvice/smartCreateAdvice/add",
+          edit: "/smartCreateAdvice/smartCreateAdvice/edit",
+          queryById: "/smartCreateAdvice/smartCreateAdvice/queryById",
+          smartCreateAdviceAnnex: {
+            list: '/smartCreateAdvice/smartCreateAdvice/querySmartCreateAdviceAnnexByMainId'
           },
         }
       }
@@ -162,7 +157,7 @@
     },
     methods: {
       addBefore(){
-        this.smartSupervisionAnnexTable.dataSource=[]
+        this.smartCreateAdviceAnnexTable.dataSource=[]
       },
       getAllTable() {
         let values = this.tableKeys.map(key => getRefPromise(this, key))
@@ -175,7 +170,7 @@
         // 加载子表数据
         if (this.model.id) {
           let params = { id: this.model.id }
-          this.requestSubTableData(this.url.smartSupervisionAnnex.list, params, this.smartSupervisionAnnexTable)
+          this.requestSubTableData(this.url.smartCreateAdviceAnnex.list, params, this.smartCreateAdviceAnnexTable)
           getAction(this.url.queryById,params).then(res => {
               if(res.success){
                 this.model = res.result
@@ -205,7 +200,7 @@
         let main = Object.assign(this.model, allValues.formValue)
         return {
           ...main, // 展开
-          smartSupervisionAnnexList: allValues.tablesValue[0].values,
+          smartCreateAdviceAnnexList: allValues.tablesValue[0].values,
         }
       },
       validateError(msg){

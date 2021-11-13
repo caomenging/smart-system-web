@@ -99,7 +99,6 @@
     components: {
     },
     data() {
-
       return {
         rootUrl:"/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness",
         labelCol: {
@@ -179,7 +178,6 @@
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
             },
           ]
         },
@@ -225,13 +223,11 @@
           console.log(this.model)
           let params = { id: this.model.id }
           getAction(this.url.queryById,params).then(res=>{
-             if(res.success){
-               this.model=res.result
-             }
-           }
-
+              if(res.success){
+                this.model=res.result
+              }
+            }
           )
-          this.requestSubTableData(this.url.smartTripleImportanceOneGreatnessDescription.list, params, this.smartTripleImportanceOneGreatnessDescriptionTable)
         }
       },
       //校验所有一对一子表表单

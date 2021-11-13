@@ -5,21 +5,24 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="处分人工号">
+              <select-user-by-dep placeholder="请选择处分人工号" v-model="queryParam.punishNo" :multi="false" text="work_no" store="work_no" />
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="单位">
-              <j-select-depart placeholder="请选择单位"  v-model="queryParam.departId" customReturnField='id' :multi="false" :treeOpera="true"></j-select-depart>
+              <a-input placeholder="请输入单位" v-model="queryParam.departName"></a-input>
             </a-form-item>
           </a-col>
-          <a-col :xl="10" :lg="11" :md="12" :sm="24">
-            <a-form-item label="会议时间">
-              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.meetingTime_begin"></j-date>
-              <span class="query-group-split-cust"></span>
-              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.meetingTime_end"></j-date>
-            </a-form-item>
-          </a-col>
-          <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-item label="会议名称">
-                <a-input placeholder="请输入会议名称" v-model="queryParam.meetingName"></a-input>
+              <a-form-item label="职级">
+                <a-input placeholder="请输入职级" v-model="queryParam.positionRank"></a-input>
+              </a-form-item>
+            </a-col>
+            <template v-if="toggleSearchStatus">
+            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+              <a-form-item label="手机号">
+                <a-input placeholder="请输入手机号" v-model="queryParam.phone"></a-input>
               </a-form-item>
             </a-col>
           </template>
@@ -41,7 +44,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('民主生活会表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('处分人员表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -65,15 +68,15 @@
       <a-table
         ref="table"
         size="middle"
+        :scroll="{x:true}"
         bordered
         rowKey="id"
-        class="j-table-force-nowrap"
-        :scroll="{x:true}"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        class="j-table-force-nowrap"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -118,25 +121,28 @@
       </a-table>
     </div>
 
-    <smart-democratic-life-meeting-modal ref="modalForm" @ok="modalFormOk"/>
+    <smart-punish-people-modal ref="modalForm" @ok="modalFormOk"></smart-punish-people-modal>
   </a-card>
 </template>
 
 <script>
 
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartDemocraticLifeMeetingModal from './modules/SmartDemocraticLifeMeetingModal'
   import '@/assets/less/TableExpand.less'
+  import { mixinDevice } from '@/utils/mixin'
+  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import SmartPunishPeopleModal from './modules/SmartPunishPeopleModal'
+  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
+  import SelectUserByDep from '@/components/jeecgbiz/modal/SelectUserByDep'
 
   export default {
-    name: "SmartDemocraticLifeMeetingList",
-    mixins:[JeecgListMixin],
+    name: 'SmartPunishPeopleList',
+    mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartDemocraticLifeMeetingModal
+      SmartPunishPeopleModal,SelectUserByDep
     },
     data () {
       return {
-        description: '民主生活会表管理页面',
+        description: '处分人员表管理页面',
         // 表头
         columns: [
           {
@@ -149,60 +155,53 @@
               return parseInt(index)+1;
             }
           },
+/*          {
+            title:'处分人Id',
+            align:"center",
+            dataIndex: 'punishId'
+          },*/
+          {
+            title:'处分人姓名',
+            align:"center",
+            dataIndex: 'punishName'
+          },
+          /*{
+            title:'单位ID',
+            align:"center",
+            dataIndex: 'departId'
+          },*/
           {
             title:'单位',
             align:"center",
-            dataIndex: 'departId'
+            dataIndex: 'departName'
           },
           {
-            title:'会议时间',
+            title:'职务',
             align:"center",
-            dataIndex: 'meetingTime'
+            dataIndex: 'position'
           },
           {
-            title:'会议名称',
+            title:'职级',
             align:"center",
-            dataIndex: 'meetingName'
+            dataIndex: 'positionRank'
           },
           {
-            title:'会议地点',
+            title:'手机号',
             align:"center",
-            dataIndex: 'address'
+            dataIndex: 'phone'
           },
           {
-            title:'主持人工号',
+            title:'处分类型',
             align:"center",
-            dataIndex: 'hostId'
+            dataIndex: 'punishType_dictText'
           },
           {
-            title:'上报时间',
+            title:'解除处分时间',
             align:"center",
-            dataIndex: 'reportingTime'
-          },
-          {
-            title:'会议记录人工号',
-            align:"center",
-            dataIndex: 'recorderId'
-          },
-          {
-            title:'会议内容摘要',
-            align:"center",
-            dataIndex: 'summary'
-          },
-          {
-            title:'会议记录',
-            align:"center",
-            dataIndex: 'record'
-          },
-          {
-            title:'创建人',
-            align:"center",
-            dataIndex: 'createBy'
-          },
-          {
-            title:'创建时间',
-            align:"center",
-            dataIndex: 'createTime'
+            dataIndex: 'removeTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
           },
           {
             title: '操作',
@@ -210,47 +209,46 @@
             align:"center",
             fixed:"right",
             width:147,
-            scopedSlots: { customRender: 'action' },
+            scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
-          list: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/list",
-          delete: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/delete",
-          deleteBatch: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/deleteBatch",
-          exportXlsUrl: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/exportXls",
-          importExcelUrl: "smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/importExcel",
-
+          list: "/SmartPunishPeople/smartPunishPeople/list",
+          delete: "/SmartPunishPeople/smartPunishPeople/delete",
+          deleteBatch: "/SmartPunishPeople/smartPunishPeople/deleteBatch",
+          exportXlsUrl: "/SmartPunishPeople/smartPunishPeople/exportXls",
+          importExcelUrl: "SmartPunishPeople/smartPunishPeople/importExcel",
+          
         },
         dictOptions:{},
         superFieldList:[],
       }
     },
     created() {
-      this.getSuperFieldList();
+    this.getSuperFieldList();
     },
     computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      }
+      },
     },
     methods: {
       initDictConfig(){
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'departId',text:'单位',dictCode:''})
-         fieldList.push({type:'datetime',value:'meetingTime',text:'会议时间'})
-         fieldList.push({type:'string',value:'meetingName',text:'会议名称',dictCode:''})
-         fieldList.push({type:'string',value:'address',text:'会议地点',dictCode:''})
-         fieldList.push({type:'string',value:'hostId',text:'主持人工号',dictCode:''})
-         fieldList.push({type:'datetime',value:'reportingTime',text:'上报时间'})
-         fieldList.push({type:'string',value:'recorderId',text:'会议记录人工号',dictCode:''})
-         fieldList.push({type:'Text',value:'summary',text:'会议内容摘要',dictCode:''})
-         fieldList.push({type:'Text',value:'record',text:'会议记录',dictCode:''})
-         fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
-         fieldList.push({type:'datetime',value:'createTime',text:'创建时间'})
+        fieldList.push({type:'string',value:'punishId',text:'处分人'})
+        fieldList.push({type:'string',value:'punishName',text:'处分人姓名',dictCode:''})
+        fieldList.push({type:'string',value:'departId',text:'单位ID',dictCode:''})
+        fieldList.push({type:'string',value:'departName',text:'单位',dictCode:''})
+        fieldList.push({type:'string',value:'position',text:'职务',dictCode:''})
+        fieldList.push({type:'string',value:'positionRank',text:'职级',dictCode:''})
+        fieldList.push({type:'string',value:'phone',text:'手机号',dictCode:''})
+        fieldList.push({type:'string',value:'punishType',text:'处分类型',dictCode:'punish_type'})
+        fieldList.push({type:'date',value:'removeTime',text:'解除处分时间'})
         this.superFieldList = fieldList
-      }
+      },
+
     }
   }
 </script>

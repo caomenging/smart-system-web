@@ -445,7 +445,7 @@
 
 <script>
 
-  import JDictSelectTag from '../../components/dict/JDictSelectTag.vue'
+  import JDictSelectTag from '@/components/dict/JDictSelectTag.vue'
   import JSelectDepart from '@/components/jeecgbiz/JSelectDepart'
   import JSelectUserByDep from '@/components/jeecgbiz/JSelectUserByDep'
   import JSelectMultiUser from '@/components/jeecgbiz/JSelectMultiUser'

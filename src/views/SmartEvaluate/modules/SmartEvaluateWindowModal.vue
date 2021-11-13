@@ -1,27 +1,26 @@
 <template>
   <j-modal
     :title="title"
-    :width="1200"
+    :width="width"
     :visible="visible"
-    :maskClosable="false"
     switchFullscreen
     @ok="handleOk"
     :okButtonProps="{ class:{'jee-hidden': disableSubmit} }"
-    @cancel="handleCancel">
-    <smart-democratic-life-meeting-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"/>
+    @cancel="handleCancel"
+    cancelText="关闭">
+    <smart-evaluate-window-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></smart-evaluate-window-form>
   </j-modal>
 </template>
 
 <script>
 
-  import SmartDemocraticLifeMeetingForm from './SmartDemocraticLifeMeetingForm'
-
+  import SmartEvaluateWindowForm from './SmartEvaluateWindowForm'
   export default {
-    name: 'SmartDemocraticLifeMeetingModal',
+    name: 'SmartEvaluateWindowModal',
     components: {
-      SmartDemocraticLifeMeetingForm
+      SmartEvaluateWindowForm
     },
-    data() {
+    data () {
       return {
         title:'',
         width:800,
@@ -29,7 +28,7 @@
         disableSubmit: false
       }
     },
-    methods:{
+    methods: {
       add () {
         this.visible=true
         this.$nextTick(()=>{
@@ -47,7 +46,7 @@
         this.visible = false;
       },
       handleOk () {
-        this.$refs.realForm.handleOk();
+        this.$refs.realForm.submitForm();
       },
       submitCallback(){
         this.$emit('ok');
@@ -59,6 +58,3 @@
     }
   }
 </script>
-
-<style scoped>
-</style>

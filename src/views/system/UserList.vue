@@ -291,6 +291,11 @@
             width: 180,
             dataIndex: 'departIds_dictText'
           },
+          {  title: '职务',
+            width: 180,
+            align: 'center',
+            dataIndex: 'post_dictText'
+          },
           {
             title: '职级',
             align: "center",
