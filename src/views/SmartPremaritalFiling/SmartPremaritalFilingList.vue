@@ -5,10 +5,9 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="单位">
-              <j-select-depart placeholder="请选择单位"  v-model="queryParam.departId" customReturnField='id' :multi="false" :treeOpera="true"></j-select-depart>
-              <!-- <j-dict-select-tag type="list" v-model="model.politicCou" dictCode="political_status" placeholder="请选择政治面貌" />
-              <a-input placeholder="请输入单位ID" v-model="queryParam.departId"></a-input> -->
+            <a-form-item label="单位ID">
+              <!-- <a-input placeholder="请输入单位ID" v-model="queryParam.departId"></a-input> -->
+               <j-select-depart placeholder="请选择单位"  v-model="queryParam.departId" customReturnField='id' :multi="false" :treeOpera="true"></j-select-depart>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -28,7 +27,7 @@
     
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+      <a-button @click="handleAdd" type="primary" icon="plus">新增婚前报备</a-button>
       <a-button type="primary" icon="download" @click="handleExportXls('8项规定婚前报备表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
@@ -85,9 +84,10 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <!-- <a @click="handleEdit(record)">编辑</a> -->
+          
           <a @click="handleDetail(record)">详情</a>
-          <!-- <a-divider type="vertical" />
+          <!-- <a @click="handleEdit(record)">编辑</a>
+          <a-divider type="vertical" />
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
@@ -139,11 +139,6 @@
             }
           },
           {
-            title:'人员工号',
-            align:"center",
-            dataIndex: 'peopleNo'
-          },
-          {
             title:'人员姓名',
             align:"center",
             dataIndex: 'peopleName'
@@ -179,14 +174,19 @@
             dataIndex: 'spoName'
           },
           {
+            title:'配偶单位',
+            align:"center",
+            dataIndex: 'spoUnit'
+          },
+          {
             title:'配偶单位职务',
             align:"center",
-            dataIndex: 'spoUnitPos_dictText'
+            dataIndex: 'spoUnitPos'
           },
           {
             title:'配偶政治面貌',
             align:"center",
-            dataIndex: 'politicCou_dictText'
+            dataIndex: 'spoPoliticCou_dictText'
           },
           {
             title:'结婚人姓名',
@@ -262,17 +262,22 @@
           {
             title:'结婚人配偶单位职务',
             align:"center",
-            dataIndex: 'marrySpoUnitPos_dictText'
+            dataIndex: 'marrySpoUnitPos'
           },
           {
             title:'结婚人配偶父母姓名',
             align:"center",
-            dataIndex: 'marrySpoParName_dictText'
+            dataIndex: 'marrySpoParName'
+          },
+          {
+            title:'结婚人配偶父母单位',
+            align:"center",
+            dataIndex: 'marrySpoParUnit'
           },
           {
             title:'结婚人配偶父母单位职务',
             align:"center",
-            dataIndex: 'marrySpoParUnitPos_dictText'
+            dataIndex: 'marrySpoParUnitPos'
           },
           {
             title:'其他需要说明的事情',
@@ -291,11 +296,6 @@
             title:'联系电话',
             align:"center",
             dataIndex: 'contactNumber'
-          },
-          {
-            title:'删除状态',
-            align:"center",
-            dataIndex: 'delFlag'
           },
           {
             title: '操作',
@@ -331,8 +331,8 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'peopleNo',text:'人员工号',dictCode:''})
-         fieldList.push({type:'string',value:'peopleName',text:'人员姓名',dictCode:''})
+         fieldList.push({type:'string',value:'peopleId',text:'人员'})
+         fieldList.push({type:'string',value:'peopleName',text:'人员姓名'})
          fieldList.push({type:'string',value:'peopleSex',text:'人员性别',dictCode:'	sex'})
          fieldList.push({type:'int',value:'peopleAge',text:'人员年龄',dictCode:''})
          fieldList.push({type:'string',value:'politicCou',text:'政治面貌',dictCode:'political_status'})
@@ -340,7 +340,8 @@
          fieldList.push({type:'string',value:'post',text:'职务',dictCode:'sys_position,name,code'})
          fieldList.push({type:'string',value:'postRank',text:'职级',dictCode:'position_rank'})
          fieldList.push({type:'string',value:'spoName',text:'配偶姓名',dictCode:''})
-         fieldList.push({type:'string',value:'spoUnitPos',text:'配偶单位职务',dictCode:'sys_position,name,code'})
+         fieldList.push({type:'string',value:'spoUnit',text:'配偶单位',dictCode:''})
+         fieldList.push({type:'string',value:'spoUnitPos',text:'配偶单位职务',dictCode:''})
          fieldList.push({type:'string',value:'spoPoliticCou',text:'配偶政治面貌',dictCode:'political_status'})
          fieldList.push({type:'string',value:'marriedName',text:'结婚人姓名',dictCode:''})
          fieldList.push({type:'string',value:'relationWithMyself',text:'与本人关系',dictCode:''})
@@ -355,13 +356,13 @@
          fieldList.push({type:'string',value:'proCarsNum',text:'拟用婚礼车辆数量',dictCode:''})
          fieldList.push({type:'string',value:'marrySpoName',text:'结婚人配偶姓名',dictCode:''})
          fieldList.push({type:'string',value:'marrySpoUnit',text:'结婚人配偶单位',dictCode:''})
-         fieldList.push({type:'string',value:'marrySpoUnitPos',text:'结婚人配偶单位职务',dictCode:'sys_position,name,code'})
+         fieldList.push({type:'string',value:'marrySpoUnitPos',text:'结婚人配偶单位职务',dictCode:''})
          fieldList.push({type:'string',value:'marrySpoParName',text:'结婚人配偶父母姓名',dictCode:''})
-         fieldList.push({type:'string',value:'marrySpoParUnitPos',text:'结婚人配偶父母单位职务',dictCode:'sys_position,name,code'})
+         fieldList.push({type:'string',value:'marrySpoParUnit',text:'结婚人配偶父母单位',dictCode:''})
+         fieldList.push({type:'string',value:'marrySpoParUnitPos',text:'结婚人配偶父母单位职务',dictCode:''})
          fieldList.push({type:'string',value:'otherMattersExp',text:'其他需要说明的事情',dictCode:''})
          fieldList.push({type:'date',value:'reportTime',text:'报告时间'})
          fieldList.push({type:'string',value:'contactNumber',text:'联系电话',dictCode:''})
-         fieldList.push({type:'int',value:'delFlag',text:'删除状态',dictCode:''})
         this.superFieldList = fieldList
       }
     }
