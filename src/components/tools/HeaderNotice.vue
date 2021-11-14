@@ -6,7 +6,7 @@
     :arrowPointAtCenter="true"
     overlayClassName="header-notice-wrapper"
     @visibleChange="handleHoverChange"
-    :overlayStyle="{ width: '300px', top: '50px' }">
+    :overlayStyle="{ width: '400px', top: '50px' }">
     <template slot="content">
       <a-spin :spinning="loadding">
         <a-tabs>
@@ -120,8 +120,10 @@
         announcement2:[],
         msg1Count:"0",
         msg2Count:"0",
+        msg3Count:"0",
         msg1Title:"通知(0)",
         msg2Title:"",
+        msg3Title:"",
         stopTimer:false,
         websock: null,
         lockReconnect:false,
@@ -132,7 +134,7 @@
     },
     computed:{
       msgTotal () {
-        return parseInt(this.msg1Count)+parseInt(this.msg2Count);
+        return parseInt(this.msg1Count)+parseInt(this.msg2Count)+parseInt(this.msg3Count);
       }
     },
     mounted() {
@@ -166,11 +168,10 @@
               this.msg1Title = "通知(" + res.result.anntMsgTotal + ")";
               this.announcement2 = res.result.sysMsgList;
               this.msg2Count = res.result.sysMsgTotal;
-              this.msg2Title = "系统消息(" + res.result.sysMsgTotal + ")";
-              // TO DO：获取任务列表
-              this.announcement3 = res.result.taskList;
-              this.msg3Count = res.result.sysMsgTotal;
-              this.msg3Title = "任务下发(" + res.result.sysMsgTotal + ")";
+              this.msg2Title = "廉政提醒(" + res.result.sysMsgTotal + ")";
+              this.announcement3 = res.result.taskMsgList;
+              this.msg3Count = res.result.taskMsgTotal;
+              this.msg3Title = "任务下发(" + res.result.taskMsgTotal + ")";
             }
           }).catch(error => {
             console.log("系统消息通知异常",error);//这行打印permissionName is undefined
