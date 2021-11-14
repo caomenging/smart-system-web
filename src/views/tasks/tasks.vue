@@ -142,11 +142,11 @@
             align:"center",
             dataIndex: 'taskType'
           },
-          {
-            title:'填报单位',
-            align:"center",
-            dataIndex: 'sysOrgCode'
-          },
+          // {
+          //   title:'填报单位',
+          //   align:"center",
+          //   dataIndex: 'sysOrgCode'
+          // },
           {
             title:'单位类型',
             align:"center",
