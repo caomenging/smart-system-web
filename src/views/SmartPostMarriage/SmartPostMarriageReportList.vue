@@ -15,11 +15,11 @@
               ></j-select-depart>
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <!-- <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="人员工号">
               <a-input placeholder="请输入人员工号" v-model="queryParam.workNo"></a-input>
             </a-form-item>
-          </a-col>
+          </a-col> -->
           <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="姓名">
@@ -169,11 +169,11 @@ export default {
             return parseInt(index) + 1
           },
         },
-        {
-          title: '人员工号',
-          align: 'center',
-          dataIndex: 'workNo',
-        },
+        // {
+        //   title: '人员工号',
+        //   align: 'center',
+        //   dataIndex: 'workNo',
+        // },
         {
           title: '姓名',
           align: 'center',
@@ -225,7 +225,7 @@ export default {
           dataIndex: 'guestsScope',
         },
         {
-          title: '宴请费用',
+          title: '宴请费用(元)',
           align: 'center',
           dataIndex: 'weddingCost',
         },
@@ -240,7 +240,7 @@ export default {
           dataIndex: 'govCarNumber',
         },
         {
-          title: '不符合规定收受礼金',
+          title: '不符合规定收受礼金(元)',
           align: 'center',
           dataIndex: 'illegalMoney',
         },
@@ -305,7 +305,7 @@ export default {
     getSuperFieldList() {
       let fieldList = []
       fieldList.push({ type: 'string', value: 'workDepartment', text: '单位', dictCode: '' })
-      fieldList.push({ type: 'string', value: 'workNo', text: '人员工号', dictCode: '' })
+      fieldList.push({ type: 'string', value: 'personId', text: '人员工号', dictCode: '' })
       fieldList.push({ type: 'string', value: 'name', text: '姓名', dictCode: '' })
       fieldList.push({ type: 'string', value: 'sex', text: '性别', dictCode: 'sex' })
       fieldList.push({ type: 'int', value: 'age', text: '年龄', dictCode: '' })
