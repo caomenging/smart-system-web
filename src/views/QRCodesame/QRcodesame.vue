@@ -11,7 +11,7 @@
 
 <script>
   import { getAction } from '@/api/manage'
-  import SmartReportingInformationDetail from '../SmartReportingInformationDetail/SmartReportingInformationDetail'
+  import SmartReportingInformationDetail from '../SmartReportingInformation/SmartReportingInformationDetail'
   export default {
     name: 'QRcodesame',
     components: { SmartReportingInformationDetail },
@@ -39,7 +39,7 @@
               return parseInt(index)+1;
             }
           },
-          {
+        /*  {
             title:'被反映人姓名',
             align:"center",
             dataIndex: 'reflectedName'
@@ -82,7 +82,7 @@
             fixed:"right",
             width:147,
             scopedSlots: { customRender: 'action' }
-          }
+          }*/
         ],
       }
     },

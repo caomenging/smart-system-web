@@ -4,39 +4,39 @@
         <j-form-container :disabled="formDisabled">
           <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
             <a-row>
-              <a-col :span="24">
-                <a-form-model-item label="被反映人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reflectedName">
-                  <a-input v-model="model.reflectedName" placeholder="请输入被反映人姓名"  ></a-input>
+              <a-col :span="24" >
+                <a-form-model-item label="被反映人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reflectedInformation">
+                  <a-input v-model="model.reflectedInformation" placeholder="请输入被反映人信息" ></a-input>
                 </a-form-model-item>
               </a-col>
-              <a-col :span="24">
-                <a-form-model-item label="被反映人单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reflectedDocumentid">
-                  <a-input v-model="model.reflectedDocumentid" placeholder="请输入被反映人单位"  ></a-input>
+              <a-col :span="24" >
+                <a-form-model-item label="被反映人单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reflectedDepartid">
+                  <a-input v-model="model.reflectedDepartid" placeholder="请输入被反映人单位" ></a-input>
                 </a-form-model-item>
               </a-col>
-              <a-col :span="24">
+              <a-col :span="24" >
                 <a-form-model-item label="主要问题" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="majorProblem">
-                  <a-input v-model="model.majorProblem" placeholder="请输入主要问题"  ></a-input>
+                  <a-input v-model="model.majorProblem" placeholder="请输入主要问题" ></a-input>
                 </a-form-model-item>
               </a-col>
-              <a-col :span="24">
+              <a-col :span="24" >
                 <a-form-model-item label="附件" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="description">
-                  <j-upload v-model="model.description"   ></j-upload>
+                  <j-upload v-model="model.description"  ></j-upload>
                 </a-form-model-item>
               </a-col>
-              <a-col :span="24">
-                <a-form-model-item label="举报人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reporterName">
-                  <a-input v-model="model.reporterName" placeholder="请输入举报人姓名"  ></a-input>
+              <a-col :span="24" >
+                <a-form-model-item label="举报人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reportingName">
+                  <a-input v-model="model.reportingName" placeholder="请输入举报人姓名" ></a-input>
                 </a-form-model-item>
               </a-col>
-              <a-col :span="24">
+              <a-col :span="24" >
                 <a-form-model-item label="联系电话" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="contactNumber">
-                  <a-input v-model="model.contactNumber" placeholder="请输入联系电话"  ></a-input>
+                  <a-input v-model="model.contactNumber" placeholder="请输入联系电话" ></a-input>
                 </a-form-model-item>
               </a-col>
-              <a-col :span="24">
+              <a-col :span="24" >
                 <a-form-model-item label="举报时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reportingTime">
-                  <j-date placeholder="请选择举报时间"  v-model="model.reportingTime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
+                  <j-date placeholder="请选择举报时间" v-model="model.reportingTime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
                 </a-form-model-item>
               </a-col>
             </a-row>
@@ -61,7 +61,7 @@
   import AFormItem from 'ant-design-vue/lib/form/FormItem'
 
   export default {
-    name: 'ReportingInformationDetail',
+    name: 'ReportingInformation',
     components: {AFormItem},
     data () {
       return {
@@ -92,7 +92,7 @@
         },
 
         url: {
-          add: "/smartReportingInformationDetail/smartReportingInformationDetail/add",
+          add: "/smartReportingInformation/smartReportingInformation/add",
         }
       }
     },
