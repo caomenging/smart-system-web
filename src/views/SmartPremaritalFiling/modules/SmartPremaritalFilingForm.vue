@@ -5,7 +5,7 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="12" >
-             <a-form-model-item label="人员id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="peopleId">
+             <a-form-model-item label="人员姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="peopleId">
               <select-user-by-dep v-model="model.peopleId" @info="getUser" ></select-user-by-dep>
             </a-form-model-item>
           </a-col>
@@ -191,7 +191,7 @@ import { FormTypes, getRefPromise, VALIDATE_NO_PASSED } from '@/utils/JEditableT
 import { JEditableTableModelMixin } from '@/mixins/JEditableTableModelMixin'
 import { validateDuplicateValue } from '@/utils/util'
 import JSelectUserByDep from '../../../components/jeecgbiz/JSelectUserByDep.vue'
-import SelectUserByDep from 'src/components/jeecgbiz/modal/SelectUserByDep'
+import SelectUserByDep from '../../../components/jeecgbiz/modal/SelectUserByDep'
 
 export default {
   name: 'SmartPremaritalFilingForm',
@@ -330,6 +330,13 @@ export default {
        console.log(back)
        that.model.peopleId = back[0].id
        that.model.peopleName = back[0].realname
+       that.model.contactNumber = back[0].phone
+       that.model.politicCou = back[0].politicalStatus_dictText
+       that.model.postRank = back[0].positionRank_dictText
+       that.model.post = back[0].post_dictText
+
+
+
     },
 
     onChange(e) {
