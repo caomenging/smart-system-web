@@ -29,28 +29,48 @@
               <a-input-number v-model="model.meetingNumber" placeholder="请输入参会人数" style="width: 100%" />
             </a-form-model-item>
           </a-col>
+
           <a-col :span="24" >
             <a-form-model-item label="参会人员" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingPeople">
-              <a-input v-model="model.meetingPeople" placeholder="请输入参会人员" ></a-input>
+              <select-user-by-dep v-model="model.meetingPeople" @info="getMeetingPeople"/>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
+            <a-form-model-item label="参会人员姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingPeopleName" v-show="false">
+              <a-input v-model="model.meetingPeopleName"/>
+            </a-form-model-item>
+          </a-col>
+
+
+          <a-col :span="24">
             <a-form-model-item label="主持人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingHoster">
-              <a-input v-model="model.meetingHoster" placeholder="请输入主持人" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="记录人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingRecorer">
-              <a-input v-model="model.meetingRecorer" placeholder="请输入记录人" ></a-input>
+              <select-user-by-dep v-model="model.meetingHoster" @info="getMeetingHoster "/>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="会议内容摘要" :labelCol="labelCol2" :wrapperCol="wrapperCol2" prop="meetingAbstract">
+            <a-form-model-item label="主持人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingHosterName" v-show="false">
+              <a-input v-model="model.meetingHosterName" />
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="24" >
+            <a-form-model-item label="记录人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingRecorer">
+              <select-user-by-dep v-model="model.meetingRecorer" @info="getMeetingRecorer "/>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="记录人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingRecorerName" v-show="false">
+              <a-input v-model="model.meetingRecorerName"/>
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="24">
+            <a-form-model-item label="会议内容摘要" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingAbstract">
               <a-textarea v-model="model.meetingAbstract" rows="4" placeholder="请输入会议内容摘要" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="备注" :labelCol="labelCol2" :wrapperCol="wrapperCol2" prop="meetingRemarks">
+            <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingRemarks">
               <a-textarea v-model="model.meetingRemarks" rows="4" placeholder="请输入备注" />
             </a-form-model-item>
           </a-col>
@@ -69,9 +89,21 @@
     </j-form-container>
       <!-- 子表单区域 -->
     <a-tabs v-model="activeKey" @change="handleChangeTabs">
-      <a-tab-pane tab="三重一大附件表" :key="refKeys[0]" :forceRender="true">
+      <a-tab-pane tab="三重一大参会人员表" :key="refKeys[0]" :forceRender="true">
         <j-editable-table
           :ref="refKeys[0]"
+          :loading="smartTripleImportanceOneGreatnessPaccaTable.loading"
+          :columns="smartTripleImportanceOneGreatnessPaccaTable.columns"
+          :dataSource="smartTripleImportanceOneGreatnessPaccaTable.dataSource"
+          :maxHeight="300"
+          :disabled="formDisabled"
+          :rowNumber="true"
+          :rowSelection="true"
+          :actionButton="true"/>
+      </a-tab-pane>
+      <a-tab-pane tab="三重一大附件表" :key="refKeys[1]" :forceRender="true">
+        <j-editable-table
+          :ref="refKeys[1]"
           :loading="smartTripleImportanceOneGreatnessDescriptionTable.loading"
           :columns="smartTripleImportanceOneGreatnessDescriptionTable.columns"
           :dataSource="smartTripleImportanceOneGreatnessDescriptionTable.dataSource"
@@ -92,11 +124,12 @@
   import { FormTypes,getRefPromise,VALIDATE_NO_PASSED } from '@/utils/JEditableTableUtil'
   import { JEditableTableModelMixin } from '@/mixins/JEditableTableModelMixin'
   import { validateDuplicateValue } from '@/utils/util'
+  import SelectUserByDep from '@/components/jeecgbiz/modal/SelectUserByDep'
 
   export default {
     name: 'SmartTripleImportanceOneGreatnessForm',
     mixins: [JEditableTableModelMixin],
-    components: {
+    components: {SelectUserByDep
     },
     data() {
       return {
@@ -118,6 +151,13 @@
           sm: { span: 20 },
         },
         model:{
+          meetingPeople:'',
+          meetingPeopleName:'',
+          meetingHoster:'',
+          meetingHosterName:'',
+          meetingRecorer:'',
+          meetingRecorerName:''
+
         },
         // 新增时子表默认添加几行空数据
         addDefaultRowNum: 1,
@@ -135,9 +175,24 @@
               { required: true, message: '请输入创建时间!'},
            ],
         },
-        refKeys: ['smartTripleImportanceOneGreatnessDescription', ],
-        tableKeys:['smartTripleImportanceOneGreatnessDescription', ],
-        activeKey: 'smartTripleImportanceOneGreatnessDescription',
+        refKeys: ['smartTripleImportanceOneGreatnessPacca', 'smartTripleImportanceOneGreatnessDescription', ],
+        tableKeys:['smartTripleImportanceOneGreatnessPacca', 'smartTripleImportanceOneGreatnessDescription', ],
+        activeKey: 'smartTripleImportanceOneGreatnessPacca',
+        // 三重一大参会人员表
+        smartTripleImportanceOneGreatnessPaccaTable: {
+          loading: false,
+          dataSource: [],
+          columns: [
+            {
+              title: '参会人员',
+              key: 'pacpaId',
+              type: FormTypes.input,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
+            },
+          ]
+        },
         // 三重一大附件表
         smartTripleImportanceOneGreatnessDescriptionTable: {
           loading: false,
@@ -185,6 +240,9 @@
           add: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/add",
           edit: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/edit",
           queryById: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/queryById",
+          smartTripleImportanceOneGreatnessPacca: {
+            list: '/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/querySmartTripleImportanceOneGreatnessPaccaByMainId'
+          },
           smartTripleImportanceOneGreatnessDescription: {
             list: '/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/querySmartTripleImportanceOneGreatnessDescriptionByMainId'
           },
@@ -208,6 +266,7 @@
     },
     methods: {
       addBefore(){
+        this.smartTripleImportanceOneGreatnessPaccaTable.dataSource=[]
         this.smartTripleImportanceOneGreatnessDescriptionTable.dataSource=[]
       },
       getAllTable() {
@@ -223,11 +282,14 @@
           console.log(this.model)
           let params = { id: this.model.id }
           getAction(this.url.queryById,params).then(res=>{
-              if(res.success){
-                this.model=res.result
-              }
+            if(res.success){
+              this.model=res.result
             }
-          )
+          }
+
+        )
+          this.requestSubTableData(this.url.smartTripleImportanceOneGreatnessPacca.list, params, this.smartTripleImportanceOneGreatnessPaccaTable)
+          this.requestSubTableData(this.url.smartTripleImportanceOneGreatnessDescription.list, params, this.smartTripleImportanceOneGreatnessDescriptionTable)
         }
       },
       //校验所有一对一子表表单
@@ -251,11 +313,30 @@
         let main = Object.assign(this.model, allValues.formValue)
         return {
           ...main, // 展开
-          smartTripleImportanceOneGreatnessDescriptionList: allValues.tablesValue[0].values,
+          smartTripleImportanceOneGreatnessPaccaList: allValues.tablesValue[0].values,
+          smartTripleImportanceOneGreatnessDescriptionList: allValues.tablesValue[1].values,
         }
       },
       validateError(msg){
         this.$message.error(msg)
+      },
+      getMeetingPeople(back){
+        let that=this
+        console.log(back)
+        that.model.meetingPeople=back[0].id
+        that.model.meetingPeopleName=back[0].realname
+      },
+      getMeetingHoster(back){
+        let that=this
+        console.log(back)
+        that.model.meetingHoster=back[0].id
+        that.model.meetingHosterName=back[0].realname
+      },
+      getMeetingRecorer(back){
+        let that=this
+        console.log(back)
+        that.model.meetingRecorer=back[0].id
+        that.model.meetingRecorerName=back[0].realname
       },
 
     }

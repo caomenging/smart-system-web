@@ -1,3 +1,4 @@
+<!--首页的表格-->
 <template>
   <a-card :bordered="false">
     <!-- 查询区域 -->
@@ -9,33 +10,29 @@
     </div>
     <!-- 查询区域-END -->
 
-    <!-- 操作按钮区域 -->
+<!--    &lt;!&ndash; 操作按钮区域 &ndash;&gt;
     <div class="table-operator">
-      <a-button button @click="perServe" type="primary" icon="serve">保存</a-button>
-      <a-button button @click="Cancel" type="primary" icon="cancel">取消</a-button>
-      <!--      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
+      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
       <a-button type="primary" icon="download" @click="handleExportXls('举报信息表')">导出</a-button>
-      <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-              <a-button type="primary" icon="import">导入</a-button>
-            </a-upload>-->
-      <!-- 高级查询区域 -->
-      <!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
+      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
+        <a-button type="primary" icon="import">导入</a-button>
+      </a-upload>
+      &lt;!&ndash; 高级查询区域 &ndash;&gt;
+      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
-          <!--          <a-menu-item key="2" @click="batchDeal"><a-icon type="delete"/>处理</a-menu-item>-->
         </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
-
-    </div>
+    </div>-->
 
     <!-- table区域-begin -->
-    <div>
-      <!--      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
-              <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
-              <a style="margin-left: 24px" @click="onClearSelected">清空</a>
-            </div>-->
+   <div>
+<!--      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
+        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
+        <a style="margin-left: 24px" @click="onClearSelected">清空</a>
+      </div>-->
 
       <a-table
         ref="table"
@@ -70,38 +67,31 @@
             下载
           </a-button>
         </template>
-        <span slot="action" slot-scope="text, record">
-         <a @click="handleEdit(record)">查看举报信息</a>
+
+       <span slot="action" slot-scope="text, record">
+<!--          <a @click="handleEdit(record)">编辑</a>-->
+
+
+         <a @click="handleLook(record)">查看</a>
+         <a-divider type="vertical" />
+         <a @click="handleExportXls('举报信息表')" type="primary" icon="download" >导出</a>
+
+<!--          <a-divider type="vertical" />
+          <a-dropdown>
+            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
+            <a-menu slot="overlay">
+              <a-menu-item>
+                <a @click="handleDetail(record)">详情</a>
+              </a-menu-item>
+            <a-menu-item>
+                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+                  <a>删除</a>
+                </a-popconfirm>
+             </a-menu-item>
+          </a-dropdown>-->
         </span>
-
-        <span slot="dealResult" slot-scope="text, record">
-         <a @click="handleAgree(record)">接受举报</a>
-          <a-divider type="vertical" />
-         <a @click="handleDisagree(record)">不接受举报</a>
-        </span>
-
-        <!--         <a @click="handleLook(record)">查看</a>
-                 <a-divider type="vertical" />
-                 <a @click="handleExportXls('举报信息表')" type="primary" icon="download" >导出</a>-->
-
-        <!--          <a-divider type="vertical" />
-                  <a-dropdown>
-                    <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-                    <a-menu slot="overlay">
-                      <a-menu-item>
-                        <a @click="handleDetail(record)">详情</a>
-                      </a-menu-item>
-                    <a-menu-item>
-                        <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                          <a>删除</a>
-                        </a-popconfirm>
-                     </a-menu-item>
-                  </a-dropdown>-->
-
-
 
       </a-table>
-
     </div>
 
     <smart-reporting-information-modal ref="modalForm" @ok="modalFormOk"/>
@@ -123,11 +113,11 @@ export default {
   },
   data () {
     return {
-      description: '举报信息表管理页面',
+      description: '首页管理页面',
       // 表头
       columns: [
         {
-          title: '#',
+          title: '编号',
           dataIndex: '',
           key:'rowIndex',
           width:60,
@@ -137,19 +127,14 @@ export default {
           }
         },
         {
-          title:'被反映人信息',
+          title:'被反映人姓名',
           align:"center",
           dataIndex: 'reflectedInformation'
         },
         {
           title:'被反映人单位',
           align:"center",
-          dataIndex: 'reflectedDepartid'
-        },
-        {
-          title:'主要问题',
-          align:"center",
-          dataIndex: 'majorProblem'
+          dataIndex: 'reflectedDocumentid'
         },
         {
           title:'举报时间',
@@ -161,7 +146,7 @@ export default {
           align:"center",
           dataIndex: 'processingType_dictText'
         },
-        {
+       /* {
           title:'举报人姓名',
           align:"center",
           dataIndex: 'reportingName'
@@ -170,7 +155,7 @@ export default {
           title:'联系电话',
           align:"center",
           dataIndex: 'contactNumber'
-        },
+        },*/
         {
           title: '操作',
           dataIndex: 'action',
@@ -178,14 +163,6 @@ export default {
           fixed:"right",
           width:147,
           scopedSlots: { customRender: 'action' },
-        },
-        {
-          title: '处理举报信息',
-          dataIndex: 'dealResult',
-          align:"center",
-          fixed:"right",
-          width:147,
-          scopedSlots: { customRender: 'dealResult' },
         }
       ],
       url: {
@@ -211,34 +188,23 @@ export default {
   methods: {
     initDictConfig(){
     },
-    perServe(){//保存
-     this.$router.push({ path: '/QRCodesame/QRcodesame' })
-
-
-    },
-    Cancel(){//取消
-      this.$router.push({path: '/QRCodesame/QRcodesame'});
-
-    },
-    handleAgree(){//处理同意
-
+    handleLook(){//查看
       this.$router.push({path: '/SmartReportingInformation/SmartReportingInformationList'});
-    },
-    handleDisagree(){//  处理不同意
-      this.$router.push({path: '/SmartReportingInformation/SmartReportingInformationList'});
-
     }
-    /*  getSuperFieldList(){
-        let fieldList=[];
-         fieldList.push({type:'string',value:'reflectedInformation',text:'被反映人信息',dictCode:''})
-         fieldList.push({type:'string',value:'reflectedDepartid',text:'被反映人单位',dictCode:''})
-         fieldList.push({type:'string',value:'majorProblem',text:'主要问题',dictCode:''})
-         fieldList.push({type:'datetime',value:'reportingTime',text:'举报时间'})
-         fieldList.push({type:'string',value:'processingType',text:'处理状态',dictCode:'processing_type'})
-         fieldList.push({type:'string',value:'reportingName',text:'举报人姓名',dictCode:''})
-         fieldList.push({type:'string',value:'contactNumber',text:'联系电话',dictCode:''})
-        this.superFieldList = fieldList
-      }*/
+   /* getSuperFieldList(){
+      let fieldList=[];
+      fieldList.push({type:'string',value:'reflectedInformation',text:'被反映人信息',dictCode:''})
+      fieldList.push({type:'string',value:'reflectedDocumentid',text:'被反映人单位',dictCode:''})
+      fieldList.push({type:'datetime',value:'reportingTime',text:'举报时间'})
+      fieldList.push({type:'string',value:'processingType',text:'处理类型',dictCode:'processing_type'})
+      fieldList.push({type:'string',value:'reportingName',text:'举报人姓名',dictCode:''})
+      fieldList.push({type:'string',value:'contactNumber',text:'联系电话',dictCode:''})
+      this.superFieldList = fieldList
+    }*/
   }
 }
 </script>
+<!--
+<style scoped>
+@import '~@assets/less/common.less';
+</style>-->

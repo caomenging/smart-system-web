@@ -5,18 +5,13 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24" >
-            <a-form-model-item label="单位ID" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departmentId">
-              <a-input v-model="model.departmentId" placeholder="请输入单位ID" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
             <a-form-model-item label="接待时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="receptionTime">
               <j-date placeholder="请选择接待时间" v-model="model.receptionTime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="接待对象单位ID" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="receptionDepartmentId">
-              <a-input v-model="model.receptionDepartmentId" placeholder="请输入接待对象单位ID" ></a-input>
+            <a-form-model-item label="接待对象单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="receptionDepartmentId">
+              <a-input v-model="model.receptionDepartmentId" placeholder="请输入接待对象单位" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -35,8 +30,8 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="创建人id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="createId">
-              <a-input v-model="model.createId" placeholder="请输入创建人id" ></a-input>
+            <a-form-model-item label="创建人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="createId">
+              <j-select-user-by-dep v-model="model.createId" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -69,8 +64,7 @@
           :disabled="formDisabled"
           :rowNumber="true"
           :rowSelection="true"
-          :actionButton="true"
-          :rootUrl="rootUrl"/>
+          :actionButton="true"/>
       </a-tab-pane>
       <a-tab-pane tab="八项规定公务接待陪同人员信息" :key="refKeys[1]" :forceRender="true">
         <j-editable-table
@@ -84,24 +78,25 @@
           :rowSelection="true"
           :actionButton="true"/>
       </a-tab-pane>
-      <a-tab-pane tab="八项规定公务接待公务活动项目" :key="refKeys[2]" :forceRender="true">
+      <a-tab-pane tab="八项规定公务接待信息附件表" :key="refKeys[2]" :forceRender="true">
         <j-editable-table
           :ref="refKeys[2]"
-          :loading="smart_8regulationsForReceptionActivityTable.loading"
-          :columns="smart_8regulationsForReceptionActivityTable.columns"
-          :dataSource="smart_8regulationsForReceptionActivityTable.dataSource"
+          :loading="smart_8regulationsForReceptionAppendixTable.loading"
+          :columns="smart_8regulationsForReceptionAppendixTable.columns"
+          :dataSource="smart_8regulationsForReceptionAppendixTable.dataSource"
           :maxHeight="300"
           :disabled="formDisabled"
           :rowNumber="true"
           :rowSelection="true"
-          :actionButton="true"/>
+          :actionButton="true"
+		  :rootUrl="rootUrl"/>
       </a-tab-pane>
-      <a-tab-pane tab="八项规定公务接待信息附件表" :key="refKeys[3]" :forceRender="true">
+      <a-tab-pane tab="八项规定公务接待公务活动项目" :key="refKeys[3]" :forceRender="true">
         <j-editable-table
           :ref="refKeys[3]"
-          :loading="smart_8regulationsForReceptionAppendixTable.loading"
-          :columns="smart_8regulationsForReceptionAppendixTable.columns"
-          :dataSource="smart_8regulationsForReceptionAppendixTable.dataSource"
+          :loading="smart_8regulationsForReceptionActivityTable.loading"
+          :columns="smart_8regulationsForReceptionActivityTable.columns"
+          :dataSource="smart_8regulationsForReceptionActivityTable.dataSource"
           :maxHeight="300"
           :disabled="formDisabled"
           :rowNumber="true"
@@ -126,7 +121,7 @@
     },
     data() {
       return {
-        rootUrl:"/smart_8regulations_for_reception/smart_8regulationsForReception",
+	    rootUrl:"/smart_8regulations_for_reception/smart_8regulationsForReception",
         labelCol: {
           xs: { span: 24 },
           sm: { span: 6 },
@@ -148,14 +143,11 @@
         // 新增时子表默认添加几行空数据
         addDefaultRowNum: 1,
         validatorRules: {
-           departmentId: [
-              { required: true, message: '请输入单位ID!'},
-           ],
            receptionTime: [
               { required: true, message: '请输入接待时间!'},
            ],
            receptionDepartmentId: [
-              { required: true, message: '请输入接待对象单位ID!'},
+              { required: true, message: '请输入接待对象单位!'},
            ],
            number: [
               { required: true, message: '请输入人员数量!'},
@@ -168,14 +160,14 @@
               { pattern: /^(([1-9][0-9]*)|([0]\.\d{0,2}|[1-9][0-9]*\.\d{0,2}))$/, message: '请输入正确的金额!'},
            ],
            createId: [
-              { required: true, message: '请输入创建人id!'},
+              { required: true, message: '请输入创建人!'},
            ],
            createTime: [
               { required: true, message: '请输入创建日期!'},
            ],
         },
-        refKeys: ['smart_8regulationsForReceptionStaff', 'smart_8regulationsForReceptiondStaff', 'smart_8regulationsForReceptionActivity', 'smart_8regulationsForReceptionAppendix', ],
-        tableKeys:['smart_8regulationsForReceptionStaff', 'smart_8regulationsForReceptiondStaff', 'smart_8regulationsForReceptionActivity', 'smart_8regulationsForReceptionAppendix', ],
+        refKeys: ['smart_8regulationsForReceptionStaff', 'smart_8regulationsForReceptiondStaff', 'smart_8regulationsForReceptionAppendix', 'smart_8regulationsForReceptionActivity', ],
+        tableKeys:['smart_8regulationsForReceptionStaff', 'smart_8regulationsForReceptiondStaff', 'smart_8regulationsForReceptionAppendix', 'smart_8regulationsForReceptionActivity', ],
         activeKey: 'smart_8regulationsForReceptionStaff',
         // 八项规定公务接待人员信息
         smart_8regulationsForReceptionStaffTable: {
@@ -233,6 +225,51 @@
               placeholder: '请输入${title}',
               defaultValue:'',
               validateRules: [{ required: true, message: '${title}不能为空' }],
+            },
+          ]
+        },
+        // 八项规定公务接待信息附件表
+        smart_8regulationsForReceptionAppendixTable: {
+          loading: false,
+          dataSource: [],
+          columns: [
+            {
+              title: '附件说明',
+              key: 'attachmentDescription',
+              type: FormTypes.input,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
+              validateRules: [{ required: true, message: '${title}不能为空' }],
+            },
+            {
+              title: '附件文件路径',
+              key: 'path',
+              type: FormTypes.file,
+              token:true,
+              responseName:"message",
+              width:"200px",
+              placeholder: '请选择文件',
+              defaultValue:'',
+              validateRules: [{ required: true, message: '${title}不能为空' }],
+            },
+            {
+              title: '上传时间',
+              key: 'updateTime',
+              type: FormTypes.datetime,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
+              validateRules: [{ required: true, message: '${title}不能为空' }],
+            },
+            {
+              title: '下载次数',
+              key: 'downloadTimes',
+              type: FormTypes.inputNumber,
+              disabled:true,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
             },
           ]
         },
@@ -297,67 +334,13 @@
               validateRules: [{ required: true, message: '${title}不能为空' }],
             },
             {
-              title: '创建人工号',
-              key: 'createId',
-              type: FormTypes.input,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
-            },
-            {
-              title: '创建时间',
+              title: '活动创建时间',
               key: 'createTime',
               type: FormTypes.input,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
               validateRules: [{ required: true, message: '${title}不能为空' }],
-            },
-          ]
-        },
-        // 八项规定公务接待信息附件表
-        smart_8regulationsForReceptionAppendixTable: {
-          loading: false,
-          dataSource: [],
-          columns: [
-            {
-              title: '附件说明',
-              key: 'attachmentDescription',
-              type: FormTypes.input,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
-            },
-            {
-              title: '附件文件路径',
-              key: 'path',
-              type: FormTypes.file,
-              token:true,
-              responseName:"message",
-              width:"200px",
-              placeholder: '请选择文件',
-              defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
-            },
-            {
-              title: '上传时间',
-              key: 'updateTime',
-              type: FormTypes.datetime,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
-            },
-            {
-              title: '下载次数',
-              key: 'downloadTimes',
-              type: FormTypes.inputNumber,
-              disabled:true,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
             },
           ]
         },
@@ -371,11 +354,11 @@
           smart_8regulationsForReceptiondStaff: {
             list: '/smart_8regulations_for_reception/smart_8regulationsForReception/querySmart_8regulationsForReceptiondStaffByMainId'
           },
-          smart_8regulationsForReceptionActivity: {
-            list: '/smart_8regulations_for_reception/smart_8regulationsForReception/querySmart_8regulationsForReceptionActivityByMainId'
-          },
           smart_8regulationsForReceptionAppendix: {
             list: '/smart_8regulations_for_reception/smart_8regulationsForReception/querySmart_8regulationsForReceptionAppendixByMainId'
+          },
+          smart_8regulationsForReceptionActivity: {
+            list: '/smart_8regulations_for_reception/smart_8regulationsForReception/querySmart_8regulationsForReceptionActivityByMainId'
           },
         }
       }
@@ -399,8 +382,8 @@
       addBefore(){
         this.smart_8regulationsForReceptionStaffTable.dataSource=[]
         this.smart_8regulationsForReceptiondStaffTable.dataSource=[]
-        this.smart_8regulationsForReceptionActivityTable.dataSource=[]
         this.smart_8regulationsForReceptionAppendixTable.dataSource=[]
+        this.smart_8regulationsForReceptionActivityTable.dataSource=[]
       },
       getAllTable() {
         let values = this.tableKeys.map(key => getRefPromise(this, key))
@@ -415,8 +398,8 @@
           let params = { id: this.model.id }
           this.requestSubTableData(this.url.smart_8regulationsForReceptionStaff.list, params, this.smart_8regulationsForReceptionStaffTable)
           this.requestSubTableData(this.url.smart_8regulationsForReceptiondStaff.list, params, this.smart_8regulationsForReceptiondStaffTable)
-          this.requestSubTableData(this.url.smart_8regulationsForReceptionActivity.list, params, this.smart_8regulationsForReceptionActivityTable)
           this.requestSubTableData(this.url.smart_8regulationsForReceptionAppendix.list, params, this.smart_8regulationsForReceptionAppendixTable)
+          this.requestSubTableData(this.url.smart_8regulationsForReceptionActivity.list, params, this.smart_8regulationsForReceptionActivityTable)
         }
       },
       //校验所有一对一子表表单
@@ -442,8 +425,8 @@
           ...main, // 展开
           smart_8regulationsForReceptionStaffList: allValues.tablesValue[0].values,
           smart_8regulationsForReceptiondStaffList: allValues.tablesValue[1].values,
-          smart_8regulationsForReceptionActivityList: allValues.tablesValue[2].values,
-          smart_8regulationsForReceptionAppendixList: allValues.tablesValue[3].values,
+          smart_8regulationsForReceptionAppendixList: allValues.tablesValue[2].values,
+          smart_8regulationsForReceptionActivityList: allValues.tablesValue[3].values,
         }
       },
       validateError(msg){

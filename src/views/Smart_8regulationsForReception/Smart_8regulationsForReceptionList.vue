@@ -4,6 +4,21 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="接待单位">
+              <j-select-depart placeholder="请选择接待单位" v-model="queryParam.departmentid"/>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a @click="handleToggleSearch" style="margin-left: 8px">
+                {{ toggleSearchStatus ? '收起' : '展开' }}
+                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
+              </a>
+            </span>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -121,17 +136,12 @@
             }
           },
           {
-            title:'单位ID',
-            align:"center",
-            dataIndex: 'departmentId'
-          },
-          {
             title:'接待时间',
             align:"center",
             dataIndex: 'receptionTime'
           },
           {
-            title:'接待对象单位ID',
+            title:'接待对象单位',
             align:"center",
             dataIndex: 'receptionDepartmentId'
           },
@@ -151,9 +161,9 @@
             dataIndex: 'cost'
           },
           {
-            title:'创建人id',
+            title:'创建人',
             align:"center",
-            dataIndex: 'createId'
+            dataIndex: 'createId_dictText'
           },
           {
             title:'创建日期',
@@ -204,13 +214,13 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'departmentId',text:'单位ID',dictCode:''})
+         fieldList.push({type:'sel_depart',value:'departmentid',text:'接待单位'})
          fieldList.push({type:'datetime',value:'receptionTime',text:'接待时间'})
-         fieldList.push({type:'string',value:'receptionDepartmentId',text:'接待对象单位ID',dictCode:''})
+         fieldList.push({type:'string',value:'receptionDepartmentId',text:'接待对象单位',dictCode:''})
          fieldList.push({type:'int',value:'number',text:'人员数量',dictCode:''})
          fieldList.push({type:'int',value:'receptionNumber',text:'陪同人员数量',dictCode:''})
          fieldList.push({type:'double',value:'cost',text:'总开销金额',dictCode:''})
-         fieldList.push({type:'string',value:'createId',text:'创建人id',dictCode:''})
+         fieldList.push({type:'sel_user',value:'createId',text:'创建人'})
          fieldList.push({type:'datetime',value:'createTime',text:'创建日期'})
          fieldList.push({type:'string',value:'updateBy',text:'更新人',dictCode:''})
          fieldList.push({type:'datetime',value:'updateTime',text:'更新日期'})
