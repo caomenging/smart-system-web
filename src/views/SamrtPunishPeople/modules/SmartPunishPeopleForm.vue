@@ -28,8 +28,8 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="职级" prop="positionRank" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-model="model.positionRank" placeholder="职级"  readOnly
-                       unselectable="on"></a-input>
+              <j-search-select-tag v-model="model.positionRank" placeholder="职级"  dict="position_rank"  disabled="true"
+                       unselectable="on"></j-search-select-tag>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -45,6 +45,11 @@
                 dictCode="punish_type"
                 v-model="model.punishType"
               />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="处分开始时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="beginTime">
+              <j-date placeholder="请选择处分开始时间" v-model="model.beginTime"  style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -163,7 +168,7 @@
         this.model.departName = back[0].orgCodeTxt
         this.model.phone = back[0].phone
         this.model.position = back[0].post_dictText
-        this.model.positionRank = back[0].positionRank_dictText
+        this.model.positionRank = back[0].positionRank
       }
     }
   }

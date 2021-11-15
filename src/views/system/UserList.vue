@@ -6,13 +6,6 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
 
-          <a-col :md="6" :sm="12">
-            <a-form-item label="账号">
-              <!--<a-input placeholder="请输入账号查询" v-model="queryParam.username"></a-input>-->
-              <!--模糊查询:j-input-->
-              <j-input placeholder="输入账号" v-model="queryParam.username"></j-input>
-            </a-form-item>
-          </a-col>
 
 <!--          <a-col :md="6" :sm="8">
             <a-form-item label="性别">
@@ -23,6 +16,12 @@
               </a-select>
             </a-form-item>
           </a-col>-->
+          <!--TODO 按照单位查询 (设置返回值，默认返回ID：customReturnField='orgCode')-->
+          <a-col :md="6" :sm="8">
+            <a-form-item label="单位">
+              <j-select-depart placeholder="请选择单位"  v-model="queryParam.orgCode" customReturnField='orgCode' :multi="true"   :treeOpera="true"></j-select-depart>
+            </a-form-item>
+          </a-col>
 
             <a-col :md="6" :sm="8">
               <a-form-item label="姓名">
@@ -36,12 +35,6 @@
               </a-form-item>
             </a-col>
 
-          <!--TODO 按照单位查询 (设置返回值，默认返回ID：customReturnField='orgCode')-->
-          <a-col :md="6" :sm="8">
-            <a-form-item label="单位">
-              <j-select-depart placeholder="请选择单位"  v-model="queryParam.orgCode" customReturnField='orgCode' :multi="true"   :treeOpera="true"></j-select-depart>
-            </a-form-item>
-          </a-col>
 
           <!--下拉搜索（可配置字典）：j-search-select-tag -->
             <a-col :md="6" :sm="8">
@@ -51,6 +44,13 @@
             </a-col>
 
           <template v-if="toggleSearchStatus">
+            <a-col :md="6" :sm="12">
+              <a-form-item label="账号">
+                <!--<a-input placeholder="请输入账号查询" v-model="queryParam.username"></a-input>-->
+                <!--模糊查询:j-input-->
+                <j-input placeholder="输入账号" v-model="queryParam.username"></j-input>
+              </a-form-item>
+            </a-col>
             <a-col :md="6" :sm="8">
               <a-form-item label="用户状态">
                 <a-select v-model="queryParam.status" placeholder="请选择">
@@ -79,8 +79,8 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator" style="border-top: 5px">
-      <a-button @click="handleAdd" type="primary" icon="plus" >添加用户</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('用户信息')">导出</a-button>
+      <a-button @click="handleAdd" type="primary" icon="plus" >添加人员</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('人员信息')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -233,26 +233,27 @@
               return parseInt(index)+1;
             }
           },*/
-          {
+/*          {
             title: '用户账号',
             align: "center",
             dataIndex: 'username',
             width: 120,
             sorter: true
-          },
+          },*/
           {
             title: '用户姓名',
             align: "center",
             width: 100,
             dataIndex: 'realname',
+            sorter: true
           },
-          {
+/*          {
             title: '头像',
             align: "center",
             width: 120,
             dataIndex: 'avatar',
             scopedSlots: {customRender: "avatarslot"}
-          },
+          },*/
 
           {
             title: '性别',
@@ -262,16 +263,18 @@
             sorter: true
           },
           {
-            title: '生日',
+            title: '出生日期',
             align: "center",
             width: 100,
-            dataIndex: 'birthday'
+            dataIndex: 'birthday',
+            sorter: true
           },
           {
             title: '手机号码',
             align: "center",
             width: 100,
-            dataIndex: 'phone'
+            dataIndex: 'phone',
+            sorter: true
           },
 /*          {
             title: 'code',
@@ -283,30 +286,56 @@
             title: '单位',
             align: "center",
             width: 180,
-            dataIndex: 'orgCodeTxt'
+            dataIndex: 'orgCodeTxt',
+            sorter: true
           },
           {
             title: '负责单位',
             align: "center",
             width: 180,
-            dataIndex: 'departIds_dictText'
+            dataIndex: 'departIds_dictText',
+            sorter: true
           },
           {  title: '职务',
             width: 180,
             align: 'center',
-            dataIndex: 'post_dictText'
+            dataIndex: 'post_dictText',
+            sorter: true
           },
           {
             title: '职级',
             align: "center",
             width: 180,
-            dataIndex: 'positionRank_dictText'
+            dataIndex: 'positionRank_dictText',
+            sorter: true
+          },
+          {
+            title: '民族',
+            align: "center",
+            width: 180,
+            dataIndex: 'ethnicity_dictText',
+            sorter: true
+          },
+          {
+            title: '入党日期',
+            align: "center",
+            width: 180,
+            dataIndex: 'joinPartyDate',
+            sorter: true
+          },
+          {
+            title: '政治面貌',
+            align: "center",
+            width: 180,
+            dataIndex: 'politicalStatus_dictText',
+            sorter: true
           },
           {
             title: '状态',
             align: "center",
             width: 80,
-            dataIndex: 'status_dictText'
+            dataIndex: 'status_dictText',
+            sorter: true
           },
           {
             title: '操作',

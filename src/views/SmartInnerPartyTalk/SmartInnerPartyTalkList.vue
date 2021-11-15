@@ -162,16 +162,19 @@
             title:'会议时间',
             align:"center",
             dataIndex: 'meetTime',
+            sorter: true
           },
           {
             title:'会议地点',
             align:"center",
-            dataIndex: 'meetLocation'
+            dataIndex: 'meetLocation',
+            sorter: true
           },
           {
             title:'会议名称',
             align:"center",
-            dataIndex: 'meetName'
+            dataIndex: 'meetName',
+            sorter: true
           },
 /*          {
             title:'主持人ID',
@@ -181,27 +184,32 @@
           {
             title:'主持人姓名',
             align:"center",
-            dataIndex: 'hostName'
+            dataIndex: 'hostName',
+            sorter: true
           },
           {
             title:'受约谈函询人姓名',
             align:"center",
-            dataIndex: 'talkedName'
+            dataIndex: 'talkedName',
+            sorter: true
           },
           {
             title:'受诫勉谈话人姓名',
             align:"center",
-            dataIndex: 'inquirerName'
+            dataIndex: 'inquirerName',
+            sorter: true
           },
           {
             title:'受党纪处分人姓名',
             align:"center",
-            dataIndex: 'punisherName'
+            dataIndex: 'punisherName',
+            sorter: true
           },
           {
             title:'记录人姓名',
             align:"center",
-            dataIndex: 'recorderName'
+            dataIndex: 'recorderName',
+            sorter: true
           },
           {
             title: '操作',

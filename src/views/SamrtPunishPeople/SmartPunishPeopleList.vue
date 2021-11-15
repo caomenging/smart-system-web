@@ -5,24 +5,24 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="处分人工号">
-              <select-user-by-dep placeholder="请选择处分人工号" v-model="queryParam.punishNo" :multi="false" text="work_no" store="work_no" />
+            <a-form-item label="姓名">
+              <j-input placeholder="请输入姓名" v-model="queryParam.punishName"  />
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="单位">
-              <a-input placeholder="请输入单位" v-model="queryParam.departName"></a-input>
+              <j-select-depart placeholder="请输入单位" v-model="queryParam.departName" customReturnField='departName'></j-select-depart>
             </a-form-item>
           </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="职级">
-                <a-input placeholder="请输入职级" v-model="queryParam.positionRank"></a-input>
+                <j-search-select-tag placeholder="请输入或选择职级" v-model="queryParam.positionRank" dict="position_rank" />
               </a-form-item>
             </a-col>
             <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="手机号">
-                <a-input placeholder="请输入手机号" v-model="queryParam.phone"></a-input>
+                <j-input placeholder="请输入手机号" v-model="queryParam.phone"></j-input>
               </a-form-item>
             </a-col>
           </template>
@@ -133,12 +133,13 @@
   import SmartPunishPeopleModal from './modules/SmartPunishPeopleModal'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import SelectUserByDep from '@/components/jeecgbiz/modal/SelectUserByDep'
+  import JInput from '@/components/jeecg/JInput'
 
   export default {
     name: 'SmartPunishPeopleList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartPunishPeopleModal,SelectUserByDep
+      SmartPunishPeopleModal,SelectUserByDep,JInput
     },
     data () {
       return {
@@ -163,7 +164,8 @@
           {
             title:'处分人姓名',
             align:"center",
-            dataIndex: 'punishName'
+            dataIndex: 'punishName',
+            sorter: true
           },
           /*{
             title:'单位ID',
@@ -173,35 +175,56 @@
           {
             title:'单位',
             align:"center",
-            dataIndex: 'departName'
+            dataIndex: 'departName',
+            sorter: true
           },
           {
             title:'职务',
             align:"center",
-            dataIndex: 'position'
+            dataIndex: 'position',
+            sorter: true
           },
           {
             title:'职级',
             align:"center",
-            dataIndex: 'positionRank'
+            dataIndex: 'positionRank_dictText',
+            sorter: true
           },
           {
             title:'手机号',
             align:"center",
-            dataIndex: 'phone'
+            dataIndex: 'phone',
+            sorter: true
           },
           {
             title:'处分类型',
             align:"center",
-            dataIndex: 'punishType_dictText'
+            dataIndex: 'punishType_dictText',
+            sorter: true
+          },
+          {
+            title:'处分开始时间',
+            align:"center",
+            dataIndex: 'beginTime',
+            sorter: true,
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
           },
           {
             title:'解除处分时间',
             align:"center",
             dataIndex: 'removeTime',
+            sorter: true,
             customRender:function (text) {
               return !text?"":(text.length>10?text.substr(0,10):text)
             }
+          },
+          {
+            title:'处分状态',
+            align:"center",
+            dataIndex: 'statu_dictText',
+            sorter: true
           },
           {
             title: '操作',
@@ -242,10 +265,12 @@
         fieldList.push({type:'string',value:'departId',text:'单位ID',dictCode:''})
         fieldList.push({type:'string',value:'departName',text:'单位',dictCode:''})
         fieldList.push({type:'string',value:'position',text:'职务',dictCode:''})
-        fieldList.push({type:'string',value:'positionRank',text:'职级',dictCode:''})
+        fieldList.push({type:'string',value:'positionRank',text:'职级',dictCode:'position_rank'})
         fieldList.push({type:'string',value:'phone',text:'手机号',dictCode:''})
         fieldList.push({type:'string',value:'punishType',text:'处分类型',dictCode:'punish_type'})
+        fieldList.push({type:'date',value:'beginTime',text:'处分开始时间'})
         fieldList.push({type:'date',value:'removeTime',text:'解除处分时间'})
+        fieldList.push({type:'string',value:'statu',text:'处分状态',dictCode:'punish_statu'})
         this.superFieldList = fieldList
       },
 

@@ -19,8 +19,8 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="被谈话人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="intervieweeNo">
-              <select-user-by-dep v-model="model.intervieweeNo" @info="getInterviewee" text="work_no" store="work_no" :multi="false" />
+            <a-form-model-item label="被谈话人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="intervieweeId">
+              <select-user-by-dep v-model="model.intervieweeId" @info="getInterviewee"  />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -30,7 +30,7 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="被谈话人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="intervieweeName">
+            <a-form-model-item label="被谈话人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="intervieweeName" v-show="false">
               <a-input v-model="model.intervieweeName" placeholder="被谈话人姓名"  readOnly
                        unselectable="on"></a-input>
             </a-form-model-item>
@@ -92,8 +92,8 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="谈话人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="talkerNo">
-              <select-user-by-dep v-model="model.talkerNo" @info="getTalker" text="work_no" store="work_no" :multi="false" />
+            <a-form-model-item label="谈话人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="talkerId">
+              <select-user-by-dep v-model="model.talkerId" @info="getTalker"  />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -103,7 +103,7 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="谈话人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="talkerName">
+            <a-form-model-item label="谈话人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="talkerName" v-show="false">
               <a-input v-model="model.talkerName" placeholder="谈话人姓名"  readOnly
                        unselectable="on"></a-input>
             </a-form-model-item>
@@ -122,7 +122,7 @@
           </a-col>>
           <a-col :span="24">
             <a-form-model-item label="办理部门" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="handlerDepart">
-              <j-select-depart v-model="model.handlerDepart" multi  />
+              <j-select-depart v-model="model.handlerDepart"  />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -195,7 +195,7 @@
     data () {
       return {
         model:{
-          intervieweeNo :'',
+          intervieweeId :'',
           intervieweeName :'',
           intervieweeDept:'',
           intervieweeSex :'',
@@ -204,7 +204,7 @@
           intervieweeJpt :'',
           intervieweePost:'',
           intervieweePostrank :'',
-          talkerNo:'',
+          talkerId:'',
           talkerName:'',
           talkerDept:'',
           talkerPost :'',
@@ -299,7 +299,7 @@
         console.log(back)
         //this.model = back[0]
         //console.log(this.model)
-        this.model.intervieweeNo = back[0].workNo
+        this.model.intervieweeId = back[0].id
         this.model.intervieweeName = back[0].realname
         this.model.intervieweeDept = back[0].orgCodeTxt
         this.model.intervieweeSex = back[0].sex
@@ -311,7 +311,7 @@
       },
       getTalker(back){
         console.log(back)
-        this.model.talkerNo = back[0].workNo
+        this.model.talkerId = back[0].id
         this.model.talkerName = back[0].realname
         this.model.talkerDept = back[0].orgCodeTxt
         this.model.talkerPost = back[0].post_dictText

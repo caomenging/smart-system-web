@@ -20,24 +20,9 @@
     </template>
 
     <a-spin :spinning="confirmLoading">
-      <a-form-model ref="form" :model="model" :rules="validatorRules">
-
-        <a-form-model-item label="用户账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="username">
-          <a-input placeholder="请输入用户账号" v-model="model.username" :readOnly="!!model.id"/>
-        </a-form-model-item>
-
-        <template v-if="!model.id">
-          <a-form-model-item label="登录密码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="password" >
-            <a-input type="password" placeholder="请输入登录密码" v-model="model.password" />
-          </a-form-model-item>
-  
-          <a-form-model-item label="确认密码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="confirmpassword" >
-            <a-input type="password" @blur="handleConfirmBlur" placeholder="请重新输入登录密码" v-model="model.confirmpassword"/>
-          </a-form-model-item>
-        </template>
-
-        <a-form-model-item label="用户姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="realname">
-          <a-input placeholder="请输入用户姓名" v-model="model.realname" />
+      <a-form-model ref="form" :model="model" :rules="validatorRules" >
+        <a-form-model-item label="姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="realname">
+          <a-input placeholder="请输入姓名" v-model="model.realname" />
         </a-form-model-item>
 
         <a-form-model-item label="工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="workNo">
@@ -122,10 +107,10 @@
           <j-image-upload class="avatar-uploader" text="上传" v-model="model.avatar" ></j-image-upload>
         </a-form-model-item>
 
-        <a-form-model-item label="生日" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-model-item label="出生日期" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-date-picker
             style="width: 100%"
-            placeholder="请选择生日"
+            placeholder="请选择出生日期"
             v-model="model.birthday"
             :format="dateFormat"
             :getCalendarContainer="node => node.parentNode"/>
@@ -145,9 +130,9 @@
         required
         label="政治面貌"
         >
-        <j-dict-select-tag
+        <j-search-select-tag
           placeholder="请选择政治面貌"
-          dictCode="political_status"
+          dict="political_status"
           v-model="model.politicalStatus"
         />
         </a-form-model-item>
@@ -167,9 +152,9 @@
           prop="ethnicity"
           label="民族"
         >
-          <j-dict-select-tag
+          <j-search-select-tag
             placeholder="请选择民族"
-            dictCode="ethnicity"
+            dict="ethnicity"
             v-model="model.ethnicity"
           />
         </a-form-model-item>
@@ -185,10 +170,23 @@
         <a-form-model-item label="座机" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="telephone">
           <a-input placeholder="请输入座机" v-model="model.telephone" />
         </a-form-model-item>
-
-        <a-form-model-item label="工作流引擎" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag  v-model="model.activitiSync"  placeholder="请选择是否同步工作流引擎" :type="'radio'" dictCode="activiti_sync"/>
+        <a-form-model-item label="用户账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="username">
+          <a-input placeholder="请输入用户账号" v-model="model.username" :readOnly="!!model.id"/>
         </a-form-model-item>
+
+        <template v-if="!model.id">
+          <a-form-model-item label="登录密码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="password" >
+            <a-input type="password" placeholder="请输入登录密码" v-model="model.password" />
+          </a-form-model-item>
+
+          <a-form-model-item label="确认密码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="confirmpassword" >
+            <a-input type="password" @blur="handleConfirmBlur" placeholder="请重新输入登录密码" v-model="model.confirmpassword"/>
+          </a-form-model-item>
+        </template>
+
+<!--        <a-form-model-item label="工作流引擎" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <j-dict-select-tag  v-model="model.activitiSync"  placeholder="请选择是否同步工作流引擎" :type="'radio'" dictCode="activiti_sync"/>
+        </a-form-model-item>-->
 
       </a-form-model>
     </a-spin>
@@ -228,18 +226,17 @@
         disableSubmit:false,
         dateFormat:"YYYY-MM-DD",
         validatorRules:{
-          username:[{required: true, message: '请输入用户账号!'},
+          username:[
                     {validator: this.validateUsername,}],
-          password: [{required: true,pattern:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/,message: '密码由8位数字、大小写字母和特殊符号组成!'},
+          password: [{pattern:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/,message: '密码由8位数字、大小写字母和特殊符号组成!'},
                      {validator: this.validateToNextPassword,trigger: 'change'}],
-          confirmpassword: [{required: true, message: '请重新输入登录密码!',},
-                            { validator: this.compareToFirstPassword,}],
-          realname:[{ required: true, message: '请输入用户名称!' }],
-          phone: [{required: true, message: '请输入手机号!'}, {validator: this.validatePhone}],
+          confirmpassword: [{ validator: this.compareToFirstPassword,}],
+          realname:[{ required: true, message: '请输入姓名!' }],
+          phone: [{required: true, message: '请输入手机号码!'}, {validator: this.validatePhone}],
           email: [{validator: this.validateEmail}],
           roles:{},
-          workNo:[ { required: true, message: '请输入工号' },
-                  { validator: this.validateWorkNo }],
+          /*workNo:[ { required: true, message: '请输入工号' },
+            { validator: this.validateWorkNo }],*/
           telephone: [{ pattern: /^0\d{2,3}-[1-9]\d{6,7}$/, message: '请输入正确的座机号码' },],
           ethnicity:  [{ required: true, message: '请选择民族' }],
           politicalStatus:  [{ required: true, message: '请选择政治面貌' }]
@@ -320,7 +317,7 @@
           that.getUserRoles(record.id);
           that.getUserDeparts(record.id);
         }
-        console.log('that.model=',that.model)
+        //console.log('that.model=',that.model)
       },
       isDisabledAuth(code){
         return disabledAuthFilter(code);

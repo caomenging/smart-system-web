@@ -6,23 +6,23 @@
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="被谈话人单位">
-              <a-input placeholder="请输入被谈话人单位" v-model="queryParam.intervieweeDept"></a-input>
+              <j-select-depart placeholder="请输入被谈话人单位" v-model="queryParam.intervieweeDept" customReturnField='departName'></j-select-depart>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="被谈话人姓名">
-              <a-input placeholder="请输入被谈话人姓名" v-model="queryParam.intervieweeName"></a-input>
+              <j-input placeholder="请输入被谈话人姓名" v-model="queryParam.intervieweeName"></j-input>
             </a-form-item>
           </a-col>
           <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="谈话人单位">
-                <a-input placeholder="请输入谈话人单位" v-model="queryParam.talkerDept"></a-input>
+                <j-select-depart placeholder="请输入谈话人单位" v-model="queryParam.talkerDept" customReturnField='departName'></j-select-depart>
               </a-form-item>
             </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="谈话人姓名">
-                <a-input placeholder="请输入谈话人姓名" v-model="queryParam.talkerName"></a-input>
+                <j-input placeholder="请输入谈话人姓名" v-model="queryParam.talkerName"></j-input>
               </a-form-item>
             </a-col>
           </template>
@@ -152,42 +152,49 @@
             align:"center",
             customRender:function (t,r,index) {
               return parseInt(index)+1;
-            }
+            },
           },
           {
             title:'案件标题',
             align:"center",
-            dataIndex: 'caseName'
+            dataIndex: 'caseName',
+            sorter: true
           },
           {
             title:'被谈话人单位',
             align:"center",
-            dataIndex: 'intervieweeDept'
+            dataIndex: 'intervieweeDept',
+            sorter: true
           },
           {
             title:'被谈话人姓名',
             align:"center",
-            dataIndex: 'intervieweeName'
+            dataIndex: 'intervieweeName',
+            sorter: true
           },
           {
             title:'谈话人单位',
             align:"center",
-            dataIndex: 'talkerDept'
+            dataIndex: 'talkerDept',
+            sorter: true
           },
           {
             title:'谈话人姓名',
             align:"center",
-            dataIndex: 'talkerName'
+            dataIndex: 'talkerName',
+            sorter: true
           },
           {
             title:'办理部门',
             align:"center",
-            dataIndex: 'handlerDepart_dictText'
+            dataIndex: 'handlerDepart_dictText',
+            sorter: true
           },
           {
             title:'办理状态',
             align:"center",
-            dataIndex: 'state_dictText'
+            dataIndex: 'state_dictText',
+            sorter: true
           },
           {
             title: '操作',
@@ -225,7 +232,7 @@
         let fieldList=[];
         fieldList.push({type:'string',value:'caseName',text:'案件标题',dictCode:''})
         fieldList.push({type:'string',value:'caseSource',text:'案件（线索来源）',dictCode:''})
-        fieldList.push({type:'string',value:'intervieweeNo',text:'被谈话人工号',dictCode:''})
+        fieldList.push({type:'string',value:'intervieweeId',text:'被谈话人',dictCode:''})
         fieldList.push({type:'string',value:'intervieweeDept',text:'被谈话人单位',dictCode:''})
         fieldList.push({type:'string',value:'intervieweeName',text:'被谈话人姓名',dictCode:''})
         fieldList.push({type:'string',value:'intervieweeSex',text:'被谈话人性别',dictCode:''})
@@ -238,7 +245,7 @@
         fieldList.push({type:'string',value:'country',text:'是否国家检查队形',dictCode:'yn'})
         fieldList.push({type:'string',value:'authority',text:'干部管理权限',dictCode:''})
         fieldList.push({type:'string',value:'supervision',text:'是否是纪检监察干部',dictCode:'yn'})
-        fieldList.push({type:'string',value:'talkerNo',text:'谈话人工号',dictCode:''})
+        fieldList.push({type:'string',value:'talkerId',text:'谈话人',dictCode:''})
         fieldList.push({type:'string',value:'talkerDept',text:'谈话人单位',dictCode:''})
         fieldList.push({type:'string',value:'talkerName',text:'谈话人姓名',dictCode:''})
         fieldList.push({type:'string',value:'talkerPost',text:'谈话人职务',dictCode:''})

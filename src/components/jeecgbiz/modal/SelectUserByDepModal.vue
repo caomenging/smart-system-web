@@ -204,6 +204,7 @@
         this.loading = true
         getAction('/sys/user/queryUserComponentData', params).then(res=>{
           if (res.success) {
+            console.log(res.result.records)
             this.dataSource = res.result.records
             this.ipagination.total = res.result.total
           }
@@ -328,6 +329,8 @@
               // console.log(temp.id)
 
             }
+            // 默认展开父节点
+            that.expandedKeys = that.naturalTreeData.map(item => item.id)
             // this.loading = false
           }
           this.loading = false;

@@ -88,10 +88,10 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
-
-          <a-divider type="vertical" />
-          <a-dropdown>
+         <!-- <a @click="handleEdit(record)">编辑</a>-->
+        <a @click="handleDetail(record)">详情</a>
+          <!--<a-divider type="vertical" />-->
+          <!--<a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
@@ -103,7 +103,7 @@
                 </a-popconfirm>
               </a-menu-item>
             </a-menu>
-          </a-dropdown>
+          </a-dropdown>-->
         </span>
 
       </a-table>
@@ -145,37 +145,44 @@
           {
             title:'主管单位',
             align:"center",
-            dataIndex: 'exeDept'
+            dataIndex: 'exeDept',
+            sorter: true
           },
           {
             title:'窗口服务大厅名称',
             align:"center",
-            dataIndex: 'windowsName'
+            dataIndex: 'windowsName',
+            sorter: true
           },
           {
             title:'人员名称',
             align:"center",
-            dataIndex: 'personName'
+            dataIndex: 'personName',
+            sorter: true
           },
           {
             title:'评价人',
             align:"center",
-            dataIndex: 'evaluateName'
+            dataIndex: 'evaluateName',
+            sorter: true
           },
           {
             title:'评价人手机号',
             align:"center",
-            dataIndex: 'evaluatePhone'
+            dataIndex: 'evaluatePhone',
+            sorter: true
           },
           {
             title:'评价时间',
             align:"center",
-            dataIndex: 'evaluateTime'
+            dataIndex: 'evaluateTime',
+            sorter: true
           },
           {
             title:'评价结果',
             align:"center",
-            dataIndex: 'evaluateResult_dictText'
+            dataIndex: 'evaluateResult_dictText',
+            sorter: true
           },
           {
             title: '操作',

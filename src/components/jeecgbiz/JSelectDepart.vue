@@ -1,8 +1,8 @@
 <template>
   <div class="components-input-demo-presuffix">
     <!---->
-    <a-input @click="openModal" placeholder="请点击选择部门" v-model="textVals" readOnly :disabled="disabled">
-      <a-icon slot="prefix" type="cluster" title="部门选择控件"/>
+    <a-input @click="openModal" placeholder="请点击选择单位" v-model="textVals" readOnly :disabled="disabled">
+      <a-icon slot="prefix" type="cluster" title="单位选择控件"/>
       <a-icon v-if="storeVals" slot="suffix" type="close-circle" @click="handleEmpty" title="清空"/>
     </a-input>
 
