@@ -89,7 +89,7 @@
                 @change="chooseMsgType"
                 :getPopupContainer="(target) => target.parentNode"
               >
-                <a-select-option value="USER">指定用户</a-select-option>
+                <a-select-option value="USER">指定部门</a-select-option>
                 <a-select-option value="ALL">全体用户</a-select-option>
               </a-select>
             </a-form-model-item>
