@@ -94,13 +94,13 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="12">
-            <a-form-model-item label="宴请费用（元）" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="weddingCost">
+            <a-form-model-item label="宴请费用(元)" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="weddingCost">
               <a-input-number v-model="model.weddingCost" placeholder="请输入宴请费用(元)" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="12">
             <a-form-model-item
-              label="婚礼用车数量（辆）"
+              label="婚礼用车数量(辆)"
               :labelCol="labelCol"
               :wrapperCol="wrapperCol"
               prop="weddingCarNumber"
@@ -113,17 +113,17 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="12">
-            <a-form-model-item label="公车数量（辆）" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="govCarNumber">
+            <a-form-model-item label="公车数量(辆)" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="govCarNumber">
               <a-input-number
                 v-model="model.govCarNumber"
-                placeholder="请输入公车数量（婚礼用车中有多少辆公车）"
+                placeholder="请输入公车数量(婚礼用车中有多少辆公车)"
                 style="width: 100%"
               />
             </a-form-model-item>
           </a-col>
           <a-col :span="12">
             <a-form-model-item
-              label="不符合规定收受礼金（元）"
+              label="不符合规定收受礼金(元)"
               :labelCol="labelCol"
               :wrapperCol="wrapperCol"
               prop="illegalMoney"
@@ -137,14 +137,14 @@
           </a-col>
           <a-col :span="12">
             <a-form-model-item
-              label="不符合规定收受礼品件数"
+              label="不符合规定收受礼品件数(件)"
               :labelCol="labelCol"
               :wrapperCol="wrapperCol"
               prop="illegalGiftNumber"
             >
               <a-input-number
                 v-model="model.illegalGiftNumber"
-                placeholder="请输入不符合规定收受礼品件数"
+                placeholder="请输入不符合规定收受礼品件数(件)"
                 style="width: 100%"
               />
             </a-form-model-item>

@@ -152,7 +152,7 @@ export default {
       // 表头
       columns: [
         {
-          title: '#',
+          title: '序号',
           dataIndex: '',
           key: 'rowIndex',
           width: 60,
@@ -222,12 +222,12 @@ export default {
           dataIndex: 'weddingCost',
         },
         {
-          title: '婚礼用车数量',
+          title: '婚礼用车数量(辆)',
           align: 'center',
           dataIndex: 'weddingCarNumber',
         },
         {
-          title: '公车数量（婚礼用车中有多少辆公车）',
+          title: '公车数量(辆)',
           align: 'center',
           dataIndex: 'govCarNumber',
         },
@@ -237,7 +237,7 @@ export default {
           dataIndex: 'illegalMoney',
         },
         {
-          title: '不符合规定收受礼品件数',
+          title: '不符合规定收受礼品件数(件)',
           align: 'center',
           dataIndex: 'illegalGiftNumber',
         },
