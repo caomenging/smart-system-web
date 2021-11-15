@@ -89,7 +89,8 @@
                 @change="chooseMsgType"
                 :getPopupContainer="(target) => target.parentNode"
               >
-                <a-select-option value="USER">指定部门</a-select-option>
+                <a-select-option value="DEPART">指定部门</a-select-option>
+                <a-select-option value="USER">指定用户</a-select-option>
                 <a-select-option value="ALL">全体用户</a-select-option>
               </a-select>
             </a-form-model-item>
@@ -108,9 +109,18 @@
               :wrapperCol="wrapperCol"
               label="选择用户"
               prop="userIds"
-              v-if="userType"
+              v-if="userType == 'USER'"
             >
               <j-select-user-by-dep :multi="true" @change="choseUser"></j-select-user-by-dep>
+            </a-form-model-item>
+            <a-form-model-item
+              label="选择部门"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+              prop="departId"
+              v-if="userType == 'DEPART'"
+            >
+              <j-select-depart v-model="departIds" :multi="true"></j-select-depart>
             </a-form-model-item>
 
             <!-- <a-form-model-item
@@ -201,8 +211,9 @@ export default {
         add: '/sys/annountCement/add',
         edit: '/sys/annountCement/edit',
       },
-      userType: false,
+      userType: 'ALL',
       userIds: [],
+      departIds:'',                                                                                                                        
       selectedUser: [],
       disabled: false,
       msgContent: '',
@@ -252,11 +263,12 @@ export default {
     },
     handleOk() {
       const that = this
+      console.log(this.departIds)
       //当设置指定用户类型，但用户为空时，后台报错
-      if (this.userType && !(this.userIds != null && this.userIds.length > 0)) {
-        this.$message.warning('指定用户不能为空！')
-        return
-      }
+      // if (this.userType == 'USER' && !(this.userIds != null && this.userIds.length > 0)) {
+      //   this.$message.warning('指定用户不能为空！')
+      //   return
+      // }
       // 触发表单验证
       this.$refs.form.validate((valid) => {
         if (valid) {
@@ -270,8 +282,10 @@ export default {
             httpurl += this.url.edit
             method = 'put'
           }
-          if (this.userType) {
+          if (this.userType == 'USER') {
             this.model.userIds = this.userIds
+          } else if (this.userType == 'DEPART') {
+            this.model.departIds = this.departIds
           }
           httpAction(httpurl, this.model, method)
             .then((res) => {
@@ -299,8 +313,9 @@ export default {
       this.resetUser()
     },
     resetUser() {
-      this.userType = false
+      this.userType = 'ALL'
       this.userIds = []
+      this.departIds = ''
       this.selectedUser = []
       this.disabled = false
       this.$refs.UserListModal.edit(null, null)
@@ -310,14 +325,17 @@ export default {
     },
     chooseMsgType(value) {
       if ('USER' == value) {
-        this.userType = true
-      } else {
-        this.userType = false
+        this.userType = 'UESR'
+      } else if('DEPART' == value) {
+        this.userType = 'DEPART'
+      }
+      else {
+        this.userType = 'ALL'
         this.selectedUser = []
         this.userIds = []
       }
     },
-    // 子modal回调
+    // 子modal回调z
     choseUser(userList) {
       // console.log(userList.length)
       this.selectedUser = []
