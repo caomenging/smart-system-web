@@ -2,11 +2,11 @@
   <div>
     <a-input-search
       v-model="textVals"
-      placeholder="请先选择用户"
+      placeholder="请选择人员"
       readOnly
       unselectable="on"
       @search="onSearchDepUser">
-      <a-button slot="enterButton" :disabled="disabled">选择用户</a-button>
+      <a-button slot="enterButton" :disabled="disabled">选择人员</a-button>
     </a-input-search>
     <j-select-user-by-dep-modal
       ref="selectModal"
@@ -16,12 +16,14 @@
       :user-ids="value"
       :store="storeField"
       :text="textField"
-      @initComp="initComp"/>
+      @initComp="initComp"
+    />
   </div>
 </template>
 
 <script>
   import JSelectUserByDepModal from './modal/JSelectUserByDepModal'
+  // 下划线转换驼峰
   import { underLinetoHump } from '@/components/_util/StringUtil'
 
   export default {
@@ -55,7 +57,7 @@
       // 存储字段 [key field]
       store: {
         type: String,
-        default: 'username',
+        default: 'id',
         required: false
       },
       // 显示字段 [label field]
@@ -63,21 +65,21 @@
         type: String,
         default: 'realname',
         required: false
-      }
+      },
     },
     data() {
       return {
         storeVals: '', //[key values]
-        textVals: '' //[label values]
+        textVals: '', //[label values]
       }
     },
     computed:{
       storeField(){
-        let field = this.customReturnField
+        /*let field = this.customReturnField
         if(!field){
           field = this.store;
-        }
-        return underLinetoHump(field)
+        }*/
+        return underLinetoHump(this.store)
       },
       textField(){
         return underLinetoHump(this.text)
@@ -112,6 +114,7 @@
                 text: arr2[i]
               })
             }
+            console.log(info)
             this.$emit('back', info)
           }
         }
@@ -120,21 +123,25 @@
         this.$refs.selectModal.showModal()
       },
       selectOK(rows) {
+        let that = this
         console.log("当前选中用户", rows)
         if (!rows) {
-          this.storeVals = ''
-          this.textVals = ''
+          that.storeVals = ''
+          that.textVals = ''
         } else {
           let temp1 = []
           let temp2 = []
           for (let item of rows) {
-            temp1.push(item[this.storeField])
-            temp2.push(item[this.textField])
+            temp1.push(item[that.storeField])
+            temp2.push(item[that.textField])
           }
-          this.storeVals = temp1.join(',')
-          this.textVals = temp2.join(',')
+          that.storeVals = temp1.join(',')//存储值
+          that.textVals = temp2.join(',')//显示值
         }
-        this.$emit("change", this.storeVals)
+        console.log(that.store)
+        console.log(that.storeVals)
+        //子组件使用this.$emit()向父组件传值
+        that.$emit("change", this.storeVals)
       }
     }
   }

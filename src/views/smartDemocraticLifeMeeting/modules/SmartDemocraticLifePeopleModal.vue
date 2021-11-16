@@ -12,8 +12,8 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules">
         <a-row>
           <a-col :span="24">
-            <a-form-model-item label="参会人员工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="participantId">
-              <a-input v-model="model.participantId"placeholder="请输入参会人员工号" ></a-input>
+            <a-form-model-item label="参会人员ID" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="participantId">
+              <a-input v-model="model.participantId"placeholder="请输入参会人员ID" ></a-input>
             </a-form-model-item>
           </a-col>
         </a-row>

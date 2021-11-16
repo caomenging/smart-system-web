@@ -145,7 +145,7 @@
           {
             title:'填报单位',
             align:"center",
-            dataIndex: 'sysOrgCode'
+            dataIndex: 'sysOrgCode_dictText'
           },
           {
             title:'单位类型',
@@ -160,7 +160,16 @@
           {
             title:'审核状态',
             align:"center",
-            dataIndex: 'flowStatus'
+            dataIndex: 'flowStatus',
+            customRender: function (text) {
+              if (text == 1) {
+                return '通过'
+              } else if (text == 2) {
+                return '待审核'
+              } else if (text == 0) {
+                return '驳回'
+              }
+            }
           },
           {
             title:'填报日期',
@@ -183,11 +192,19 @@
         superFieldList:[],
       }
     },
+    created() {
+    this.getSuperFieldList();
+    },
     methods: {
       aa(record) {
         console.log(record.flowNo)
         
         this.handleDetail(record)
+      },
+      getSuperFieldList(){
+        let fieldList=[];
+        fieldList.push({type:'string',value:'sysOrgCode',text:'所属部门',dictCode:'sys_depart,depart_name,org_code'})
+        this.superFieldList = fieldList
       }
     }
   }

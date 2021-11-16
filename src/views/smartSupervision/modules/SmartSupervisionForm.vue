@@ -19,11 +19,11 @@
               <j-date placeholder="请选择监督检查时间" v-model="model.supervisionTime" style="width: 100%" />
             </a-form-model-item>
           </a-col>
-          <a-col :span="24" >
+          <!-- <a-col :span="24" >
             <a-form-model-item label="创建人员工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="creatorNo">
               <a-input v-model="model.creatorNo" placeholder="请输入创建人员工号" ></a-input>
             </a-form-model-item>
-          </a-col>
+          </a-col> -->
         </a-row>
       </a-form-model>
     </j-form-container>
@@ -176,6 +176,12 @@
         if (this.model.id) {
           let params = { id: this.model.id }
           this.requestSubTableData(this.url.smartSupervisionAnnex.list, params, this.smartSupervisionAnnexTable)
+          getAction(this.url.queryById,params).then(res => {
+              if(res.success){
+                this.model = res.result
+                // console.log(model)
+              }
+            })
         }
       },
       //校验所有一对一子表表单

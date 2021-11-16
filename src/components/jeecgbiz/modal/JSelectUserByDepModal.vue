@@ -14,7 +14,18 @@
       <a-col :md="6" :sm="24">
         <a-card :bordered="false">
           <!--组织机构-->
+          <!--修改为自然机构-->
           <a-directory-tree
+            selectable
+            :selectedKeys="selectedDepIds"
+            :checkStrictly="true"
+            :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
+            :treeData="naturalDepartTree"
+            :expandAction="false"
+            :expandedKeys.sync="expandedKeys"
+            @select="onDepSelect"
+          />
+          <!--<a-directory-tree
             selectable
             :selectedKeys="selectedDepIds"
             :checkStrictly="true"
@@ -23,16 +34,16 @@
             :expandAction="false"
             :expandedKeys.sync="expandedKeys"
             @select="onDepSelect"
-          />
+          />-->
         </a-card>
       </a-col>
       <a-col :md="18" :sm="24">
         <a-card :bordered="false">
-          用户账号:
+          姓名:
           <a-input-search
             :style="{width:'150px',marginBottom:'15px'}"
-            placeholder="请输入账号"
-            v-model="queryParam.username"
+            placeholder="请输入姓名"
+            v-model="queryParam.realname"
             @search="onSearch"
           ></a-input-search>
           <a-button @click="searchReset(1)" style="margin-left: 20px" icon="redo">重置</a-button>
@@ -57,7 +68,7 @@
 
 <script>
   import { pushIfNotExist, filterObj } from '@/utils/util'
-  import {queryDepartTreeList, getUserList, queryUserByDepId} from '@/api/api'
+  import {queryDepartTreeList, getUserList, queryUserByDepId,queryNaturalDepartTreeList} from '@/api/api'
   import { getAction } from '@/api/manage'
 
   export default {
@@ -66,17 +77,23 @@
     props: ['modalWidth', 'multi', 'userIds', 'store', 'text'],
     data() {
       return {
+        naturalDepartTree: [],
         queryParam: {
-          username: "",
+          realname: "",
         },
         columns: [
+/*          {
+            title: '工号',
+            align: 'center',
+            dataIndex: 'workNo'
+          },*/
           {
-            title: '用户账号',
+            title: '账号',
             align: 'center',
             dataIndex: 'username'
           },
           {
-            title: '用户姓名',
+            title: '姓名',
             align: 'center',
             dataIndex: 'realname'
           },
@@ -99,11 +116,18 @@
             align: 'center',
             dataIndex: 'phone'
           },
-          {
-            title: '部门',
+          {  title: '单位',
             align: 'center',
             dataIndex: 'orgCodeTxt'
-          }
+          },
+          {  title: '职务',
+            align: 'center',
+            dataIndex: 'post_dictText'
+          },
+          {  title: '职级',
+            align: 'center',
+            dataIndex: 'positionRank_dictText'
+          },
         ],
         scrollTrigger: {},
         dataSource: [],
@@ -111,7 +135,7 @@
         selectedRowKeys: [],
         selectUserRows: [],
         selectUserIds: [],
-        title: '根据部门选择用户',
+        title: '根据单位选择用户',
         ipagination: {
           current: 1,
           pageSize: 10,
@@ -152,7 +176,8 @@
     created() {
       // 该方法触发屏幕自适应
       this.resetScreenSize();
-      this.loadData()
+      this.loadData();
+      this.loadNaturalTree();
     },
     methods: {
       initUserNames() {
@@ -160,6 +185,8 @@
           // 这里最后加一个 , 的原因是因为无论如何都要使用 in 查询，防止后台进行了模糊匹配，导致查询结果不准确
           let values = this.userIds.split(',') + ','
           let param = {[this.store]: values}
+          console.log(this.userIds)
+          console.log(this.store)
           getAction('/sys/user/getMultiUser', param).then((list)=>{
             this.selectionRows = []
             let selectedRowKeys = []
@@ -296,6 +323,7 @@
           this.loading = false
         })
       },
+      //原-机构树
       queryDepartTree() {
         queryDepartTreeList().then((res) => {
           if (res.success) {
@@ -303,6 +331,30 @@
             // 默认展开父节点
             this.expandedKeys = this.departTree.map(item => item.id)
           }
+        })
+      },
+      //自然机构树
+      loadNaturalTree() {
+        var that = this
+        this.loading = true;
+        that.naturalTreeData = []
+        that.naturalDepartTree = []
+        queryNaturalDepartTreeList().then((result) => {
+          if (result.success) {
+            //部门全选后，再添加部门，选中数量增多
+            // this.allTreeKeys = [];
+            for (let j = 0; j < result.result.length; j++) {
+              let temp2 = result.result[j]
+              that.naturalTreeData.push(temp2)
+              that.naturalDepartTree.push(temp2)
+              // that.setThisExpandedKeys(temp2)
+              // that.getAllKeys(temp2);
+              // console.log(temp.id)
+
+            }
+            // this.loading = false
+          }
+          this.loading = false;
         })
       },
       modalFormOk() {

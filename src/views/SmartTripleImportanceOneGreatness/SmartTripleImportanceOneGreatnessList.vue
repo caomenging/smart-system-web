@@ -4,11 +4,26 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="单位">
+              <j-select-depart placeholder="请选择单位"  v-model="queryParam.documentid" customReturnField='id' :multi="false" :treeOpera="true"></j-select-depart>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+<!--              <a @click="handleToggleSearch" style="margin-left: 8px">
+                {{ toggleSearchStatus ? '收起' : '展开' }}
+                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
+              </a>-->
+            </span>
+          </a-col>
         </a-row>
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
@@ -68,22 +83,13 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
-
+          <a v-show="record.verifyStatus == '3'" @click="handleEdit(record)">编辑</a>
           <a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <a @click="handleDetail(record)">详情</a>
-              </a-menu-item>
-              <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a>删除</a>
-                </a-popconfirm>
-              </a-menu-item>
-            </a-menu>
-          </a-dropdown>
+          <a @click="handleDetail(record)">详情</a>
+          <a-divider type="vertical" />
+          <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+            <a v-show="record.verifyStatus == '3'">删除</a>
+          </a-popconfirm>
         </span>
 
       </a-table>
@@ -122,9 +128,9 @@
             }
           },
           {
-            title:'单位ID',
+            title:'单位',
             align:"center",
-            dataIndex: 'docementid'
+            dataIndex: 'documentid_dictText'
           },
           {
             title:'名称',
@@ -152,19 +158,19 @@
             dataIndex: 'meetingNumber'
           },
           {
-            title:'参会人员',
+            title:'参会人员姓名',
             align:"center",
-            dataIndex: 'meetingPeople'
+            dataIndex: 'meetingPeopleName'
           },
           {
-            title:'主持人',
+            title:'主持人姓名',
             align:"center",
-            dataIndex: 'meetingHoster'
+            dataIndex: 'meetingHosterName'
           },
           {
-            title:'记录人',
+            title:'记录人姓名',
             align:"center",
-            dataIndex: 'meetingRecorer'
+            dataIndex: 'meetingRecorerName'
           },
           {
             title:'会议内容摘要',
@@ -179,12 +185,27 @@
           {
             title:'创建人',
             align:"center",
-            dataIndex: 'creatBy'
+            dataIndex: 'createBy'
           },
           {
             title:'创建时间',
             align:"center",
-            dataIndex: 'creatTime'
+            dataIndex: 'createTime'
+          },
+          {
+            title:'审核状态',
+            align:'center',
+            dataIndex: 'verifyStatus',
+            customRender: function(text) {
+              if(text == '0') {
+                return '不通过'
+              } else if (text == '1') {
+                return '通过'
+              } else if (text == '2') {
+                return '待审核'
+              } else {
+                return '免审' }
+            }
           },
           {
             title: '操作',
@@ -193,7 +214,8 @@
             fixed:"right",
             width:147,
             scopedSlots: { customRender: 'action' },
-          }
+          },
+
         ],
         url: {
           list: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/list",
@@ -201,7 +223,7 @@
           deleteBatch: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/deleteBatch",
           exportXlsUrl: "/smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/exportXls",
           importExcelUrl: "smartTripleImportanceOneGreatness/smartTripleImportanceOneGreatness/importExcel",
-          
+
         },
         dictOptions:{},
         superFieldList:[],
@@ -220,24 +242,25 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'docementid',text:'单位ID',dictCode:''})
+         fieldList.push({type:'list_multi',value:'documentid',text:'单位',dictTable:'', dictText:'', dictCode:''})
          fieldList.push({type:'string',value:'meetingName',text:'名称',dictCode:''})
          fieldList.push({type:'string',value:'meetingPlace',text:'地点',dictCode:''})
          fieldList.push({type:'datetime',value:'meetingStarttime',text:'时间'})
          fieldList.push({type:'string',value:'meetingType',text:'类型',dictCode:'meeting_type'})
          fieldList.push({type:'int',value:'meetingNumber',text:'参会人数',dictCode:''})
          fieldList.push({type:'string',value:'meetingPeople',text:'参会人员',dictCode:''})
+         fieldList.push({type:'string',value:'meetingPeopleName',text:'参会人员姓名',dictCode:''})
          fieldList.push({type:'string',value:'meetingHoster',text:'主持人',dictCode:''})
+         fieldList.push({type:'string',value:'meetingHosterName',text:'主持人姓名',dictCode:''})
          fieldList.push({type:'string',value:'meetingRecorer',text:'记录人',dictCode:''})
+         fieldList.push({type:'string',value:'meetingRecorerName',text:'记录人姓名',dictCode:''})
+
          fieldList.push({type:'string',value:'meetingAbstract',text:'会议内容摘要',dictCode:''})
          fieldList.push({type:'string',value:'meetingRemarks',text:'备注',dictCode:''})
-         fieldList.push({type:'string',value:'creatBy',text:'创建人',dictCode:''})
-         fieldList.push({type:'datetime',value:'creatTime',text:'创建时间'})
+         fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
+         fieldList.push({type:'datetime',value:'createTime',text:'创建时间'})
         this.superFieldList = fieldList
       }
     }
   }
 </script>
-<style scoped>
-  @import '~@assets/less/common.less';
-</style>
