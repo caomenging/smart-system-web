@@ -214,6 +214,8 @@ export default {
           customRender: function (text) {
             if (text == 'USER') {
               return '指定用户'
+            } else if (text == 'DEPART') {
+              return '部门'
             } else if (text == 'ALL') {
               return '全体用户'
             } else {
