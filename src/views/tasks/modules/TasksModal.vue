@@ -33,7 +33,10 @@
               <div slot="description">
                 <div><span>审核人：</span><span>{{item.auditPerson}}</span></div>
                 <div><span>审核时间：</span><span>{{item.auditTime}}</span></div>
-                <div><span>审核结论：</span><span>{{item.auditStatus}}</span></div>
+                <div><span>审核结论：</span>
+                <span v-if="item.auditStatus==3" >通过</span>
+                <span v-if="item.auditStatus==4" >驳回</span>
+                </div>
                 <div><span>审核意见：</span><span>{{item.remark}}</span></div>
               </div>
             </a-list-item-meta>
@@ -83,6 +86,9 @@ export default {
     SmartTripleImportanceOneGreatnessForm,
     SmartCreateAdviceForm,
     SplitPanel,
+  },
+  mounted(){
+    this.getVerigyResult()
   },
   data() {
     return {
@@ -139,17 +145,23 @@ export default {
         this.$refs.realForm.edit(realRecord)
         // getVerigyResult(record)
       })
+      this.getVerigyResult(record.flowNo)
       // this.$nextTick(() => {
       //   this.getVerigyResult(record.flowNo)
       // })
     },
     getVerigyResult(flowNo) {
+      console.log(flowNo)
       const params = {
         flowNo: flowNo,
       }
       getAction('/smartVerifyDetail/smartVerifyDetail/queryByflowNo', params).then((res) => {
         if (res.success) {
-          this.verifyResult = res.result
+          this.$nextTick(()=>{
+            console.log(res.result)
+            this.verifyResult = res.result
+            console.log(this.verifyResult)
+          })
         }
       })
     },

@@ -44,11 +44,13 @@
       <span slot="action" slot-scope="text, record">
         <a @click="showAnnouncement(record)">查看</a>
         <a-divider type="vertical" />
-        <!-- <a>提交</a> -->
+        <a @click="handleAdd" type="primary">提交</a>
       </span>
     </a-table>
     <show-announcement ref="ShowAnnouncement"></show-announcement>
     <dynamic-notice ref="showDynamNotice" :path="openPath" :formData="formData"/>
+    <!-- 表单区域 -->
+    <sysAnnouncement-modal ref="modalForm" @ok="modalFormOk"></sysAnnouncement-modal>
   </a-card>
 </template>
 
@@ -58,13 +60,15 @@
   import ShowAnnouncement from '@/components/tools/ShowAnnouncement'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import DynamicNotice from '../../components/tools/DynamicNotice'
+  import SysAnnouncementModal from '@/views/system/modules/SysAnnouncementModal'
 
   export default {
     name: "MyTaskList",
     mixins: [JeecgListMixin],
     components: {
       DynamicNotice,
-      ShowAnnouncement
+      ShowAnnouncement,
+      SysAnnouncementModal
     },
     data () {
       return {

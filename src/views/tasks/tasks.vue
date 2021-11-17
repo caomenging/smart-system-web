@@ -142,11 +142,11 @@
             align:"center",
             dataIndex: 'taskType'
           },
-          // {
-          //   title:'填报单位',
-          //   align:"center",
-          //   dataIndex: 'sysOrgCode'
-          // },
+          {
+            title:'填报单位',
+            align:"center",
+            dataIndex: 'sysOrgCode_dictText'
+          },
           {
             title:'单位类型',
             align:"center",
@@ -192,11 +192,19 @@
         superFieldList:[],
       }
     },
+    created() {
+    this.getSuperFieldList();
+    },
     methods: {
       aa(record) {
         console.log(record.flowNo)
         
         this.handleDetail(record)
+      },
+      getSuperFieldList(){
+        let fieldList=[];
+        fieldList.push({type:'string',value:'sysOrgCode',text:'所属部门',dictCode:'sys_depart,depart_name,org_code'})
+        this.superFieldList = fieldList
       }
     }
   }
