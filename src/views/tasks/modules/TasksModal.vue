@@ -17,6 +17,7 @@
     <smart-post-marriage-report-form v-if="type === '婚后报备'" ref="realForm" :disabled="disableSubmit" />
     <smart-create-advice-form v-if="type === '制发建议'" ref="realForm" :disabled="disableSubmit" />
     <smart-org-meeting-form v-if="type === '组织生活会'" ref="realForm" :disabled="disableSubmit" />
+    <smart-finance-result-form v-if="type === '财务收支'" ref="realForm" :disabled="disableSubmit" />
 
     <smart-triple-importance-one-greatness-form v-if="type === '三重一大'" ref="realForm" :disabled="disableSubmit" />
 
@@ -63,10 +64,12 @@ import SmartTripleImportanceOneGreatnessForm from '../../SmartTripleImportanceOn
 import SmartCreateAdviceForm from '../../SmartSuggestion/modules/SmartCreateAdviceForm'
 import SplitPanel from '../../jeecg/SplitPanel.vue'
 import SmartOrgMeetingForm from "../../SmartOrgMeeting/modules/SmartOrgMeetingForm";
+import SmartFinanceResultForm from "../../SmartFinanceResult/modules/SmartFinanceResultForm";
 
 export default {
   name: 'TaskModal',
   components: {
+    SmartFinanceResultForm,
     SmartOrgMeetingForm,
     getAction,
     TasksForm,
