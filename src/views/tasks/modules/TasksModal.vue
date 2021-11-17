@@ -16,6 +16,7 @@
     <smart-supervision-form v-if="type === '监督检查'" ref="realForm" :disabled="disableSubmit" />
     <smart-post-marriage-report-form v-if="type === '婚后报备'" ref="realForm" :disabled="disableSubmit" />
     <smart-create-advice-form v-if="type === '制发建议'" ref="realForm" :disabled="disableSubmit" />
+    <smart-org-meeting-form v-if="type === '组织生活会'" ref="realForm" :disabled="disableSubmit" />
 
     <smart-triple-importance-one-greatness-form v-if="type === '三重一大'" ref="realForm" :disabled="disableSubmit" />
 
@@ -29,7 +30,7 @@
               <a slot="title">审核信息</a>
               <div slot="description">
                 <div><span>审核人：</span><span>{{item.auditPerson}}</span></div>
-                <div><span>审核时间：</span><span{{item.auditTime}}></span></div>
+                <div><span>审核时间：</span><span>{{item.auditTime}}</span></div>
                 <div><span>审核结论：</span><span>{{item.auditStatus}}</span></div>
                 <div><span>审核意见：</span><span>{{item.remark}}</span></div>
               </div>
@@ -61,10 +62,12 @@ import SmartPostMarriageReportForm from '../../SmartPostMarriage/modules/SmartPo
 import SmartTripleImportanceOneGreatnessForm from '../../SmartTripleImportanceOneGreatness/modules/SmartTripleImportanceOneGreatnessForm.vue'
 import SmartCreateAdviceForm from '../../SmartSuggestion/modules/SmartCreateAdviceForm'
 import SplitPanel from '../../jeecg/SplitPanel.vue'
+import SmartOrgMeetingForm from "../../SmartOrgMeeting/modules/SmartOrgMeetingForm";
 
 export default {
   name: 'TaskModal',
   components: {
+    SmartOrgMeetingForm,
     getAction,
     TasksForm,
     TestVerifyForm,
