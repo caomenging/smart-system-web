@@ -56,7 +56,8 @@
           :disabled="formDisabled"
           :rowNumber="true"
           :rowSelection="true"
-          :actionButton="true"/>
+          :actionButton="true"
+          :rootUrl="rootUrl"/>
       </a-tab-pane>
     </a-tabs>
   </a-spin>
@@ -76,6 +77,7 @@
     },
     data() {
       return {
+        rootUrl: "/smartEvaluateMeeting/smartEvaluateMeeting",
         labelCol: {
           xs: { span: 24 },
           sm: { span: 6 },
@@ -119,7 +121,7 @@
           dataSource: [],
           columns: [
             {
-              title: '参与人员工号',
+              title: '参与人员',
               key: 'pacpaId',
               type: FormTypes.input,
               width:"200px",
@@ -133,15 +135,15 @@
           loading: false,
           dataSource: [],
           columns: [
-            {
-              title: '序号',
-              key: 'annexIndex',
-              type: FormTypes.inputNumber,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
-            },
+            // {
+            //   title: '序号',
+            //   key: 'annexIndex',
+            //   type: FormTypes.inputNumber,
+            //   width:"200px",
+            //   placeholder: '请输入${title}',
+            //   defaultValue:'',
+            //   validateRules: [{ required: true, message: '${title}不能为空' }],
+            // },
             {
               title: '附件说明',
               key: 'description',
