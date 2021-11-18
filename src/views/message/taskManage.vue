@@ -27,7 +27,7 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+      <!-- <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button> -->
       <a-button type="primary" icon="download" @click="handleExportXls('系统通告')">导出</a-button>
       <a-upload
         name="file"
@@ -78,39 +78,33 @@
           <a v-if="record.sendStatus == 0" @click="handleEdit(record)">编辑</a>
 
           <a-divider type="vertical" v-if="record.sendStatus == 0" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-            <a-menu slot="overlay">
               <a-menu-item v-if="record.sendStatus != 1">
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
                   <a>删除</a>
                 </a-popconfirm>
-              </a-menu-item>
-              <a-menu-item v-if="record.sendStatus == 1">
-                  <a @click="checkDetail(record)">详情</a>
               </a-menu-item>
               <a-menu-item v-if="record.sendStatus == 0">
                 <a-popconfirm title="确定发布吗?" @confirm="() => releaseData(record.id)">
                   <a>发布</a>
                 </a-popconfirm>
               </a-menu-item>
-              <a-menu-item v-if="record.sendStatus == 1">
+              <!-- <a v-if="record.sendStatus == 1">
                 <a-popconfirm title="确定撤销吗?" @confirm="() => reovkeData(record.id)">
                   <a>撤销</a>
                 </a-popconfirm>
-              </a-menu-item>
-              <a-menu-item>
+              </a> -->
+              <a>
                 <a @click="handleDetail(record)">查看</a>
-              </a-menu-item>
-            </a-menu>
-          </a-dropdown>
+              </a>
+              <a-divider type="vertical" />
+              <a @click="checkDetail(record)">详情</a>
         </span>
       </a-table>
     </div>
     <!-- table区域-end -->
 
     <!-- 表单区域 -->
-    <sysAnnouncement-modal ref="modalForm" @ok="modalFormOk"></sysAnnouncement-modal>
+    <task-detail-modal ref="detailListModal" @ok="detailListModalOk"></task-detail-modal>
     <!-- 查看详情 -->
     <j-modal
       class="detail-modal"
@@ -123,26 +117,23 @@
     >
       <iframe v-if="detailModal.url" class="detail-iframe" :src="detailModal.url" />
     </j-modal>
-    <!-- 发送情况统计 -->
-    <task-detail-modal ref="taskDetailModal"></task-detail-modal>
   </a-card>
 </template>
 
 <script>
-import SysAnnouncementModal from './modules/SysAnnouncementModal'
+import TaskDetailModal from './module/TaskDetailModal.vue'
+import SysAnnouncementModal from '@/views/system/modules/SysAnnouncementModal'
 import { doReleaseData, doReovkeData } from '@/api/api'
 import { getAction } from '@/api/manage'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
-import TaskDetailModal from '../message/module/TaskDetailModal.vue'
 
 export default {
   name: 'SysAnnouncementList',
   mixins: [JeecgListMixin],
   components: {
     SysAnnouncementModal,
-    TaskDetailModal,
-
+    TaskDetailModal
   },
   data() {
     return {
@@ -162,27 +153,28 @@ export default {
             return parseInt(index) + 1
           },
         },
+
         {
-          title: '标题',
+          title: '任务标题',
           align: 'center',
           dataIndex: 'titile',
         },
-        {
-          title: '消息类型',
-          align: 'center',
-          dataIndex: 'msgCategory',
-          customRender: function (text) {
-            if (text == '1') {
-              return '通知公告'
-            } else if (text == '2') {
-              return '廉政提醒'
-            } else if (text == '3') {
-              return '任务下发'
-            } else {
-              return text
-            }
-          },
-        },
+        // {
+        //   title: '消息类型',
+        //   align: 'center',
+        //   dataIndex: 'msgCategory',
+        //   customRender: function (text) {
+        //     if (text == '1') {
+        //       return '通知公告'
+        //     } else if (text == '2') {
+        //       return '廉政提醒'
+        //     } else if (text == '3') {
+        //       return '任务下发'
+        //     } else {
+        //       return text
+        //     }
+        //   },
+        // },
         /*{
             title: '开始时间',
             align: "center",
@@ -193,11 +185,16 @@ export default {
             align: "center",
             dataIndex: 'endTime'
           },*/
-        {
-          title: '发布人',
-          align: 'center',
-          dataIndex: 'sender',
-        },
+        // {
+        //   title: '发布人',
+        //   align: 'center',
+        //   dataIndex: 'sender',
+        // },
+        // {
+        //   title: '发布部门',
+        //   align: 'center',
+        //   dataIndex: 'senderDepart',
+        // },
         {
           title: '优先级',
           align: 'center',
@@ -298,7 +295,7 @@ export default {
       ],
       detailModal: { visible: false, url: '' },
       url: {
-        list: '/sys/annountCement/list',
+        list: '/sys/annountCement/taskList',
         delete: '/sys/annountCement/delete',
         deleteBatch: '/sys/annountCement/deleteBatch',
         releaseDataUrl: '/sys/annountCement/doReleaseData',
@@ -340,6 +337,11 @@ export default {
         }
       })
     },
+    checkDetail (record) {
+      console.log(record)
+      this.$refs.detailListModal.edit(record)
+      this.$refs.taskDetailModal.title = record.titile + '统计详情'
+    },
     syncHeadNotic(anntId) {
       getAction('sys/annountCement/syncNotic', { anntId: anntId })
     },
@@ -348,11 +350,6 @@ export default {
       const token = this.$ls.get(ACCESS_TOKEN)
       this.detailModal.url = `${domain}/sys/annountCement/show/${record.id}?token=${token}`
       this.detailModal.visible = true
-    },
-    checkDetail(record){
-      console.log(record)
-      this.$refs.taskDetailModal.edit(record)
-      this.$refs.taskDetailModal.title = record.titile + '统计详情'
     },
   },
 }
