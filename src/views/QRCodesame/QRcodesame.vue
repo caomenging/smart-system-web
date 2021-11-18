@@ -14,6 +14,7 @@
   import SmartReportingInformationDetail from '../SmartReportingInformation/SmartReportingInformationDetail'
   export default {
     name: 'QRcodesame',
+    //调用表格作为首页的表格
     components: { SmartReportingInformationDetail },
     //props: ['sex','name'],
     data () {

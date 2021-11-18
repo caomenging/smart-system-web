@@ -74,11 +74,11 @@
          <a @click="handleEdit(record)">查看举报信息</a>
         </span>
 
-        <span slot="dealResult" slot-scope="text, record">
+<!--        <span slot="dealResult" slot-scope="text, record">
          <a @click="handleAgree(record)">接受举报</a>
           <a-divider type="vertical" />
          <a @click="handleDisagree(record)">不接受举报</a>
-        </span>
+        </span>-->
 
         <!--         <a @click="handleLook(record)">查看</a>
                  <a-divider type="vertical" />
@@ -110,10 +110,12 @@
 
 <script>
 
+import {  postAction,getAction } from '@/api/manage'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import SmartReportingInformationModal from './modules/SmartReportingInformationModal'
 import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
 import '@/assets/less/TableExpand.less'
+
 
 export default {
   name: "SmartReportingInformationList",
@@ -159,7 +161,7 @@ export default {
         {
           title:'处理状态',
           align:"center",
-          dataIndex: 'processingType_dictText'
+          dataIndex: 'processingResult_dictText'
         },
         {
           title:'举报人姓名',
@@ -178,15 +180,15 @@ export default {
           fixed:"right",
           width:147,
           scopedSlots: { customRender: 'action' },
-        },
-        {
+        }
+        /*{
           title: '处理举报信息',
           dataIndex: 'dealResult',
           align:"center",
           fixed:"right",
           width:147,
           scopedSlots: { customRender: 'dealResult' },
-        }
+        }*/
       ],
       url: {
         list: "/smartReportingInformation/smartReportingInformation/list",
@@ -212,7 +214,12 @@ export default {
     initDictConfig(){
     },
     perServe(){//保存
-     this.$router.push({ path: '/QRCodesame/QRcodesame' })
+
+           this.$message.success("保存成功")
+
+           this.$router.push({ path: '/QRCodesame/QRcodesame' });
+
+
 
 
     },
@@ -220,25 +227,25 @@ export default {
       this.$router.push({path: '/QRCodesame/QRcodesame'});
 
     },
-    handleAgree(){//处理同意
+    /*handleAgree(){//处理(接受举报)
 
-      this.$router.push({path: '/SmartReportingInformation/SmartReportingInformationList'});
+      //this.$router.push({path: '/SmartReportingInformation/SmartReportingInformationList'});
     },
-    handleDisagree(){//  处理不同意
-      this.$router.push({path: '/SmartReportingInformation/SmartReportingInformationList'});
+    handleDisagree(){//处理(不接受举报)
+      //this.$router.push({path: '/SmartReportingInformation/SmartReportingInformationList'});
 
-    }
-    /*  getSuperFieldList(){
+    }*/
+     getSuperFieldList(){
         let fieldList=[];
          fieldList.push({type:'string',value:'reflectedInformation',text:'被反映人信息',dictCode:''})
          fieldList.push({type:'string',value:'reflectedDepartid',text:'被反映人单位',dictCode:''})
          fieldList.push({type:'string',value:'majorProblem',text:'主要问题',dictCode:''})
          fieldList.push({type:'datetime',value:'reportingTime',text:'举报时间'})
-         fieldList.push({type:'string',value:'processingType',text:'处理状态',dictCode:'processing_type'})
+         fieldList.push({type:'string',value:'processingResult',text:'处理状态',dictCode:'processing_result'})
          fieldList.push({type:'string',value:'reportingName',text:'举报人姓名',dictCode:''})
          fieldList.push({type:'string',value:'contactNumber',text:'联系电话',dictCode:''})
         this.superFieldList = fieldList
-      }*/
+      }
   }
 }
 </script>
