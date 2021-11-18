@@ -25,13 +25,23 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="主持人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="hostId">
-              <a-input v-model="model.hostId" placeholder="请输入主持人工号" ></a-input>
+            <a-form-model-item label="主持人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="hostId">
+              <select-user-by-dep v-model="model.hostId" @info="getHostUser"></select-user-by-dep>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="会议记录人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="recorderId">
-              <a-input v-model="model.recorderId" placeholder="请输入会议记录人工号" ></a-input>
+            <a-form-model-item label="主持人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="hostName" v-show="false">
+              <a-input v-model="model.hostName"></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="会议记录人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="recorderId">
+              <select-user-by-dep v-model="model.recorderId" @info="getRecorderUser"></select-user-by-dep>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="会议记录人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="recorderName" v-show="false">
+              <a-input v-model="model.recorderName"></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -84,11 +94,13 @@
   import { FormTypes,getRefPromise,VALIDATE_NO_PASSED } from '@/utils/JEditableTableUtil'
   import { JEditableTableModelMixin } from '@/mixins/JEditableTableModelMixin'
   import { validateDuplicateValue } from '@/utils/util'
+  import SelectUserByDep from '@/components/jeecgbiz/modal/SelectUserByDep'
 
   export default {
     name: 'SmartOrgMeetingForm',
     mixins: [JEditableTableModelMixin],
     components: {
+      SelectUserByDep
     },
     data() {
       return {
@@ -129,9 +141,9 @@
           dataSource: [],
           columns: [
             {
-              title: '参会人员工号',
-              key: 'pacpaId',
-              type: FormTypes.input,
+              title: '参会人员',
+              key: 'pacpaName',
+              type: FormTypes.sel_user,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
@@ -143,15 +155,6 @@
           loading: false,
           dataSource: [],
           columns: [
-            {
-              title: '序号',
-              key: 'annexOrder',
-              type: FormTypes.inputNumber,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
-            },
             {
               title: '附件说明',
               key: 'description',
@@ -237,9 +240,22 @@
         // 加载子表数据
         if (this.model.id) {
           let params = { id: this.model.id }
+          getAction(this.url.queryById, params).then(res => {
+            if (res.success) {
+              this.model = res.result
+            }
+          })
           this.requestSubTableData(this.url.smartOrgMeetingPacpa.list, params, this.smartOrgMeetingPacpaTable)
           this.requestSubTableData(this.url.smartOrgMeetingAnnex.list, params, this.smartOrgMeetingAnnexTable)
         }
+      },
+      getHostUser(back) {
+        this.model.hostId = back[0].id
+        this.model.hostName = back[0].realname
+      },
+      getRecorderUser(back) {
+        this.model.recorderId = back[0].id
+        this.model.recorderName = back[0].realname
       },
       //校验所有一对一子表表单
       validateSubForm(allValues){

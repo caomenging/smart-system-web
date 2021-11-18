@@ -95,22 +95,13 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
-
-          <a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <a @click="handleDetail(record)">详情</a>
-              </a-menu-item>
-              <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a>删除</a>
-                </a-popconfirm>
-              </a-menu-item>
-            </a-menu>
-          </a-dropdown>
+          <a v-show="record.verifyStatus === '3'" @click="handleEdit(record)">编辑</a>
+          <a-divider type="vertical"/>
+          <a @click="handleDetail(record)">详情</a>
+          <a-divider type="vertical"/>
+          <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+            <a v-show="record.verifyStatus === '3'">删除</a>
+          </a-popconfirm>
         </span>
 
       </a-table>
@@ -178,6 +169,22 @@
             dataIndex: 'createBy'
           },
           {
+            title:'审核状态',
+            align:"center",
+            dataIndex: 'verifyStatus',
+            customRender: function (text) {
+              if (text === '0') {
+                return '不通过'
+              } else if (text === '1') {
+                return '通过'
+              } else if (text === '2') {
+                return '待审核'
+              } else if (text === '3') {
+                return '免审'
+              }
+            }
+          },
+          {
             title: '操作',
             dataIndex: 'action',
             align:"center",
@@ -217,6 +224,7 @@
          fieldList.push({type:'datetime',value:'financeTime',text:'收支时间'})
          fieldList.push({type:'datetime',value:'createTime',text:'创建时间'})
          fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
+         fieldList.push({type:'int',value:'verifyStatus',text:'审核状态',dictCode:''})
         this.superFieldList = fieldList
       }
     }
