@@ -10,10 +10,30 @@ import { generateIndexRouter, isOAuth2AppEnv } from '@/utils/util'
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/user/login', '/user/register', '/user/register-result','/user/alteration'] // no redirect whitelist
+const appWhiteList = [
+  '/webview/info',
+  '/webview/sun',
+]
 whiteList.push(OAUTH2_LOGIN_PAGE_PATH)
 
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
+
+  /**
+   * 此处添加的代码是为了APP端webview访问方便
+   * 在白名单中的url可以直接访问
+   * 为了安全性加入get参数，参数名secret 内容是token
+   * 验证如果参数为null，直接跳出进行原来的代码流程，不破坏页面认证
+   * 可以取消侧边栏，只显示右侧部分内容
+   */
+   for (let i=0; i<appWhiteList.length; i++) {
+    // 判断是这个路径，并且有get参数
+    if (to.path.indexOf(appWhiteList[i]) != -1 && to.query.secret != null) {
+      // 由于token存储在前端sessionStorage中，因此直接设置为app端的token继续下面的流程
+      Vue.ls.set(ACCESS_TOKEN, to.query.secret);
+      next();
+    }
+  }
 
   if (Vue.ls.get(ACCESS_TOKEN)) {
     /* has token */
