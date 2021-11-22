@@ -164,11 +164,11 @@ export default {
       getAction(this.url.list,params).then((res)=>{
         if(res.success){
           this.$message.success('发布成功')
-         // this.$router.push({path:'/MyQuestion/MyQuestionList'})
+          this.$router.push({path:'/MyQuestion/MyQuestionList'})
 
         }
       })
-     postAction(this.url.add,this.model).then(res =>{
+    /* postAction(this.url.add,this.model).then(res =>{
         console.log(res)
         if(res.success){
           this.$message.success(res.message);
@@ -179,7 +179,7 @@ export default {
         else{
           this.$message.warning(res.message);
         }
-      })
+      })*/
 
     }
 
