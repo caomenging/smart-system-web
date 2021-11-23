@@ -9,17 +9,17 @@
               <j-select-depart placeholder="请选择单位"  v-model="queryParam.departId" customReturnField='id' :multi="false" :treeOpera="true"></j-select-depart>
             </a-form-item>
           </a-col>
-          <a-col :xl="10" :lg="11" :md="12" :sm="24">
-            <a-form-item label="会议时间">
-              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.meetingTime_begin"></j-date>
-              <span class="query-group-split-cust"></span>
-              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.meetingTime_end"></j-date>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="会议名称">
+              <a-input placeholder="请输入会议名称" v-model="queryParam.meetingName"></a-input>
             </a-form-item>
           </a-col>
           <template v-if="toggleSearchStatus">
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-item label="会议名称">
-                <a-input placeholder="请输入会议名称" v-model="queryParam.meetingName"></a-input>
+            <a-col :xl="10" :lg="11" :md="12" :sm="24">
+              <a-form-item label="会议时间">
+                <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.meetingTime_begin"></j-date>
+                <span class="query-group-split-cust"></span>
+                <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.meetingTime_end"></j-date>
               </a-form-item>
             </a-col>
           </template>
@@ -97,22 +97,13 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
-
-          <a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <a @click="handleDetail(record)">详情</a>
-              </a-menu-item>
-              <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a>删除</a>
-                </a-popconfirm>
-              </a-menu-item>
-            </a-menu>
-          </a-dropdown>
+          <a v-show="record.verifyStatus === '3'" @click="handleEdit(record)">编辑</a>
+          <a-divider type="vertical"/>
+          <a @click="handleDetail(record)">详情</a>
+          <a-divider type="vertical"/>
+          <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+            <a v-show="record.verifyStatus === '3'">删除</a>
+          </a-popconfirm>
         </span>
 
       </a-table>
@@ -155,11 +146,6 @@
             dataIndex: 'departId'
           },
           {
-            title:'会议时间',
-            align:"center",
-            dataIndex: 'meetingTime'
-          },
-          {
             title:'会议名称',
             align:"center",
             dataIndex: 'meetingName'
@@ -170,9 +156,9 @@
             dataIndex: 'address'
           },
           {
-            title:'主持人工号',
+            title:'会议时间',
             align:"center",
-            dataIndex: 'hostId'
+            dataIndex: 'meetingTime'
           },
           {
             title:'上报时间',
@@ -180,9 +166,14 @@
             dataIndex: 'reportingTime'
           },
           {
-            title:'会议记录人工号',
+            title:'主持人姓名',
             align:"center",
-            dataIndex: 'recorderId'
+            dataIndex: 'hostName'
+          },
+          {
+            title:'会议记录人姓名',
+            align:"center",
+            dataIndex: 'recorderName'
           },
           {
             title:'会议内容摘要',
@@ -203,6 +194,22 @@
             title:'创建时间',
             align:"center",
             dataIndex: 'createTime'
+          },
+          {
+            title:'审核状态',
+            align:"center",
+            dataIndex: 'verifyStatus',
+            customRender: function (text) {
+              if (text === '0') {
+                return '不通过'
+              } else if (text === '1') {
+                return '通过'
+              } else if (text === '2') {
+                return '待审核'
+              } else if (text === '3') {
+                return '免审'
+              }
+            }
           },
           {
             title: '操作',
@@ -239,16 +246,17 @@
       getSuperFieldList(){
         let fieldList=[];
          fieldList.push({type:'string',value:'departId',text:'单位',dictCode:''})
-         fieldList.push({type:'datetime',value:'meetingTime',text:'会议时间'})
          fieldList.push({type:'string',value:'meetingName',text:'会议名称',dictCode:''})
          fieldList.push({type:'string',value:'address',text:'会议地点',dictCode:''})
-         fieldList.push({type:'string',value:'hostId',text:'主持人工号',dictCode:''})
+         fieldList.push({type:'datetime',value:'meetingTime',text:'会议时间'})
          fieldList.push({type:'datetime',value:'reportingTime',text:'上报时间'})
-         fieldList.push({type:'string',value:'recorderId',text:'会议记录人工号',dictCode:''})
+         fieldList.push({type:'string',value:'hostName',text:'主持人姓名',dictCode:''})
+         fieldList.push({type:'string',value:'recorderName',text:'会议记录人姓名',dictCode:''})
          fieldList.push({type:'Text',value:'summary',text:'会议内容摘要',dictCode:''})
          fieldList.push({type:'Text',value:'record',text:'会议记录',dictCode:''})
          fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
          fieldList.push({type:'datetime',value:'createTime',text:'创建时间'})
+         fieldList.push({type:'string',value:'verifyStatus',text:'审核状态',dictCode:''})
         this.superFieldList = fieldList
       }
     }

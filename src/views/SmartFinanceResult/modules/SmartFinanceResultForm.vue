@@ -86,15 +86,6 @@
           dataSource: [],
           columns: [
             {
-              title: '序号',
-              key: 'annexOrder',
-              type: FormTypes.inputNumber,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
-            },
-            {
               title: '附件说明',
               key: 'description',
               type: FormTypes.input,
@@ -143,7 +134,7 @@
             },
           ]
         },
-        rootUrl: "/smartFinanceResult/smartFinanceResult",
+        rootUrl: "/smartFinanceResult/smartFinanceResult/",
         url: {
           add: "/smartFinanceResult/smartFinanceResult/add",
           edit: "/smartFinanceResult/smartFinanceResult/edit",
@@ -184,6 +175,11 @@
         // 加载子表数据
         if (this.model.id) {
           let params = { id: this.model.id }
+          getAction(this.url.queryById, params).then(res => {
+            if (res.success) {
+              this.model = res.result
+            }
+          })
           this.requestSubTableData(this.url.smartFinanceAnnex.list, params, this.smartFinanceAnnexTable)
         }
       },
