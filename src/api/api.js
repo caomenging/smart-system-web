@@ -47,6 +47,11 @@ const queryParentName   = (params)=>getAction("/sys/sysDepart/queryParentName",p
 const searchByKeywords   = (params)=>getAction("/sys/sysDepart/searchBy",params);
 const deleteByDepartId   = (params)=>deleteAction("/sys/sysDepart/delete",params);
 
+// 村情互动-话题管理
+const queryTopicList = (params)=>getAction("/village/smartVillageTopic/queryTopicList",params);
+const queryCommentList = (params)=>getAction("/village/smartVillageTopic/queryCommentList",params);
+
+
 //二级部门管理
 const queryDepartPermission = (params)=>getAction("/sys/permission/queryDepartPermission",params);
 const saveDepartPermission = (params)=>postAction("/sys/permission/saveDepartPermission",params);
@@ -162,7 +167,9 @@ export {
   saveDeptRolePermission,
   queryMyDepartTreeList,
   getUserNoticeInfo,
-  getDictItemsFromCache
+  getDictItemsFromCache,
+  queryTopicList,
+  queryCommentList
 }
 
 

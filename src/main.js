@@ -10,6 +10,8 @@ import { VueAxios } from "@/utils/request"
 // import Buefy from "buefy";
 // import "buefy/dist/buefy.css";
 // import 'element-ui/lib/theme-chalk/index.css';
+import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css';
 
 require('@jeecg/antd-online-mini')
 require('@jeecg/antd-online-mini/dist/OnlineForm.css')
@@ -67,6 +69,7 @@ Vue.use(JeecgComponents);
 Vue.use(VueAreaLinkage);
 // Vue.use(Buefy);
 
+Vue.use(mavonEditor);
 SSO.init(() => {
   main()
 })
