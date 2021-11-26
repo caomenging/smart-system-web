@@ -8,10 +8,10 @@
         :data-source="listData"
       >
         <a-list-item slot="renderItem" slot-scope="item, index">
-          <a-row style="width:100%" type="flex" justify="start" align="middle">
+          <a-row style="width:100%; flex-flow: row nowrap" type="flex" justify="start" align="middle">
             <a-col style="margin-right: 1rem">
               <a-avatar shape="square" :size="64" :style="{ backgroundColor: 'blue', verticalAlign: 'middle' }"
-                >xzx</a-avatar
+                >{{item.createBy.slice(0,3)}}</a-avatar
               >
             </a-col>
             <a-col :flex="10">
@@ -24,19 +24,22 @@
               </a-row>
             </a-col>
             <a-col :flex="1">
-              <a-button>查看详情</a-button>
+              <a-button @click="handleDetail(item)">查看详情</a-button>
             </a-col>
           </a-row>
         </a-list-item>
       </a-list>
     </div>
+    <Answer ref="answerModal" />
   </div>
 </template>
 
 <script>
 import { filterObj } from '@/utils/util';
 import { getAction } from '../../../api/manage'
+import Answer from './Answer.vue';
 export default {
+  components: { Answer },
   created() {
     this.loadData()
   },
@@ -103,6 +106,10 @@ export default {
       param.pageSize = this.ipagination.pageSize;
       console.log(param)
       return filterObj(param);
+    },
+    handleDetail(record){
+      console.log(record)
+      this.$refs.answerModal.edit(record)
     },
     handleChange(pagination, filters, sorter) {
       //分页、排序、筛选变化时触发
