@@ -136,7 +136,7 @@
           if(res.success){
             this.$message.success(res.message);
             //that.$emit('ok');
-            this.$router.push({path: '/result/success'});
+            this.$router.push({path: '/InsertReportingInformation/Success'});
 
           }
 

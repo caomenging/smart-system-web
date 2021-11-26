@@ -4,26 +4,6 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="姓名">
-              <a-input placeholder="请输入姓名" v-model="queryParam.personName"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="成绩">
-              <a-input placeholder="请输入成绩" v-model="queryParam.examGrade"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a @click="handleToggleSearch" style="margin-left: 8px">
-                {{ toggleSearchStatus ? '收起' : '展开' }}
-                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>
-            </span>
-          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -32,7 +12,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('考试参加人员表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('成绩分布人数表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -109,7 +89,7 @@
       </a-table>
     </div>
 
-    <smart-people-modal ref="modalForm" @ok="modalFormOk"></smart-people-modal>
+    <smart-grade-number-modal ref="modalForm" @ok="modalFormOk"></smart-grade-number-modal>
   </a-card>
 </template>
 
@@ -118,17 +98,17 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartPeopleModal from './modules/SmartPeopleModal'
+  import SmartGradeNumberModal from './modules/SmartGradeNumberModal'
 
   export default {
-    name: 'SmartPeopleList',
+    name: 'SmartGradeNumberList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartPeopleModal
+      SmartGradeNumberModal
     },
     data () {
       return {
-        description: '考试参加人员表管理页面',
+        description: '成绩分布人数表管理页面',
         // 表头
         columns: [
           {
@@ -142,19 +122,24 @@
             }
           },
           {
-            title:'姓名',
+            title:'优秀人数',
             align:"center",
-            dataIndex: 'personName'
+            dataIndex: 'excellentNumber'
           },
           {
-            title:'成绩',
+            title:'良好人数',
             align:"center",
-            dataIndex: 'examGrade'
+            dataIndex: 'goodNumber'
           },
           {
-            title:'提交时间',
+            title:'及格人数',
             align:"center",
-            dataIndex: 'submitTime'
+            dataIndex: 'passNumber'
+          },
+          {
+            title:'不及格人数',
+            align:"center",
+            dataIndex: 'failNumber'
           },
           {
             title: '操作',
@@ -166,11 +151,11 @@
           }
         ],
         url: {
-          list: "/smartPeople/smartPeople/list",
-          delete: "/smartPeople/smartPeople/delete",
-          deleteBatch: "/smartPeople/smartPeople/deleteBatch",
-          exportXlsUrl: "/smartPeople/smartPeople/exportXls",
-          importExcelUrl: "smartPeople/smartPeople/importExcel",
+          list: "/smartGradeNumber/smartGradeNumber/list",
+          delete: "/smartGradeNumber/smartGradeNumber/delete",
+          deleteBatch: "/smartGradeNumber/smartGradeNumber/deleteBatch",
+          exportXlsUrl: "/smartGradeNumber/smartGradeNumber/exportXls",
+          importExcelUrl: "smartGradeNumber/smartGradeNumber/importExcel",
           
         },
         dictOptions:{},
@@ -190,9 +175,10 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-        fieldList.push({type:'string',value:'personName',text:'姓名',dictCode:''})
-        fieldList.push({type:'int',value:'examGrade',text:'成绩',dictCode:''})
-        fieldList.push({type:'datetime',value:'submitTime',text:'提交时间'})
+        fieldList.push({type:'int',value:'excellentNumber',text:'优秀人数',dictCode:''})
+        fieldList.push({type:'int',value:'goodNumber',text:'良好人数',dictCode:''})
+        fieldList.push({type:'int',value:'passNumber',text:'及格人数',dictCode:''})
+        fieldList.push({type:'int',value:'failNumber',text:'不及格人数',dictCode:''})
         this.superFieldList = fieldList
       }
     }

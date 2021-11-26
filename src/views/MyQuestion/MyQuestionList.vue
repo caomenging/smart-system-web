@@ -94,8 +94,8 @@ import '@/assets/less/TableExpand.less'
 import { mixinDevice } from '@/utils/mixin'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import SmartPaperModal from '../SmartPaper/modules/SmartPaperModal'
-import SmartExamInformationModal from '../SmartExamInformation/modules/SmartExamInformationModal'
-import SmartPeopleModal from '../SmartPeople/modules/SmartPeopleModal'
+//import SmartExamInformationModal from '../SmartExamInformation/modules/SmartExamInformationModal'
+//import SmartPeopleModal from '../SmartPeople/modules/SmartPeopleModal'
 import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
 import { putAction, getAction } from '@/api/manage'
 
@@ -103,7 +103,7 @@ export default {
   name: 'MyQuestionList',
   mixins:[JeecgListMixin, mixinDevice],
   components: {
-    SmartPaperModal,SmartExamInformationModal,SmartPeopleModal
+    SmartPaperModal/*,SmartExamInformationModal,SmartPeopleModal*/
   },
   data () {
     return {
@@ -148,6 +148,7 @@ export default {
         }
       ],
       url: {
+        add:"/smartPaper/smartPaper/add",
         edit: "/smartPaper/smartPaper/edit",
         list: "/smartPaper/smartPaper/list",
         delete: "/smartPaper/smartPaper/delete",
@@ -186,6 +187,7 @@ export default {
           this.$router.push({path:'/MyQuestion/ContentForm'})
         }
       })
+
 
     },
 

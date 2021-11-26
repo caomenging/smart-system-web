@@ -1,10 +1,27 @@
-<!--成绩统计查阅-->
+<!--成绩统计查阅表格-->
 <template>
   <a-card :bordered="false">
     <!-- 查询区域 -->
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="姓名">
+              <a-input placeholder="请输入姓名" v-model="queryParam.personName"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="成绩">
+              <a-input placeholder="请输入成绩" v-model="queryParam.examGrade"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+<!--              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>-->
+
+            </span>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -13,13 +30,17 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+      <a-dropdown v-if="selectedRowKeys.length > 0">
+        <a-menu slot="overlay">
+          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
+        </a-menu>
+        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
+      </a-dropdown>
 
     </div>
 
     <!-- table区域-begin -->
     <div>
-
-
       <a-table
         ref="table"
         size="middle"
@@ -54,8 +75,9 @@
           </a-button>
         </template>
 
-        <span slot="action" slot-scope="text, record">
-<!--          <a @click="handleEdit(record)">编辑</a>
+
+     <span slot="action" slot-scope="text, record">
+          <a @click="handleEdit(record)">编辑</a>
 
           <a-divider type="vertical" />
           <a-dropdown>
@@ -70,7 +92,7 @@
                 </a-popconfirm>
               </a-menu-item>
             </a-menu>
-          </a-dropdown>-->
+          </a-dropdown>
         </span>
 
       </a-table>
@@ -81,7 +103,9 @@
 </template>
 
 <script>
-
+import ChartCard from '@/components/ChartCard'
+import ACol from "ant-design-vue/es/grid/Col"
+import ATooltip from "ant-design-vue/es/tooltip/Tooltip"
 import '@/assets/less/TableExpand.less'
 import { mixinDevice } from '@/utils/mixin'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
@@ -91,7 +115,7 @@ export default {
   name: 'GradeResult',
   mixins:[JeecgListMixin, mixinDevice],
   components: {
-    SmartPeopleModal
+    SmartPeopleModal,
   },
   data () {
     return {

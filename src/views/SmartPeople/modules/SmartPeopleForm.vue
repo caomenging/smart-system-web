@@ -4,6 +4,11 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24">
+            <a-form-model-item label="姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="personName">
+              <a-input v-model="model.personName" placeholder="请输入姓名"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
             <a-form-model-item label="成绩" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="examGrade">
               <a-input-number v-model="model.examGrade" placeholder="请输入成绩" style="width: 100%" />
             </a-form-model-item>
@@ -11,11 +16,6 @@
           <a-col :span="24">
             <a-form-model-item label="提交时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="submitTime">
               <j-date placeholder="请选择提交时间"  v-model="model.submitTime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="ip地址" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="ipAddress">
-              <a-input v-model="model.ipAddress" placeholder="请输入ip地址"  ></a-input>
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -60,9 +60,6 @@
            ],
            submitTime: [
               { required: true, message: '请输入提交时间!'},
-           ],
-           ipAddress: [
-              { required: true, message: '请输入ip地址!'},
            ],
         },
         url: {

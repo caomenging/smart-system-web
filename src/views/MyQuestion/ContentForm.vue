@@ -9,18 +9,24 @@
               <j-date placeholder="请选择考试开始时间"  v-model="model.examStarttime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
             </a-form-model-item>
           </a-col>
+
           <a-col :span="24">
             <a-form-model-item label="考试结束时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="examEndtime">
               <j-date placeholder="请选择考试结束时间"  v-model="model.examEndtime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
             </a-form-model-item>
           </a-col>
+
           <a-col :span="24" >
-            <a-form-model-item label="指定人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="personId">
-              <select-user-by-dep v-model="model.personId" @info="getPersonUser"/>
+            <a-form-model-item label="指定人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="personId" >
+              <j-select-user-by-dep v-model="model.personId" :multi="true" />
             </a-form-model-item>
           </a-col>
+<!--         <a-col :span="12">选中的用户(v-model):{{ model.personId }}</a-col>&ndash;&gt;-->
+
+
           <a-col :span="24" >
-            <a-form-model-item label="指定人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="personName" v-show="false">
+            <a-form-model-item label="指定人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="personName" v-show="false" >
+
               <a-input v-model="model.personName"/>
             </a-form-model-item>
           </a-col>
@@ -44,14 +50,15 @@
 import { httpAction,putAction, postAction,getAction } from '@/api/manage'
 import { validateDuplicateValue } from '@/utils/util'
 import SmartExamInformationModal from '../SmartExamInformation/modules/SmartExamInformationModal'
-import SelectUserByDep from '@/components/jeecgbiz/modal/SelectUserByDep'
-
+// import SelectUserByDep from '@/components/jeecgbiz/modal/SelectUserByDep'
+import JSelectUserByDep from '@/components/jeecgbiz/JSelectUserByDep'
 import SmartPeopleModal from '../SmartPeople/modules/SmartPeopleModal'
+import { FormTypes } from '../../utils/JEditableTableUtil'
 
 export default {
   name: 'ContentForm',
   components: {
-    SmartExamInformationModal,SelectUserByDep,SmartPeopleModal
+    SmartExamInformationModal,JSelectUserByDep,SmartPeopleModal
   },
   props: {
     //表单禁用
@@ -64,7 +71,7 @@ export default {
   data () {
     return {
       model:{
-        personId:'',
+        personId:'admin',
         personName:''
       },
       labelCol: {
@@ -75,6 +82,9 @@ export default {
         xs: { span: 24 },
         sm: { span: 16 },
       },
+
+
+
 
       disableSubmit: false,
       confirmLoading: false,
@@ -107,6 +117,15 @@ export default {
     this.modelDefault = JSON.parse(JSON.stringify(this.model));
   },
   methods: {
+    //通过组织机构筛选选择用户
+    onSearchDepUser() {
+      this.$refs.JSearchUserByDep.showModal()
+      this.selectedDepUsers = ''
+      this.$refs.JSearchUserByDep.title = '根据部门查询用户'
+    },
+    onSearchDepUserCallBack(selectedDepUsers) {
+      this.selectedDepUsers = selectedDepUsers
+    },
     add () {
       this.edit(this.modelDefault);
     },
@@ -143,12 +162,12 @@ export default {
 
       })
     },
-    getPersonUser(back) {
+   /* getPersonUser(back) {
       let that=this
       console.log(back)
       that.model.personId=back[0].id
       that.model.personName=back[1].realname
-    },
+    },*/
     handleIssue(){
       //发布
       const params = {
@@ -168,10 +187,10 @@ export default {
 
         }
       })
-    /* postAction(this.url.add,this.model).then(res =>{
+      postAction(this.url.add,this.model).then(res =>{
         console.log(res)
         if(res.success){
-          this.$message.success(res.message);
+          //this.$message.success(res.message);
           that.$emit('ok');
           this.$router.push({path:'/MyQuestion/MyQuestionList'})
 
@@ -179,7 +198,7 @@ export default {
         else{
           this.$message.warning(res.message);
         }
-      })*/
+      })
 
     }
 

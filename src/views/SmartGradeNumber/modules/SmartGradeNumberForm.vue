@@ -4,18 +4,23 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24">
-            <a-form-model-item label="考试名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="examName">
-              <a-input v-model="model.examName" placeholder="请输入考试名称"  ></a-input>
+            <a-form-model-item label="优秀人数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="excellentNumber">
+              <a-input-number v-model="model.excellentNumber" placeholder="请输入优秀人数" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="考试开始时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="examStarttime">
-              <j-date placeholder="请选择考试开始时间"  v-model="model.examStarttime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
+            <a-form-model-item label="良好人数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="goodNumber">
+              <a-input-number v-model="model.goodNumber" placeholder="请输入良好人数" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="考试结束时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="examEndtime">
-              <j-date placeholder="请选择考试结束时间"  v-model="model.examEndtime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
+            <a-form-model-item label="及格人数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="passNumber">
+              <a-input-number v-model="model.passNumber" placeholder="请输入及格人数" style="width: 100%" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="不及格人数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="failNumber">
+              <a-input-number v-model="model.failNumber" placeholder="请输入不及格人数" style="width: 100%" />
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -30,7 +35,7 @@
   import { validateDuplicateValue } from '@/utils/util'
 
   export default {
-    name: 'SmartExamInformationForm',
+    name: 'SmartGradeNumberForm',
     components: {
     },
     props: {
@@ -57,9 +62,9 @@
         validatorRules: {
         },
         url: {
-          add: "/smartExamInformation/smartExamInformation/add",
-          edit: "/smartExamInformation/smartExamInformation/edit",
-          queryById: "/smartExamInformation/smartExamInformation/queryById"
+          add: "/smartGradeNumber/smartGradeNumber/add",
+          edit: "/smartGradeNumber/smartGradeNumber/edit",
+          queryById: "/smartGradeNumber/smartGradeNumber/queryById"
         }
       }
     },
