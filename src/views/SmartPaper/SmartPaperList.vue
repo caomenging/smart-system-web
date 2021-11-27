@@ -4,26 +4,6 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="主管单位">
-              <a-input placeholder="请输入主管单位" v-model="queryParam.exeDept"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="政务服务大厅名称">
-              <a-input placeholder="请输入政务服务大厅名称" v-model="queryParam.windowsName"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a @click="handleToggleSearch" style="margin-left: 8px">
-                {{ toggleSearchStatus ? '收起' : '展开' }}
-                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>
-            </span>
-          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -32,7 +12,8 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <!--<a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
-      <a-button type="primary" icon="download" @click="handleExportXls('阳光评廉表')">导出</a-button>
+      <a-button @click="createTestPaper"  type="primary" icon="plus">新增</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('试卷表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -88,10 +69,10 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-         <!-- <a @click="handleEdit(record)">编辑</a>-->
-        <a @click="handleDetail(record)">详情</a>
-          <!--<a-divider type="vertical" />-->
-          <!--<a-dropdown>
+          <!--<a @click="handleEdit(record)">编辑</a>-->
+          <a @click="editTestPaper(record.id)">编辑</a>
+          <a-divider type="vertical" />
+          <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
@@ -103,13 +84,13 @@
                 </a-popconfirm>
               </a-menu-item>
             </a-menu>
-          </a-dropdown>-->
+          </a-dropdown>
         </span>
 
       </a-table>
     </div>
 
-    <smart-evaluate-window-modal ref="modalForm" @ok="modalFormOk"></smart-evaluate-window-modal>
+    <smart-paper-modal ref="modalForm" @ok="modalFormOk"></smart-paper-modal>
   </a-card>
 </template>
 
@@ -118,18 +99,18 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartEvaluateWindowModal from './modules/SmartEvaluateWindowModal'
-  import SmartEvaluateForm from './modules/SmartEvaluateForm'
+  import SmartPaperModal from './modules/SmartPaperModal'
+  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
 
   export default {
-    name: 'SmartEvaluateWindowList',
+    name: 'SmartPaperList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartEvaluateWindowModal,SmartEvaluateForm
+      SmartPaperModal
     },
     data () {
       return {
-        description: '阳光评廉表管理页面',
+        description: '试卷表管理页面',
         // 表头
         columns: [
           {
@@ -142,69 +123,66 @@
               return parseInt(index)+1;
             }
           },
-          {
-            title:'主管单位',
+/*          {
+            title:'试卷类型',
             align:"center",
-            dataIndex: 'exeDept',
-            sorter: true
+            dataIndex: 'paperType_dictText'
+          },*/
+          {
+            title:'试卷名称',
+            align:"center",
+            dataIndex: 'paperName'
           },
           {
-            title:'窗口服务大厅名称',
+            title:'试卷状态',
             align:"center",
-            dataIndex: 'windowsName',
-            sorter: true
+            dataIndex: 'paperStatus_dictText'
           },
           {
-            title:'人员名称',
+            title:'命卷人',
             align:"center",
-            dataIndex: 'personName',
-            sorter: true
+            dataIndex: 'creatorName'
           },
           {
-            title:'评价人',
+            title:'命卷日期',
             align:"center",
-            dataIndex: 'evaluateName',
-            sorter: true
+            dataIndex: 'createTime'
           },
           {
-            title:'评价人手机号',
+            title:'题目数量',
             align:"center",
-            dataIndex: 'evaluatePhone',
-            sorter: true
+            dataIndex: 'topicNum'
           },
           {
-            title:'评价时间',
+            title:'总分',
             align:"center",
-            dataIndex: 'evaluateTime',
-            sorter: true
+            dataIndex: 'totalScore'
           },
           {
-            title:'评价结果',
+            title:'及格线',
             align:"center",
-            dataIndex: 'evaluateResult_dictText',
-            sorter: true
+            dataIndex: 'passMark'
           },
           {
-            title:'意见',
+            title:'答题时间',
             align:"center",
-            dataIndex: 'evaluateOpinion',
-            sorter: true
+            dataIndex: 'time'
           },
           {
             title: '操作',
             dataIndex: 'action',
-            align: "center",
-            fixed: "right",
-            width: 147,
+            align:"center",
+            fixed:"right",
+            width:147,
             scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
-          list: "/smartEvaluateList/smartEvaluateWindow/list",
-          delete: "/smartEvaluateList/smartEvaluateWindow/delete",
-          deleteBatch: "/smartEvaluateList/smartEvaluateWindow/deleteBatch",
-          exportXlsUrl: "/smartEvaluateList/smartEvaluateWindow/exportXls",
-          importExcelUrl: "smartEvaluateList/smartEvaluateWindow/importExcel",
+          list: "/SmartPaper/smartPaper/list",
+          delete: "/SmartPaper/smartPaper/delete",
+          deleteBatch: "/SmartPaper/smartPaper/deleteBatch",
+          exportXlsUrl: "/SmartPaper/smartPaper/exportXls",
+          importExcelUrl: "SmartPaper/smartPaper/importExcel",
           
         },
         dictOptions:{},
@@ -215,26 +193,63 @@
     this.getSuperFieldList();
     },
     computed: {
+      flag(){
+        console.log(this.$route.query.flag);
+        if(this.$route.query.flag){
+          this.getSuperFieldList()
+        }
+      },
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
       },
     },
     methods: {
+      //去创建新试卷
+      createTestPaper() {
+        const { href } = this.$router.resolve({
+          name: "createPaper",
+          params: { opt: 'add'}
+        });
+        const win  = window.open(href, "_blank");
+        const loop = setInterval(item => {
+          if (win.closed) {
+            clearInterval(loop);
+            this.refresh();
+          }
+        }, 1000);
+      },
+      // 编辑试卷
+      editTestPaper(id) {
+        console.log(id);
+        const { href } = this.$router.resolve({
+          name: "editPaper",
+          params: { opt: 'edit', id}
+        });
+        const win = window.open(href, "_blank");
+        const loop = setInterval(item => {
+          if (win.closed) {
+            clearInterval(loop);
+            this.$ref.table.reload();
+          }
+        }, 1000);
+      },
       initDictConfig(){
       },
       getSuperFieldList(){
         let fieldList=[];
-        fieldList.push({type:'string',value:'exeDept',text:'主管单位',dictCode:''})
-        fieldList.push({type:'string',value:'windowsName',text:'窗口服务大厅名称',dictCode:''})
-        fieldList.push({type:'string',value:'personName',text:'人员名称',dictCode:''})
-        fieldList.push({type:'string',value:'evaluateResult',text:'评价结果',dictCode:'evaluate_grade'})
-        fieldList.push({type:'string',value:'evaluateName',text:'评价人',dictCode:''})
-        fieldList.push({type:'string',value:'evaluatePhone',text:'评价人手机号',dictCode:''})
-        fieldList.push({type:'datetime',value:'evaluateTime',text:'评价时间'})
-        fieldList.push({type:'string',value:'evaluateOpinion',text:'意见'})
+        fieldList.push({type:'string',value:'paperType',text:'试卷类型',dictCode:'paper_type'})
+        fieldList.push({type:'string',value:'paperName',text:'试卷名称',dictCode:''})
+        fieldList.push({type:'string',value:'paperStatus',text:'试卷状态',dictCode:'paper_status'})
+        fieldList.push({type:'string',value:'creatorName',text:'命卷人',dictCode:''})
+        fieldList.push({type:'datetime',value:'createTime',text:'命卷日期'})
+        fieldList.push({type:'string',value:'topicNum',text:'题目数量',dictCode:''})
+        fieldList.push({type:'string',value:'totalScore',text:'总分',dictCode:''})
+        fieldList.push({type:'string',value:'passMark',text:'及格线',dictCode:''})
+        fieldList.push({type:'int',value:'time',text:'答题时间',dictCode:''})
         this.superFieldList = fieldList
       }
-    }
+    },
+
   }
 </script>
 <style scoped>

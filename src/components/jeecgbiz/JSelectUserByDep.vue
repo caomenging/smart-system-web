@@ -75,11 +75,12 @@
     },
     computed:{
       storeField(){
-        /*let field = this.customReturnField
+        let field = this.customReturnField
         if(!field){
           field = this.store;
-        }*/
-        return underLinetoHump(this.store)
+        }
+        console.log(this.store)
+        return underLinetoHump(field);
       },
       textField(){
         return underLinetoHump(this.text)
@@ -132,9 +133,11 @@
           let temp1 = []
           let temp2 = []
           for (let item of rows) {
+            //console.log(item.id)
             temp1.push(item[that.storeField])
             temp2.push(item[that.textField])
           }
+          //that.storeVals = item.id
           that.storeVals = temp1.join(',')//存储值
           that.textVals = temp2.join(',')//显示值
         }

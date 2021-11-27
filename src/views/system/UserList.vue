@@ -220,7 +220,7 @@
     data() {
       return {
         description: '这是用户管理页面',
-        queryParam: {},
+        queryParam: {peopleType:'1'},//过滤村民
         recycleBinVisible: false,
         columns: [
           /*{
@@ -238,6 +238,13 @@
             align: "center",
             dataIndex: 'username',
             width: 120,
+            sorter: true
+          },*/
+         /* {
+            title: 'type',
+            align: "center",
+            width: 100,
+            dataIndex: 'peopleType',
             sorter: true
           },*/
           {
@@ -361,6 +368,9 @@
           importExcelUrl: "sys/user/importExcel",
         },
       }
+    },
+    created(){
+      //console.log(this.$store.getters.user);
     },
     computed: {
       importExcelUrl: function(){

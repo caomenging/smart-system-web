@@ -20,7 +20,7 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="被谈话人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="intervieweeId">
-              <select-user-by-dep v-model="model.intervieweeId" @info="getInterviewee"  />
+              <select-user-by-dep v-model="model.intervieweeId" @info="getInterviewee"  :flag ="false"/>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -93,7 +93,7 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="谈话人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="talkerId">
-              <select-user-by-dep v-model="model.talkerId" @info="getTalker"  />
+              <select-user-by-dep v-model="model.talkerId" @info="getTalker"  :flag ="false"/>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -123,15 +123,6 @@
           <a-col :span="24">
             <a-form-model-item label="办理部门" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="handlerDepart">
               <j-select-depart v-model="model.handlerDepart"  />
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="办理状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="state">
-              <j-dict-select-tag
-                placeholder="请选择办理状态"
-                dictCode="processing_type"
-                v-model="model.state"
-              />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">

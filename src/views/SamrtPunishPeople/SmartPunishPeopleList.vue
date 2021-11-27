@@ -40,7 +40,6 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
@@ -57,7 +56,6 @@
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
     </div>
-
     <!-- table区域-begin -->
     <div>
       <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
@@ -120,13 +118,51 @@
 
       </a-table>
     </div>
+    <div class="page-header-index-wide">
+      <a-row :gutter="24">
+        <pie class="statistic" title="不同处分类型人数统计" :dataSource="countSource" :height="450"/>
+      </a-row>
+      <a-row :gutter="24">
+        <a-col :sm="12" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+          <chart-card :loading="loading" title="处分人员总数量" :total="cardCount.total | NumberFormat">
+          </chart-card>
+        </a-col>
+        <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+          <chart-card :loading="loading" title="本月即将解除处分人员数量" :total="cardCount.countByMonth | NumberFormat">
+          </chart-card>
+        </a-col>
+        <!-- <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+           <chart-card :loading="loading" title="用户受理量" :total="cardCount.isll | NumberFormat">
+             <a-tooltip title="指标说明" slot="action">
+               <a-icon type="info-circle-o" />
+             </a-tooltip>
+             <div>
+               <mini-bar :datasource="chartData.isll" :height="50"/>
+             </div>
+             <template slot="footer">用户今日受理量：<span>{{ todayISll }}</span></template>
+           </chart-card>
+         </a-col>
+         <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+           <chart-card :loading="loading" title="用户办结量" :total="cardCount.ibjl | NumberFormat">
+             <a-tooltip title="指标说明" slot="action">
+               <a-icon type="info-circle-o" />
+             </a-tooltip>
+             <div>
+               <mini-bar :datasource="chartData.ibjl" :height="50"/>
+             </div>
+             <template slot="footer">用户今日办结量：<span>{{ todayIBjl }}</span></template>
+           </chart-card>
+         </a-col>-->
+      </a-row>
+    </div>
+
 
     <smart-punish-people-modal ref="modalForm" @ok="modalFormOk"></smart-punish-people-modal>
   </a-card>
 </template>
 
 <script>
-
+  import { httpAction, getAction } from '@/api/manage'
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
@@ -134,12 +170,31 @@
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import SelectUserByDep from '@/components/jeecgbiz/modal/SelectUserByDep'
   import JInput from '@/components/jeecg/JInput'
+  import Pie from '@/components/chart/Pie'
+
+  import ACol from "ant-design-vue/es/grid/Col"
+  import ATooltip from "ant-design-vue/es/tooltip/Tooltip"
+  import ChartCard from '@/components/ChartCard'
+  import MiniBar from '@/components/chart/MiniBar'
+  import MiniArea from '@/components/chart/MiniArea'
+  import IndexBar from '@/components/chart/IndexBar'
+  import BarMultid from '@/components/chart/BarMultid'
+  import DashChartDemo from '@/components/chart/DashChartDemo'
 
   export default {
     name: 'SmartPunishPeopleList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartPunishPeopleModal,SelectUserByDep,JInput
+      SmartPunishPeopleModal,SelectUserByDep,JInput,
+      ATooltip,
+      ACol,
+      ChartCard,
+      MiniArea,
+      MiniBar,
+      DashChartDemo,
+      BarMultid,
+      IndexBar,
+      Pie
     },
     data () {
       return {
@@ -245,10 +300,36 @@
         },
         dictOptions:{},
         superFieldList:[],
+        loading: false,
+        cardCount:{
+          total:'',
+          countByMonth:'',
+          isll:15,
+          ibjl:9
+        },
+        todaySll:60,
+        todayBjl:54,
+        todayISll:13,
+        todayIBjl:7,
+        chartData:{
+          sll:[],
+          bjl:[],
+          isll:[],
+          ibjl:[]
+        },
+        // 饼状图
+        pieValue: [],
+        // 数据集
+        countSource: [],
       }
     },
     created() {
     this.getSuperFieldList();
+      setTimeout(() => {
+        this.loading = !this.loading
+      }, 1000);
+      this.getTotal();
+
     },
     computed: {
       importExcelUrl: function(){
@@ -273,10 +354,80 @@
         fieldList.push({type:'string',value:'statu',text:'处分状态',dictCode:'punish_statu'})
         this.superFieldList = fieldList
       },
+    getTotal(){
+        let that=this;
+        getAction('/SmartPunishPeople/smartPunishPeople/punishPeopleCount').then((res)=>{
+          if(res.success){
+            //that.$message.success(res.message);
+            that.cardCount.total = res.result;
+            //console.log(res)
+          }else{
+            that.$message.warning(res.message);
+          }
+        }).finally(() => {
+          that.loading = false;
+        });
+      getAction('/SmartPunishPeople/smartPunishPeople/punishPeopleCountByMonth').then((res)=>{
+        if(res.success){
+          //that.$message.success(res.message);
+          that.cardCount.countByMonth = res.result;
+          //console.log(res)
+        }else{
+          that.$message.warning(res.message);
+        }
+      }).finally(() => {
+        that.loading = false;
+      });
+      getAction('/SmartPunishPeople/smartPunishPeople/punishPeopleCountByType').then((res)=>{
+        if(res.success){
+          //that.$message.success(res.message);
+          that.getCategoryCountSource(res.result);
+          console.log(res.result)
+        }else{
+          that.$message.warning(res.message);
+        }
+      }).finally(() => {
+        that.loading = false;
+      })
+    },
+      getCategoryCountSource(data){
+        for (let i = 0; i < data.length; i++) {
+            this.countSource.push({
+              item: data[i].type,
+              count:data[i].value
+            })
+        }
+      },
 
     }
   }
 </script>
 <style scoped>
   @import '~@assets/less/common.less';
+</style>
+<style lang="less" scoped>
+  .chart-card{
+    background-color: #1890FF;
+    font-size: 25px;
+  }
+
+  .statistic {
+    padding: 0px !important;
+    margin-top: 50px;
+  }
+
+  .statistic h4 {
+    margin-bottom: 20px;
+    text-align: center !important;
+    font-size: 24px !important;;
+  }
+
+  .statistic #canvas_1 {
+    width: 100% !important;
+  }
+  .chart-card-content{
+    height: 0px;
+    width: 0;
+    display:none;
+  }
 </style>

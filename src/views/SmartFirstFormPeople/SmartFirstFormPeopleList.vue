@@ -100,22 +100,14 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
+          <a v-show="record.verifyStatus == '3'" @click="handleEdit(record)">编辑</a>
 
           <a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-            <a-menu slot="overlay">
-              <a-menu-item>
                 <a @click="handleDetail(record)">详情</a>
-              </a-menu-item>
-              <a-menu-item>
+               <a-divider type="vertical" />
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a>删除</a>
+                  <a v-show="record.verifyStatus == '3'">删除</a>
                 </a-popconfirm>
-              </a-menu-item>
-            </a-menu>
-          </a-dropdown>
         </span>
 
       </a-table>
@@ -191,11 +183,22 @@
             sorter: true
           },
           {
-            title:'办理状态',
-            align:"center",
-            dataIndex: 'state_dictText',
-            sorter: true
+            title:'审核状态',
+            align:'center',
+            dataIndex: 'verifyStatus',
+            customRender: function(text) {
+              if(text == '0') {
+                return '不通过'
+              } else if (text == '1') {
+                return '通过'
+              } else if (text == '2') {
+                return '待审核'
+              } else {
+                return '免审'
+              }
+            }
           },
+
           {
             title: '操作',
             dataIndex: 'action',
@@ -252,7 +255,7 @@
         fieldList.push({type:'string',value:'talkerPostrank',text:'谈话人职级',dictCode:''})
         fieldList.push({type:'string',value:'caseAbs',text:'简要案情',dictCode:''})
         fieldList.push({type:'sel_depart',value:'handlerDepart',text:'办理部门'})
-        fieldList.push({type:'string',value:'state',text:'办理状态',dictCode:'processing_type'})
+        fieldList.push({type:'string',value:'verifyStatus',text:'审理状态'})
         fieldList.push({type:'string',value:'type',text:'类型',dictCode:'first_form_type'})
         fieldList.push({type:'string',value:'situation',text:'情形',dictCode:''})
         fieldList.push({type:'date',value:'talkTime',text:'谈话时间'})

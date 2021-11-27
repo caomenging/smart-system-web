@@ -4,61 +4,48 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24">
-            <a-form-model-item label="主管单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="exeDept">
-              <a-input v-model="model.exeDept" placeholder="请输入主管单位" readOnly
-                       unselectable="on"></a-input>
+            <a-form-model-item label="试卷类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="paperType">
+              <j-dict-select-tag type="list" v-model="model.paperType" dictCode="paper_type" placeholder="请选择试卷类型" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="政务服务大厅名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="windowsName">
-              <a-input v-model="model.windowsName" placeholder="请输入政务服务大厅名称"
-                       readOnly
-                       unselectable="on"></a-input>
+            <a-form-model-item label="试卷名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="paperName">
+              <a-textarea v-model="model.paperName" rows="4" placeholder="请输入试卷名称" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="人员名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="personName">
-              <a-input v-model="model.personName" placeholder="请输入人员名称"
-                       readOnly
-                       unselectable="on"></a-input>
+            <a-form-model-item label="试卷状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="paperStatus">
+              <j-dict-select-tag type="list" v-model="model.paperStatus" dictCode="paper_status" placeholder="请选择试卷状态" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="评价人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="evaluateName">
-              <a-input v-model="model.evaluateName" placeholder="请输入评价人姓名"
-                       readOnly
-                       unselectable="on"></a-input>
+            <a-form-model-item label="命卷人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="createBy">
+              <a-input v-model="model.createBy" placeholder="请输入命卷人"  ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="评价人手机号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="evaluatePhone">
-              <a-input v-model="model.evaluatePhone" placeholder="请输入评价人手机号"
-                       readOnly
-                       unselectable="on"></a-input>
+            <a-form-model-item label="命卷日期" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="createTime">
+              <j-date placeholder="请选择命卷日期"  v-model="model.createTime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="评价结果" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="evaluateResult">
-              <j-dict-select-tag
-                placeholder="评价结果"
-                dictCode="evaluate_grade"
-                v-model="model.evaluateResult"
-                disabled="true"
-              />
+            <a-form-model-item label="题目数量" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="topicNum">
+              <a-input v-model="model.topicNum" placeholder="请输入题目数量"  ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="评价时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="evaluateTime">
-              <a-input placeholder="评价时间"  v-model="model.evaluateTime"  style="width: 100%"
-                       readOnly
-                       unselectable="on"/>
+            <a-form-model-item label="总分" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="totalScore">
+              <a-input v-model="model.totalScore" placeholder="请输入总分"  ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="意见" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="evaluateOpinion">
-              <a-textarea placeholder="意见"  v-model="model.evaluateOpinion"  style="width: 100%"
-                       readOnly
-                       unselectable="on"/>
+            <a-form-model-item label="及格线" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="passMark">
+              <a-input v-model="model.passMark" placeholder="请输入及格线"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="答题时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="time">
+              <a-input-number v-model="model.time" placeholder="请输入答题时间" style="width: 100%" />
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -73,7 +60,7 @@
   import { validateDuplicateValue } from '@/utils/util'
 
   export default {
-    name: 'SmartEvaluateWindowForm',
+    name: 'SmartPaperForm',
     components: {
     },
     props: {
@@ -98,17 +85,23 @@
         },
         confirmLoading: false,
         validatorRules: {
-           windowsName: [
-              { required: true, message: '请输入政务服务大厅名称!'},
+           paperType: [
+              { required: true, message: '请输入试卷类型!'},
            ],
-           evaluatePhone: [
-              { required: true, message: '请输入评价人手机号!'},
+           paperName: [
+              { required: true, message: '请输入试卷名称!'},
+           ],
+           createBy: [
+              { required: true, message: '请输入命卷人!'},
+           ],
+           createTime: [
+              { required: true, message: '请输入命卷日期!'},
            ],
         },
         url: {
-          add: "/smartEvaluateList/smartEvaluateWindow/add",
-          edit: "/smartEvaluateList/smartEvaluateWindow/edit",
-          queryById: "/smartEvaluateList/smartEvaluateWindow/queryById"
+          add: "/SmartPaper/smartPaper/add",
+          edit: "/SmartPaper/smartPaper/edit",
+          queryById: "/SmartPaper/smartPaper/queryById"
         }
       }
     },

@@ -379,4 +379,21 @@ export const constantRouterMap = [
     component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404')
   },
 
+  {
+    path: '/createPaper/:opt',
+    name: 'createPaper',
+    component: () => import( '@/views/SmartPaper/createPaper.vue'),
+    meta:{
+      title:'新建试卷'
+    },
+  },
+  {
+    path: '/createPaper/:opt/:id',
+    name: 'editPaper',
+    component: () => import( '@/views/SmartPaper/createPaper.vue'),
+    meta: {
+      title: '修改试卷'
+    }
+  },
+
 ]

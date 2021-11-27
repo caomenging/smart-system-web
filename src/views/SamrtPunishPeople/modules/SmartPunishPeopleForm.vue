@@ -5,7 +5,7 @@
         <a-row>
           <a-col :span="24">
             <a-form-model-item label="处分人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="punishId">
-              <select-user-by-dep v-model="model.punishId" @info="getUser"  :multi="false" />
+              <select-user-by-dep v-model="model.punishId" @info="getUser"  :multi="false" :flag ="false"/>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
