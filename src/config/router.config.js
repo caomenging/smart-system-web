@@ -4,7 +4,20 @@ import { UserLayout, TabLayout, RouteView, BlankLayout, PageView } from '@/compo
  * 走菜单，走权限控制
  * @type {[null,null]}
  */
+
+
+
+
+
 export const asyncRouterMap = [
+ /* {
+    path:'/InsertReportingInformation',
+    name:'InsertReportInformationDetail',
+    component:UserLayout,
+    meta:{title:'二维码扫描跳转'},
+    redirect:'/InsertReportingInformation/InsertReportingInformationDetail'
+
+  },*/
 
   {
     path: '/',
@@ -401,6 +414,13 @@ export const constantRouterMap = [
   {
     path: '/webview/sun',
     component: () => import('@/views/SmartEvaluate/modules/SmartEvaluateForm')
+  },
+
+  //纠治四风扫描二维码
+  {
+    path:'/InsertReportingInformation/InsertReportingInformationDetail',
+    component: () => import('@views/InsertReportingInformation/InsertReportingInformationDetail')
+
   },
   // @TODO 政策查询
   // {

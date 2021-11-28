@@ -165,7 +165,7 @@ export default {
   },
   methods: {
     handleStart(){
-      this.$router.push({path:'/MyExam/StartExam'})
+      this.$router.push({path:'/SmartPaper/myExam'})
     },
     initDictConfig(){
     },

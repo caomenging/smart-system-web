@@ -15,6 +15,9 @@ const queryUserRole = (params)=>getAction("/sys/user/queryUserRole",params);
 const getUserList = (params)=>getAction("/sys/user/list",params);
 const frozenBatch = (params)=>putAction("/sys/user/frozenBatch",params);
 
+//村民用户管理
+// const addVillageUser = (params)=>postAction("/sys/user/addVillage",params);
+
 //验证用户是否存在
 const checkOnlyUser = (params)=>getAction("/sys/user/checkOnlyUser",params);
 //改变密码
@@ -42,10 +45,18 @@ const queryDepartTreeList = (params)=>getAction("/sys/sysDepart/queryTreeList",p
 const queryNaturalDepartTreeList = (params)=>getAction("/sys/sysDepart/queryNaturalTreeList",params);
 const queryDepartTreeSync = (params)=>getAction("/sys/sysDepart/queryDepartTreeSync",params);
 const queryIdTree = (params)=>getAction("/sys/sysDepart/queryIdTree",params);
+const queryFuzeIdTree = (params)=>getAction("/sys/sysDepart/queryFuzeIdTree",params);
 const queryNaturalIdTree = (params)=>getAction("/sys/sysDepart/queryNaturalIdTree",params);
 const queryParentName   = (params)=>getAction("/sys/sysDepart/queryParentName",params);
 const searchByKeywords   = (params)=>getAction("/sys/sysDepart/searchBy",params);
 const deleteByDepartId   = (params)=>deleteAction("/sys/sysDepart/delete",params);
+
+// 村情互动-话题管理
+const queryTopicList = (params)=>getAction("/village/smartVillageTopic/queryTopicList",params);
+const queryCommentList = (params)=>getAction("/village/smartVillageTopic/queryCommentList",params);
+const addVillageUser = (params)=>postAction("/sys/user/addVillage",params);
+const editVillageUser = (params)=>postAction("/sys/user/editVillage",params);
+const getVillageUserList = (params)=>getAction("/sys/user/villageList",params);
 
 //二级部门管理
 const queryDepartPermission = (params)=>getAction("/sys/permission/queryDepartPermission",params);
@@ -110,9 +121,11 @@ export {
   editRole,
   checkRoleCode,
   addUser,
+  addVillageUser,
   editUser,
   queryUserRole,
   getUserList,
+  getVillageUserList,
   queryall,
   frozenBatch,
   checkOnlyUser,
@@ -132,6 +145,7 @@ export {
   queryNaturalDepartTreeList,
   queryDepartTreeSync,
   queryIdTree,
+  queryFuzeIdTree,
   queryNaturalIdTree,
   queryParentName,
   searchByKeywords,
@@ -162,7 +176,9 @@ export {
   saveDeptRolePermission,
   queryMyDepartTreeList,
   getUserNoticeInfo,
-  getDictItemsFromCache
+  getDictItemsFromCache,
+  queryTopicList,
+  queryCommentList
 }
 
 

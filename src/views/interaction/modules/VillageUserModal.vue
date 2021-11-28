@@ -44,44 +44,49 @@
           <a-input placeholder="请输入工号" v-model="model.workNo" />
         </a-form-model-item>
 
-        <a-form-model-item label="职务" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-select-position placeholder="请选择职务" :multiple="false" v-model="model.post"/>
-        </a-form-model-item>
-
-        <a-form-model-item
-          :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-          prop="positionRank"
-          label="职级"
-        >
-          <j-dict-select-tag
-            placeholder="请选择职级"
-            dictCode="position_rank"
-            v-model="model.positionRank"
-          />
-        </a-form-model-item>
-        <a-form-model-item label="角色分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!roleDisabled" >
-          <j-multi-select-tag
-            :disabled="disableSubmit"
-            v-model="model.selectedroles"
-            :options="rolesOptions"
-            placeholder="请选择角色">
-          </j-multi-select-tag>
-        </a-form-model-item>
-
-        <!--部门分配-->
-<!--        <a-form-model-item label="单位分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">-->
-<!--         &lt;!&ndash; <j-select-depart v-model="model.selecteddeparts" :multi="false" @back="backDepartInfo" :backDepart="true" :treeOpera="true"/>&ndash;&gt;-->
-<!--          <a-tree-select-->
-<!--            style="width:100%"-->
-<!--            :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"-->
-<!--            :treeData="naturalDepartTree"-->
-<!--            v-model="model.selecteddeparts"-->
-<!--            placeholder="请选择部门"-->
-<!--            allow-clear-->
-<!--            tree-default-expand-all>-->
-<!--          </a-tree-select>-->
+<!--        <a-form-model-item label="职务" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
+<!--          <j-select-position placeholder="请选择职务" :multiple="false" v-model="model.post"/>-->
 <!--        </a-form-model-item>-->
+
+<!--        <a-form-model-item-->
+<!--          :labelCol="labelCol"-->
+<!--          :wrapperCol="wrapperCol"-->
+<!--          prop="positionRank"-->
+<!--          label="职级"-->
+<!--        >-->
+<!--          <j-dict-select-tag-->
+<!--            placeholder="请选择职级"-->
+<!--            dictCode="position_rank"-->
+<!--            v-model="model.positionRank"-->
+<!--          />-->
+<!--        </a-form-model-item>-->
+        <a-form-model-item label="角色分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!roleDisabled" >
+                    <a-radio-group v-model="model.selectedroles" placeholder="请选择角色">
+                      <a-radio value="1463074308371800066">
+                        村长
+                      </a-radio>
+                      <a-radio value="1463112478345588738">
+                        村民
+                      </a-radio>
+                    </a-radio-group>
+                </a-form-model-item>
+
+<!--        部门分配-->
+        <a-form-model-item label="单位分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">
+         <!-- <j-select-depart v-model="model.selecteddeparts" :multi="false" @back="backDepartInfo" :backDepart="true" :treeOpera="true"/>-->
+          <a-tree-select
+            style="width:100%"
+            :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
+            :treeData="fuzeDepartTree"
+            v-model="model.selecteddeparts"
+            placeholder="请选择部门"
+            allow-clear
+            tree-default-expand-all>
+          </a-tree-select>
+        </a-form-model-item>
+<!--        <a-form-item label="单位">-->
+<!--          <j-select-fuze-depart placeholder="请选择单位"  v-model="queryParam.orgCode" customReturnField='orgCode' :multi="false"   :treeOpera="true"></j-select-fuze-depart>-->
+<!--        </a-form-item>-->
 
         <!--租户分配-->
         <!--<a-form-model-item label="租户分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">
@@ -104,18 +109,22 @@
           <a-tree-select
             style="width:100%"
             :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
-            :treeData="naturalDepartTree"
+            :treeData="fuzeDepartTree"
             v-model="model.departIds"
             placeholder="请选择部门"
             allow-clear
             tree-default-expand-all>
           </a-tree-select>
-          <!--<j-multi-select-tag
-            :disabled="disableSubmit"
-            v-model="model.departIds"
-            :options="nextDepartOptions"
-            placeholder="请选择负责单位">
-          </j-multi-select-tag>-->
+
+<!--&lt;!&ndash;              <j-select-fuze-depart placeholder="请选择负责单位"  v-model="queryParam.orgCode" customReturnField='orgCode' :multi="false"   :treeOpera="true"></j-select-fuze-depart>&ndash;&gt;-->
+
+
+<!--          &lt;!&ndash;<j-multi-select-tag-->
+<!--            :disabled="disableSubmit"-->
+<!--            v-model="model.departIds"-->
+<!--            :options="nextDepartOptions"-->
+<!--            placeholder="请选择负责单位">-->
+<!--          </j-multi-select-tag>&ndash;&gt;-->
         </a-form-model-item>
 
         <a-form-model-item label="头像" :labelCol="labelCol" :wrapperCol="wrapperCol">
@@ -208,16 +217,16 @@
   import Vue from 'vue'
   import { ACCESS_TOKEN } from "@/store/mutation-types"
   import { getAction } from '@/api/manage'
-  import { addUser,editUser,queryUserRole,queryall } from '@/api/api'
+  import { addVillageUser,editVillageUser,queryUserRole,queryall } from '@/api/api'
   import { disabledAuthFilter } from "@/utils/authFilter"
-  import { duplicateCheck ,queryNaturalIdTree} from '@/api/api'
+  import { duplicateCheck ,queryFuzeIdTree} from '@/api/api'
   export default {
-    name: "UserModal",
+    name: "VillageUserModal",
     components: {
     },
     data () {
       return {
-        naturalDepartTree:[],
+        fuzeDepartTree:[],
         departDisabled: false, //是否是我的部门调用该页面
         roleDisabled: false, //是否是角色维护调用该页面
         modalWidth:800,
@@ -283,27 +292,26 @@
       }
     },
     methods: {
-      loadNaturalTreeData(){
+      loadFuzeTreeData(){
         var that = this;
-        queryNaturalIdTree().then((result)=>{
+        queryFuzeIdTree().then((result)=>{
           if(result.success){
-            that.naturalDepartTree = [];
+            that.fuzeDepartTree = [];
             for (let j = 0; j < result.result.length; j++) {
               let temp2 = result.result[j];
-              that.naturalDepartTree.push(temp2);
+              that.fuzeDepartTree.push(temp2);
             }
           }
 
         })
       },
       add () {
-        this.loadNaturalTreeData();
+        this.loadFuzeTreeData();
         this.refresh();
         this.edit({activitiSync:'1',userIdentity:1});
       },
       edit (record) {
         let that = this;
-        that.loadNaturalTreeData();
         that.visible = true;
         //根据屏幕宽度自适应抽屉宽度
         this.resetScreenSize();
@@ -430,9 +438,10 @@
             let obj;
             if(!this.model.id){
               this.model.id = this.userId;
-              obj=addUser(this.model);
+              this.model.peopleType = 2;
+              obj=addVillageUser(this.model);
             }else{
-              obj=editUser(this.model);
+              obj=editVillageUser(this.model);
               console.log(this.model);
             }
             obj.then((res)=>{

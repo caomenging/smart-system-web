@@ -130,7 +130,6 @@
               type: FormTypes.inputNumber,
               disabled:true,
               width:"200px",
-              placeholder: '请输入${title}',
               defaultValue:'',
             },
           ]
