@@ -8,7 +8,7 @@
             <a-form-item label="单位">
               <j-select-depart
                 placeholder="请选择单位"
-                v-model="queryParam.departId"
+                v-model="queryParam.departmentId"
                 customReturnField="id"
                 :multi="false"
                 :treeOpera="true"
@@ -142,30 +142,26 @@
               return parseInt(index)+1;
             }
           },
-          // {
-          //   title:'单位',
-          //   align:"center",
-          //   dataIndex: 'departmentId'
-          // },
           {
-            title:'主持人姓名',
-            align:"center",
-            dataIndex: 'hostNumber'
+            title:'审核状态',
+            align:'center',
+            dataIndex: 'verifyStatus',
+            customRender: function(text) {
+              if(text == '0') {
+                return '不通过'
+              } else if (text == '1') {
+                return '通过'
+              } else if (text == '2') {
+                return '待审核'
+              } else {
+                return '免审'
+              }
+            }
           },
           {
-            title:'记录人姓名',
+            title:'单位',
             align:"center",
-            dataIndex: 'recorderNumber'
-          },
-          {
-            title:'地点',
-            align:"center",
-            dataIndex: 'place'
-          },
-          {
-            title:'时间',
-            align:"center",
-            dataIndex: 'time'
+            dataIndex: 'departmentId'
           },
           {
             title:'类型',
@@ -183,20 +179,46 @@
             dataIndex: 'content'
           },
           {
+            title:'主持人',
+            align:"center",
+            dataIndex: 'hostName'
+          },
+          {
+            title:'记录人',
+            align:"center",
+            dataIndex: 'recorderName'
+          },
+          {
+            title:'地点',
+            align:"center",
+            dataIndex: 'place'
+          },
+          {
+            title:'时间',
+            align:"center",
+            dataIndex: 'time'
+          },
+          
+          {
             title:'备注',
             align:"center",
             dataIndex: 'remark'
           },
-          // {
-          //   title:'创建人工号',
-          //   align:"center",
-          //   dataIndex: 'founderNumber'
-          // },
+          {
+            title:'创建人',
+            align:"center",
+            dataIndex: 'createBy'
+          },
           {
             title:'创建日期',
             align:"center",
             dataIndex: 'createTime'
           },
+          // {
+          //   title:'审核状态',
+          //   align:"center",
+          //   dataIndex: 'verifyStatus'
+          // },
           {
             title: '操作',
             dataIndex: 'action',
@@ -232,16 +254,17 @@
       getSuperFieldList(){
         let fieldList=[];
          fieldList.push({type:'string',value:'departmentId',text:'单位',dictCode:''})
-         fieldList.push({type:'string',value:'hostNumber',text:'主持人工号',dictCode:''})
-         fieldList.push({type:'string',value:'recorderNumber',text:'记录人工号',dictCode:''})
+         fieldList.push({type:'string',value:'hostName',text:'主持人',dictCode:''})
+         fieldList.push({type:'string',value:'recorderName',text:'记录人',dictCode:''})
          fieldList.push({type:'string',value:'place',text:'地点',dictCode:''})
          fieldList.push({type:'datetime',value:'time',text:'时间'})
          fieldList.push({type:'string',value:'type',text:'类型',dictCode:'shyk'})
          fieldList.push({type:'string',value:'theme',text:'主题',dictCode:''})
          fieldList.push({type:'Text',value:'content',text:'内容摘要',dictCode:''})
          fieldList.push({type:'string',value:'remark',text:'备注',dictCode:''})
-         fieldList.push({type:'string',value:'founderNumber',text:'创建人工号',dictCode:''})
+         fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
          fieldList.push({type:'datetime',value:'createTime',text:'创建日期'})
+         fieldList.push({type:'string',value:'verifyStatus',text:'审核状态',dictCode:''})
         this.superFieldList = fieldList
       }
     }
