@@ -13,11 +13,6 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules">
         <a-row style="width: 100%">
           <a-col :span="24 / 2">
-            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="titile" label="标题">
-              <a-input placeholder="请输入标题" v-model="model.titile" :readOnly="disableSubmit" />
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24 / 2">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="msgCategory" label="消息类型">
               <a-select
                 v-model="model.msgCategory"
@@ -30,6 +25,32 @@
                 <a-select-option value="2">廉政提醒</a-select-option>
                 <a-select-option value="3">任务下发</a-select-option>
               </a-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24 / 2">
+            <a-form-model-item
+              v-if="model.msgCategory == '1'"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+              prop="msgCategory"
+              label="模板选择"
+            >
+              <a-select
+                placeholder="请选择消息模板"
+                :disabled="disableSubmit"
+                @change="useTemplate"
+              >
+                <a-select-option v-for="template in templates" :key="template.id">
+                  {{ template.templateName }}
+                </a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </a-col>
+        </a-row>
+        <a-row style="width: 100%">
+          <a-col :span="24 / 2">
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="titile" label="标题">
+              <a-input placeholder="请输入标题" v-model="model.titile" :readOnly="disableSubmit" />
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -181,6 +202,8 @@ export default {
       visible: false,
       disableSubmit: false,
       model: {},
+      template: '',
+      templates: [],
       labelCol: {
         xs: { span: 24 },
         sm: { span: 6 },
@@ -213,14 +236,16 @@ export default {
       },
       userType: 'ALL',
       userIds: [],
-      departIds:'',                                                                                                                        
+      departIds: '',
       selectedUser: [],
       disabled: false,
       msgContent: '',
       userList: [],
     }
   },
-  created() {},
+  created() {
+    this.getTemplate()
+  },
   methods: {
     add() {
       this.edit({})
@@ -254,6 +279,23 @@ export default {
           }
         })
       }
+    },
+    getTemplate() {
+      getAction('/smartMessageTemplate/smartMessageTemplate/list').then((res) => {
+        if(res.success) {
+          this.templates = res.result.records
+        }
+      })
+    },
+    useTemplate(value) {
+      let templateObj = this.templates.find(item => item.id === value)
+      let message = {}
+      message.msgCategory = this.model.msgCategory
+      message.titile = templateObj.title
+      message.msgAbstract = templateObj.msgAbstract
+      message.msgContent = templateObj.content
+      message.priority = templateObj.priority
+      this.model = Object.assign({}, message)
     },
     close() {
       this.$emit('close')
@@ -326,10 +368,9 @@ export default {
     chooseMsgType(value) {
       if ('USER' == value) {
         this.userType = 'UESR'
-      } else if('DEPART' == value) {
+      } else if ('DEPART' == value) {
         this.userType = 'DEPART'
-      }
-      else {
+      } else {
         this.userType = 'ALL'
         this.selectedUser = []
         this.userIds = []
