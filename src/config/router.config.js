@@ -391,7 +391,22 @@ export const constantRouterMap = [
     path: '/404',
     component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404')
   },
-
+  {
+    path: '/createPaper/:opt',
+    name: 'createPaper',
+    component: () => import( '@/views/SmartPaper/createPaper.vue'),
+    meta:{
+      title:'新建试卷'
+    },
+  },
+  {
+    path: '/createPaper/:opt/:id',
+    name: 'editPaper',
+    component: () => import( '@/views/SmartPaper/createPaper.vue'),
+    meta: {
+      title: '修改试卷'
+    }
+  },
   /**
    * 下面代码为了简化APP端访问后台，取消侧边栏
    */
@@ -437,6 +452,4 @@ export const constantRouterMap = [
   //   path: '/webview/study',
   //   component: () => import('@/views/system/UserAnnouncementList')
   // },
-
-
 ]

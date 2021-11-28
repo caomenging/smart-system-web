@@ -104,22 +104,13 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
-          <a @click="handleDetail(record)">详情</a>
-          <!--<a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-            <a-menu slot="overlay">
-              <a-menu-item>
+          <a  v-show="record.verifyStatus == '3'" @click="handleEdit(record)">编辑</a>
+          <a-divider type="vertical" />
                 <a @click="handleDetail(record)">详情</a>
-              </a-menu-item>
-              <a-menu-item>
+          <a-divider type="vertical" />
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a>删除</a>
+                  <a v-show="record.verifyStatus == '3'">删除</a>
                 </a-popconfirm>
-              </a-menu-item>
-            </a-menu>
-          </a-dropdown>-->
         </span>
 
       </a-table>
@@ -162,16 +153,19 @@
             title:'会议时间',
             align:"center",
             dataIndex: 'meetTime',
+            sorter: true
           },
           {
             title:'会议地点',
             align:"center",
-            dataIndex: 'meetLocation'
+            dataIndex: 'meetLocation',
+            sorter: true
           },
           {
             title:'会议名称',
             align:"center",
-            dataIndex: 'meetName'
+            dataIndex: 'meetName',
+            sorter: true
           },
 /*          {
             title:'主持人ID',
@@ -181,28 +175,50 @@
           {
             title:'主持人姓名',
             align:"center",
-            dataIndex: 'hostName'
+            dataIndex: 'hostName',
+            sorter: true
           },
           {
             title:'受约谈函询人姓名',
             align:"center",
-            dataIndex: 'talkedName'
+            dataIndex: 'talkedName',
+            sorter: true
           },
           {
             title:'受诫勉谈话人姓名',
             align:"center",
-            dataIndex: 'inquirerName'
+            dataIndex: 'inquirerName',
+            sorter: true
           },
           {
             title:'受党纪处分人姓名',
             align:"center",
-            dataIndex: 'punisherName'
+            dataIndex: 'punisherName',
+            sorter: true
           },
           {
             title:'记录人姓名',
             align:"center",
-            dataIndex: 'recorderName'
+            dataIndex: 'recorderName',
+            sorter: true
           },
+          {
+            title:'审核状态',
+            align:'center',
+            dataIndex: 'verifyStatus',
+            customRender: function(text) {
+              if(text == '0') {
+                return '不通过'
+              } else if (text == '1') {
+                return '通过'
+              } else if (text == '2') {
+                return '待审核'
+              } else {
+                return '免审'
+              }
+            }
+          },
+
           {
             title: '操作',
             dataIndex: 'action',
@@ -251,7 +267,8 @@
          fieldList.push({type:'string',value:'punisherName',text:'受诫勉谈话人姓名'})
          fieldList.push({type:'string',value:'abs',text:'会议摘要',dictCode:''})
          fieldList.push({type:'string',value:'recorderId',text:'记录人'})
-        fieldList.push({type:'string',value:'recorderName',text:'记录人姓名'})
+         fieldList.push({type:'string',value:'recorderName',text:'记录人姓名'})
+         fieldList.push({type:'string',value:'verifyStatus',text:'审核状态'})
         this.superFieldList = fieldList
       }
     }

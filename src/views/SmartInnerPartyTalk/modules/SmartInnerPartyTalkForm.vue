@@ -21,7 +21,7 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="主持人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="hostId">
-              <select-user-by-dep v-model="model.hostId"  @info="getHostUser" />
+              <select-user-by-dep v-model="model.hostId"  @info="getHostUser" :multi="false" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -31,7 +31,7 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="受约谈函询人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="talkedId">
-              <select-user-by-dep v-model="model.talkedId"  @info="getTalkerUser" />
+              <select-user-by-dep v-model="model.talkedId"  @info="getTalkerUser" :multi="false"/>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -41,7 +41,7 @@
             </a-col>
             <a-col :span="24" >
             <a-form-model-item label="受诫勉谈话人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="inquirerId">
-              <select-user-by-dep v-model="model.inquirerId" @info="getInquirerUser"/>
+              <select-user-by-dep v-model="model.inquirerId" @info="getInquirerUser" :multi="false"/>
             </a-form-model-item>
           </a-col>
             <a-col :span="24" >
@@ -51,7 +51,7 @@
             </a-col>
           <a-col :span="24" >
             <a-form-model-item label="受党纪处分人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="punisherId">
-              <select-user-by-dep v-model="model.punisherId"  @info="getPunisherUser"/>
+              <select-user-by-dep v-model="model.punisherId"  @info="getPunisherUser" :multi="false"/>
             </a-form-model-item>
           </a-col>
             <a-col :span="24" >
@@ -66,7 +66,7 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="记录人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="recorderId">
-              <select-user-by-dep v-model="model.recorderId"  @info="getRecorderUser"/>
+              <select-user-by-dep v-model="model.recorderId"  @info="getRecorderUser" :multi="false"/>
             </a-form-model-item>
           </a-col>
             <a-col :span="24" >

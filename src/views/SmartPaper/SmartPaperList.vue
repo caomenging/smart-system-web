@@ -11,7 +11,8 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+      <!--<a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
+      <a-button @click="createTestPaper"  type="primary" icon="plus">新增</a-button>
       <a-button type="primary" icon="download" @click="handleExportXls('试卷表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
@@ -68,8 +69,8 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
-
+          <!--<a @click="handleEdit(record)">编辑</a>-->
+          <a @click="editTestPaper(record.id)">编辑</a>
           <a-divider type="vertical" />
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
@@ -122,11 +123,11 @@
               return parseInt(index)+1;
             }
           },
-          {
+/*          {
             title:'试卷类型',
             align:"center",
             dataIndex: 'paperType_dictText'
-          },
+          },*/
           {
             title:'试卷名称',
             align:"center",
@@ -140,7 +141,7 @@
           {
             title:'命卷人',
             align:"center",
-            dataIndex: 'createBy'
+            dataIndex: 'creatorName'
           },
           {
             title:'命卷日期',
@@ -177,12 +178,11 @@
           }
         ],
         url: {
-          list: "/smartPaper/smartPaper/list",
-          delete: "/smartPaper/smartPaper/delete",
-          deleteBatch: "/smartPaper/smartPaper/deleteBatch",
-          exportXlsUrl: "/smartPaper/smartPaper/exportXls",
-          importExcelUrl: "smartPaper/smartPaper/importExcel",
-          
+          list: "/SmartPaper/smartPaper/list",
+          delete: "/SmartPaper/smartPaper/delete",
+          deleteBatch: "/SmartPaper/smartPaper/deleteBatch",
+          exportXlsUrl: "/SmartPaper/smartPaper/exportXls",
+          importExcelUrl: "SmartPaper/smartPaper/importExcel",
         },
         dictOptions:{},
         superFieldList:[],
@@ -192,11 +192,46 @@
     this.getSuperFieldList();
     },
     computed: {
+      flag(){
+        console.log(this.$route.query.flag);
+        if(this.$route.query.flag){
+          this.getSuperFieldList()
+        }
+      },
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
       },
     },
     methods: {
+      //去创建新试卷
+      createTestPaper() {
+        const { href } = this.$router.resolve({
+          name: "createPaper",
+          params: { opt: 'add'}
+        });
+        const win  = window.open(href, "_blank");
+        const loop = setInterval(item => {
+          if (win.closed) {
+            clearInterval(loop);
+            this.refresh();
+          }
+        }, 1000);
+      },
+      // 编辑试卷
+      editTestPaper(id) {
+        console.log(id);
+        const { href } = this.$router.resolve({
+          name: "editPaper",
+          params: { opt: 'edit', id}
+        });
+        const win = window.open(href, "_blank");
+        const loop = setInterval(item => {
+          if (win.closed) {
+            clearInterval(loop);
+            this.$ref.table.reload();
+          }
+        }, 1000);
+      },
       initDictConfig(){
       },
       getSuperFieldList(){
@@ -204,7 +239,7 @@
         fieldList.push({type:'string',value:'paperType',text:'试卷类型',dictCode:'paper_type'})
         fieldList.push({type:'string',value:'paperName',text:'试卷名称',dictCode:''})
         fieldList.push({type:'string',value:'paperStatus',text:'试卷状态',dictCode:'paper_status'})
-        fieldList.push({type:'string',value:'createBy',text:'命卷人',dictCode:''})
+        fieldList.push({type:'string',value:'creatorName',text:'命卷人',dictCode:''})
         fieldList.push({type:'datetime',value:'createTime',text:'命卷日期'})
         fieldList.push({type:'string',value:'topicNum',text:'题目数量',dictCode:''})
         fieldList.push({type:'string',value:'totalScore',text:'总分',dictCode:''})
@@ -212,7 +247,7 @@
         fieldList.push({type:'int',value:'time',text:'答题时间',dictCode:''})
         this.superFieldList = fieldList
       }
-    }
+    },
   }
 </script>
 <style scoped>
