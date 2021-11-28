@@ -86,6 +86,9 @@
                   <a>删除</a>
                 </a-popconfirm>
               </a-menu-item>
+              <a-menu-item v-if="record.sendStatus == 1">
+                  <a @click="checkDetail(record)">详情</a>
+              </a-menu-item>
               <a-menu-item v-if="record.sendStatus == 0">
                 <a-popconfirm title="确定发布吗?" @confirm="() => releaseData(record.id)">
                   <a>发布</a>
@@ -120,6 +123,8 @@
     >
       <iframe v-if="detailModal.url" class="detail-iframe" :src="detailModal.url" />
     </j-modal>
+    <!-- 发送情况统计 -->
+    <task-detail-modal ref="taskDetailModal"></task-detail-modal>
   </a-card>
 </template>
 
@@ -129,12 +134,15 @@ import { doReleaseData, doReovkeData } from '@/api/api'
 import { getAction } from '@/api/manage'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
+import TaskDetailModal from '../message/module/TaskDetailModal.vue'
 
 export default {
   name: 'SysAnnouncementList',
   mixins: [JeecgListMixin],
   components: {
     SysAnnouncementModal,
+    TaskDetailModal,
+
   },
   data() {
     return {
@@ -154,7 +162,6 @@ export default {
             return parseInt(index) + 1
           },
         },
-
         {
           title: '标题',
           align: 'center',
@@ -214,6 +221,8 @@ export default {
           customRender: function (text) {
             if (text == 'USER') {
               return '指定用户'
+            } else if (text == 'DEPART') {
+              return '部门'
             } else if (text == 'ALL') {
               return '全体用户'
             } else {
@@ -339,6 +348,11 @@ export default {
       const token = this.$ls.get(ACCESS_TOKEN)
       this.detailModal.url = `${domain}/sys/annountCement/show/${record.id}?token=${token}`
       this.detailModal.visible = true
+    },
+    checkDetail(record){
+      console.log(record)
+      this.$refs.taskDetailModal.edit(record)
+      this.$refs.taskDetailModal.title = record.titile + '统计详情'
     },
   },
 }

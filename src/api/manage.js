@@ -72,7 +72,8 @@ export function deleteAction(url,parameter) {
   })
 }
 
-export function getUserList(parameter) {
+export function
+getUserList(parameter) {
   return axios({
     url: api.user,
     method: 'get',

@@ -14,11 +14,12 @@
   import SmartReportingInformationDetail from '../SmartReportingInformation/SmartReportingInformationDetail'
   export default {
     name: 'QRcodesame',
+    //调用表格作为首页的表格
     components: { SmartReportingInformationDetail },
     //props: ['sex','name'],
     data () {
       return {
-        url: 'http://localhost:8080/smart-system/qrCode/generate/v3?content=http://localhost:3000/InsertReportingInformation/InsertReportingInformationDetail',
+        url: 'http://192.168.1.101:8080/smart-system/qrCode/generate/v3?content=http://192.168.1.101:3000/InsertReportingInformation/InsertReportingInformationDetail',
         name: '纠治四风',
         formLayout: 'horizontal',
         model: {},

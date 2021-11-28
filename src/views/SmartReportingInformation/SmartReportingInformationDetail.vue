@@ -144,7 +144,7 @@ export default {
         {
           title:'处理状态',
           align:"center",
-          dataIndex: 'processingType_dictText'
+          dataIndex: 'processingResult_dictText'
         },
        /* {
           title:'举报人姓名',
