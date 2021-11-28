@@ -9,7 +9,7 @@ import { generateIndexRouter, isOAuth2AppEnv } from '@/utils/util'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/user/login', '/user/register', '/user/register-result','/user/alteration'] // no redirect whitelist
+const whiteList = ['/user/login', '/user/register', '/user/register-result','/user/alteration','/InsertReportingInformation/InsertReportingInformationDetail'] // no redirect whitelist
 const appWhiteList = [
   '/webview/info',
   '/webview/sun',

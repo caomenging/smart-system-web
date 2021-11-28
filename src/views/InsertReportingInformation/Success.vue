@@ -8,8 +8,7 @@
 </template>
 
 <script>
-  import Result from './Result'
-
+  import MyResult from '../result/MyResult'
   import { mixinDevice } from '@/utils/mixin.js'
 
   const directionType = {
@@ -20,7 +19,7 @@
   export default {
     name: "Success",
     components: {
-      Result
+      MyResult
     },
     mixins: [mixinDevice],
     data () {
@@ -49,7 +48,7 @@
               clearInterval(this.timer);
               this.timer = null;
               //跳转的页面写在此处
-              this.$router.push({path: '/dashboard/analysis'});
+              this.$router.push({path: '../../QRCodesame/QRcodesame'});
             }
           },1000)
         }
