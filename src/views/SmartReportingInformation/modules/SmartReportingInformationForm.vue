@@ -30,8 +30,8 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="处理状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="processingType">
-              <j-dict-select-tag type="list" v-model="model.processingType" dictCode="processing_type" placeholder="请选择处理状态" />
+            <a-form-model-item label="处理状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="processingResult">
+              <j-dict-select-tag type="list" v-model="model.processingResult" dictCode="processing_result" placeholder="请选择处理状态" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -44,8 +44,19 @@
               <a-input v-model="model.contactNumber" placeholder="请输入联系电话" ></a-input>
             </a-form-model-item>
           </a-col>
+
         </a-row>
+        <a-form-model-item
+          :wrapperCol="{ span: 24 }"
+          style="text-align: center"
+        >
+          <a-button @click="handleAgree" type="primary"
+                    :disabled="disableSubmit">通过</a-button>
+          <a-button @click="handleDisagree"style="margin-left: 8px" type="primary"
+                    :disabled="disableSubmit">不通过</a-button>
+        </a-form-model-item>
       </a-form-model>
+<!--      <smart-reporting-information-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"/>-->
     </j-form-container>
       <!-- 子表单区域 -->
     <a-tabs v-model="activeKey" @change="handleChangeTabs">
@@ -79,16 +90,17 @@
 
 <script>
 
-  import { getAction } from '@/api/manage'
+  import { putAction, getAction } from '@/api/manage'
   import { FormTypes,getRefPromise,VALIDATE_NO_PASSED } from '@/utils/JEditableTableUtil'
   import { JEditableTableModelMixin } from '@/mixins/JEditableTableModelMixin'
   import { validateDuplicateValue } from '@/utils/util'
+  import AFormItem from 'ant-design-vue/lib/form/FormItem'
 
 
   export default {
     name: 'SmartReportingInformationForm',
     mixins: [JEditableTableModelMixin],
-    components: {
+    components: {AFormItem
     },
     data() {
       return {
@@ -108,6 +120,10 @@
           xs: { span: 24 },
           sm: { span: 20 },
         },
+        disableSubmit: false,
+        processing_result:'未受理',
+
+
         model:{
         },
         // 新增时子表默认添加几行空数据
@@ -116,7 +132,7 @@
            reportingTime: [
               { required: true, message: '请输入举报时间!'},
            ],
-           processingType: [
+           processingResult: [
               { required: true, message: '请输入处理状态!'},
            ],
         },
@@ -176,6 +192,7 @@
         url: {
           add: "/smartReportingInformation/smartReportingInformation/add",
           edit: "/smartReportingInformation/smartReportingInformation/edit",
+          list:"/smartReportingInformation/smartReportingInformation/list",
           queryById: "/smartReportingInformation/smartReportingInformation/queryById",
           smartReportingSurvey: {
             list: '/smartReportingInformation/smartReportingInformation/querySmartReportingSurveyByMainId'
@@ -210,9 +227,19 @@
         let values = this.tableKeys.map(key => getRefPromise(this, key))
         return Promise.all(values)
       },
+
+    /*  edit(record) {
+        if (typeof this.editBefore === 'function') this.editBefore(record)
+        this.visible = true
+        this.activeKey = this.refKeys[0]
+        this.$refs.form.resetFields()
+        this.model = Object.assign({}, record)
+        if (typeof this.editAfter === 'function') this.editAfter(this.model)
+      },*/
       /** 调用完edit()方法之后会自动调用此方法 */
       editAfter() {
         this.$nextTick(() => {
+
         })
         // 加载子表数据
         if (this.model.id) {
@@ -248,6 +275,50 @@
       },
       validateError(msg){
         this.$message.error(msg)
+      },
+
+      handleAgree(){
+        //处理(接受举报)
+        const params = {
+          id: this.model.id,
+          processingResult: '2'
+        }
+        putAction(this.url.edit, params).then((res) => {
+            if(res.success) {
+              this.$message.success(res.message)
+            }
+        })
+        getAction(this.url.list,params).then((res)=>{
+            if(res.success){
+              this.$router.go(0)
+            }
+        })
+
+        this.submitCallback();
+      },
+
+      handleDisagree(){
+        //处理(不接受举报)
+        const params={
+          id:this.model.id,
+          processingResult: '3'
+        }
+        putAction(this.url.edit,params).then((res)=>{
+          if(res.success){
+              this.$message.success(res.message)
+          }
+        })
+        getAction(this.url.list,params).then((res)=>{
+          if(res.success){
+            this.$router.go(0)
+          }
+        })
+        this.submitCallback();
+      },
+
+      submitCallback(){
+        this.$emit('ok');
+        this.visible = false;
       },
 
     }

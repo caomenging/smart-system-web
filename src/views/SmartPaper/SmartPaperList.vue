@@ -184,7 +184,6 @@
           deleteBatch: "/SmartPaper/smartPaper/deleteBatch",
           exportXlsUrl: "/SmartPaper/smartPaper/exportXls",
           importExcelUrl: "SmartPaper/smartPaper/importExcel",
-          
         },
         dictOptions:{},
         superFieldList:[],
@@ -264,7 +263,6 @@
         this.superFieldList = fieldList
       }
     },
-
   }
 </script>
 <style scoped>

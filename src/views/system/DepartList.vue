@@ -28,24 +28,19 @@
               <a-dropdown :trigger="[this.dropTrigger]" @visibleChange="dropStatus">
                <span style="user-select: none">
             <a-tree
-              checkable
               multiple
-              @select="onSelect"a
-              @check="onCheck"
-              @rightClick="rightHandle"
+              @select="onSelect"
               :selectedKeys="selectedKeys"
-              :checkedKeys="checkedKeys"
               :treeData="departTree"
-              :checkStrictly="checkStrictly"
               :expandedKeys="iExpandedKeys"
               @expand="onExpand"/>
                 </span>
                 <!--新增右键点击事件,和增加添加和删除功能-->
-                <a-menu slot="overlay">
-<!--                  <a-menu-item @click="handleAdd(3)" key="1">添加</a-menu-item>-->
-                  <a-menu-item @click="handleDelete" key="2">删除</a-menu-item>
-                  <a-menu-item @click="closeDrop" key="3">取消</a-menu-item>
-                </a-menu>
+<!--                <a-menu slot="overlay">-->
+<!--&lt;!&ndash;                  <a-menu-item @click="handleAdd(3)" key="1">添加</a-menu-item>&ndash;&gt;-->
+<!--                  <a-menu-item @click="handleDelete" key="2">删除</a-menu-item>-->
+<!--                  <a-menu-item @click="closeDrop" key="3">取消</a-menu-item>-->
+<!--                </a-menu>-->
               </a-dropdown>
             </template>
           </a-col>
@@ -54,20 +49,20 @@
 
           <a-col :md="24" :sm="24">
              <template>
-             <a-dropdown :trigger="[this.dropTrigger]" @visibleChange="dropStatus">
+             <a-dropdown :trigger="[this.dropTrigger2]" @visibleChange="dropStatus2">
                <span >
             <a-tree
               checkable
               multiple
-              @select="onSelect"a
-              @check="onCheck"
+              @select="onSelect"
+              @check="onCheck2"
               @rightClick="rightHandle"
               :selectedKeys="selectedKeys"
-              :checkedKeys="checkedKeys"
+              :checkedKeys="checkedKeys2"
               :treeData="naturalDepartTree"
-              :checkStrictly="checkStrictly"
-              :expandedKeys="iExpandedKeys"
-              @expand="onExpand"/>
+              :checkStrictly="checkStrictly2"
+              :expandedKeys="iExpandedKeys2"
+              @expand="onExpand2"/>
                   </span>
                  <!--新增右键点击事件,和增加添加和删除功能-->
                 <a-menu slot="overlay">
@@ -108,7 +103,7 @@
               <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departName" label="机构名称">
                 <a-input placeholder="请输入机构/部门名称" v-model="model.departName" />
               </a-form-model-item>
-              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="上级业务部门">
+              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="parentId" label="上级业务部门">
                 <a-tree-select
                   style="width:100%"
                   :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
@@ -119,7 +114,7 @@
                   tree-default-expand-all>
                 </a-tree-select>
               </a-form-model-item>
-              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="上级部门">
+              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="businessParentId" label="上级部门">
                 <a-tree-select
                   style="width:100%"
                   :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
@@ -133,8 +128,8 @@
               <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCode" label="机构编码">
                 <a-input disabled placeholder="无" v-model="model.orgCode" />
               </a-form-model-item>
-              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="机构类型">
-                <a-input placeholder="无" v-model="model.departType" />
+              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departType" label="机构类型">
+                <a-input disabled placeholder="无" v-model="model.departType" />
               </a-form-model-item>
 <!--              <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orgCategory" label="机构类型">-->
 <!--                <template v-if="orgCategoryDisabled">-->
@@ -245,30 +240,38 @@
     data() {
       return {
         iExpandedKeys: [],
+        iExpandedKeys2: [],
         loading: false,
         autoExpandParent: true,
+        autoExpandParent2: true,
         currFlowId: '',
         currFlowName: '',
         disable: true,
         treeData: [],
         naturalTreeData: [],
         visible: false,
+        visible2: false,
         departTree: [],
         naturalDepartTree: [],
         rightClickSelectedKey: '',
         rightClickSelectedOrgCode: '',
         hiding: true,
+        hiding2: true,
         model: {},
         dropTrigger: '',
+        dropTrigger2: '',
         depart: {},
         columns: columns,
         disableSubmit: false,
         checkedKeys: [],
+        checkedKeys2: [],
         selectedKeys: [],
         autoIncr: 1,
         currSelected: {},
         allTreeKeys:[],
+        allTreeKeys2:[],
         checkStrictly: true,
+        checkStrictly2: true,
         labelCol: {
           xs: {span: 24},
           sm: {span: 5}
@@ -283,6 +286,7 @@
         },
         validatorRules: {
           departName: [{required: true, message: '请输入机构/部门名称!'}],
+          businessParentId:[{ required: true, message: '请选择上级部门!' }],
           orgCode: [{required: true, message: '请输入机构编码!'}],
           orgCategory:[{required: true, message: '请输入机构类型!'}],
           mobile:[{validator: this.validateMobile}]
@@ -320,8 +324,8 @@
               let temp = res.result[i]
               that.treeData.push(temp)
               that.departTree.push(temp)
-              that.setThisExpandedKeys(temp)
-              that.getAllKeys(temp);
+              // that.setThisExpandedKeys(temp)
+              that.getAllKeys(temp)
               // console.log(temp.id)
             }
             // this.loading = false
@@ -338,13 +342,13 @@
         queryNaturalDepartTreeList().then((result) => {
           if (result.success) {
             //部门全选后，再添加部门，选中数量增多
-            // this.allTreeKeys = [];
+            this.allTreeKeys2 = [];
             for (let j = 0; j < result.result.length; j++) {
               let temp2 = result.result[j]
               that.naturalTreeData.push(temp2)
               that.naturalDepartTree.push(temp2)
               // that.setThisExpandedKeys(temp2)
-              // that.getAllKeys(temp2);
+              that.getAllKeys2(temp2);
               // console.log(temp.id)
 
             }
@@ -361,6 +365,14 @@
           }
         }
       },
+      setThisExpandedKeys2(node) {
+        if (node.children && node.children.length > 0) {
+          this.iExpandedKeys2.push(node.key)
+          for (let a = 0; a < node.children.length; a++) {
+            this.setThisExpandedKeys2(node.children[a])
+          }
+        }
+      },
       refresh() {
         this.loading = true
         this.loadTree()
@@ -368,7 +380,7 @@
       },
       // 右键操作方法
       rightHandle(node) {
-        this.dropTrigger = 'contextmenu'
+        this.dropTrigger2 = 'contextmenu'
         console.log(node.node.eventKey)
         this.rightClickSelectedKey = node.node.eventKey
         this.rightClickSelectedOrgCode = node.node.dataRef.orgCode
@@ -377,6 +389,11 @@
         console.log('onExpand', expandedKeys)
         this.iExpandedKeys = expandedKeys
         this.autoExpandParent = false
+      },
+      onExpand2(expandedKeys2) {
+        // console.log('onExpand', expandedKeys)
+        this.iExpandedKeys2 = expandedKeys2
+        this.autoExpandParent2 = false
       },
       backFlowList() {
         this.$router.back(-1)
@@ -387,31 +404,39 @@
           this.dropTrigger = ''
         }
       },
+      // 右键点击下拉框改变事件
+      dropStatus2(visible2) {
+        if (visible2 == false) {
+          this.dropTrigger2 = ''
+        }
+      },
       // 右键下拉关闭下拉框
       closeDrop() {
         this.dropTrigger = ''
+        this.dropTrigger2 = ''
       },
       addRootNode() {
         this.$refs.nodeModal.add(this.currFlowId, '')
       },
       batchDel: function () {
         console.log(this.checkedKeys)
-        if (this.checkedKeys.length <= 0) {
+        if (this.checkedKeys2.length <= 0) {
           this.$message.warning('请选择一条记录！')
         } else {
           var ids = ''
-          for (var a = 0; a < this.checkedKeys.length; a++) {
-            ids += this.checkedKeys[a] + ','
+          for (var a = 0; a < this.checkedKeys2.length; a++) {
+            ids += this.checkedKeys2[a] + ','
           }
           var that = this
           this.$confirm({
             title: '确认删除',
-            content: '确定要删除所选中的 ' + this.checkedKeys.length + ' 条数据，以及子节点数据吗?',
+            content: '确定要删除所选中的 ' + this.checkedKeys2.length + ' 条数据，以及子节点数据吗?',
             onOk: function () {
               deleteAction(that.url.deleteBatch, {ids: ids}).then((res) => {
                 if (res.success) {
                   that.$message.success(res.message)
                   that.loadTree()
+                  that.loadNaturalTree()
                   that.onClearSelected()
                 } else {
                   that.$message.warning(res.message)
@@ -427,9 +452,11 @@
           searchByKeywords({keyWord: value}).then((res) => {
             if (res.success) {
               that.departTree = []
+              that.naturalDepartTree = []
+
               for (let i = 0; i < res.result.length; i++) {
                 let temp = res.result[i]
-                that.departTree.push(temp)
+                that.naturalDepartTree.push(temp)
               }
             } else {
               that.$message.warning(res.message)
@@ -437,6 +464,7 @@
           })
         } else {
           that.loadTree()
+          that.loadNaturalTree()
         }
 
       },
@@ -447,8 +475,9 @@
       nodeModalClose() {
       },
       hide() {
-        console.log(111)
+        // console.log(111)
         this.visible = false
+        this.visible2 = false
       },
       onCheck(checkedKeys, info) {
         console.log('onCheck', checkedKeys, info)
@@ -458,6 +487,17 @@
           this.checkedKeys = checkedKeys.checked;
         }else{
           this.checkedKeys = checkedKeys
+        }
+        //---- author:os_chengtgen -- date:20190827 --  for:切换父子勾选模式 =======------
+      },
+      onCheck2(checkedKeys2, info) {
+        // console.log('onCheck2', checkedKeys2, info)
+        this.hiding2 = false
+        //---- author:os_chengtgen -- date:20190827 --  for:切换父子勾选模式 =======------
+        if(this.checkStrictly2){
+          this.checkedKeys2 = checkedKeys2.checked;
+        }else{
+          this.checkedKeys2 = checkedKeys2
         }
         //---- author:os_chengtgen -- date:20190827 --  for:切换父子勾选模式 =======------
       },
@@ -508,11 +548,19 @@
               this.$message.warning('请点击选择要修改部门!')
               return
             }
-
+            if (this.currSelected.departName === "部门类型") {
+                this.$message.warning('该类型不可更改!')
+                return
+              }
+            if (this.currSelected.departName === "哈尔滨道里区纪委") {
+              this.$message.warning('该类型不可更改!')
+              return
+            }
             httpAction(this.url.edit, this.currSelected, 'put').then((res) => {
               if (res.success) {
                 this.$message.success('保存成功!')
                 this.loadTree()
+                this.loadNaturalTree()
               } else {
                 this.$message.error(res.message)
               }
@@ -561,9 +609,10 @@
             deleteByDepartId({id: that.rightClickSelectedKey}).then((resp) => {
               if (resp.success) {
                 //删除成功后，去除已选中中的数据
-                that.checkedKeys.splice(that.checkedKeys.findIndex(key => key === that.rightClickSelectedKey), 1);
+                that.checkedKeys2.splice(that.checkedKeys2.findIndex(key => key === that.rightClickSelectedKey), 1);
                 that.$message.success('删除成功!')
                 that.loadTree()
+                that.loadNaturalTree()
                 //删除后同步清空右侧基本信息内容
                 let orgCode=that.model.orgCode;
                 if(orgCode && orgCode === that.rightClickSelectedOrgCode){
@@ -600,23 +649,30 @@
      //---- author:os_chengtgen -- date:20190827 --  for:切换父子勾选模式 =======------
       expandAll () {
         this.iExpandedKeys = this.allTreeKeys
+        this.iExpandedKeys2 = this.allTreeKeys2
       },
       closeAll () {
         this.iExpandedKeys = []
+        this.iExpandedKeys2 = []
       },
       checkALL () {
-        this.checkStriccheckStrictlytly = false
+        this.checkStrictly = false
+        this.checkStrictly2 = false
         this.checkedKeys = this.allTreeKeys
+        this.checkedKeys2 = this.allTreeKeys2
       },
       cancelCheckALL () {
         //this.checkedKeys = this.defaultCheckedKeys
         this.checkedKeys = []
+        this.checkedKeys2 = []
       },
       switchCheckStrictly (v) {
         if(v==1){
           this.checkStrictly = false
+          this.checkStrictly2 = false
         }else if(v==2){
           this.checkStrictly = true
+          this.checkStrictly2 = true
         }
       },
       getAllKeys(node) {
@@ -627,6 +683,15 @@
             this.getAllKeys(node.children[a])
           }
         }
+      },
+      getAllKeys2(node) {
+        // console.log('node',node);
+        this.allTreeKeys2.push(node.key)
+        if (node.children && node.children.length > 0) {
+          for (let a = 0; a < node.children.length; a++) {
+            this.getAllKeys2(node.children[a])
+          }
+        }
       }
       //---- author:os_chengtgen -- date:20190827 --  for:切换父子勾选模式 =======------
       
@@ -635,6 +700,7 @@
       this.currFlowId = this.$route.params.id
       this.currFlowName = this.$route.params.name
       // this.loadData()
+
     },
 
   }

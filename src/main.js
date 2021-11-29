@@ -7,6 +7,11 @@ import Storage from 'vue-ls'
 import router from './router'
 import store from './store/'
 import { VueAxios } from "@/utils/request"
+// import Buefy from "buefy";
+// import "buefy/dist/buefy.css";
+// import 'element-ui/lib/theme-chalk/index.css';
+import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css';
 
 require('@jeecg/antd-online-mini')
 require('@jeecg/antd-online-mini/dist/OnlineForm.css')
@@ -230,6 +235,9 @@ Vue.prototype.$elconfirm = MessageBox.confirm;
 Vue.prototype.$prompt = MessageBox.prompt;
 Vue.prototype.$notify = Notification;
 Vue.prototype.$elmessage = Message;
+// Vue.use(Buefy);
+
+Vue.use(mavonEditor);
 SSO.init(() => {
   main()
 })

@@ -68,13 +68,6 @@ export default {
       }
       return navIndex + index + 1;
     },
-
-
-    
-    
-
-
-
   },
 
 }

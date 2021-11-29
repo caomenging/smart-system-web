@@ -13,11 +13,6 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules">
         <a-row style="width: 100%">
           <a-col :span="24 / 2">
-            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="titile" label="标题">
-              <a-input placeholder="请输入标题" v-model="model.titile" :readOnly="disableSubmit" />
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24 / 2">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="msgCategory" label="消息类型">
               <a-select
                 v-model="model.msgCategory"
@@ -30,6 +25,32 @@
                 <a-select-option value="2">廉政提醒</a-select-option>
                 <a-select-option value="3">任务下发</a-select-option>
               </a-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24 / 2">
+            <a-form-model-item
+              v-if="model.msgCategory == '1'"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+              prop="msgCategory"
+              label="模板选择"
+            >
+              <a-select
+                placeholder="请选择消息模板"
+                :disabled="disableSubmit"
+                @change="useTemplate"
+              >
+                <a-select-option v-for="template in templates" :key="template.id">
+                  {{ template.templateName }}
+                </a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </a-col>
+        </a-row>
+        <a-row style="width: 100%">
+          <a-col :span="24 / 2">
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="titile" label="标题">
+              <a-input placeholder="请输入标题" v-model="model.titile" :readOnly="disableSubmit" />
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -89,6 +110,7 @@
                 @change="chooseMsgType"
                 :getPopupContainer="(target) => target.parentNode"
               >
+                <a-select-option value="DEPART">指定部门</a-select-option>
                 <a-select-option value="USER">指定用户</a-select-option>
                 <a-select-option value="ALL">全体用户</a-select-option>
               </a-select>
@@ -108,9 +130,18 @@
               :wrapperCol="wrapperCol"
               label="选择用户"
               prop="userIds"
-              v-if="userType"
+              v-if="userType == 'USER'"
             >
               <j-select-user-by-dep :multi="true" @change="choseUser"></j-select-user-by-dep>
+            </a-form-model-item>
+            <a-form-model-item
+              label="选择部门"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+              prop="departId"
+              v-if="userType == 'DEPART'"
+            >
+              <j-select-depart v-model="departIds" :multi="true"></j-select-depart>
             </a-form-model-item>
 
             <!-- <a-form-model-item
@@ -171,6 +202,8 @@ export default {
       visible: false,
       disableSubmit: false,
       model: {},
+      template: '',
+      templates: [],
       labelCol: {
         xs: { span: 24 },
         sm: { span: 6 },
@@ -201,15 +234,18 @@ export default {
         add: '/sys/annountCement/add',
         edit: '/sys/annountCement/edit',
       },
-      userType: false,
+      userType: 'ALL',
       userIds: [],
+      departIds: '',
       selectedUser: [],
       disabled: false,
       msgContent: '',
       userList: [],
     }
   },
-  created() {},
+  created() {
+    this.getTemplate()
+  },
   methods: {
     add() {
       this.edit({})
@@ -244,6 +280,23 @@ export default {
         })
       }
     },
+    getTemplate() {
+      getAction('/smartMessageTemplate/smartMessageTemplate/list').then((res) => {
+        if(res.success) {
+          this.templates = res.result.records
+        }
+      })
+    },
+    useTemplate(value) {
+      let templateObj = this.templates.find(item => item.id === value)
+      let message = {}
+      message.msgCategory = this.model.msgCategory
+      message.titile = templateObj.title
+      message.msgAbstract = templateObj.msgAbstract
+      message.msgContent = templateObj.content
+      message.priority = templateObj.priority
+      this.model = Object.assign({}, message)
+    },
     close() {
       this.$emit('close')
       this.selectedUser = []
@@ -252,11 +305,12 @@ export default {
     },
     handleOk() {
       const that = this
+      console.log(this.departIds)
       //当设置指定用户类型，但用户为空时，后台报错
-      if (this.userType && !(this.userIds != null && this.userIds.length > 0)) {
-        this.$message.warning('指定用户不能为空！')
-        return
-      }
+      // if (this.userType == 'USER' && !(this.userIds != null && this.userIds.length > 0)) {
+      //   this.$message.warning('指定用户不能为空！')
+      //   return
+      // }
       // 触发表单验证
       this.$refs.form.validate((valid) => {
         if (valid) {
@@ -270,8 +324,10 @@ export default {
             httpurl += this.url.edit
             method = 'put'
           }
-          if (this.userType) {
+          if (this.userType == 'USER') {
             this.model.userIds = this.userIds
+          } else if (this.userType == 'DEPART') {
+            this.model.departIds = this.departIds
           }
           httpAction(httpurl, this.model, method)
             .then((res) => {
@@ -299,8 +355,9 @@ export default {
       this.resetUser()
     },
     resetUser() {
-      this.userType = false
+      this.userType = 'ALL'
       this.userIds = []
+      this.departIds = ''
       this.selectedUser = []
       this.disabled = false
       this.$refs.UserListModal.edit(null, null)
@@ -310,14 +367,16 @@ export default {
     },
     chooseMsgType(value) {
       if ('USER' == value) {
-        this.userType = true
+        this.userType = 'UESR'
+      } else if ('DEPART' == value) {
+        this.userType = 'DEPART'
       } else {
-        this.userType = false
+        this.userType = 'ALL'
         this.selectedUser = []
         this.userIds = []
       }
     },
-    // 子modal回调
+    // 子modal回调z
     choseUser(userList) {
       // console.log(userList.length)
       this.selectedUser = []

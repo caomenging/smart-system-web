@@ -16,6 +16,9 @@
     <smart-supervision-form v-if="type === '监督检查'" ref="realForm" :disabled="disableSubmit" />
     <smart-post-marriage-report-form v-if="type === '婚后报备'" ref="realForm" :disabled="disableSubmit" />
     <smart-create-advice-form v-if="type === '制发建议'" ref="realForm" :disabled="disableSubmit" />
+    <smart-org-meeting-form v-if="type === '组织生活会'" ref="realForm" :disabled="disableSubmit" />
+    <smart-democratic-life-meeting-form v-if="type === '民主生活会'" ref="realForm" :disabled="disableSubmit" />
+    <smart-finance-result-form v-if="type === '财务收支'" ref="realForm" :disabled="disableSubmit" />
 
     <smart-triple-importance-one-greatness-form v-if="type === '三重一大'" ref="realForm" :disabled="disableSubmit" />
 
@@ -29,8 +32,11 @@
               <a slot="title">审核信息</a>
               <div slot="description">
                 <div><span>审核人：</span><span>{{item.auditPerson}}</span></div>
-                <div><span>审核时间：</span><span{{item.auditTime}}></span></div>
-                <div><span>审核结论：</span><span>{{item.auditStatus}}</span></div>
+                <div><span>审核时间：</span><span>{{item.auditTime}}</span></div>
+                <div><span>审核结论：</span>
+                <span v-if="item.auditStatus==3" >通过</span>
+                <span v-if="item.auditStatus==4" >驳回</span>
+                </div>
                 <div><span>审核意见：</span><span>{{item.remark}}</span></div>
               </div>
             </a-list-item-meta>
@@ -61,10 +67,16 @@ import SmartPostMarriageReportForm from '../../SmartPostMarriage/modules/SmartPo
 import SmartTripleImportanceOneGreatnessForm from '../../SmartTripleImportanceOneGreatness/modules/SmartTripleImportanceOneGreatnessForm.vue'
 import SmartCreateAdviceForm from '../../SmartSuggestion/modules/SmartCreateAdviceForm'
 import SplitPanel from '../../jeecg/SplitPanel.vue'
+import SmartOrgMeetingForm from "../../SmartOrgMeeting/modules/SmartOrgMeetingForm";
+import SmartFinanceResultForm from "../../SmartFinanceResult/modules/SmartFinanceResultForm";
+import SmartDemocraticLifeMeetingForm from "../../smartDemocraticLifeMeeting/modules/SmartDemocraticLifeMeetingForm";
 
 export default {
   name: 'TaskModal',
   components: {
+    SmartDemocraticLifeMeetingForm,
+    SmartFinanceResultForm,
+    SmartOrgMeetingForm,
     getAction,
     TasksForm,
     TestVerifyForm,
@@ -74,6 +86,9 @@ export default {
     SmartTripleImportanceOneGreatnessForm,
     SmartCreateAdviceForm,
     SplitPanel,
+  },
+  mounted(){
+    this.getVerigyResult()
   },
   data() {
     return {
@@ -130,17 +145,23 @@ export default {
         this.$refs.realForm.edit(realRecord)
         // getVerigyResult(record)
       })
+      this.getVerigyResult(record.flowNo)
       // this.$nextTick(() => {
       //   this.getVerigyResult(record.flowNo)
       // })
     },
     getVerigyResult(flowNo) {
+      console.log(flowNo)
       const params = {
         flowNo: flowNo,
       }
       getAction('/smartVerifyDetail/smartVerifyDetail/queryByflowNo', params).then((res) => {
         if (res.success) {
-          this.verifyResult = res.result
+          this.$nextTick(()=>{
+            console.log(res.result)
+            this.verifyResult = res.result
+            console.log(this.verifyResult)
+          })
         }
       })
     },

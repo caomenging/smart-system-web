@@ -4,7 +4,20 @@ import { UserLayout, TabLayout, RouteView, BlankLayout, PageView } from '@/compo
  * 走菜单，走权限控制
  * @type {[null,null]}
  */
+
+
+
+
+
 export const asyncRouterMap = [
+ /* {
+    path:'/InsertReportingInformation',
+    name:'InsertReportInformationDetail',
+    component:UserLayout,
+    meta:{title:'二维码扫描跳转'},
+    redirect:'/InsertReportingInformation/InsertReportingInformationDetail'
+
+  },*/
 
   {
     path: '/',
@@ -378,7 +391,6 @@ export const constantRouterMap = [
     path: '/404',
     component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404')
   },
-
   {
     path: '/createPaper/:opt',
     name: 'createPaper',
@@ -395,5 +407,49 @@ export const constantRouterMap = [
       title: '修改试卷'
     }
   },
+  /**
+   * 下面代码为了简化APP端访问后台，取消侧边栏
+   */
+  // 通知公告
+  {
+    path: '/webview/info',
+    component: () => import('@/views/system/UserAnnouncementList')
+  },
+  // @TODO 信息公示
+  // {
+  //   path: '/webview/msg',
+  //   component: () => import('@/views/system/UserAnnouncementList')
+  // },
+  // @TODO 调查问卷
+  // {
+  //   path: '/webview/survey',
+  //   component: () => import('@/views/system/UserAnnouncementList')
+  // },
+  // 阳光评廉
+  {
+    path: '/webview/sun',
+    component: () => import('@/views/SmartEvaluate/modules/SmartEvaluateForm')
+  },
 
+  //纠治四风扫描二维码
+  {
+    path:'/InsertReportingInformation/InsertReportingInformationDetail',
+    component: () => import('@views/InsertReportingInformation/InsertReportingInformationDetail')
+
+  },
+  // @TODO 政策查询
+  // {
+  //   path: '/webview/search',
+  //   component: () => import('@/views/system/UserAnnouncementList')
+  // },
+  // @TODO 村情互动
+  // {
+  //   path: '/webview/study',
+  //   component: () => import('@/views/system/UserAnnouncementList')
+  // },
+  // @TODO 学习园地
+  // {
+  //   path: '/webview/study',
+  //   component: () => import('@/views/system/UserAnnouncementList')
+  // },
 ]

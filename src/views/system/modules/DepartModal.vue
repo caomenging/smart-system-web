@@ -21,7 +21,7 @@
           hasFeedback >
           <a-input id="departName" placeholder="请输入机构/部门名称" v-model="model.departName"/>
         </a-form-model-item>
-        <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" :hidden="seen" label="上级业务部门" hasFeedback>
+        <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" :hidden="seen" prop="parentId" label="上级业务部门" hasFeedback>
         <a-tree-select
           style="width:100%"
           :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
@@ -32,7 +32,7 @@
           tree-default-expand-all>
         </a-tree-select>
         </a-form-model-item>
-        <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" :hidden="seen" label="上级部门" hasFeedback>
+        <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" :hidden="seen" prop="businessParentId" label="上级部门" hasFeedback>
           <a-tree-select
             style="width:100%"
             :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
@@ -142,6 +142,7 @@
         confirmLoading: false,
         validatorRules:{
           departName:[{ required: true, message: '请输入机构/部门名称!' }],
+          businessParentId:[{ required: true, message: '请选择上级部门!' }],
           orgCode:[{ required: true, message: '请输入机构编码!' }],
           mobile: [{validator:this.validateMobile}],
           orgCategory:[{required: true, message: '请输入机构类型!'}]

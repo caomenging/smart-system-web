@@ -26,17 +26,17 @@
           </a-col>
           <a-col :span="12" >
             <a-form-model-item label="政治面貌" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="politicCou">
-              <j-dict-select-tag type="list" v-model="model.politicCou" dictCode="political_status" placeholder="请选择政治面貌" />
+              <j-dict-select-tag type="list" v-model="model.politicCou" dictCode="political_status" placeholder="请选择政治面貌" readOnly unselectable = "on" />
             </a-form-model-item>
           </a-col>
           <a-col :span="12" >
             <a-form-model-item label="职务" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="post">
-              <j-dict-select-tag type="list" v-model="model.post" dictCode="sys_position,name,code" placeholder="请选择职务" />
+              <j-dict-select-tag type="list" v-model="model.post" dictCode="sys_position,name,code" placeholder="请选择职务"  readOnly unselectable = "on" />
             </a-form-model-item>
           </a-col>
           <a-col :span="12" >
             <a-form-model-item label="职级" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="postRank">
-              <j-dict-select-tag type="list" v-model="model.postRank" dictCode="position_rank" placeholder="请选择职级" />
+              <j-dict-select-tag type="list" v-model="model.postRank" dictCode="position_rank" placeholder="请选择职级" readOnly unselectable = "on"  />
             </a-form-model-item>
           </a-col>
           <a-col :span="12" >
@@ -82,10 +82,11 @@
           </a-col>
           <a-col :span="12" >
             <a-form-model-item label="是否同城同地合办" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="isSameOrganized">
-             <a-radio-group v-model="value" @change="onChange">
+               <a-input  v-model="model.isSameOrganized" placeholder="请输入是否同城同地合办" style="width: 100%" />
+             <!-- <a-radio-group v-model="value" @change="onChange">
              <a-radio :value="1"> 是</a-radio>
              <a-radio :value="2">否</a-radio>
-             </a-radio-group>
+             </a-radio-group> -->
               <!-- <j-dict-select-tag type="list" v-model="model.isSameOrganized" dictCode="" placeholder="请选择是否同城同地合办" /> -->
             </a-form-model-item>
           </a-col>
@@ -161,7 +162,7 @@
           </a-col>
           <a-col :span="12" >
             <a-form-model-item label="联系电话" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="contactNumber">
-              <a-input v-model="model.contactNumber" placeholder="请输入联系电话" ></a-input>
+              <a-input v-model="model.contactNumber" placeholder="请输入联系电话" readOnly unselectable = "on"  ></a-input>
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -202,6 +203,10 @@ export default {
       model:{
         peopleId:'',
         peopleName:'',
+        contactNumber:'',       
+        politicCou:'',
+        postRank:'',
+        post:'',
       },
       value: 1,
       labelCol: {
