@@ -16,7 +16,7 @@
           <li class="test-info" v-if="finishTest">得分: {{ testData.userGrade.grade + '分' }}</li>
           <li class="test-info" v-else>剩余时间: {{ remainTime }}</li>
           <li class="fr">
-            <el-button type="primary" size="mini" @click="submitTestpaper" :disabled="isRead">提交试卷</el-button>
+            <el-button type="primary" size="mini" @click="submitTestpaper" :disabled="isRead">交卷</el-button>
           </li>
         </ul>
       </div>
@@ -36,15 +36,14 @@
           <li class="test-info" v-else>剩余时间: {{ remainTime }}</li>
           <!-- {{expendTime}} -->
           <li class="fr">
-            <el-button type="primary" size="mini" @click="submitTestpaper" :disabled="isRead">提交试卷</el-button>
+            <el-button type="primary" size="mini" @click="submitTestpaper" :disabled="isRead">交卷</el-button>
           </li>
         </ul>
       </div>
       <div class="test-content" >
         <!-- 题目内容 -->
-        <div class="topics">
+        <div class="topics" >
           <div class="topic" v-for="(topics, index) in sortedTopics" :key="index">
-
             <div class="topicsType" v-if="topics.topic_content.length != 0 ">
               <h4>{{bigQuestionName_mixin(topics.topicType,index)}}</h4><!-- 题目类型名称 -->
 
@@ -61,7 +60,7 @@
                 <!-- 单选题 -->
                 <div class="radio" v-if="t.topicType==0">
                   <el-radio v-for="(item, index) in t.choice" :key="index" v-model="t.submitAnswer"
-                            :class="item == t.correctAnswer? 'correct':'error'"
+                            :class="isCorrect(t,index)"
                             :label="getOption(index)"
                             :disabled="isRead">
                     {{String.fromCharCode(65+index)}}、{{ item }}
@@ -74,7 +73,7 @@
                   <el-checkbox-group v-model="t.submitAnswer">
                     <el-checkbox :label="getOption(index)" v-for="(item, index) in t.choice" :key="index"
                                  :disabled="isRead"
-                                 :class="isCheckboxCorrect(t,item)">
+                                 :class="isCheckboxCorrect(t,index)">
                       {{String.fromCharCode(65+index)}}、{{ item }}
                     </el-checkbox>
                   </el-checkbox-group>
@@ -83,17 +82,19 @@
 
                 <!-- 判断题 -->
                 <div class="TrueOrFalse" v-if="t.topicType == 2">
-                  <el-radio v-model="t.submitAnswer" label="true" :disabled="isRead" :class="'true' == t.correctAnswer? 'correct':'error'" >正确</el-radio>
-                  <el-radio v-model="t.submitAnswer" label="false" :disabled="isRead" :class="'false' == t.correctAnswer? 'correct':'error'" >错误</el-radio>
+                  <!--<el-radio v-model="t.submitAnswer" label="T" :disabled="isRead" :class="'T' == t.correctAnswer? 'correct':'error'" >正确</el-radio>
+                  <el-radio v-model="t.submitAnswer" label="F" :disabled="isRead" :class="'F'== t.correctAnswer? 'correct':'error'" >错误</el-radio>-->
+                  <el-radio v-model="t.submitAnswer" label="T" :disabled="isRead"  >正确</el-radio>
+                  <el-radio v-model="t.submitAnswer" label="F" :disabled="isRead" >错误</el-radio>
                   <!-- {{ t.submitAnswer }} -->
                 </div>
 
                 <!-- 填空题 -->
-                <!--<div class="fillInBlank" v-if="t.topicType == 3">
-                  &lt;!&ndash; <div v-for="(q, index) in t.correct_answer" :key="index">
+                <div class="fillInBlank" v-if="t.topicType == 3">
+                  <!-- <div v-for="(q, index) in t.correct_answer" :key="index">
                     <el-input type="textarea" autosize placeholder="请回答" :disabled="isRead" v-model="t.submitAnswer[index]">
                     </el-input>
-                  </div> &ndash;&gt;
+                  </div> -->
                   <div v-for="(q, index) in fillSymbolStr(t.question)" :key="index">
                     <el-input type="textarea" autosize
                               :disabled="isRead"
@@ -101,15 +102,15 @@
                               v-model="t.submitAnswer[index]">
                     </el-input>
                   </div>
-                  &lt;!&ndash; {{ t.submitAnswer }} &ndash;&gt;
-                </div>-->
+                  <!-- {{ t.submitAnswer }} -->
+                </div>
 
                 <!-- 简答题 -->
-                <!--<div class="text" v-if="t.topicType == 4">
+                <div class="text" v-if="t.topicType == 4">
                   <el-input type="textarea" v-model="t.submitAnswer" :autosize="{ minRows: 3, maxRows: 10 }" :disabled="isRead">
                   </el-input>
-                  &lt;!&ndash; {{ t.submitAnswer }} &ndash;&gt;
-                </div>-->
+                  <!-- {{ t.submitAnswer }} -->
+                </div>
 
               </div>
             </div>
@@ -174,8 +175,8 @@
           { topicType: 0, topic_content: [] },
           { topicType: 1, topic_content: [] },
           { topicType: 2, topic_content: [] },
-          /*{ topicType: 3, topic_content: [] },
-          { topicType: 4, topic_content: [] },*/
+          { topicType: 3, topic_content: [] },
+          { topicType: 4, topic_content: [] },
         ],
         //试卷数据
         testData: {
@@ -190,7 +191,7 @@
         //forbid_copy: false, //是否禁止复制文本
         //switchPage: 0,
 
-        //isPublishAnswer: false, //是否公布答案
+        isPublishAnswer: false, //是否公布答案
         finishTest: false, //是否完成试卷
         //侧导航栏是否悬浮
         isFixed: false,
@@ -199,12 +200,12 @@
     },
     computed:{
       //按填空符(三个下划线)划分字符串
-      /*fillSymbolStr() {
+      fillSymbolStr() {
         return function (str) {
           var q = str.split("___");
           return q;
         };
-      },*/
+      },
     },
 
     created() {
@@ -231,7 +232,7 @@
               return
           }
           //处理多选/填空答案
-          if (item.topicType == 1 ) {
+          if (item.topicType == 1 || item.topicType == 3) {
             if (item.submitAnswer instanceof Array) {
               var submitAnswer = "";
               item.submitAnswer.forEach((c) => {
@@ -243,7 +244,7 @@
           topic.push({
             //classesId: this.$route.params.c_id,
             questionId: item.questionId,
-            paperId: "1463590206010097665",
+            paperId: "1464868384551137282",
             //examId: this.$route.params.tp_id,
             type:item.topicType,
             submitAnswer: item.submitAnswer,
@@ -308,7 +309,7 @@
       getTestPaperData() {
         let params = {
           //id: this.$route.params.id
-          id:"1463590206010097665"
+          id:"1464868384551137282"
         }
         getAction("/SmartPaper/smartPaper/getPaperById",params).then(res =>{
           if (res.success) {
@@ -335,7 +336,7 @@
           item.choice = item.choice.split(/[\n]/g);
           // item.correct_answer = item.correct_answer.split(/[\n]/g);
           //添加用户答案
-          if (item.topicType == 1 ) {
+          if (item.topicType == 1 || item.topicType == 3) {
             item.submitAnswer = [];
           } else {
             item.submitAnswer = "";
@@ -364,16 +365,17 @@
           });
           //根据题目id写入用户答案
 
-          testData.smartTopicVoList.forEach((item, index) => {
+          /*testData.smartTopicVoList.forEach((item, index) => {
             //按换行符分割字符串
             item.correctAnswer = item.correctAnswer.split(/[\n]/g);
             //添加教师是否批改判断
             //item.status = testData.smartSubmitList[index].topicStatus;
             //添加评改分数
-            //item.userScore = testData.smartSubmitList[index].userScore;
-          });
+            item.userScore = testData.smartSubmitList[index].userScore;
+          });*/
           /* 判断是否公布答案 */
-          /*if(testData.examClasses.publishAnswer == 1){
+          if(testData.examClasses.publishAnswer == 1)
+          {
             this.isPublishAnswer = true;
             testData.smartTopicVoList.forEach((item, index) => {
               //按换行符分割字符串
@@ -383,7 +385,7 @@
               //添加评改分数
               //item.userScore = testData.smartSubmitList[index].userScore;
             });
-          }*/
+          }
         }
 
 
@@ -529,7 +531,9 @@
       //题目导航按钮颜色
       emptyAnswer(val) {
         //已完成试卷 与 是否公布答案
-        if(this.finishTest === true && this.testData.examClasses.publishAnswer == 1){
+        //if(this.finishTest === true && this.testData.examClasses.publishAnswer == 1)
+          if(this.finishTest === true)
+        {
           if(val.userScore == val.score){
             console.log(val);
             return "correct";
@@ -540,14 +544,14 @@
           //未完成试卷
         }else{
           //多选题
-          // if (val.topicType == 1) {
-          //   if (val.submitAnswer.join("") == "") {
-          //     return "";
-          //   }
-          // }
+          /*if (val.topicType == 1) {
+            if (val.submitAnswer.join("") == "") {
+              return "";
+            }
+          }*/
 
           //填空题
-          /*if (val.topicType == 3) {
+          if (val.topicType == 3) {
 
             let q = val.question.split("___")
             if(q.length-1 != val.submitAnswer.length){
@@ -559,13 +563,12 @@
                 return ""
               }
             }
-          }*/
+          }
 
           //单选/判断/简答
           if (val.submitAnswer.length == 0) {
             return "";
           }
-
           return 'hasAnswer';
         }
       },
@@ -574,14 +577,30 @@
         let option = String.fromCharCode(65+index);
         return option;
       },
-      //判断选择题是否回答正确
-      isCheckboxCorrect(topic,val){
-        if(this.finishTest === false  || this.testData.examClasses.publishAnswer != 1){
+      isCorrect(topic,val){
+        if(this.finishTest === false ){
           return ''
         }
         let is = false
+        let option = this.getOption(val);
+        if(topic.correctAnswer == option){
+          is =true;
+        }
+        if(is){
+          return "correct";
+        } else {
+          return "error";
+        }
+      },
+      //判断多选题是否回答正确
+      isCheckboxCorrect(topic,val){
+        if(this.finishTest === false ){
+          return ''
+        }
+        let is = false
+        let option = this.getOption(val);
         topic.correctAnswer.forEach(item =>{
-          if(item == val){
+          if(item == option){
             console.log(item);
             is = true
           }

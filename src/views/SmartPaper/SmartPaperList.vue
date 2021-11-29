@@ -76,7 +76,8 @@
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
-                <a @click="handleDetail(record)">详情</a>
+                <!--<a @click="handleDetail(record)">详情</a>-->
+                <a @click="detailPage(record.id)">详情</a>
               </a-menu-item>
               <a-menu-item>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
@@ -233,6 +234,20 @@
           }
         }, 1000);
       },
+      detailPage(id){
+        console.log(id);
+        const { href } = this.$router.resolve({
+          name: "editPaper",
+          params: { opt: 'detail', id}
+        });
+        const win = window.open(href, "_blank");
+        const loop = setInterval(item => {
+          if (win.closed) {
+            clearInterval(loop);
+            this.$ref.table.reload();
+          }
+        }, 1000);
+  },
       initDictConfig(){
       },
       getSuperFieldList(){
