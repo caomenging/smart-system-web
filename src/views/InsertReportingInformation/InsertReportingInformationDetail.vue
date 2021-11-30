@@ -20,12 +20,18 @@
                 </a-form-model-item>
               </a-col>
 
-              <a-col :span="24" >
-                <a-form-model-item label="上传图片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="description">
+<!--              <a-col :span="24" >-->
+<!--                <a-form-model-item label="照片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="photoString">-->
+<!--                  <j-image-upload isMultiple  v-model="model.photo" ></j-image-upload>-->
+<!--                </a-form-model-item>-->
+<!--              </a-col>-->
+             <a-col :span="24" >
+                <a-form-model-item  label="上传图片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="photoString">
                   <div>
-                    <!-- 照片区域 -->
+
                     <div>
-                      <a-button style="margin-left: 8px" v-model="model.description" v-on:click="imgClick()">点我拍照！</a-button>
+<!--                      <j-image-upload isMultiple  v-model="model.photo" >点击上传</j-image-upload>-->
+                      <a-button style="margin-left: 8px"  v-on:click="imgClick()">点我拍照！</a-button>
                     </div>
                     <div
                       v-for="(urls, index) in imgs"
@@ -55,7 +61,7 @@
                 <a-form-model-item label="上传视频" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="description">
                   <!-- 录像-- -->
                   <div>
-                    <j-upload v-model="model.description">点击上传</j-upload>
+                  <j-upload v-model="model.description">点击上传</j-upload>
                     <input type="file" @change="openCamera($event)"  accept="video/*" capture="user"/>
                   </div>
                   <!-- accept="video/*" ：accept 属性只能与 <input type="file"> 配合使用。-->
@@ -99,18 +105,23 @@
 
   import { httpAction, postAction, getAction } from '@/api/manage'
   import AFormItem from 'ant-design-vue/lib/form/FormItem'
+  import JUpload from '../../components/jeecg/JUpload'
+  import JImageUpload from '../../components/jeecg/JImageUpload'
+
 
   export default {
     name: 'ReportingInformation',
-    components: {AFormItem},
+    components: {AFormItem,JUpload,JImageUpload},
     data () {
       return {
+        blob: new Blob(),
+        uploadAction:window._CONFIG['domianURL']+"/sys/common/upload",
         imgs: [],
         reportingTime:'',
         reportingResult:'',
         //description:'',
-        model:{
 
+        model:{
 
          },
         labelCol: {
@@ -136,6 +147,7 @@
         },
 
         url: {
+          upload:"/sys/common/upload",
           add: "/smartReportingInformation/smartReportingInformation/add",
         }
       }
@@ -182,19 +194,61 @@
       //点击选中图片
       readLocalFile: function () {
         var localFile = document.getElementById("uploadFile").files[0];
-        var reader = new FileReader();
-        var content;
-        var current = this;
-        reader.onload = function (event) {
-          content = event.target.result;
-          current.imgs.push(content); //获取图片base64代码
-        };
-        reader.onerror = function (event) {
-          alert("error");
-        };
-        content = reader.readAsDataURL(localFile, "UTF-8");
-        var sss = document.getElementById("uploadFile").value;
-        console.log(sss);
+        this.getBase64(localFile).then((res) => {
+          console.log('----------------'+res+'-----------')
+          this.imgs.push(res)
+          console.log(this.dataURItoBlob(res))
+          const params = {
+            biz: '/temp',
+            file:this.base64ToFile(res)
+           // file: this.dataURItoBlob(res)
+          }
+          //console.log(this.imgs)
+          //图片
+          postAction(this.url.upload,params).then(res=>{
+            console.log(res)
+            if(res.success){
+              this.$message.success("上传成功");
+            }
+          })
+        })
+        // console.log(localFile)
+        // var reader = new FileReader();
+        // var content;
+        // var current = this;
+        // reader.onload = function (event) {
+        //   content = event.target.result;
+        //   console.log(content)
+        //   current.imgs.push(content); //获取图片base64代码
+        //   // console.log(this.dataURItoBlob(content));
+        // };
+        // reader.onerror = function (event) {
+        //   alert("error");
+        // };
+        // content = reader.readAsDataURL(localFile, "UTF-8");
+        // console.log(content)
+        // var sss = document.getElementById("uploadFile").value;
+        // console.log(sss);
+        // // this.blob = this.dataURItoBlob(sss)
+        // let resdata=JSON.parse(JSON.stringify(this.imgs));
+        // // const aaa = this.imgs
+        // console.log(resdata)
+      },
+      getBase64(file) {
+        return new Promise(function (resolve, reject) {
+          let reader = new FileReader();
+          let imgResult = "";
+          reader.readAsDataURL(file);
+          reader.onload = function () {
+            imgResult = reader.result;
+          };
+          reader.onerror = function (error) {
+            reject(error);
+          };
+          reader.onloadend = function () {
+            resolve(imgResult);
+          };
+        });
       },
       // 录像
       // 调用摄像头 上传视频
@@ -219,6 +273,19 @@
           });
         };
         reader.readAsDataURL(selectedFile); //读取文件的内容,也可以读取文件的URL
+      },
+      dataURItoBlob (dataURI) {
+        // base64 解码
+        //console.log("111")
+        let byteString = window.atob(dataURI.split(',')[1]);
+        let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+        let T = mimeString.split('/')[1]
+        let ab = new ArrayBuffer(byteString.length);
+        let ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ab], {type: mimeString});
       },
       //将bes64转成文件
       base64ToFile(base64Data) {
@@ -255,9 +322,24 @@
 
 
 
-      // handler
+      // 提交
       handleSubmit () {
         console.log(this.model)
+        /*const params = {
+          biz: '/temp/test',
+          file: this.blob
+        }
+
+        //console.log(this.imgs)
+       //图片、视频
+        postAction(this.url.upload,params).then(res=>{
+          console.log(res)
+          if(res.success){
+            this.$message.success("上传成功");
+          }
+
+        }),*/
+
         postAction(this.url.add,this.model).then(res =>{
           console.log(res)
           if(res.success){
