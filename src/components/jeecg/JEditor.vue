@@ -13,6 +13,7 @@ import 'tinymce/plugins/link'
 import 'tinymce/plugins/media'
 import 'tinymce/plugins/table'
 import 'tinymce/plugins/lists'
+// import 'tinymce/plugins/lineheight'
 import 'tinymce/plugins/contextmenu'
 import 'tinymce/plugins/wordcount'
 import 'tinymce/plugins/colorpicker'
@@ -48,14 +49,14 @@ export default {
     plugins: {
       type: [String, Array],
       default:
-        'print preview searchreplace autolink directionality visualblocks visualchars fullscreen image link media template code codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount textpattern autosave attachment',
+        'autoresize print preview searchreplace autolink directionality visualblocks visualchars fullscreen image link media template code codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount textpattern autosave attachment lineheight',
     },
     toolbar: {
       type: [String, Array],
       default:
         'fullscreen undo redo restoredraft | cut copy paste pastetext | forecolor backcolor bold italic underline strikethrough link anchor | alignleft aligncenter alignright alignjustify outdent indent | \
                 styleselect formatselect fontselect fontsizeselect | bullist numlist | blockquote subscript superscript removeformat | \
-                table image media charmap hr pagebreak insertdatetime print preview | code selectall searchreplace visualblocks | indent2em lineheight formatpainter axupimgs attachment',
+                table image media charmap hr pagebreak insertdatetime print preview | code lineheight selectall searchreplace visualblocks | indent2em  formatpainter axupimgs attachment',
       branding: false,
     },
   },
@@ -66,13 +67,15 @@ export default {
         language_url: '/tinymce/langs/zh_CN.js',
         language: 'zh_CN',
         skin_url: '/tinymce/skins/lightgray',
-        height: 300,
+        height: 500,
+        min_height: 400,
         plugins: this.plugins,
         toolbar: this.toolbar,
         branding: false,
-        menubar: false,
+        menubar: true,
         toolbar_drawer: false,
         attachment_max_size: 209715200,
+        content_style: "div {font-famliy: 微软雅黑;}",
         attachment_style:'.attachment>img{display:inline-block!important;max-width:30px!important;}',
         attachment_icons_path: 'https://unpkg.com/@npkg/tinymce-plugins/plugins/attachment/icons',
 
