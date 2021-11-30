@@ -75,7 +75,6 @@ export default {
         menubar: true,
         toolbar_drawer: false,
         attachment_max_size: 209715200,
-        content_style: "div {font-famliy: 微软雅黑;}",
         attachment_style:'.attachment>img{display:inline-block!important;max-width:30px!important;}',
         attachment_icons_path: 'https://unpkg.com/@npkg/tinymce-plugins/plugins/attachment/icons',
 
