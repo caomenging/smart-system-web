@@ -81,7 +81,6 @@
         :loading="loading"
         :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         @change="handleTableChange"
-        @expand="handleExpand"
       >
         <template slot="htmlSlot" slot-scope="text">
           <div v-html="text"></div>
@@ -106,18 +105,45 @@
         <span slot="action" slot-scope="text, record">
           <a @click="handleVerify(record)">详情</a>
         </span>
-        <a-table
-          slot="expandedRowRender"
-          slot-scope="text"
-          :columns="innerColumns"
-          :dataSource="innerData"
-          size="middle"
-          bordered
-          rowKey="id"
-          :pagination="false"
-          :loading="loading"
-          >
-        </a-table>
+      </a-table>
+      
+      <a-table
+        ref="comment"
+        size="middle"
+        bordered
+        rowKey="id"
+        class="j-table-force-nowrap"
+        :scroll="{ x: true }"
+        :columns="commentColumns"
+        :dataSource="commentDataSource"
+        :pagination="commentIpagination"
+        :loading="loading"
+        :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+        @change="handleTableChange"
+      >
+        <template slot="htmlSlot" slot-scope="text">
+          <div v-html="text"></div>
+        </template>
+        <template slot="imgSlot" slot-scope="text">
+          <span v-if="!text" style="font-size: 12px; font-style: italic">无图片</span>
+          <img
+            v-else
+            :src="getImgView(text)"
+            height="25px"
+            alt=""
+            style="max-width: 80px; font-size: 12px; font-style: italic"
+          />
+        </template>
+        <template slot="fileSlot" slot-scope="text">
+          <span v-if="!text" style="font-size: 12px; font-style: italic">无文件</span>
+          <a-button v-else :ghost="true" type="primary" icon="download" size="small" @click="downloadFile(text)">
+            下载
+          </a-button>
+        </template>
+
+        <span slot="action" slot-scope="text, record">
+          <a @click="handleCommentVerify(record)">详情</a>
+        </span>
       </a-table>
     </div>
 
@@ -141,21 +167,18 @@ export default {
   data() {
     return {
       description: '问题审核',
-      // 字表表头
-      innerColumns:[
-        {
-          title: '回答用户名',
-          align: 'center',
-          dataIndex: 'createBy',
+      commentDataSource:[],
+      commentIpagination: {
+        current: 1,
+        pageSize: 10,
+        pageSizeOptions: ['10', '20', '30'],
+        showTotal: (total, range) => {
+          return range[0] + "-" + range[1] + " 共" + total + "条"
         },
-        {
-          title: '回答内容',
-          align: 'center',
-          dataIndex: 'content',
-        }
-      ],
-      innerData: [],
-      expandedRowKeys: [],
+        showQuickJumper: true,
+        showSizeChanger: true,
+        total: 0
+      },
       // 表头
       columns: [
         {
@@ -192,12 +215,55 @@ export default {
           scopedSlots: { customRender: 'action' },
         },
       ],
+      // 评论表头
+      commentColumns: [
+        {
+          title: '#',
+          dataIndex: '',
+          key: 'rowIndex',
+          width: 60,
+          align: 'center',
+          customRender: function (t, r, index) {
+            return parseInt(index) + 1
+          },
+        },
+        {
+          title: '问题标题',
+          align: 'center',
+          dataIndex: 'title',
+        },
+        {
+          title: '回答内容',
+          align: 'center',
+          dataIndex: 'content',
+          ellipsis: true,
+        },
+        {
+          title: '回答用户名',
+          align: 'center',
+          dataIndex: 'createBy',
+        },
+        {
+          title: '创建日期',
+          align: 'center',
+          dataIndex: 'createTime',
+        },
+        {
+          title: '操作',
+          dataIndex: 'action',
+          align: 'center',
+          fixed: 'right',
+          width: 147,
+          scopedSlots: { customRender: 'action' },
+        },
+      ],
       url: {
-        list: '/interaction/verifyList',
+        list: '/interaction/list',
         delete: '/smartSupervision/smartSupervision/delete',
         deleteBatch: '/smartSupervision/smartSupervision/deleteBatch',
         exportXlsUrl: '/smartSupervision/smartSupervision/exportXls',
         importExcelUrl: 'smartSupervision/smartSupervision/importExcel',
+        comment: '/interaction/comment/verifyCommentList'
       },
       dictOptions: {},
       superFieldList: [],
@@ -205,6 +271,7 @@ export default {
   },
   created() {
     this.getSuperFieldList()
+    this.getCommentList()
   },
   computed: {
     importExcelUrl: function () {
@@ -216,20 +283,13 @@ export default {
         this.$refs.modalForm.title = 'haha'
         this.$refs.modalForm.edit(record)
     },
-    handleExpand(expanded, record){
-        this.expandedRowKeys=[];
-        this.innerData=[];
-        if(expanded===true){
-          this.loading = true;
-          this.expandedRowKeys.push(record.id);
-          getAction('/interaction/comment/list', {topicId: record.id}).then((res) => {
-            if (res.success) {
-              this.loading = false;
-              this.innerData = res.result.records;
-            }
-          });
+    getCommentList(){
+      getAction(this.url.comment).then((res) => {
+        if(res.success){
+          this.commentDataSource = res.result.records
         }
-      },
+      })
+    },
     initDictConfig() {},
     getSuperFieldList() {
       let fieldList = []
