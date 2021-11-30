@@ -4,36 +4,15 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="单位">
-              <j-select-depart
-                placeholder="请选择单位"
-                v-model="queryParam.departmentId"
-                customReturnField="id"
-                :multi="false"
-                :treeOpera="true"
-              ></j-select-depart>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a @click="handleToggleSearch" style="margin-left: 8px">
-                {{ toggleSearchStatus ? '收起' : '展开' }}
-                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>
-            </span>
-          </a-col>
         </a-row>
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('三会一课')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('通知模板')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -57,15 +36,15 @@
       <a-table
         ref="table"
         size="middle"
+        :scroll="{x:true}"
         bordered
         rowKey="id"
-        class="j-table-force-nowrap"
-        :scroll="{x:true}"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        class="j-table-force-nowrap"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -110,26 +89,26 @@
       </a-table>
     </div>
 
-    <smart-three-meeting-one-lesson-modal ref="modalForm" @ok="modalFormOk"/>
+    <smart-message-template-modal ref="modalForm" @ok="modalFormOk"></smart-message-template-modal>
   </a-card>
 </template>
 
 <script>
 
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartThreeMeetingOneLessonModal from './modules/SmartThreeMeetingOneLessonModal'
-  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import '@/assets/less/TableExpand.less'
+  import { mixinDevice } from '@/utils/mixin'
+  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import SmartMessageTemplateModal from './modules/SmartMessageTemplateModal'
 
   export default {
-    name: "SmartThreeMeetingOneLessonList",
-    mixins:[JeecgListMixin],
+    name: 'SmartMessageTemplateList',
+    mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartThreeMeetingOneLessonModal
+      SmartMessageTemplateModal
     },
     data () {
       return {
-        description: '三会一课管理页面',
+        description: '通知模板管理页面',
         // 表头
         columns: [
           {
@@ -143,66 +122,35 @@
             }
           },
           {
-            title:'审核状态',
-            align:'center',
-            dataIndex: 'verifyStatus',
-            customRender: function(text) {
-              if(text == '0') {
-                return '不通过'
-              } else if (text == '1') {
-                return '通过'
-              } else if (text == '2') {
-                return '待审核'
-              } else {
-                return '免审'
-              }
+            title: '模板名',
+            align: 'center',
+            dataIndex: 'templateName'
+          },
+          {
+            title:'标题',
+            align:"center",
+            dataIndex: 'title'
+          },
+          {
+            title:'优先级',
+            align:"center",
+            dataIndex: 'priority',
+            customRender: function (text) {
+            if (text == 'L') {
+              return '低'
+            } else if (text == 'M') {
+              return '中'
+            } else if (text == 'H') {
+              return '高'
+            } else {
+              return text
             }
           },
-          {
-            title:'单位',
-            align:"center",
-            dataIndex: 'departmentId'
           },
           {
-            title:'类型',
+            title:'摘要',
             align:"center",
-            dataIndex: 'type_dictText'
-          },
-          {
-            title:'主题',
-            align:"center",
-            dataIndex: 'theme'
-          },
-          {
-            title:'内容摘要',
-            align:"center",
-            dataIndex: 'content'
-          },
-          {
-            title:'主持人',
-            align:"center",
-            dataIndex: 'hostName'
-          },
-          {
-            title:'记录人',
-            align:"center",
-            dataIndex: 'recorderName'
-          },
-          {
-            title:'地点',
-            align:"center",
-            dataIndex: 'place'
-          },
-          {
-            title:'时间',
-            align:"center",
-            dataIndex: 'time'
-          },
-          
-          {
-            title:'备注',
-            align:"center",
-            dataIndex: 'remark'
+            dataIndex: 'msgAbstract'
           },
           {
             title:'创建人',
@@ -210,30 +158,35 @@
             dataIndex: 'createBy'
           },
           {
-            title:'创建日期',
+            title:'创建时间',
             align:"center",
             dataIndex: 'createTime'
           },
-          // {
-          //   title:'审核状态',
-          //   align:"center",
-          //   dataIndex: 'verifyStatus'
-          // },
+          {
+            title:'修改人',
+            align:"center",
+            dataIndex: 'updateBy'
+          },
+          {
+            title:'修改时间',
+            align:"center",
+            dataIndex: 'updateTime'
+          },
           {
             title: '操作',
             dataIndex: 'action',
             align:"center",
             fixed:"right",
             width:147,
-            scopedSlots: { customRender: 'action' },
+            scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
-          list: "/smartThreeMeetingOneLesson/smartThreeMeetingOneLesson/list",
-          delete: "/smartThreeMeetingOneLesson/smartThreeMeetingOneLesson/delete",
-          deleteBatch: "/smartThreeMeetingOneLesson/smartThreeMeetingOneLesson/deleteBatch",
-          exportXlsUrl: "/smartThreeMeetingOneLesson/smartThreeMeetingOneLesson/exportXls",
-          importExcelUrl: "smartThreeMeetingOneLesson/smartThreeMeetingOneLesson/importExcel",
+          list: "/smartMessageTemplate/smartMessageTemplate/list",
+          delete: "/smartMessageTemplate/smartMessageTemplate/delete",
+          deleteBatch: "/smartMessageTemplate/smartMessageTemplate/deleteBatch",
+          exportXlsUrl: "/smartMessageTemplate/smartMessageTemplate/exportXls",
+          importExcelUrl: "smartMessageTemplate/smartMessageTemplate/importExcel",
           
         },
         dictOptions:{},
@@ -241,30 +194,26 @@
       }
     },
     created() {
-      this.getSuperFieldList();
+    this.getSuperFieldList();
     },
     computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      }
+      },
     },
     methods: {
       initDictConfig(){
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'departmentId',text:'单位',dictCode:''})
-         fieldList.push({type:'string',value:'hostName',text:'主持人',dictCode:''})
-         fieldList.push({type:'string',value:'recorderName',text:'记录人',dictCode:''})
-         fieldList.push({type:'string',value:'place',text:'地点',dictCode:''})
-         fieldList.push({type:'datetime',value:'time',text:'时间'})
-         fieldList.push({type:'string',value:'type',text:'类型',dictCode:'shyk'})
-         fieldList.push({type:'string',value:'theme',text:'主题',dictCode:''})
-         fieldList.push({type:'Text',value:'content',text:'内容摘要',dictCode:''})
-         fieldList.push({type:'string',value:'remark',text:'备注',dictCode:''})
-         fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
-         fieldList.push({type:'datetime',value:'createTime',text:'创建日期'})
-         fieldList.push({type:'string',value:'verifyStatus',text:'审核状态',dictCode:''})
+        fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
+        fieldList.push({type:'datetime',value:'createTime',text:'创建时间'})
+        fieldList.push({type:'string',value:'updateBy',text:'修改人',dictCode:''})
+        fieldList.push({type:'datetime',value:'updateTime',text:'修改时间'})
+        fieldList.push({type:'string',value:'title',text:'标题',dictCode:''})
+        fieldList.push({type:'string',value:'priority',text:'优先级',dictCode:''})
+        fieldList.push({type:'string',value:'abstract',text:'摘要',dictCode:''})
+        fieldList.push({type:'Text',value:'content',text:'内容',dictCode:''})
         this.superFieldList = fieldList
       }
     }

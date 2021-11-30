@@ -8,16 +8,12 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('举报信息表')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>
+
       <!-- 高级查询区域 -->
-      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
+
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
@@ -28,10 +24,7 @@
 
     <!-- table区域-begin -->
     <div>
-      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
-        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
-        <a style="margin-left: 24px" @click="onClearSelected">清空</a>
-      </div>
+<
 
       <a-table
         ref="table"
@@ -68,7 +61,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
+          <a @click="handleEdit(record)">处理举报信息</a>
 
           <a-divider type="vertical" />
           <a-dropdown>
@@ -171,7 +164,7 @@
           deleteBatch: "/smartReportingInformation/smartReportingInformation/deleteBatch",
           exportXlsUrl: "/smartReportingInformation/smartReportingInformation/exportXls",
           importExcelUrl: "smartReportingInformation/smartReportingInformation/importExcel",
-          
+
         },
         dictOptions:{},
         superFieldList:[],
@@ -204,6 +197,3 @@
     }
   }
 </script>
-<style scoped>
-  @import '~@assets/less/common.less';
-</style>

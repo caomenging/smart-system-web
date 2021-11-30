@@ -16,7 +16,10 @@ export default {
           return '多选题';
         case 2:
           return '判断题';
-
+        case 3:
+          return '填空题';
+        case 4:
+          return '简答题';
       }
     },
 
@@ -42,7 +45,10 @@ export default {
           return nav_i+'多项选择题';
         case 2:
           return nav_i+'判断题';
-
+        case 3:
+          return nav_i+'填空题';
+        case 4:
+          return nav_i+'简答题';
       }
 
 
@@ -62,13 +68,6 @@ export default {
       }
       return navIndex + index + 1;
     },
-
-
-
-
-
-
-
   },
 
 }

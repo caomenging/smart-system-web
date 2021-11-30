@@ -54,6 +54,13 @@
                        unselectable="on"/>
             </a-form-model-item>
           </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="意见" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="evaluateOpinion">
+              <a-textarea placeholder="意见"  v-model="model.evaluateOpinion"  style="width: 100%"
+                       readOnly
+                       unselectable="on"/>
+            </a-form-model-item>
+          </a-col>
         </a-row>
       </a-form-model>
     </j-form-container>

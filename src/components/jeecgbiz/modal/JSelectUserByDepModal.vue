@@ -83,9 +83,9 @@
         },
         columns: [
 /*          {
-            title: '工号',
+            title: 'ID',
             align: 'center',
-            dataIndex: 'workNo'
+            dataIndex: 'id'
           },*/
           {
             title: '账号',
@@ -293,7 +293,8 @@
             this.selectUserRows.push(row)
           }
         }
-        this.selectUserIds = this.selectUserRows.map(row => row.username).join(',')
+        this.selectUserIds = this.selectUserRows.map(row => row.id).join(',')
+        //this.selectUserIds = this.selectUserRows.map(row => row.username).join(',')
       },
       // 点击树节点,筛选出对应的用户
       onDepSelect(selectedDepIds) {
@@ -317,6 +318,7 @@
         return queryUserByDepId({id: selectedDepIds.toString()}).then((res) => {
           if (res.success) {
             this.dataSource = res.result;
+
             this.ipagination.total = res.result.length;
           }
         }).finally(() => {
@@ -352,6 +354,8 @@
               // console.log(temp.id)
 
             }
+            // 默认展开父节点
+            this.expandedKeys = this.departTree.map(item => item.id)
             // this.loading = false
           }
           this.loading = false;

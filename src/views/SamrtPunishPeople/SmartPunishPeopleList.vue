@@ -5,24 +5,24 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="处分人工号">
-              <select-user-by-dep placeholder="请选择处分人工号" v-model="queryParam.punishNo" :multi="false" text="work_no" store="work_no" />
+            <a-form-item label="姓名">
+              <j-input placeholder="请输入姓名" v-model="queryParam.punishName"  />
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="单位">
-              <a-input placeholder="请输入单位" v-model="queryParam.departName"></a-input>
+              <j-select-depart placeholder="请输入单位" v-model="queryParam.departName" customReturnField='departName'></j-select-depart>
             </a-form-item>
           </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="职级">
-                <a-input placeholder="请输入职级" v-model="queryParam.positionRank"></a-input>
+                <j-search-select-tag placeholder="请输入或选择职级" v-model="queryParam.positionRank" dict="position_rank" />
               </a-form-item>
             </a-col>
             <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="手机号">
-                <a-input placeholder="请输入手机号" v-model="queryParam.phone"></a-input>
+                <j-input placeholder="请输入手机号" v-model="queryParam.phone"></j-input>
               </a-form-item>
             </a-col>
           </template>
@@ -40,7 +40,6 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
@@ -57,7 +56,6 @@
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
     </div>
-
     <!-- table区域-begin -->
     <div>
       <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
@@ -120,25 +118,83 @@
 
       </a-table>
     </div>
+    <div class="page-header-index-wide">
+      <a-row :gutter="24">
+        <pie class="statistic" title="不同处分类型人数统计" :dataSource="countSource" :height="450"/>
+      </a-row>
+      <a-row :gutter="24">
+        <a-col :sm="12" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+          <chart-card :loading="loading" title="处分人员总数量" :total="cardCount.total | NumberFormat">
+          </chart-card>
+        </a-col>
+        <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+          <chart-card :loading="loading" title="本月即将解除处分人员数量" :total="cardCount.countByMonth | NumberFormat">
+          </chart-card>
+        </a-col>
+        <!-- <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+           <chart-card :loading="loading" title="用户受理量" :total="cardCount.isll | NumberFormat">
+             <a-tooltip title="指标说明" slot="action">
+               <a-icon type="info-circle-o" />
+             </a-tooltip>
+             <div>
+               <mini-bar :datasource="chartData.isll" :height="50"/>
+             </div>
+             <template slot="footer">用户今日受理量：<span>{{ todayISll }}</span></template>
+           </chart-card>
+         </a-col>
+         <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+           <chart-card :loading="loading" title="用户办结量" :total="cardCount.ibjl | NumberFormat">
+             <a-tooltip title="指标说明" slot="action">
+               <a-icon type="info-circle-o" />
+             </a-tooltip>
+             <div>
+               <mini-bar :datasource="chartData.ibjl" :height="50"/>
+             </div>
+             <template slot="footer">用户今日办结量：<span>{{ todayIBjl }}</span></template>
+           </chart-card>
+         </a-col>-->
+      </a-row>
+    </div>
+
 
     <smart-punish-people-modal ref="modalForm" @ok="modalFormOk"></smart-punish-people-modal>
   </a-card>
 </template>
 
 <script>
-
+  import { httpAction, getAction } from '@/api/manage'
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SmartPunishPeopleModal from './modules/SmartPunishPeopleModal'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import SelectUserByDep from '@/components/jeecgbiz/modal/SelectUserByDep'
+  import JInput from '@/components/jeecg/JInput'
+  import Pie from '@/components/chart/Pie'
+
+  import ACol from "ant-design-vue/es/grid/Col"
+  import ATooltip from "ant-design-vue/es/tooltip/Tooltip"
+  import ChartCard from '@/components/ChartCard'
+  import MiniBar from '@/components/chart/MiniBar'
+  import MiniArea from '@/components/chart/MiniArea'
+  import IndexBar from '@/components/chart/IndexBar'
+  import BarMultid from '@/components/chart/BarMultid'
+  import DashChartDemo from '@/components/chart/DashChartDemo'
 
   export default {
     name: 'SmartPunishPeopleList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartPunishPeopleModal,SelectUserByDep
+      SmartPunishPeopleModal,SelectUserByDep,JInput,
+      ATooltip,
+      ACol,
+      ChartCard,
+      MiniArea,
+      MiniBar,
+      DashChartDemo,
+      BarMultid,
+      IndexBar,
+      Pie
     },
     data () {
       return {
@@ -163,7 +219,8 @@
           {
             title:'处分人姓名',
             align:"center",
-            dataIndex: 'punishName'
+            dataIndex: 'punishName',
+            sorter: true
           },
           /*{
             title:'单位ID',
@@ -173,35 +230,56 @@
           {
             title:'单位',
             align:"center",
-            dataIndex: 'departName'
+            dataIndex: 'departName',
+            sorter: true
           },
           {
             title:'职务',
             align:"center",
-            dataIndex: 'position'
+            dataIndex: 'position',
+            sorter: true
           },
           {
             title:'职级',
             align:"center",
-            dataIndex: 'positionRank'
+            dataIndex: 'positionRank_dictText',
+            sorter: true
           },
           {
             title:'手机号',
             align:"center",
-            dataIndex: 'phone'
+            dataIndex: 'phone',
+            sorter: true
           },
           {
             title:'处分类型',
             align:"center",
-            dataIndex: 'punishType_dictText'
+            dataIndex: 'punishType_dictText',
+            sorter: true
+          },
+          {
+            title:'处分开始时间',
+            align:"center",
+            dataIndex: 'beginTime',
+            sorter: true,
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
           },
           {
             title:'解除处分时间',
             align:"center",
             dataIndex: 'removeTime',
+            sorter: true,
             customRender:function (text) {
               return !text?"":(text.length>10?text.substr(0,10):text)
             }
+          },
+          {
+            title:'处分状态',
+            align:"center",
+            dataIndex: 'statu_dictText',
+            sorter: true
           },
           {
             title: '操作',
@@ -222,10 +300,36 @@
         },
         dictOptions:{},
         superFieldList:[],
+        loading: false,
+        cardCount:{
+          total:'',
+          countByMonth:'',
+          isll:15,
+          ibjl:9
+        },
+        todaySll:60,
+        todayBjl:54,
+        todayISll:13,
+        todayIBjl:7,
+        chartData:{
+          sll:[],
+          bjl:[],
+          isll:[],
+          ibjl:[]
+        },
+        // 饼状图
+        pieValue: [],
+        // 数据集
+        countSource: [],
       }
     },
     created() {
     this.getSuperFieldList();
+      setTimeout(() => {
+        this.loading = !this.loading
+      }, 1000);
+      this.getTotal();
+
     },
     computed: {
       importExcelUrl: function(){
@@ -242,11 +346,57 @@
         fieldList.push({type:'string',value:'departId',text:'单位ID',dictCode:''})
         fieldList.push({type:'string',value:'departName',text:'单位',dictCode:''})
         fieldList.push({type:'string',value:'position',text:'职务',dictCode:''})
-        fieldList.push({type:'string',value:'positionRank',text:'职级',dictCode:''})
+        fieldList.push({type:'string',value:'positionRank',text:'职级',dictCode:'position_rank'})
         fieldList.push({type:'string',value:'phone',text:'手机号',dictCode:''})
         fieldList.push({type:'string',value:'punishType',text:'处分类型',dictCode:'punish_type'})
+        fieldList.push({type:'date',value:'beginTime',text:'处分开始时间'})
         fieldList.push({type:'date',value:'removeTime',text:'解除处分时间'})
+        fieldList.push({type:'string',value:'statu',text:'处分状态',dictCode:'punish_statu'})
         this.superFieldList = fieldList
+      },
+    getTotal(){
+        let that=this;
+        getAction('/SmartPunishPeople/smartPunishPeople/punishPeopleCount').then((res)=>{
+          if(res.success){
+            //that.$message.success(res.message);
+            that.cardCount.total = res.result;
+            //console.log(res)
+          }else{
+            that.$message.warning(res.message);
+          }
+        }).finally(() => {
+          that.loading = false;
+        });
+      getAction('/SmartPunishPeople/smartPunishPeople/punishPeopleCountByMonth').then((res)=>{
+        if(res.success){
+          //that.$message.success(res.message);
+          that.cardCount.countByMonth = res.result;
+          //console.log(res)
+        }else{
+          that.$message.warning(res.message);
+        }
+      }).finally(() => {
+        that.loading = false;
+      });
+      getAction('/SmartPunishPeople/smartPunishPeople/punishPeopleCountByType').then((res)=>{
+        if(res.success){
+          //that.$message.success(res.message);
+          that.getCategoryCountSource(res.result);
+          console.log(res.result)
+        }else{
+          that.$message.warning(res.message);
+        }
+      }).finally(() => {
+        that.loading = false;
+      })
+    },
+      getCategoryCountSource(data){
+        for (let i = 0; i < data.length; i++) {
+            this.countSource.push({
+              item: data[i].type,
+              count:data[i].value
+            })
+        }
       },
 
     }
@@ -254,4 +404,30 @@
 </script>
 <style scoped>
   @import '~@assets/less/common.less';
+</style>
+<style lang="less" scoped>
+  .chart-card{
+    background-color: #1890FF;
+    font-size: 25px;
+  }
+
+  .statistic {
+    padding: 0px !important;
+    margin-top: 50px;
+  }
+
+  .statistic h4 {
+    margin-bottom: 20px;
+    text-align: center !important;
+    font-size: 24px !important;;
+  }
+
+  .statistic #canvas_1 {
+    width: 100% !important;
+  }
+  .chart-card-content{
+    height: 0px;
+    width: 0;
+    display:none;
+  }
 </style>

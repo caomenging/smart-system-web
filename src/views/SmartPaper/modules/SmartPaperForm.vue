@@ -85,6 +85,9 @@
         },
         confirmLoading: false,
         validatorRules: {
+           paperType: [
+              { required: true, message: '请输入试卷类型!'},
+           ],
            paperName: [
               { required: true, message: '请输入试卷名称!'},
            ],
@@ -96,9 +99,9 @@
            ],
         },
         url: {
-          add: "/smartPaper/smartPaper/add",
-          edit: "/smartPaper/smartPaper/edit",
-          queryById: "/smartPaper/smartPaper/queryById"
+          add: "/SmartPaper/smartPaper/add",
+          edit: "/SmartPaper/smartPaper/edit",
+          queryById: "/SmartPaper/smartPaper/queryById"
         }
       }
     },

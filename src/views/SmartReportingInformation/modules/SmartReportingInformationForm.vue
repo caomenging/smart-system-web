@@ -49,7 +49,19 @@
               <a-input v-model="model.contactNumber" placeholder="请输入联系电话" ></a-input>
             </a-form-model-item>
           </a-col>
+
         </a-row>
+        <a-form-model-item
+          :wrapperCol="{ span: 24 }"
+          style="text-align: center"
+        >
+          <a-button @click="handleAgree" type="primary"
+                    :disabled="disableSubmit">已受理</a-button>
+          <a-button @click="handleDisagree" style="margin-left: 8px" type="primary"
+                    :disabled="disableSubmit">不受理</a-button>
+          <a-button @click="handleFinish" style="margin-left: 8px" type="primary"
+                    :disabled="disableSubmit">已完结</a-button>
+        </a-form-model-item>
       </a-form-model>
     </j-form-container>
       <!-- 子表单区域 -->
@@ -84,15 +96,17 @@
 
 <script>
 
-  import { getAction } from '@/api/manage'
+  import { putAction,getAction } from '@/api/manage'
   import { FormTypes,getRefPromise,VALIDATE_NO_PASSED } from '@/utils/JEditableTableUtil'
   import { JEditableTableModelMixin } from '@/mixins/JEditableTableModelMixin'
   import { validateDuplicateValue } from '@/utils/util'
+  import AFormItem from 'ant-design-vue/lib/form/FormItem'
 
   export default {
     name: 'SmartReportingInformationForm',
     mixins: [JEditableTableModelMixin],
     components: {
+      AFormItem
     },
     data() {
       return {
@@ -112,6 +126,8 @@
           xs: { span: 24 },
           sm: { span: 20 },
         },
+        disableSubmit: false,
+        processing_result:'未受理',
         model:{
         },
         // 新增时子表默认添加几行空数据
@@ -123,6 +139,11 @@
            processingResult: [
               { required: true, message: '请输入处理状态!'},
            ],
+          contactNumber: [
+            { required: true, message: '请输入联系电话!' },
+            { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!' },
+          ],
+
         },
         refKeys: ['smartReportingSurvey', 'smartReportingDescription', ],
         tableKeys:['smartReportingSurvey', 'smartReportingDescription', ],
@@ -252,6 +273,67 @@
       },
       validateError(msg){
         this.$message.error(msg)
+      },
+      handleAgree(){
+        //处理中
+        const params = {
+          id: this.model.id,
+          processingResult: '2'
+        }
+        putAction(this.url.edit, params).then((res) => {
+          if(res.success) {
+            this.$message.success(res.message)
+            this.submitCallback();
+          }
+        })
+        getAction(this.url.list,params).then((res)=>{
+          if(res.success){
+            this.$router.go(0)
+          }
+        })
+
+      },
+
+      handleDisagree(){
+        //不受理
+        const params={
+          id:this.model.id,
+          processingResult: '3'
+        }
+        putAction(this.url.edit,params).then((res)=>{
+          if(res.success){
+            this.$message.success(res.message)
+            this.submitCallback();
+          }
+        })
+        getAction(this.url.list,params).then((res)=>{
+          if(res.success){
+            this.$router.go(0)
+          }
+        })
+      },
+      handleFinish(){
+        //已完结
+        const params={
+          id:this.model.id,
+          processingResult: '4'
+        }
+        putAction(this.url.edit,params).then((res)=>{
+          if(res.success){
+            this.$message.success(res.message)
+            this.submitCallback();
+          }
+        })
+        getAction(this.url.list,params).then((res)=>{
+          if(res.success){
+            this.$router.go(0)
+          }
+        })
+      },
+
+      submitCallback(){
+        this.$emit('ok');
+
       },
 
     }

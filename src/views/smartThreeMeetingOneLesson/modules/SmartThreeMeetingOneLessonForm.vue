@@ -4,31 +4,6 @@
       <!-- 主表单区域 -->
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
-          <!-- <a-col :span="24" >
-            <a-form-model-item label="单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departmentId">
-              <a-input v-model="model.departmentId" placeholder="请输入单位" ></a-input>
-            </a-form-model-item>
-          </a-col> -->
-          <a-col :span="24" >
-            <a-form-model-item label="主持人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="hostNumber">
-              <a-input v-model="model.hostNumber" placeholder="请输入主持人姓名" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="记录人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="recorderNumber">
-              <a-input v-model="model.recorderNumber" placeholder="请输入记录人姓名" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="地点" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="place">
-              <a-input v-model="model.place" placeholder="请输入地点" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="time">
-              <j-date placeholder="请选择时间" v-model="model.time" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
-            </a-form-model-item>
-          </a-col>
           <a-col :span="24" >
             <a-form-model-item label="类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="type">
               <j-dict-select-tag type="list" v-model="model.type" dictCode="shyk" placeholder="请选择类型" />
@@ -39,6 +14,51 @@
               <a-input v-model="model.theme" placeholder="请输入主题" ></a-input>
             </a-form-model-item>
           </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="time">
+              <j-date placeholder="请选择时间" v-model="model.time" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="主持人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="hostId">
+              <select-user-by-dep v-model="model.hostId" @info="getHostUser"></select-user-by-dep>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="主持人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="hostName">
+              <a-input v-model="model.hostName" placeholder="请输入主持人" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="记录人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="recorderId">
+              <select-user-by-dep v-model="model.recorderId" @info="getRecorderUser"></select-user-by-dep>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="记录人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="recorderName">
+              <a-input v-model="model.recorderName" placeholder="请输入记录人" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="地点" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="place">
+              <a-input v-model="model.place" placeholder="请输入地点" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <!-- <a-col :span="24" >
+            <a-form-model-item label="时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="time">
+              <j-date placeholder="请选择时间" v-model="model.time" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
+            </a-form-model-item>
+          </a-col> -->
+          <!-- <a-col :span="24" >
+            <a-form-model-item label="类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="type">
+              <j-dict-select-tag type="list" v-model="model.type" dictCode="shyk" placeholder="请选择类型" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="主题" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="theme">
+              <a-input v-model="model.theme" placeholder="请输入主题" ></a-input>
+            </a-form-model-item>
+          </a-col> -->
           <a-col :span="24">
             <a-form-model-item label="内容摘要" :labelCol="labelCol2" :wrapperCol="wrapperCol2" prop="content">
               <a-textarea v-model="model.content" rows="4" placeholder="请输入内容摘要" />
@@ -50,13 +70,14 @@
             </a-form-model-item>
           </a-col>
           <!-- <a-col :span="24" >
-            <a-form-model-item label="创建人工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="founderNumber">
-              <a-input v-model="model.founderNumber" placeholder="请输入创建人工号" ></a-input>
-            </a-form-model-item>
-          </a-col> -->
-          <!-- <a-col :span="24" >
             <a-form-model-item label="创建日期" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="createTime">
               <j-date placeholder="请选择创建日期" v-model="model.createTime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
+            </a-form-model-item>
+          </a-col> -->
+          
+          <!-- <a-col :span="24" >
+            <a-form-model-item label="审核状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verifyStatus">
+              <a-input v-model="model.verifyStatus" placeholder="请输入审核状态" ></a-input>
             </a-form-model-item>
           </a-col> -->
         </a-row>
@@ -98,11 +119,13 @@
   import { FormTypes,getRefPromise,VALIDATE_NO_PASSED } from '@/utils/JEditableTableUtil'
   import { JEditableTableModelMixin } from '@/mixins/JEditableTableModelMixin'
   import { validateDuplicateValue } from '@/utils/util'
+  import SelectUserByDep from '@/components/jeecgbiz/modal/SelectUserByDep'
 
   export default {
     name: 'SmartThreeMeetingOneLessonForm',
     mixins: [JEditableTableModelMixin],
     components: {
+      SelectUserByDep
     },
     data() {
       return {
@@ -123,13 +146,14 @@
           sm: { span: 20 },
         },
         model:{
+          hostId:'',
+          hostName:'',
+          recorderId:'',
+          recorderName:'',
         },
         // 新增时子表默认添加几行空数据
         addDefaultRowNum: 1,
         validatorRules: {
-           departmentId: [
-              { required: true, message: '请输入单位!'},
-           ],
            time: [
               { required: true, message: '请输入时间!'},
            ],
@@ -235,6 +259,20 @@
     created () {
     },
     methods: {
+      getHostUser(back){
+        let that = this
+        console.log(back);
+        that.model.hostId = back[0].id
+        that.model.hostName = back[0].realname
+      },
+
+      getRecorderUser(back){
+        let that = this
+        console.log(back);
+        that.model.recorderId = back[0].id
+        that.model.recorderName = back[0].realname
+      },
+
       addBefore(){
         this.smartThreeMeetingOneLessonParticipantsTable.dataSource=[]
         this.smartThreeMeetingOneLessonAnnexTable.dataSource=[]

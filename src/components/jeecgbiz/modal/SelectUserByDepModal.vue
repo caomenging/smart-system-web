@@ -11,9 +11,9 @@
     cancelText="关闭"
   >
     <a-row :gutter="10" style="background-color: #ececec; padding: 10px; margin: -10px">
-      <a-col :md="6" :sm="24">
-        <a-card :bordered="false">
-          <!--组织机构-->
+      <!--<a-col :md="6" :sm="24">
+        <a-card :bordered="false" >
+          &lt;!&ndash;组织机构&ndash;&gt;
           <a-directory-tree
             selectable
             :selectedKeys="selectedDepIds"
@@ -23,10 +23,12 @@
             :expandAction="false"
             :expandedKeys.sync="expandedKeys"
             @select="onDepSelect"
+
           />
         </a-card>
-      </a-col>
-      <a-col :md="18" :sm="24">
+      </a-col>-->
+      <!--<a-col :md="18" :sm="24">-->
+      <a-col>
         <a-card :bordered="false">
           姓名:
           <a-input-search
@@ -63,12 +65,13 @@
   export default {
     name: 'SelectUserByDepModal',
     components: {},
-    props: ['modalWidth', 'multi', 'userIds', 'store', 'text'],
+    props: ['modalWidth', 'multi', 'userIds', 'store', 'text','flag'],
     data() {
       return {
         naturalDepartTree: [],
         queryParam: {
           realname: "",
+
         },
         columns: [
 /*          {
@@ -101,7 +104,7 @@
             }
           },
           {
-            title: '手机',
+            title: '手机号码',
             align: 'center',
             dataIndex: 'phone'
           },
@@ -124,7 +127,7 @@
         selectedRowKeys: [],
         selectUserRows: [],
         selectUserIds: [],
-        title: '根据单位选择用户',
+        title: '选择人员',
         ipagination: {
           current: 1,
           pageSize: 10,
@@ -201,9 +204,19 @@
           this.ipagination.current = 1;
         }
         let params = this.getQueryParams()//查询条件
+        //console.log(params)
         this.loading = true
-        getAction('/sys/user/queryUserComponentData', params).then(res=>{
+        let url = null;
+        if(this.flag == true){
+          //过滤
+          url = '/sys/user/newQueryUserComponentData';
+        }else{
+          //全部人员
+          url = '/sys/user/queryUserComponentData';
+        }
+        getAction(url, params).then(res=>{
           if (res.success) {
+            console.log(res.result.records)
             this.dataSource = res.result.records
             this.ipagination.total = res.result.total
           }
@@ -328,6 +341,8 @@
               // console.log(temp.id)
 
             }
+            // 默认展开父节点
+            that.expandedKeys = that.naturalTreeData.map(item => item.id)
             // this.loading = false
           }
           this.loading = false;

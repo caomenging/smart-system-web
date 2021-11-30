@@ -33,8 +33,7 @@
           <a-row style="width: 100%; flex-flow: row nowrap" type="flex" justify="start" align="middle">
             <a-col style="margin-right: 1rem">
               <a-avatar shape="square" :size="64" :style="{ backgroundColor: 'blue', verticalAlign: 'middle' }"
-                >xzx</a-avatar
-              >
+                >{{item.createBy.slice(0,3)}}</a-avatar>
             </a-col>
             <a-col :flex="10">
               <p>{{item.content}}</p>
