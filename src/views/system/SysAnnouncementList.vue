@@ -130,10 +130,10 @@
       switchFullscreen
       :footer="null"
     >
-      <iframe v-if="detailModal.url" class="detail-iframe" :src="detailModal.url" />
+      <!-- <iframe v-if="detailModal.url" class="detail-iframe" :src="detailModal.url" /> -->
     </j-modal>
     <!-- 发送情况统计 -->
-    <task-detail-modal ref="taskDetailModal"></task-detail-modal>
+    <task-detail-modal @ok="modalFormOk" ref="taskDetailModal"></task-detail-modal>
   </a-card>
 </template>
 

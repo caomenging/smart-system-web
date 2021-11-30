@@ -76,10 +76,12 @@
         :scroll="{ x: true }"
         :columns="columns"
         :dataSource="dataSource"
+        :expandedRowKeys= "expandedRowKeys"
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         @change="handleTableChange"
+        @expand="handleExpand"
       >
         <template slot="htmlSlot" slot-scope="text">
           <div v-html="text"></div>
@@ -104,6 +106,18 @@
         <span slot="action" slot-scope="text, record">
           <a @click="handleVerify(record)">详情</a>
         </span>
+        <a-table
+          slot="expandedRowRender"
+          slot-scope="text"
+          :columns="innerColumns"
+          :dataSource="innerData"
+          size="middle"
+          bordered
+          rowKey="id"
+          :pagination="false"
+          :loading="loading"
+          >
+        </a-table>
       </a-table>
     </div>
 
@@ -116,6 +130,7 @@ import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import '@/assets/less/TableExpand.less'
 import CreateModal from './module/CreateModal.vue'
 import TopicVerifyModal from './module/TopicVerifyModal.vue'
+import { getAction } from '../../api/manage'
 
 export default {
   name: 'SmartSupervisionList',
@@ -126,6 +141,21 @@ export default {
   data() {
     return {
       description: '问题审核',
+      // 字表表头
+      innerColumns:[
+        {
+          title: '回答用户名',
+          align: 'center',
+          dataIndex: 'createBy',
+        },
+        {
+          title: '回答内容',
+          align: 'center',
+          dataIndex: 'content',
+        }
+      ],
+      innerData: [],
+      expandedRowKeys: [],
       // 表头
       columns: [
         {
@@ -186,6 +216,20 @@ export default {
         this.$refs.modalForm.title = 'haha'
         this.$refs.modalForm.edit(record)
     },
+    handleExpand(expanded, record){
+        this.expandedRowKeys=[];
+        this.innerData=[];
+        if(expanded===true){
+          this.loading = true;
+          this.expandedRowKeys.push(record.id);
+          getAction('/interaction/comment/list', {topicId: record.id}).then((res) => {
+            if (res.success) {
+              this.loading = false;
+              this.innerData = res.result.records;
+            }
+          });
+        }
+      },
     initDictConfig() {},
     getSuperFieldList() {
       let fieldList = []

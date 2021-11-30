@@ -64,14 +64,14 @@
       <a-row style="width: 100%">
         <a-col :span="24 / 2">
           <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="备注">
-            <a-input placeholder="请输入提交备注" v-model="model.remark" :readOnly="disableSubmit" />
+            <a-input placeholder="请输入提交备注" v-model="model.submitRemark" />
           </a-form-model-item>
         </a-col>
       </a-row>
       <a-row type="flex" style="width: 100%">
         <a-col :span="12">
           <a-form-model-item label="文件上传" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <j-upload v-model="model.fileList"></j-upload>
+            <j-upload v-model="model.submitFile"></j-upload>
           </a-form-model-item>
         </a-col>
       </a-row>
@@ -86,6 +86,7 @@ import ShowAnnouncement from '@/components/tools/ShowAnnouncement'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import DynamicNotice from '../../components/tools/DynamicNotice'
 import SysAnnouncementModal from '@/views/system/modules/SysAnnouncementModal'
+import { postAction } from '../../api/manage'
 
 export default {
   name: 'MyTaskList',
@@ -102,6 +103,23 @@ export default {
       title: '',
       model: {},
       queryParam: {},
+      record: {},
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 6 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 18 },
+      },
+      labelColX1: {
+        xs: { span: 24 },
+        sm: { span: 3 },
+      },
+      wrapperColX1: {
+        xs: { span: 24 },
+        sm: { span: 21 },
+      },
       columns: [
         {
           title: '任务标题',
@@ -174,6 +192,7 @@ export default {
   methods: {
     handleSubmit(record) {
       console.log(record)
+      this.record = record
       this.submitVisible = true
       this.title = '提交' + record.titile
     },
@@ -199,8 +218,21 @@ export default {
     syncHeadNotic(anntId) {
       getAction('sys/annountCement/syncNotic', { anntId: anntId })
     },
-    handleOk() {},
+    handleOk() {
+      this.model.anntId = this.record.anntId
+      console.log(this.model)
+      putAction('/sys/sysAnnouncementSend/editTaskSubmit',this.model).then((res) => {
+        if(res.success) {
+          this.$message.success(res.message)
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+      this.model = {}
+      this.submitVisible = false
+    },
     handleCancel() {
+      this.model = {}
       this.submitVisible = false
     },
     readAll() {
