@@ -180,7 +180,7 @@
         ],
         //试卷数据
         testData: {
-          testName:'testName',
+          testName:this.$route.params.examName,
           examInfo:{},
           userGrade:{}
         },
@@ -209,6 +209,7 @@
     },
 
     created() {
+      //console.log(this.$route.query)
       this.getTestPaperData();
     },
 
@@ -242,22 +243,17 @@
             }
           }
           topic.push({
-            //classesId: this.$route.params.c_id,
-            questionId: item.questionId,
-            paperId: "1464868384551137282",
-            //examId: this.$route.params.tp_id,
+            //questionId: item.questionId,
+            paperId: this.$route.query.paperId,
             type:item.topicType,
             submitAnswer: item.submitAnswer,
           });
         }
 
         console.log(topic);
-
+        let examId = this.$route.query.examId
         var request = {
-          examId:"",
-          //paperName:  this.testData.paperName,
-          //userName: this.$store.state.userName,
-          //answerTime: this.expendTime,
+          examId:examId,
           smartSubmitList: topic,
 
         };
@@ -292,10 +288,17 @@
                 }
               }*/
             }).then(action => {
-              this.$message({
-                type: 'info',
-                message: '考试完成！'
-              });
+                this.$message.success({
+                  content: "考试完成！",
+                  duration: 3,
+                  onClose: close(),
+                });
+                close()
+                {
+                  window.location.href="about:blank";
+                  window.close();
+                  window.opener.location.reload();
+                }
             });
           }
             //location.reload()
@@ -307,9 +310,9 @@
 
       //获取试卷数据
       getTestPaperData() {
+        let id =this.$route.query.paperId
         let params = {
-          //id: this.$route.params.id
-          id:"1464868384551137282"
+          id:id
         }
         getAction("/SmartPaper/smartPaper/getPaperById",params).then(res =>{
           if (res.success) {
@@ -396,8 +399,8 @@
         //判断考试是否已经结束
         var nowDate = new Date().getTime();
         //var deadline = testData.examInfo.endTime;
-        var deadline = '2021-11-30 03:27:52';
-        // console.log('deadline',testData);
+        var deadline = this.$route.query.deadline;
+        console.log('deadline',deadline);
         var deadlineDate = new Date(
           Date.parse(deadline.replace(/-/g, "/"))
         ).getTime();

@@ -470,13 +470,14 @@
             if (res.success) {
               this.$message.success({
                 content: "修改成功！",
-                duration: 6,
+                duration: 3,
                 onClose: close(),
               });
               close()
               {
                 window.location.href="about:blank";
                 window.close();
+                window.opener.location.reload();
               }
             }
             else{
@@ -490,6 +491,7 @@
               this.$message.success(res.message);
               window.location.href="about:blank";
               window.close();
+              window.opener.location.reload();
             }
             else{
               this.$message.error(res.message)
