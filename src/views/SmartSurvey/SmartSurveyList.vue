@@ -11,7 +11,7 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <!--<a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
+
       <a-button @click="createTestPaper"  type="primary" icon="plus">新增</a-button>
       <a-button type="primary" icon="download" @click="handleExportXls('试卷表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
@@ -69,7 +69,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleIssueExam(record)">发布考试</a>
+          <a @click="handleIssueExam(record)">发布调查问卷</a>
           <a-divider type="vertical" />
           <a @click="editTestPaper(record.id)">编辑</a>
           <a-divider type="vertical" />
@@ -100,15 +100,16 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartPaperModal from './modules/SmartPaperModal'
+
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import { putAction } from '../../api/manage'
+  import SmartSurveyModal from './modules/SmartSurveyModal'
 
   export default {
-    name: 'SmartPaperList',
+    name: 'SmartSurveyList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartPaperModal
+      SmartSurveyModal
     },
     data () {
       return {
@@ -132,12 +133,12 @@
             dataIndex: 'paperType_dictText'
           },
           {
-            title:'试卷名称',
+            title:'调查问卷名称',
             align:"center",
             dataIndex: 'paperName'
           },
           {
-            title:'试卷状态',
+            title:'调查问卷状态',
             align:"center",
             dataIndex: 'paperStatus_dictText'
           },
@@ -207,10 +208,10 @@
       },
     },
     methods: {
-      //去创建新试卷
+      //去创建新的调查问卷
       createTestPaper() {
         const { href } = this.$router.resolve({
-          name: "createPaper",
+          name: "createSurvey",
           params: { opt: 'add'}
         });
         const win  = window.open(href, "_blank");
@@ -221,11 +222,11 @@
           }
         }, 1000);
       },
-      // 编辑试卷
+      // 编辑调查问卷
       editTestPaper(id) {
         console.log(id);
         const { href } = this.$router.resolve({
-          name: "editPaper",
+          name: "editSurvey",
           params: { opt: 'edit', id}
         });
         const win = window.open(href, "_blank");
@@ -236,9 +237,11 @@
           }
         }, 1000);
       },
+
       initDictConfig(){
       },
-      handleIssueExam(record){//发布考试
+
+      handleIssueExam(record){//发布调查问卷
 
         console.log(record)
         const params = {

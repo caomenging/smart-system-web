@@ -391,6 +391,7 @@ export const constantRouterMap = [
     path: '/404',
     component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404')
   },
+
   {
     path: '/createPaper/:opt',
     name: 'createPaper',
@@ -407,6 +408,33 @@ export const constantRouterMap = [
       title: '修改试卷'
     }
   },
+
+  {
+    path: '/createSurvey/:opt',
+    name: 'createSurvey',
+    component: () => import( '@/views/SmartSurvey/createSurvey.vue'),
+    meta:{
+      title:'新建调查问卷'
+    }
+  },
+  {
+    path: '/createSurvey/:opt',
+    name: 'listSurvey',
+    component: () => import( '@/views/SmartSurvey/createSurvey.vue'),
+    meta: {
+      title: '查询调查问卷'
+    }
+  },
+  {
+    path: '/createSurvey/:opt/:id',
+    name: 'editSurvey',
+    component: () => import( '@/views/SmartSurvey/createSurvey.vue'),
+    meta: {
+      title: '修改调查问卷'
+    }
+  },
+
+
   /**
    * 下面代码为了简化APP端访问后台，取消侧边栏
    */

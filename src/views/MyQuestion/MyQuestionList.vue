@@ -149,7 +149,7 @@ export default {
       ],
       url: {
         add:"/SmartPaper/smartPaper/add",
-        edit: "/SmartPaper/smartPaper/edit",
+        edit: "/SmartPaper/smartPaper/edit/{id}",
         list: "/SmartPaper/smartPaper/list",
         delete: "/SmartPaper/smartPaper/delete",
         deleteBatch: "/SmartPaper/smartPaper/deleteBatch",
@@ -190,7 +190,6 @@ export default {
 
 
     },
-
 
     getSuperFieldList(){
       let fieldList=[];
