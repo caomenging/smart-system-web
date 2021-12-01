@@ -90,7 +90,9 @@
             }
           }
         }
-        return 'username'
+        //update:存储id
+        return 'id';
+        //return 'username'
       },
       textField(){
         if(this.originColumn){

@@ -177,6 +177,23 @@ export function uploadAction(url,parameter){
 }
 
 /**
+ * 文件上传 用于富文本上传图片
+ * @param url
+ * @param parameter
+ * @returns {*}
+ */
+ export function uploadFile(parameter){
+  return axios({
+    url: '/sys/common/upload',
+    data: parameter,
+    method:'post' ,
+    headers: {
+      'Content-Type': 'multipart/form-data;boundary=' + new Date().getTime()  // 文件上传
+    },
+  })
+}
+
+/**
  * 获取文件服务访问路径
  * @param avatar
  * @param subStr

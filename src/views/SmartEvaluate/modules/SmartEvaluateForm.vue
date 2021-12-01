@@ -48,7 +48,7 @@
           ]" />
       </a-form-item>
       <a-form-item
-        label="人员名称"
+        label="被评价人姓名"
         :labelCol="{lg: {span: 7}, sm: {span: 7}}"
         :wrapperCol="{lg: {span: 10}, sm: {span: 17} }"
 
@@ -57,8 +57,8 @@
         <a-input
           v-decorator="[
         'personName',
-        {rules: [{ required: true, message: '人员名称' }]}
-        ]" placeholder="人员名称" />
+        {rules: [{ required: true, message: '被评价人姓名' }]}
+        ]" placeholder="被评价人姓名" />
       </a-form-item>
       <a-form-item
         label="评价人姓名"
@@ -95,6 +95,12 @@
                     />
             </span>
       </a-form-item>
+        <a-form-model-item label="意见"  :labelCol="{lg: {span: 7}, sm: {span: 7}}"
+                           :wrapperCol="{lg: {span: 10}, sm: {span: 17} }" prop="evaluateOpinion">
+          <a-textarea v-decorator="[
+            'evaluateOpinion']" placeholder="请输入意见" />
+        </a-form-model-item>
+
 
       <a-form-item
         :wrapperCol="{ span: 24 }"

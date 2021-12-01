@@ -4,7 +4,20 @@ import { UserLayout, TabLayout, RouteView, BlankLayout, PageView } from '@/compo
  * 走菜单，走权限控制
  * @type {[null,null]}
  */
+
+
+
+
+
 export const asyncRouterMap = [
+ /* {
+    path:'/InsertReportingInformation',
+    name:'InsertReportInformationDetail',
+    component:UserLayout,
+    meta:{title:'二维码扫描跳转'},
+    redirect:'/InsertReportingInformation/InsertReportingInformationDetail'
+
+  },*/
 
   // {
   //   path: '/',
@@ -378,7 +391,30 @@ export const constantRouterMap = [
     path: '/404',
     component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404')
   },
-
+  {
+    path: '/createPaper/:opt',
+    name: 'createPaper',
+    component: () => import( '@/views/SmartPaper/createPaper.vue'),
+    meta:{
+      title:'新建试卷'
+    },
+  },
+  {
+    path: '/createPaper/:opt/:id',
+    name: 'editPaper',
+    component: () => import( '@/views/SmartPaper/createPaper.vue'),
+    meta: {
+      title: '修改试卷'
+    }
+  },
+  {
+    path: '/myExam',
+    name: 'myExam',
+    component: () => import( '@/views/SmartPaper/myExam.vue'),
+    meta: {
+      title: '考试页面'
+    }
+  },
   /**
    * 下面代码为了简化APP端访问后台，取消侧边栏
    */
@@ -402,6 +438,13 @@ export const constantRouterMap = [
     path: '/webview/sun',
     component: () => import('@/views/SmartEvaluate/modules/SmartEvaluateForm')
   },
+
+  //纠治四风扫描二维码
+  {
+    path:'/InsertReportingInformation/InsertReportingInformationDetail',
+    component: () => import('@views/InsertReportingInformation/InsertReportingInformationDetail')
+
+  },
   // @TODO 政策查询
   // {
   //   path: '/webview/search',
@@ -417,6 +460,4 @@ export const constantRouterMap = [
   //   path: '/webview/study',
   //   component: () => import('@/views/system/UserAnnouncementList')
   // },
-
-
 ]

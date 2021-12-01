@@ -100,12 +100,12 @@ export default {
           },
         },
         {
-          title: '接受人',
+          title: '接收人',
           align: 'center',
           dataIndex: 'userName',
         },
         {
-          title: '接受部门',
+          title: '接收部门',
           align: 'center',
           dataIndex: 'userDepart',
         },
@@ -137,6 +137,16 @@ export default {
           title: '查看时间',
           align: 'center',
           dataIndex: 'readTime',
+        },
+        {
+          title: '提交备注',
+          align: 'center',
+          dataIndex: 'submitRemark',
+        },
+        {
+          title: '提交文件',
+          align: 'center',
+          dataIndex: 'submitFile',
         },
         {
           title: '操作',

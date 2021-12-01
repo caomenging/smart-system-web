@@ -18,6 +18,7 @@
       :store="storeField"
       :text="textField"
       @initComp="initComp"
+      :flag = "flag"
     />
   </div>
 </template>
@@ -33,6 +34,11 @@
     name: 'SelectUserByDep',
     components: { AFormModelItem, DictDeleteList, SelectUserByDepModal},
     props: {
+      flag: {
+        type: Boolean,
+        required: false,
+        default: true
+      },
       modalWidth: {
         type: Number,
         default: 1250,
@@ -137,7 +143,7 @@
         }
       },
       onSearchDepUser() {
-        this.$refs.selectModal.showModal()
+          this.$refs.selectModal.showModal()
       },
       selectOK(rows) {
         // console.log("当前选中用户", rows)

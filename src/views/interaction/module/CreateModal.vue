@@ -80,7 +80,7 @@ export default {
           this.$message.error(res.message)
         }
       })
-      this.$emit('ok')
+      this.$emit('handleOk')
       this.visible = false
     },
   },
