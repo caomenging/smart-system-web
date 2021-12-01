@@ -407,6 +407,14 @@ export const constantRouterMap = [
       title: '修改试卷'
     }
   },
+  {
+    path: '/myExam',
+    name: 'myExam',
+    component: () => import( '@/views/SmartPaper/myExam.vue'),
+    meta: {
+      title: '考试页面'
+    }
+  },
   /**
    * 下面代码为了简化APP端访问后台，取消侧边栏
    */

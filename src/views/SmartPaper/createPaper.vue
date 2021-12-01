@@ -3,24 +3,71 @@
     <div class="w">
       <!--<div class="header"></div>-->
       <!-- 试卷信息 -->
-      <div class="title">
-        <el-input v-model="testData.paperName" class="testName" placeholder="请输入试卷标题" ></el-input>
+      <div class="title ">
+        <el-input v-model="testData.paperName" class="testName" placeholder="请输入试卷标题" :disabled="isRead"></el-input>
         <ul>
           <li class="test-info" style="margin-top: 3px" >出卷者: {{ getCreatorName()}}</li>
           <li class="test-info">
             答题时间:
-            <el-input-number v-model="testData.time" controls-position="right" :step="10" size="mini" :min="1" />
+            <el-input-number v-model="testData.time" controls-position="right" :step="10" size="mini" :min="1" :disabled="isRead"/>
             分钟
           </li>
-          <li class="test-info" style="margin-top: 3px">题目数量: 共 {{ topicNavIndex_mixin(2,sortedTopics[2].topic_content.length-1) }} 道</li>
+          <li class="test-info" style="margin-top: 3px">题目数量: 共 {{ topicNavIndex_mixin(4,sortedTopics[4].topic_content.length-1) }} 道</li>
           <li class="test-info" style="margin-top: 3px">总分: {{ totalScore }} 分</li>
           <li class="test-info">
             及格分数:
-            <el-input-number v-model="testData.passMark" controls-position="right" :step="1" size="mini" :min="0" :max="totalScore" />
+            <el-input-number v-model="testData.passMark" controls-position="right" :step="1" size="mini" :min="0" :max="totalScore" :disabled="isRead"/>
             分
           </li>
           <li class="fr">
-            <el-button  size="mini" type="primary" @click="submit()">保存试卷</el-button>
+            <el-button v-if="params.opt === 'add' || params.opt === 'edit'" size="mini" type="primary" @click="submit()">保存试卷</el-button>
+            <!--<el-button v-if="testData.releasing === 0 || params.type === 'add'" size="mini" type="primary" @click="submit()">保存试卷</el-button>-->
+            <!--<el-button v-else size="mini" type="primary" @click="copy()">复制试卷</el-button>-->
+          </li>
+          <!-- <li class="test-info">所属班级: {{ testData.classes_name }}</li> -->
+          <li style="clear:both;"></li>
+        </ul>
+        <!--<ul>
+&lt;!&ndash;          <li class="test-info">允许学生切换页面次数:
+            <el-input-number v-model="testData.switchPage" controls-position="right" :step="1" size="mini" :min="-1" />
+            <el-tooltip class="item" effect="light" content="-1表示允许学生无限次切换页面" placement="bottom-start">
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </li>&ndash;&gt;
+&lt;!&ndash;          <li class="test-info">是否允许复制文本:
+            <el-switch v-model="testData.permitCopy" active-color="#409EFF" inactive-color="#ccc"> </el-switch>
+          </li>&ndash;&gt;
+          &lt;!&ndash;<li class="test-info">是否打乱题目顺序:
+            <el-switch v-model="testData.disruptOrder" active-color="#409EFF" inactive-color="#ccc"> </el-switch>
+          </li>&ndash;&gt;
+          &lt;!&ndash;<li class="test-info">是否自动评分:
+            <el-switch v-model="testData.autoMack" active-color="#409EFF" inactive-color="#ccc"> </el-switch>
+            <el-tooltip class="item" effect="light" content="取消自动评分系统依然会自动批改,但会先显示分数为0分,等待教师审批确认" placement="bottom-start">
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </li>&ndash;&gt;
+          <li style="clear:both;"></li>
+        </ul>-->
+      </div>
+
+      <div class="title fixed" v-if="isFixed">
+        <el-input v-model="testData.paperName" class="testName" placeholder="请输入试卷标题" :disabled="isRead"></el-input>
+        <ul>
+          <li class="test-info" style="margin-top: 3px" >出卷者: {{ getCreatorName()}}</li>
+          <li class="test-info">
+            答题时间:
+            <el-input-number v-model="testData.time" controls-position="right" :step="10" size="mini" :min="1" :disabled="isRead"/>
+            分钟
+          </li>
+          <li class="test-info" style="margin-top: 3px">题目数量: 共 {{ topicNavIndex_mixin(4,sortedTopics[4].topic_content.length-1) }} 道</li>
+          <li class="test-info" style="margin-top: 3px">总分: {{ totalScore }} 分</li>
+          <li class="test-info">
+            及格分数:
+            <el-input-number v-model="testData.passMark" controls-position="right" :step="1" size="mini" :min="0" :max="totalScore" :disabled="isRead"/>
+            分
+          </li>
+          <li class="fr">
+            <el-button v-if="params.opt === 'add' || params.opt === 'edit'" size="mini" type="primary" @click="submit()">保存试卷</el-button>
             <!--<el-button v-if="testData.releasing === 0 || params.type === 'add'" size="mini" type="primary" @click="submit()">保存试卷</el-button>-->
             <!--<el-button v-else size="mini" type="primary" @click="copy()">复制试卷</el-button>-->
           </li>
@@ -59,8 +106,8 @@
               <div class="bigQuestionName">
                 <h4> {{bigQuestionName_mixin(s_topics.type,index)}} </h4><!-- 题目类型名称 -->
                 <div class="allScore">
-                  <button :class="s_topics.showAllScore? 'active':''" @click="s_topics.showAllScore = !s_topics.showAllScore">统一设置题目分数</button>
-                  <el-input v-if="s_topics.showAllScore" @change="setAllScore($event,s_topics.type)" v-model="s_topics.score" placeholder="请输入分数"></el-input>
+                  <button :class="s_topics.showAllScore? 'active':''" @click="s_topics.showAllScore = !s_topics.showAllScore" v-show="isShow">统一设置题目分数</button>
+                  <el-input v-if="s_topics.showAllScore" @change="setAllScore($event,s_topics.type)" v-model="s_topics.score" placeholder="请输入分数" :disabled="isRead"></el-input>
                 </div>
               </div>
 
@@ -70,7 +117,7 @@
                   <div class="question">
                     <strong class="question_nunber">{{ topicNavIndex_mixin(s_topics.type,tIndex) }}、</strong>
                     <span v-if="isEdit(s_topics.type,tIndex)">
-                      <el-input v-model="t.question" type="textarea" autosize placeholder="请输入题干"></el-input>
+                      <el-input v-model="t.question" type="textarea" autosize placeholder="请输入题干" :disabled="isRead"></el-input>
                     </span>
                     <span v-else>{{ t.question }}</span>
                   </div>
@@ -78,30 +125,30 @@
                   <!-- 单项选择题 -->
                   <div class="userAnswer" v-if="s_topics.type==0">
                     <div class="radios">
-                      <el-radio v-for="(item, index) in t.choice" :key="index" v-model="t.correctAnswer" :label="getOption(index)">
+                      <el-radio v-for="(item, index) in t.choice" :key="index" v-model="t.correctAnswer" :label="getOption(index)" :disabled="isRead">
                         <span class="topicNavIndex">{{String.fromCharCode(65+index)}}、</span>
                         <span v-if="editInedx.type==0&&editInedx.index==tIndex">
-                          <el-input v-model="t.choice[index]" type="textarea" autosize placeholder="请输入选项内容"></el-input>
-                          <el-button class="delRadios" size="mini" type="danger" v-if="t.choice.length>2" @click="delRadios(0,tIndex,index)">
+                          <el-input v-model="t.choice[index]" type="textarea" autosize placeholder="请输入选项内容" :disabled="isRead"></el-input>
+                          <el-button class="delRadios" size="mini" type="danger" v-if="t.choice.length>2" @click="delRadios(0,tIndex,index)" v-show="isShow">
                             <i class="el-icon-close"></i>
                           </el-button>
                         </span>
                         <span v-else>{{item}}</span>
                       </el-radio>
                     </div>
-                    <el-button class="addRadios" size="mini" icon="el-icon-plus" @click="addRadios(s_topics.type,tIndex)">添加选项</el-button>
+                    <el-button class="addRadios" size="mini" icon="el-icon-plus" @click="addRadios(s_topics.type,tIndex)" v-show="isShow">添加选项</el-button>
                   </div>
 
                   <!-- 多项选择题 -->
                   <div class="userAnswer" v-if="s_topics.type==1">
                     <div class="checkbox">
-                      <el-checkbox-group v-model="t.correctAnswer">
+                      <el-checkbox-group v-model="t.correctAnswer" :disabled="isRead">
                         <el-checkbox :label="getOption(index)" v-for="(item, index) in t.choice" :key="index">
                           <span class="topicNavIndex">{{String.fromCharCode(65+index)}}、</span>
                           <span v-if="editInedx.type==1&&editInedx.index==tIndex">
-                            <el-input v-model="t.choice[index]" type="textarea" autosize placeholder="请输入选项内容"></el-input>
+                            <el-input v-model="t.choice[index]" type="textarea" autosize placeholder="请输入选项内容" :disabled="isRead"></el-input>
                             <!--<el-input v-model="t.choice[index]" type="textarea" autosize placeholder="请输入选项内容"></el-input>-->
-                            <el-button class="delRadios" size="mini" type="danger" v-if="t.choice.length>2" @click="delRadios(1,tIndex,index)">
+                            <el-button class="delRadios" size="mini" type="danger" v-if="t.choice.length>2" @click="delRadios(1,tIndex,index)" v-show="isShow">
                               <i class="el-icon-close"></i>
                             </el-button>
                           </span>
@@ -109,41 +156,41 @@
                         </el-checkbox>
                       </el-checkbox-group>
                     </div>
-                    <el-button class="addRadios" size="mini" icon="el-icon-plus" @click="addRadios(s_topics.type,tIndex)">添加选项</el-button>
+                    <el-button class="addRadios" size="mini" icon="el-icon-plus" @click="addRadios(s_topics.type,tIndex)" v-show="isShow">添加选项</el-button>
                   </div>
 
                   <!-- 判断题 -->
                   <div class="userAnswer" v-if="s_topics.type==2">
                     <div class="TrueOrFalse">
-                      <el-radio v-model="t.correctAnswer" label="true">正确</el-radio>
-                      <el-radio v-model="t.correctAnswer" label="false">错误</el-radio>
+                      <el-radio v-model="t.correctAnswer" label="T" :disabled="isRead">正确</el-radio>
+                      <el-radio v-model="t.correctAnswer" label="F" :disabled="isRead">错误</el-radio>
                     </div>
                   </div>
 
                   <!-- 填空题 -->
-                 <!-- <div class="userAnswer" v-if="s_topics.type==3">
-                  <el-button size="mini" @click="addFillSymbol(tIndex)">插入填空符</el-button>
-                  <span style="font-size:12px;">(三个下划线为一个填空符)</span>
+                  <div class="userAnswer" v-if="s_topics.type==3">
+                  <el-button size="mini" @click="addFillSymbol(tIndex)" v-show="isShow">插入填空符</el-button>
+                  <!--<span style="font-size:12px;">(三个下划线为一个填空符)</span>-->
 
                   <div class="fillInBlank">
                     <div v-for="(q, index) in fillSymbolStr(t.question)" :key="index">
-                      <el-input type="textarea" autosize placeholder="请回答" v-if="index!=fillSymbolStr(t.question).length-1" v-model="t.correctAnswer[index]">
+                      <el-input type="textarea" autosize placeholder="请回答" v-if="index!=fillSymbolStr(t.question).length-1" v-model="t.correctAnswer[index]" :disabled="isRead">
                       </el-input>
                     </div>
                   </div>
-                </div>-->
+                </div>
 
                   <!-- 简答题 -->
-<!--                  <div class="userAnswer" v-if="s_topics.type==4">
+                  <div class="userAnswer" v-if="s_topics.type==4">
                     <div class="text">
                       <strong>&nbsp;&nbsp;关键字</strong>
                       <div v-for="(q, index) in t.correctAnswer" :key="index">
-                        <el-input type="textarea" autosize placeholder="请输入关键字" v-model="t.correctAnswer[index]"> </el-input>
+                        <el-input type="textarea" autosize placeholder="请输入关键字" v-model="t.correctAnswer[index]" :disabled="isRead"> </el-input>
                       </div>
-                      <el-button class="addRadios" size="mini" icon="el-icon-plus" @click="addKeyWord(tIndex)">添加关键字</el-button>
-                      &lt;!&ndash; {{t.correctAnswer}} &ndash;&gt;
+                      <el-button class="addRadios" size="mini" icon="el-icon-plus" @click="addKeyWord(tIndex)" v-show="isShow">添加关键字</el-button>
+                      <!-- {{t.correctAnswer}} -->
                     </div>
-                  </div>-->
+                  </div>
 
                   <!-- 正确答案 -->
                   <p class="correctAnswer">
@@ -164,7 +211,7 @@
                     <div class="topicScore">
                       <strong>分值: </strong>
                       <span v-if="isEdit(s_topics.type,tIndex)">
-                        <el-input-number v-model="t.score" controls-position="right" :step="1" size="mini" :min="0"/>
+                        <el-input-number v-model="t.score" controls-position="right" :step="1" size="mini" :min="0" :disabled="isRead"/>
                       </span>
                       <span v-else>{{t.score}}</span>
                       (分)
@@ -197,8 +244,8 @@
           <div class="tool">
             <transition name="el-zoom-in-top">
               <div v-show="!isEdit(-1,-1)">
-                <el-button icon="el-icon-top" title="上移" @click="moveTopic(-1)"></el-button>
-                <el-button icon="el-icon-bottom" title="下移" @click="moveTopic(1)"></el-button>
+                <el-button icon="el-icon-top" title="上移" @click="moveTopic(-1)" v-show="isShow"></el-button>
+                <el-button icon="el-icon-bottom" title="下移" @click="moveTopic(1)" v-show="isShow"></el-button>
 
                 <!--<transition name="el-zoom-in-center">
                   <div v-show="true" style="display:inline-block;margin:0 10px">
@@ -206,7 +253,7 @@
                   </div>
                 </transition>-->
 
-                <el-button type="danger" icon="el-icon-delete" title="删除" @click="delTopic()"></el-button>
+                <el-button type="danger" icon="el-icon-delete" title="删除" @click="delTopic()" v-show="isShow"></el-button>
               </div>
             </transition>
           </div>
@@ -219,7 +266,7 @@
                 {{topicNavIndex_mixin(Topics_index,index)}}
               </span>
 
-              <span class="topic-nav-button" @click="newTopic(topics.type)">
+              <span class="topic-nav-button" @click="newTopic(topics.type)" v-show="isShow">
                 <i class="el-icon-plus"></i>
               </span>
             </li>
@@ -253,8 +300,8 @@
           { type: 0, topic_content: [], score: 0, showAllScore: false },
           { type: 1, topic_content: [], score: 0, showAllScore: false },
           { type: 2, topic_content: [], score: 0, showAllScore: false },
-          /*{ type: 3, topic_content: [], score: 0, showAllScore: false },*/
-          /*{ type: 4, topic_content: [], score: 0, showAllScore: false },*/
+          { type: 3, topic_content: [], score: 0, showAllScore: false },
+          { type: 4, topic_content: [], score: 0, showAllScore: false },
         ],
 
         // //试卷数据
@@ -293,7 +340,8 @@
         //侧导航栏是否悬浮
         isFixed: false,
         topic_nav_style: "top:0px",
-
+        isRead: false, //是否为只读模式
+        isShow:true //是否展示添加选项按钮
       };
     },
 
@@ -315,31 +363,13 @@
       },
 
       //按填空符(三个下划线)划分字符串
-      /*fillSymbolStr() {
+      fillSymbolStr() {
         return function (str) {
           let q = str.split("___");
           return q;
         };
-      },*/
-    },
-    /*watch: {
-      $route: {
-        immediate: true, // 一旦监听到路由的变化立即执行
-        handler(to, from) {
-          console.log(this.$route);
-          if(to.$route.params.opt === 'add'){
-            this.type = 'add';
-          }
-          else if(to.$route.params.opt === 'edit'){
-            this.type = 'edit'
-            let id = to.$route.params.id;
-            this.getTestPaper(id);
-          }
-          console.log("监听路由：" + JSON.stringify(to.name));
-        },
-        deep:true,
       },
-    },*/
+    },
     created() {
       console.log(this.$route)
       let type = this.$route.params.opt;
@@ -347,6 +377,11 @@
       }
       if (type === "edit") {
         this.getTestPaper();
+      }
+      if (type === "detail") {
+        this.getTestPaper();
+        this.isRead = true;
+        this.isShow = false;
       }
     },
 
@@ -356,6 +391,8 @@
     },
 
     methods: {
+
+      //获取出题者姓名
       getCreatorName:function (){
         if(this.testData.creatorName){
           return this.testData.creatorName;
@@ -433,13 +470,14 @@
             if (res.success) {
               this.$message.success({
                 content: "修改成功！",
-                duration: 6,
+                duration: 3,
                 onClose: close(),
               });
               close()
               {
                 window.location.href="about:blank";
                 window.close();
+                window.opener.location.reload();
               }
             }
             else{
@@ -453,6 +491,7 @@
               this.$message.success(res.message);
               window.location.href="about:blank";
               window.close();
+              window.opener.location.reload();
             }
             else{
               this.$message.error(res.message)
@@ -460,14 +499,6 @@
           });
         }
         console.log(this.testData);
-       /* this.$http.post(url, request).then((res) => {
-          if (res.code == 200) {
-            this.$message.success(res.msg);
-            if (url == "/createTestPaper") {
-              this.$router.push("/testPaperTch/" + res.data.examId);
-            }
-          }
-        });*/
       },
 
       //编辑试卷---获取试卷信息
@@ -488,7 +519,7 @@
           if(testData.smartTopicVoList) {
             testData.smartTopicVoList.forEach((item) => {
               //if (item.topicType == 4 || item.topicType == 3 || item.topicType == 1)
-              if (item.topicType == 1) {
+              if (item.topicType == 4 || item.topicType == 3 ||item.topicType == 1) {
                 item.correctAnswer = item.correctAnswer.split(/[\n]/g);
               }
               //按换行符分割字符串
@@ -650,20 +681,20 @@
       getOption(index){
         let option = String.fromCharCode(65+index);
         return option;
-      }
+      },
 
       //添加填空符
-/*      addFillSymbol(tIndex) {
+      addFillSymbol(tIndex) {
         var str = this.sortedTopics[3].topic_content[tIndex].question;
         // console.log(str);
         this.sortedTopics[3].topic_content[tIndex].question = str + "___";
-      },*/
+      },
 
       //添加关键字
-/*      addKeyWord(tIndex) {
+      addKeyWord(tIndex) {
         this.sortedTopics[4].topic_content[tIndex].correctAnswer.push("");
         console.log(this.sortedTopics[4].topic_content[tIndex]);
-      },*/
+      },
     },
   };
 </script>
