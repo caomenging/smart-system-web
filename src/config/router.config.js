@@ -391,7 +391,6 @@ export const constantRouterMap = [
     path: '/404',
     component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404')
   },
-
   {
     path: '/createPaper/:opt',
     name: 'createPaper',
@@ -408,33 +407,14 @@ export const constantRouterMap = [
       title: '修改试卷'
     }
   },
-
   {
-    path: '/createSurvey/:opt',
-    name: 'createSurvey',
-    component: () => import( '@/views/SmartSurvey/createSurvey.vue'),
-    meta:{
-      title:'新建调查问卷'
-    }
-  },
-  {
-    path: '/createSurvey/:opt',
-    name: 'listSurvey',
-    component: () => import( '@/views/SmartSurvey/createSurvey.vue'),
+    path: '/myExam',
+    name: 'myExam',
+    component: () => import( '@/views/SmartPaper/myExam.vue'),
     meta: {
-      title: '查询调查问卷'
+      title: '考试页面'
     }
   },
-  {
-    path: '/createSurvey/:opt/:id',
-    name: 'editSurvey',
-    component: () => import( '@/views/SmartSurvey/createSurvey.vue'),
-    meta: {
-      title: '修改调查问卷'
-    }
-  },
-
-
   /**
    * 下面代码为了简化APP端访问后台，取消侧边栏
    */
@@ -459,23 +439,10 @@ export const constantRouterMap = [
     component: () => import('@/views/SmartEvaluate/modules/SmartEvaluateForm')
   },
 
-  //纠治四风扫描二维码之前
+  //纠治四风扫描二维码
   {
     path:'/InsertReportingInformation/InsertReportingInformationDetail',
     component: () => import('@views/InsertReportingInformation/InsertReportingInformationDetail')
-
-  },
-
-  //纠治四风扫描二维码填写信息后（跳转中）
-  {
-    path:'/InsertReportingInformation/Success',
-    component: () => import('@views/InsertReportingInformation/Success')
-
-  },
-  //纠治四风填写信息跳转后
-  {
-    path:'/QRCodesame/QRcodesame',
-    component: () => import('@views/QRCodesame/QRcodesame')
 
   },
   // @TODO 政策查询

@@ -167,7 +167,7 @@ export default {
     handleStart(){
       const { href } = this.$router.resolve({
         //name: "editPaper",
-        path:'../SmartPaper/myExam',
+        path:'/SmartPaper/myExam',
         //params: {id}
       });
       const win = window.open(href, "_blank");
