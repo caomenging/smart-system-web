@@ -3,6 +3,8 @@ import * as api from '@/api/api'
 import { isURL } from '@/utils/validate'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 import onlineCommons from '@jeecg/antd-online-mini'
+import store from '@/store'
+
 
 export function timeFix() {
   const time = new Date()
@@ -83,19 +85,46 @@ export function formatDate(value, fmt) {
 
 // 生成首页路由
 export function generateIndexRouter(data) {
-let indexRouter = [{
-          path: '/',
-          name: 'dashboard',
-          //component: () => import('@/components/layouts/BasicLayout'),
-          component: resolve => require(['@/components/layouts/TabLayout'], resolve),
-          meta: { title: '首页' },
-          redirect: '/dashboard/analysis',
-          children: [
-            ...generateChildRouters(data)
-          ]
-        },{
-          "path": "*", "redirect": "/404", "hidden": true
-        }]
+  var firstUrl
+  let flag = 0
+  for(let roleId of store.getters.role)
+  {
+    if(roleId == "1463074308371800066"||roleId == "1463112478345588738")
+    {
+      flag = 2;
+    }
+  }
+  for(let roleId of store.getters.role)
+  {
+    if(roleId == "f6817f48af4fb3af11b9e8bf182f618b")
+    {
+      flag = 1;
+    }
+  }
+  if(flag === 1)
+  {
+    firstUrl = '/b5323bdac50f5bc855be3cf9c24f888a';
+  }else if(flag === 2)
+  {
+    firstUrl = '/interaction/home1';
+  }
+  else {
+    firstUrl = '/ok';
+  }
+  let indexRouter = [{
+    path: '/',
+    name: 'dashboard',
+    //component: () => import('@/components/layouts/BasicLayout'),
+    component: resolve => require(['@/components/layouts/TabLayout'], resolve),
+    meta: { title: '首页' },
+    redirect: firstUrl,
+    children: [
+      ...generateChildRouters(data)
+    ]
+  },{
+    "path": "*", "redirect": "/404", "hidden": true
+  }]
+
   return indexRouter;
 }
 

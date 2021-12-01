@@ -41,7 +41,8 @@ import ThirdLogin from './third/ThirdLogin'
 import LoginSelectTenant from './LoginSelectTenant'
 import TwoStepCaptcha from '@/components/tools/TwoStepCaptcha'
 import { getEncryptedString } from '@/utils/encryption/aesEncrypt'
-import { timeFix } from '@/utils/util'
+import { timeFix} from '@/utils/util'
+import store from '@/store'
 
 import LoginAccount from './LoginAccount'
 import LoginPhone from './LoginPhone'
@@ -127,9 +128,46 @@ export default {
       },
       //登录成功
       loginSuccess () {
-        this.$router.push({ path: "/dashboard/analysis" }).catch(()=>{
-          console.log('登录跳转首页出错,这个错误从哪里来的')
-        })
+        // this.$router.push({ path: '/dashboard/Analysis' }).catch(()=>{
+        //   console.log('登录跳转首页出错,这个错误从哪里来的')})
+        let flag = 0;
+        for(let roleId of store.getters.role)
+        {
+          if(roleId == "1463074308371800066"||roleId == "1463112478345588738")
+          {
+            this.flag = 2;
+          }
+        }
+        for(let roleId of store.getters.role)
+        {
+          if(roleId == "f6817f48af4fb3af11b9e8bf182f618b")
+          {
+            this.flag = 1;
+          }
+        }
+        if(this.flag === 1)
+        {
+          // this.$router.push({ path: '/b5323bdac50f5bc855be3cf9c24f888a' }).catch(()=>{
+          //   console.log('登录跳转首页出错,这个错误从哪里来的1')})
+          this.$router.push({ path: "/b5323bdac50f5bc855be3cf9c24f888a" }).catch(()=>{
+            console.log('登录跳转首页出错,这个错误从哪里来的1')
+          });
+        }else if(this.flag === 2)
+        {
+          // this.$router.push({ path: '/interaction/home1' }).catch(()=>{
+          //   console.log('登录跳转首页出错,这个错误从哪里来的2')})
+          this.$router.push({ path: "/interaction/home1" }).catch(()=>{
+            console.log('登录跳转首页出错,这个错误从哪里来的2')
+          });
+        }
+        else {
+          // this.$router.push({ path: '/ok' }).catch(()=>{
+          //   console.log('登录跳转首页出错,这个错误从哪里来的0')})
+          this.$router.push({ path: "/ok" }).catch(()=>{
+            console.log('登录跳转首页出错,这个错误从哪里来的ok')
+          });
+        }
+
         this.$notification.success({
           message: '欢迎',
           description: `${timeFix()}，欢迎回来`,
