@@ -7,7 +7,8 @@
         <h3 class="testName">{{ testData.testName }}</h3>
         <ul>
           <!--<li class="test-info">试卷Id: E{{ testData.id }}</li>-->
-          <li class="test-info">试卷名称: {{ testData.paperName }}</li>
+          <li class="test-info">调查问卷名称: {{ testData.paperName }}</li>
+
           <!--<li class="test-info">出卷者: {{testData.creatorName}}</li>-->
           <li class="test-info">答题时间: {{ testData.time }} 分钟</li>
           <li class="test-info">题目数量: 共 {{ testData.topicNum }} 道</li>
@@ -25,7 +26,15 @@
         <ul>
 
           <!--<li class="test-info">试卷Id: E{{ testData.id }}</li>-->
-          <li class="test-info">试卷名称: {{ testData.paperName }}</li>
+          <li class="test-info">调查问卷名称: {{ testData.paperName }}</li>
+          <el-select v-model="label" placeholder="请选择试卷类型">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
           <!--<li class="test-info">出卷者: {{testData.creatorName}}</li>-->
           <li class="test-info">答题时间: {{ testData.time }} 分钟</li>
           <li class="test-info">题目数量: 共 {{ testData.topicNum }} 道</li>
@@ -165,10 +174,20 @@
   import {postAction, httpAction, getAction ,putAction} from '@/api/manage'
 
   export default {
-    name: "MyExam",
+    name: "MySurvey",
     mixins: [testPaperMixin],
     data() {
       return {
+        model:{
+         // person_name:'',
+          //exam_grade:'',
+          excellent_number:'0',
+          good_number:'0',
+          pass_number:'0',
+          fail_number:'0',
+
+        },
+
         //按题目类型分类好的题目数据
         //题目类型==>  0:单选题  1:多选题  2:判断题  3:填空题  4:简答题
         sortedTopics: [
@@ -307,12 +326,13 @@
           }
         })
 
-        /*postAction('/smartPeople/smartPeople/add',this.model).then(res=>{
+
+
+        postAction('/smartGradeNumber/smartGradeNumber/addPersonNumber',this.model).then(res=>{
           if (res.success) {
             this.$message.success(res.message);
-
           }
-        })*/
+        })
 
       },
 
@@ -420,25 +440,11 @@
           this.isRead = true;
         }
 
-        /* 判断试卷是否打乱题目顺序 */
-/*        if (testData.disruptOrder == 1) {
-          testData.smartTopicVoList.sort(function(){
-            return Math.random() > 0.5 ? -1:1
-          })
-        }*/
 
         //按题目类型分类并保存
         var topics = this.testData.smartTopicVoList;
         var topicsIndex = 1;
-        // for (let i = 0; i < topics.length; i++) {
-        //   for (let item of this.sortedTopics) {
-        //     if (topics[i].topicType == item.topicType) {
-        //       //添加
-        //       topics[i].index = topicsIndex++;
-        //       item.topic_content.push(topics[i]);
-        //     }
-        //   }
-        // }
+
         for (let item of this.sortedTopics) {
           for (let i = 0; i < topics.length; i++) {
             if (topics[i].topicType == item.topicType) {
@@ -505,30 +511,6 @@
           this.isFixed = false;
         }
       },
-
-      /*visibilitychange(){
-        if(this.testData.switchPage === -1){
-          return
-        }
-        if (document.visibilityState == "visible") {
-          console.log('页面回来了',this.switchPage);
-        }
-        if (document.visibilityState == "hidden") {
-          this.switchPage += 1;
-
-          if(this.switchPage >= this.testData.switchPage){
-            console.log('提交试卷');
-            this.submitTestpaper();
-          }else{
-            this.$msgbox({
-              title: '警告',
-              type: 'warning',
-              message: '页面已被切换，如果次数为0将会自动提交试卷！ 剩余可以切换次数：' + (this.testData.switchPage-this.switchPage),
-              confirmButtonText: '确定',
-            });
-          }
-        }
-      },*/
 
       //点击题号定位到题目位置
       topicNav(type,index) {

@@ -26,7 +26,7 @@
             </a-col>
             <a-col :span="24">
               <a-form-model-item label="主要问题" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="majorProblem">
-                <a-input v-model="model.majorProblem" placeholder="请输入主要问题"></a-input>
+                <a-textarea v-model="model.majorProblem" rows="4" placeholder="请输入主要问题" />
               </a-form-model-item>
             </a-col>
 
@@ -39,8 +39,7 @@
               <a-form-model-item label="上传图片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="photoString">
                 <div>
                   <div>
-                    <!--                      <j-image-upload isMultiple  v-model="model.photo" ></j-image-upload>-->
-                    <a-button style="margin-left: 8px" v-on:click="imgClick()">点我拍照！</a-button>
+                    <a-button icon="camera" v-on:click="imgClick()">拍照举报</a-button>
                   </div>
                   <div v-for="(urls, index) in imgs" style="margin: 2px; border: 1px solid #ccc">
                     <div style="text-align: right; position: relative" v-on:click="deleteImg(index)">X</div>
@@ -62,7 +61,7 @@
                 <!-- 录像-- -->
                 <div>
                   <j-upload v-model="model.description">点击上传</j-upload>
-                  <input type="file" @change="openCamera($event)" accept="video/*" capture="user" />
+
                 </div>
                 <!-- accept="video/*" ：accept 属性只能与 <input type="file"> 配合使用。-->
                 <!--	它规定能够通过文件上传进行提交的文件类型。 -->
@@ -134,7 +133,11 @@ export default {
       //form: this.$form.createForm(this),
       validatorRules: {
         majorProblem: [{ required: true, message: '请输入主要问题!' }],
-        contactNumber: [{ required: true, message: '请输入联系电话!' }],
+        contactNumber: [
+          { required: true, message: '请输入联系电话!' },
+          { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!' },
+        ],
+        reportingName: [{ required: true, message: '请输入举报人姓名!' }],
         reportingTime: [{ required: true, message: '请输入举报时间!' }],
       },
 

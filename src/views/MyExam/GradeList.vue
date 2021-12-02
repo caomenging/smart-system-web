@@ -60,47 +60,7 @@ export default {
 
   },
   methods:{
-    /*addPersonNumber(){
-      console.log(this.model)
-      postAction(this.url.add,this.model).then(res=>{
-        console.log(res)
-        if(res.success){
-          this.$message.success(res.message);
-        }
 
-      })
-    }*/
-
-
-    /*gradeRankSort(exam_grade,total_score,pass_mark,excellent_number,good_number,pass_number,fail_number){
-      //成绩等级
-      //exam_grade是考试成绩,total_grade是试卷的总分,pass_mark是及格线。
-
-      excellent_number=0;//优秀人数
-      good_number=0;//良好人数
-      pass_number=0;//及格人数
-      fail_number=0;//不及格人数
-
-
-      if(exam_grade<=total_score && exam_grade>=0.9*total_score){//优秀
-
-        excellent_number += 1;
-
-      } else if(exam_grade<0.9*total_score && exam_grade>=0.8*total_score){//良好
-
-        good_number += 1;
-
-      } else if(exam_grade<0.8*total_score && exam_grade>=pass_mark){//及格
-
-        pass_number += 1;
-
-
-      }else if(exam_grade<pass_mark && exam_grade>=0){//不及格
-
-        fail_number += 1;
-
-      }
-    }*/
 
   }
 
