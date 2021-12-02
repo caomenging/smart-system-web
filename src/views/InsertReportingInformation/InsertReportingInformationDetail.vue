@@ -61,7 +61,6 @@
                 <!-- 录像-- -->
                 <div>
                   <j-upload v-model="model.description">点击上传</j-upload>
-
                 </div>
                 <!-- accept="video/*" ：accept 属性只能与 <input type="file"> 配合使用。-->
                 <!--	它规定能够通过文件上传进行提交的文件类型。 -->
@@ -115,6 +114,7 @@ export default {
       savePath: 'report',
       filePath: '',
       filePathList: [],
+      allImg: [],
       uploadAction: window._CONFIG['domianURL'] + '/sys/common/upload',
       imgs: [],
       reportingTime: '',
@@ -169,19 +169,15 @@ export default {
       this.getBase64(localFile).then((res) => {
         console.log('----------------' + res + '-----------')
         this.imgs.push(res)
-        console.log(this.dataURLtoFileFun(res, localFile.name))
-        const formData = new FormData()
-        formData.append('biz', this.savePath)
-        formData.append('file', this.dataURLtoFileFun(res, localFile.name))
-        uploadFile(formData).then((res) => {
-          console.log(res)
-          if (res.success) {
-            this.filePathList.push(res.message)
-            // console.log(this.filePathList)
-            this.filePath = this.filePathList.join()
-            this.$message.success('上传成功')
-          }
-        })
+
+        let photo = {
+          imgName: localFile.name,
+          base64: res,
+        }
+
+        this.allImg.push(photo)
+
+        // console.log(this.dataURLtoFileFun(res, localFile.name))
       })
     },
     dataURLtoFileFun(dataurl, filename) {
@@ -273,6 +269,21 @@ export default {
     handleSubmit() {
       this.model.photo = this.filePath
       console.log(this.model)
+
+      this.allImg.forEach((item) => {
+        let formData = new FormData()
+        formData.append('biz', this.savePath)
+        formData.append('file', this.dataURLtoFileFun(item.base64, item.imgName))
+        uploadFile(formData).then((res) => {
+          console.log(res)
+          if (res.success) {
+            this.filePathList.push(res.message)
+            // console.log(this.filePathList)
+            this.filePath = this.filePathList.join()
+          }
+        })
+      })
+
       postAction(this.url.add, this.model).then((res) => {
         console.log(res)
         if (res.success) {
