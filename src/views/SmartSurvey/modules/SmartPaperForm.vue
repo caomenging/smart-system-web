@@ -60,7 +60,7 @@
   import { validateDuplicateValue } from '@/utils/util'
 
   export default {
-    name: 'SmartSurveyForm',
+    name: 'SmartPaperForm',
     components: {
     },
     props: {
@@ -89,7 +89,7 @@
               { required: true, message: '请输入试卷类型!'},
            ],
            paperName: [
-              { required: true, message: '请输入调查问卷名称!'},
+              { required: true, message: '请输入试卷名称!'},
            ],
            createBy: [
               { required: true, message: '请输入命卷人!'},
@@ -148,7 +148,7 @@
               that.confirmLoading = false;
             })
           }
-
+         
         })
       },
     }

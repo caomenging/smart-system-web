@@ -11,7 +11,7 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-
+      <!--<a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
       <a-button @click="createTestPaper"  type="primary" icon="plus">新增</a-button>
       <a-button type="primary" icon="download" @click="handleExportXls('试卷表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
@@ -29,10 +29,10 @@
 
     <!-- table区域-begin -->
     <div>
-      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
+<!--      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
         <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
-      </div>
+      </div>-->
 
       <a-table
         ref="table"
@@ -69,7 +69,8 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleIssueExam(record)">发布调查问卷</a>
+          <!--<a @click="handleEdit(record)">编辑</a>-->
+          <a @click="handleIssueSurvey(record)" v-show="record.paperStatus == '0'">发布调查问卷</a>
           <a-divider type="vertical" />
           <a @click="editTestPaper(record.id)">编辑</a>
           <a-divider type="vertical" />
@@ -77,7 +78,8 @@
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
-                <a @click="handleDetail(record)">详情</a>
+                <!--<a @click="handleDetail(record)">详情</a>-->
+                <a @click="detailPage(record.id)">详情</a>
               </a-menu-item>
               <a-menu-item>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
@@ -92,6 +94,8 @@
     </div>
 
     <smart-paper-modal ref="modalForm" @ok="modalFormOk"></smart-paper-modal>
+    <!-- 发布调查问卷弹框 -->
+    <ReleaseTest ref="releaseTestDialog" @ok="modalFormOk"/>
   </a-card>
 </template>
 
@@ -100,21 +104,20 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-
+  import SmartPaperModal from './modules/SmartPaperModal'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
-  import { putAction } from '../../api/manage'
-  import SmartSurveyModal from './modules/SmartSurveyModal'
+  import { httpAction,putAction, postAction,getAction } from '@/api/manage'
+  import ReleaseTest from './modules/ReleaseTest'
 
   export default {
-    name: 'SmartSurveyList',
+    name: 'SmartPaperList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartSurveyModal
+      SmartPaperModal,ReleaseTest
     },
     data () {
       return {
         description: '试卷表管理页面',
-        paper_status:'未发布', //数据库表里没有设默认值
         // 表头
         columns: [
           {
@@ -133,12 +136,12 @@
             dataIndex: 'paperType_dictText'
           },
           {
-            title:'调查问卷名称',
+            title:'试卷名称',
             align:"center",
             dataIndex: 'paperName'
           },
           {
-            title:'调查问卷状态',
+            title:'试卷状态',
             align:"center",
             dataIndex: 'paperStatus_dictText'
           },
@@ -187,7 +190,6 @@
           deleteBatch: "/SmartPaper/smartPaper/deleteBatch",
           exportXlsUrl: "/SmartPaper/smartPaper/exportXls",
           importExcelUrl: "SmartPaper/smartPaper/importExcel",
-          edit: "/SmartPaper/smartPaper/edit/{id}",
         },
         dictOptions:{},
         superFieldList:[],
@@ -208,11 +210,11 @@
       },
     },
     methods: {
-      //去创建新的调查问卷
+      //去创建新试卷
       createTestPaper() {
         const { href } = this.$router.resolve({
           name: "createSurvey",
-          params: { opt: 'add'}
+          params: { opt: 'addSurvey'}
         });
         const win  = window.open(href, "_blank");
         const loop = setInterval(item => {
@@ -222,7 +224,7 @@
           }
         }, 1000);
       },
-      // 编辑调查问卷
+      // 编辑试卷
       editTestPaper(id) {
         console.log(id);
         const { href } = this.$router.resolve({
@@ -237,24 +239,27 @@
           }
         }, 1000);
       },
-
-      initDictConfig(){
-      },
-
-      handleIssueExam(record){//发布调查问卷
-
-        console.log(record)
-        const params = {
-          id: record.id,
-          paperStatus: '2'//已发布
-        }
-        putAction(this.url.edit, params).then((res) => {
-          if(res.success){
-            this.$router.push({path:'/MyQuestion/ContentForm'})
+      detailPage(id){
+        console.log(id);
+        const { href } = this.$router.resolve({
+          name: "editSurvey",
+          params: { opt: 'detail', id}
+        });
+        const win = window.open(href, "_blank");
+        const loop = setInterval(item => {
+          if (win.closed) {
+            clearInterval(loop);
+            this.$ref.table.reload();
           }
-        })
-
-
+        }, 1000);
+  },
+      //试卷发布
+      handleIssueSurvey(record){
+        console.log(record)
+        let paperId = record.id
+        this.$refs.releaseTestDialog.releaseTest(paperId)
+      },
+      initDictConfig(){
       },
       getSuperFieldList(){
         let fieldList=[];

@@ -306,6 +306,14 @@
             this.$message.error(res.message);
           }
         })
+
+        /*postAction('/smartPeople/smartPeople/add',this.model).then(res=>{
+          if (res.success) {
+            this.$message.success(res.message);
+
+          }
+        })*/
+
       },
 
       //获取试卷数据
