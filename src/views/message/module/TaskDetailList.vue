@@ -1,5 +1,6 @@
 <template>
   <a-card :bordered="false">
+    
     <!-- table区域-begin -->
     <!-- <div>
     <div class="ant-alert ant-alert-info" style="margin-bottom: 16px">
@@ -55,6 +56,7 @@ export default {
       upurl: window._CONFIG['domianURL'] + '/sys/common/static/',
       fileList: [],
       dataSource: [],
+      superFieldList: [],
       ipagination: {
         current: 1,
         pageSize: 10,
@@ -106,12 +108,12 @@ export default {
         {
           title: '接收人',
           align: 'center',
-          dataIndex: 'userName',
+          dataIndex: 'username',
         },
         {
           title: '接收部门',
           align: 'center',
-          dataIndex: 'userDepart',
+          dataIndex: 'orgCode_dictText',
         },
         {
           title: '是否查收',
@@ -180,6 +182,9 @@ export default {
         importExcelUrl: 'sys/annountCement/importExcel',
       },
     }
+  },
+  created() {
+    this.getSuperFieldList()
   },
   computed: {
     importExcelUrl: function () {
@@ -300,14 +305,25 @@ export default {
           method: 'get',
           url,
           responseType: 'arraybuffer',
-        }).then((data) => {
-          console.log(data)
+        })
+          .then((data) => {
+            console.log(data)
             resolve(data.data)
           })
           .catch((error) => {
             reject(error.toString())
           })
       })
+    },
+    getSuperFieldList() {
+      let fieldList = []
+      fieldList.push({
+        type: 'string',
+        value: 'orgCode',
+        text: '所属部门',
+        dictCode: 'sys_depart,depart_name,org_code',
+      })
+      this.superFieldList = fieldList
     },
   },
 }
