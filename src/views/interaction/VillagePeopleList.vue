@@ -47,7 +47,7 @@
                 <a-tree-select
                   style="width:100%"
                   :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
-                  :treeData="fuzeDepartTree"
+                  :treeData="departTree"
                   :multi="true"
                   v-model="queryParam.departId"
                   placeholder="请选择部门"
@@ -212,7 +212,7 @@
   import VillageUserModal from './modules/VillageUserModal'
   import PasswordModal from './modules/PasswordModal'
   import {putAction,getFileAccessHttpUrl} from '@/api/manage';
-  import {frozenBatch,queryFuzeIdTree} from '@/api/api'
+  import {frozenBatch,queryFuzeIdTree,queryVillageIdTree} from '@/api/api'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import SysUserAgentModal from "./modules/SysUserAgentModal";
   import JInput from '@/components/jeecg/JInput'
@@ -220,6 +220,7 @@
   import JSuperQuery from '@/components/jeecg/JSuperQuery'
   import JThirdAppButton from '@/components/jeecgbiz/thirdApp/JThirdAppButton'
   import JSelectFuzeDepartModal from '../../components/jeecgbiz/modal/JSelectFuzeDepartModal'
+  import store from '@/store'
 
   export default {
     name: "VillagePeopleList",
@@ -236,6 +237,8 @@
     },
     data() {
       return {
+        departTree:[],
+        villageDepartTree:[],
         fuzeDepartTree:[],
         description: '这是用户管理页面',
         queryParam: {peopleType:2},
@@ -352,7 +355,8 @@
       }
     },
     created() {
-      this.loadFuzeTreeData()
+      this.selectDepartTree()
+      // this.loadFuzeTreeData()
       },
     computed: {
       importExcelUrl: function(){
@@ -360,6 +364,19 @@
       }
     },
     methods: {
+      loadVillageTreeData(){
+        var that = this;
+        queryVillageIdTree().then((res)=>{
+          if(res.success){
+            that.departTree = [];
+            for (let j = 0; j < res.result.length; j++) {
+              let temp = res.result[j];
+              that.departTree.push(temp);
+            }
+          }
+
+        })
+      },
       getAvatarView: function (avatar) {
         return getFileAccessHttpUrl(avatar)
       },
@@ -367,14 +384,26 @@
         var that = this;
         queryFuzeIdTree().then((result)=>{
           if(result.success){
-            that.fuzeDepartTree = [];
+            that.departTree = [];
             for (let j = 0; j < result.result.length; j++) {
               let temp2 = result.result[j];
-              that.fuzeDepartTree.push(temp2);
+              that.departTree.push(temp2);
             }
           }
 
         })
+      },
+      selectDepartTree(){
+        console.log("3333333333333333333333333333333")
+        console.log(store.getters.departid)
+        if(store.getters.departid == "5d25a41d462242f3a8ee139ac87942e6" ){
+          this.loadVillageTreeData()
+          // this.departTree = this.villageDepartTree === "5d25a41d462242f3a8ee139ac87942e6"
+        }
+        else{
+          this.loadFuzeTreeData()
+          // this.departTree = this.fuzeDepartTree
+        }
       },
       batchFrozen: function (status) {
         if (this.selectedRowKeys.length <= 0) {

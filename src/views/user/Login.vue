@@ -133,13 +133,6 @@ export default {
         let flag = 0;
         for(let roleId of store.getters.role)
         {
-          if(roleId == "1463074308371800066"||roleId == "1463112478345588738")
-          {
-            this.flag = 2;
-          }
-        }
-        for(let roleId of store.getters.role)
-        {
           if(roleId == "f6817f48af4fb3af11b9e8bf182f618b")
           {
             this.flag = 1;
@@ -147,24 +140,13 @@ export default {
         }
         if(this.flag === 1)
         {
-          // this.$router.push({ path: '/b5323bdac50f5bc855be3cf9c24f888a' }).catch(()=>{
-          //   console.log('登录跳转首页出错,这个错误从哪里来的1')})
           this.$router.push({ path: "/b5323bdac50f5bc855be3cf9c24f888a" }).catch(()=>{
-            console.log('登录跳转首页出错,这个错误从哪里来的1')
-          });
-        }else if(this.flag === 2)
-        {
-          // this.$router.push({ path: '/interaction/home1' }).catch(()=>{
-          //   console.log('登录跳转首页出错,这个错误从哪里来的2')})
-          this.$router.push({ path: "/interaction/home1" }).catch(()=>{
-            console.log('登录跳转首页出错,这个错误从哪里来的2')
+            console.log('登录跳转智慧村务服务中心出错,这个错误从哪里来的')
           });
         }
         else {
-          // this.$router.push({ path: '/ok' }).catch(()=>{
-          //   console.log('登录跳转首页出错,这个错误从哪里来的0')})
-          this.$router.push({ path: "/ok" }).catch(()=>{
-            console.log('登录跳转首页出错,这个错误从哪里来的ok')
+          this.$router.push({ path: "/dashboard/analysis" }).catch(()=>{
+            console.log('登录跳转首页出错,这个错误从哪里来的')
           });
         }
 

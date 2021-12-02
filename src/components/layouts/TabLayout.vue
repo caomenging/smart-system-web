@@ -40,7 +40,7 @@
   import { CACHE_INCLUDED_ROUTES } from '@/store/mutation-types'
   import store from '@/store'
 
-  // const indexKey = '/dashboard/analysis'
+  const indexKey = '/dashboard/analysis'
 
   export default {
     name: 'TabLayout',
@@ -51,7 +51,7 @@
     mixins: [mixin, mixinDevice],
     data() {
       return {
-        indexKey: '',
+        smartCenter:'',
         pageList: [],
         linkList: [],
         activePage: '',
@@ -83,34 +83,16 @@
       }
     },
     created() {
-      let firstUrl =  '/ok';
-      let flag = 0;
-      for(let roleId of store.getters.role)
-      {
-        if(roleId == "1463074308371800066"||roleId == "1463112478345588738")
-        {
-          this.flag = 2;
-        }
-      }
-      for(let roleId of store.getters.role)
-      {
-        if(roleId == "f6817f48af4fb3af11b9e8bf182f618b")
-        {
-          this.flag = 1;
-        }
-      }
-      if(this.flag === 1)
-      {
-        firstUrl = '/b5323bdac50f5bc855be3cf9c24f888a';
-      }else if(this.flag === 2)
-      {
-        firstUrl = '/interaction/home1';
-      }
-      else {
-        firstUrl = '/ok';
-      }
-      this.indexKey = firstUrl
-      if (this.$route.path != firstUrl) {
+      // this.smartCenter = ''
+      // for(let roleId of store.getters.role)
+      // {
+      //   if(roleId == "f6817f48af4fb3af11b9e8bf182f618b")
+      //   {
+      //     this.smartCenter = '/b5323bdac50f5bc855be3cf9c24f888a';
+      //   }
+      // }
+
+      if (this.$route.path != indexKey) {
         this.addIndexToFirst()
       }
       // 复制一个route对象出来，不能影响原route
@@ -130,7 +112,7 @@
           this.linkList = [newRoute.fullPath]
           this.pageList = [Object.assign({},newRoute)]
         // update-begin-author:taoyan date:20200211 for: TASK #3368 【路由缓存】首页的缓存设置有问题，需要根据后台的路由配置来实现是否缓存
-        } else if(this.indexKey==newRoute.fullPath) {
+        } else if(indexKey==newRoute.fullPath) {
           //首页时 判断是否缓存 没有缓存 刷新之
           if (newRoute.meta.keepAlive === false) {
             this.routeReload()
@@ -169,7 +151,7 @@
       },
       // update-begin-author:sunjianlei date:20191223 for: 修复从单页模式切换回多页模式后首页不居第一位的 BUG
       device() {
-        if (this.multipage && this.linkList.indexOf(this.indexKey) === -1) {
+        if (this.multipage && this.linkList.indexOf(indexKey) === -1 ) {
           this.addIndexToFirst()
         }
       },
@@ -181,14 +163,14 @@
       addIndexToFirst() {
         this.pageList.splice(0, 0, {
           name: 'dashboard-analysis',
-          path: this.indexKey,
-          fullPath: this.indexKey,
+          path: indexKey,
+          fullPath: indexKey,
           meta: {
             icon: 'dashboard',
             title: '首页'
           }
         })
-        this.linkList.splice(0, 0, this.indexKey)
+        this.linkList.splice(0, 0, indexKey)
       },
       // update-end-author:sunjianlei date:20191223 for: 修复从单页模式切换回多页模式后首页不居第一位的 BUG
 
@@ -196,7 +178,7 @@
       changeTitle(title) {
         let projectTitle = "智慧村务"
         // 首页特殊处理
-        if (this.$route.path === this.indexKey) {
+        if (this.$route.path === indexKey) {
           document.title = projectTitle
         } else {
           document.title = title + ' · ' + projectTitle
@@ -221,10 +203,14 @@
         this[action](key)
       },
       remove(key) {
-        if (key == this.indexKey) {
+        if (key == indexKey) {
           this.$message.warning('首页不能关闭!')
           return
         }
+        // if (key == this.smartCenter) {
+        //   this.$message.warning('服务中心不能关闭!')
+        //   return
+        // }
         if (this.pageList.length === 1) {
           this.$message.warning('这是最后一页，不能再关闭了啦')
           return
@@ -304,7 +290,7 @@
       /* update_end author:wuxianquan date:20190828 for: 关闭当前tab页，供子页面调用->望菜单能配置外链，直接弹出新页面而不是嵌入iframe #428 */
       closeOthers(pageKey) {
         let index = this.linkList.indexOf(pageKey)
-        if (pageKey == this.indexKey || pageKey.indexOf('?ticke=')>=0) {
+        if (pageKey == indexKey || pageKey.indexOf('?ticke=')>=0) {
           this.linkList = this.linkList.slice(index, index + 1)
           this.pageList = this.pageList.slice(index, index + 1)
           this.activePage = this.linkList[0]
@@ -318,7 +304,7 @@
         }
       },
       closeLeft(pageKey) {
-        if (pageKey == this.indexKey) {
+        if (pageKey == indexKey) {
           return
         }
         let tempList = [...this.pageList]
