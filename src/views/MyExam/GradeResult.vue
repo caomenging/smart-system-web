@@ -103,9 +103,7 @@
 </template>
 
 <script>
-import ChartCard from '@/components/ChartCard'
-import ACol from "ant-design-vue/es/grid/Col"
-import ATooltip from "ant-design-vue/es/tooltip/Tooltip"
+
 import '@/assets/less/TableExpand.less'
 import { mixinDevice } from '@/utils/mixin'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
@@ -163,11 +161,11 @@ export default {
         }*/
       ],
       url: {
-        list: "/smartPeople/smartPeople/list",
-        delete: "/smartPeople/smartPeople/delete",
-        deleteBatch: "/smartPeople/smartPeople/deleteBatch",
-        exportXlsUrl: "/smartPeople/smartPeople/exportXls",
-        importExcelUrl: "smartPeople/smartPeople/importExcel",
+        list: "/SmartPaper/smartPeople/list",
+        delete: "/SmartPaper/smartPeople/delete",
+        deleteBatch: "/SmartPaper/smartPeople/deleteBatch",
+        exportXlsUrl: "/SmartPaper/smartPeople/exportXls",
+        importExcelUrl: "/SmartPaper/smartPeople/importExcel",
 
       },
       dictOptions:{},

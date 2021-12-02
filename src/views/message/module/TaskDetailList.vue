@@ -1,5 +1,6 @@
 <template>
   <a-card :bordered="false">
+    
     <!-- table区域-begin -->
     <!-- <div>
     <div class="ant-alert ant-alert-info" style="margin-bottom: 16px">
@@ -32,7 +33,10 @@
 </template>
 
 <script>
- import { filterObj } from '@/utils/util';
+import axios from 'axios'
+import JSZip from 'jszip'
+import FileSaver from 'file-saver'
+import { filterObj } from '@/utils/util'
 import SysAnnouncementModal from '@/views/system/modules/SysAnnouncementModal'
 import { doReleaseData, doReovkeData } from '@/api/api'
 import { getAction } from '@/api/manage'
@@ -50,7 +54,9 @@ export default {
     return {
       description: '系统通告表管理页面',
       upurl: window._CONFIG['domianURL'] + '/sys/common/static/',
+      fileList: [],
       dataSource: [],
+      superFieldList: [],
       ipagination: {
         current: 1,
         pageSize: 10,
@@ -102,12 +108,12 @@ export default {
         {
           title: '接收人',
           align: 'center',
-          dataIndex: 'userName',
+          dataIndex: 'username',
         },
         {
           title: '接收部门',
           align: 'center',
-          dataIndex: 'userDepart',
+          dataIndex: 'orgCode_dictText',
         },
         {
           title: '是否查收',
@@ -126,12 +132,12 @@ export default {
           align: 'center',
           dataIndex: 'isDelay',
           customRender: function (text) {
-              if(text == 0) {
-                  return '否'
-              } else {
-                  return '是'
-              }
-          }
+            if (text == 0) {
+              return '否'
+            } else {
+              return '是'
+            }
+          },
         },
         {
           title: '查看时间',
@@ -147,6 +153,16 @@ export default {
           title: '提交文件',
           align: 'center',
           dataIndex: 'submitFile',
+          customRender: (text) => {
+            if (text) {
+              const url = 'http://127.0.0.1:8080/smart-system/sys/common/static/' + text
+              const type = text.split('.').pop()
+              const name = text.split('/').pop().split('_')[0]
+              const fileName = name + '.' + type
+              console.log(url)
+              return <a href={url}>{fileName}</a>
+            }
+          },
         },
         {
           title: '操作',
@@ -166,6 +182,9 @@ export default {
         importExcelUrl: 'sys/annountCement/importExcel',
       },
     }
+  },
+  created() {
+    this.getSuperFieldList()
   },
   computed: {
     importExcelUrl: function () {
@@ -234,10 +253,77 @@ export default {
       }
       var param = Object.assign(sqp, this.queryParam, this.isorter, this.filters)
       param.anntId = this.anntId
-    //   param.field = this.getQueryField()
+      //   param.field = this.getQueryField()
       param.pageNo = this.ipagination.current
       param.pageSize = this.ipagination.pageSize
       return filterObj(param)
+    },
+    handleBatchDownload(title) {
+      const params = {
+        anntId: this.anntId,
+      }
+      getAction('/sys/sysAnnouncementSend/getSubmitFileList', params).then((res) => {
+        if (res.success) {
+          res.result.map((item) => {
+            if (item) {
+              this.fileList.push(this.upurl + item)
+            }
+          })
+          console.log(this.fileList)
+          this.downFileZip(title)
+        }
+      })
+    },
+    downFileZip(title) {
+      const data = this.fileList // 需要下载打包的路径, 可以是本地相对路径, 也可以是跨域的全路径
+      const zip = new JSZip()
+      const cache = {}
+      const promises = []
+      data.forEach((item) => {
+        console.log(item)
+        const promise = this.getFile(item).then((data) => {
+          // 下载文件, 并存成ArrayBuffer对象
+          const arr_name = item.split('/')
+          const file_name = arr_name[arr_name.length - 1] // 获取文件名
+          zip.file(file_name, data, { binary: true }) // 逐个添加文件
+          cache[file_name] = data
+        })
+        promises.push(promise)
+      })
+
+      Promise.all(promises).then(() => {
+        zip.generateAsync({ type: 'blob' }).then((content) => {
+          // 生成二进制流
+          FileSaver.saveAs(content, title + '提交附件' + '.zip') // 利用file-saver保存文件
+        })
+      })
+    },
+    getFile(url) {
+      console.log(url)
+      return new Promise((resolve, reject) => {
+        axios({
+          method: 'get',
+          url,
+          responseType: 'arraybuffer',
+        })
+          .then((data) => {
+            console.log(data)
+            resolve(data.data)
+          })
+          .catch((error) => {
+            reject(error.toString())
+          })
+      })
+    },
+    getSuperFieldList() {
+      let fieldList = []
+      fieldList.push({
+        type: 'string',
+        value: 'orgCode',
+        text: '所属部门',
+        dictCode: 'sys_depart,depart_name,org_code',
+      })
+      this.superFieldList = fieldList
     },
   },
 }

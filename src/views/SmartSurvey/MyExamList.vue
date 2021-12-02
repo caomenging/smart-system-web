@@ -4,6 +4,19 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="考试名称">
+              <a-input placeholder="请输入考试名称" v-model="queryParam.examName"></a-input>
+            </a-form-item>
+          </a-col>
+
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <!--              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>-->
+
+            </span>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -14,7 +27,7 @@
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
 
       <!-- 高级查询区域 -->
-
+<!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
@@ -25,6 +38,10 @@
 
     <!-- table区域-begin -->
     <div>
+<!--      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
+        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
+        <a style="margin-left: 24px" @click="onClearSelected">清空</a>
+      </div>-->
 
       <a-table
         ref="table"
@@ -61,30 +78,15 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleIssueExam(record)">发布考试</a>
-          <a-divider type="vertical" />
-          <a @click="handleEdit(record)">查看</a>
+          <a @click="handleStart(record)">开始答题</a>
 
-          <a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <a @click="handleDetail(record)">详情</a>
-              </a-menu-item>
-              <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a>删除</a>
-                </a-popconfirm>
-              </a-menu-item>
-            </a-menu>
-          </a-dropdown>
+
         </span>
 
       </a-table>
     </div>
 
-    <smart-paper-modal ref="modalForm" @ok="modalFormOk"></smart-paper-modal>
+    <smart-exam-information-modal ref="modalForm" @ok="modalFormOk"></smart-exam-information-modal>
   </a-card>
 </template>
 
@@ -93,22 +95,17 @@
 import '@/assets/less/TableExpand.less'
 import { mixinDevice } from '@/utils/mixin'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-import SmartPaperModal from '../SmartPaper/modules/SmartPaperModal'
-//import SmartExamInformationModal from '../SmartExamInformation/modules/SmartExamInformationModal'
-//import SmartPeopleModal from '../SmartPeople/modules/SmartPeopleModal'
-import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
-import { putAction, getAction } from '@/api/manage'
+import SmartExamInformationModal from '../SmartExamInformation/modules/SmartExamInformationModal'
 
 export default {
-  name: 'MyQuestionList',
+  name: 'SmartExamInformationList',
   mixins:[JeecgListMixin, mixinDevice],
   components: {
-    SmartPaperModal/*,SmartExamInformationModal,SmartPeopleModal*/
+    SmartExamInformationModal
   },
   data () {
     return {
-      description: '试卷发布页面',
-      paper_status:'未发布', //数据库表里没有设默认值
+      description: '开始答题',
       // 表头
       columns: [
         {
@@ -122,22 +119,20 @@ export default {
           }
         },
         {
-          title:'试卷类型',
+          title:'考试名称',
           align:"center",
-          dataIndex: 'paperType_dictText'
+          dataIndex: 'examName'
         },
         {
-          title:'试卷名称',
+          title:'考试开始时间',
           align:"center",
-          dataIndex: 'paperName'
+          dataIndex: 'examStarttime'
         },
         {
-          title:'试卷状态',
+          title:'考试结束时间',
           align:"center",
-          dataIndex: 'paperStatus_dictText'
+          dataIndex: 'examEndtime'
         },
-
-
         {
           title: '操作',
           dataIndex: 'action',
@@ -148,13 +143,12 @@ export default {
         }
       ],
       url: {
-        add:"/SmartPaper/smartPaper/add",
-        edit: "/SmartPaper/smartPaper/edit/{id}",
-        list: "/SmartPaper/smartPaper/list",
-        delete: "/SmartPaper/smartPaper/delete",
-        deleteBatch: "/SmartPaper/smartPaper/deleteBatch",
-        exportXlsUrl: "/SmartPaper/smartPaper/exportXls",
-        importExcelUrl: "SmartPaper/smartPaper/importExcel",
+        add:"/smartExamInformation/smartExamInformation/add",
+        list: "/smartExamInformation/smartExamInformation/list",
+        delete: "/smartExamInformation/smartExamInformation/delete",
+        deleteBatch: "/smartExamInformation/smartExamInformation/deleteBatch",
+        exportXlsUrl: "/smartExamInformation/smartExamInformation/exportXls",
+        importExcelUrl: "smartExamInformation/smartExamInformation/importExcel",
 
       },
       dictOptions:{},
@@ -170,38 +164,21 @@ export default {
     },
   },
   methods: {
+    handleStart(){
+      const { href } = this.$router.resolve({
+        //name: "editPaper",
+        path:'/SmartPaper/myExam',
+        //params: {id}
+      });
+      const win = window.open(href, "_blank");
+    },
     initDictConfig(){
     },
-
-    handleIssueExam(record){//试卷发布
-
-      console.log(record)
-
-
-      const params = {
-        id: record.id,
-        paperStatus: '2'
-      }
-      putAction(this.url.edit, params).then((res) => {
-        if(res.success){
-          this.$router.push({path:'/MyQuestion/ContentForm'})
-        }
-      })
-
-
-    },
-
     getSuperFieldList(){
       let fieldList=[];
-      fieldList.push({type:'string',value:'paperType',text:'试卷类型',dictCode:'paper_type'})
-      fieldList.push({type:'string',value:'paperName',text:'试卷名称',dictCode:''})
-      fieldList.push({type:'string',value:'paperStatus',text:'试卷状态',dictCode:'paper_status'})
-      fieldList.push({type:'string',value:'createBy',text:'命卷人',dictCode:''})
-      fieldList.push({type:'datetime',value:'createTime',text:'命卷日期'})
-      fieldList.push({type:'string',value:'topicNum',text:'题目数量',dictCode:''})
-      fieldList.push({type:'string',value:'totalScore',text:'总分',dictCode:''})
-      fieldList.push({type:'string',value:'passMark',text:'及格线',dictCode:''})
-      fieldList.push({type:'int',value:'time',text:'答题时间',dictCode:''})
+      fieldList.push({type:'string',value:'examName',text:'考试名称',dictCode:''})
+      fieldList.push({type:'datetime',value:'examStarttime',text:'考试开始时间'})
+      fieldList.push({type:'datetime',value:'examEndtime',text:'考试结束时间'})
       this.superFieldList = fieldList
     }
   }

@@ -415,6 +415,32 @@ export const constantRouterMap = [
       title: '考试页面'
     }
   },
+
+  {
+    path: '/createSurvey/:opt',
+    name: 'createSurvey',
+    component: () => import( '@/views/SmartSurvey/createSurvey.vue'),
+    meta:{
+      title:'新建调查问卷'
+    },
+  },
+  {
+    path: '/createSurvey/:opt/:id',
+    name: 'editSurvey',
+    component: () => import( '@/views/SmartSurvey/createSurvey.vue'),
+    meta: {
+      title: '修改调查问卷'
+    }
+  },
+  {
+    path: '/mySurvey',
+    name: 'mySurvey',
+    component: () => import( '@/views/SmartSurvey/mySurvey.vue'),
+    meta: {
+      title: '调查问卷页面'
+    }
+  },
+
   /**
    * 下面代码为了简化APP端访问后台，取消侧边栏
    */

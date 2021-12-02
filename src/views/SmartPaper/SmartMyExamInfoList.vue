@@ -1,3 +1,4 @@
+<!--开始考试-->
 <template>
   <a-card :bordered="false">
     <!-- 查询区域 -->
@@ -167,7 +168,7 @@
           deleteBatch: "/SmartPaper/smartMyExam/deleteBatch",
           exportXlsUrl: "/SmartPaper/smartMyExam/exportXls",
           importExcelUrl: "SmartPaper/smartMyExam/importExcel",
-          
+
         },
         dictOptions:{},
         superFieldList:[],

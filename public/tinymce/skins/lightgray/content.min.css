@@ -340,7 +340,7 @@ pre[class*="language-"] {
   border-radius: 3px;
   color: white;
   display: none;
-  font-family: sans-serif;
+  font-family: Microsoft YaHei;
   font-size: 12px;
   line-height: 14px;
   margin: 5px 10px;
@@ -547,7 +547,7 @@ pre[class*="language-"] {
   content: '-';
 }
 body {
-  font-family: sans-serif;
+  font-family: Microsoft YaHei;
 }
 table {
   border-collapse: collapse;

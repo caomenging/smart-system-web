@@ -26,7 +26,7 @@
             </a-col>
             <a-col :span="24">
               <a-form-model-item label="主要问题" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="majorProblem">
-                <a-input v-model="model.majorProblem" placeholder="请输入主要问题"></a-input>
+                <a-textarea v-model="model.majorProblem" rows="4" placeholder="请输入主要问题" />
               </a-form-model-item>
             </a-col>
 
@@ -39,8 +39,7 @@
               <a-form-model-item label="上传图片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="photoString">
                 <div>
                   <div>
-                    <!--                      <j-image-upload isMultiple  v-model="model.photo" ></j-image-upload>-->
-                    <a-button style="margin-left: 8px" v-on:click="imgClick()">点我拍照！</a-button>
+                    <a-button icon="camera" v-on:click="imgClick()">拍照举报</a-button>
                   </div>
                   <div v-for="(urls, index) in imgs" style="margin: 2px; border: 1px solid #ccc">
                     <div style="text-align: right; position: relative" v-on:click="deleteImg(index)">X</div>
@@ -62,7 +61,6 @@
                 <!-- 录像-- -->
                 <div>
                   <j-upload v-model="model.description">点击上传</j-upload>
-                  <input type="file" @change="openCamera($event)" accept="video/*" capture="user" />
                 </div>
                 <!-- accept="video/*" ：accept 属性只能与 <input type="file"> 配合使用。-->
                 <!--	它规定能够通过文件上传进行提交的文件类型。 -->
@@ -116,6 +114,7 @@ export default {
       savePath: 'report',
       filePath: '',
       filePathList: [],
+      allImg: [],
       uploadAction: window._CONFIG['domianURL'] + '/sys/common/upload',
       imgs: [],
       reportingTime: '',
@@ -134,7 +133,11 @@ export default {
       //form: this.$form.createForm(this),
       validatorRules: {
         majorProblem: [{ required: true, message: '请输入主要问题!' }],
-        contactNumber: [{ required: true, message: '请输入联系电话!' }],
+        contactNumber: [
+          { required: true, message: '请输入联系电话!' },
+          { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!' },
+        ],
+        reportingName: [{ required: true, message: '请输入举报人姓名!' }],
         reportingTime: [{ required: true, message: '请输入举报时间!' }],
       },
 
@@ -166,19 +169,15 @@ export default {
       this.getBase64(localFile).then((res) => {
         console.log('----------------' + res + '-----------')
         this.imgs.push(res)
-        console.log(this.dataURLtoFileFun(res, localFile.name))
-        const formData = new FormData()
-        formData.append('biz', this.savePath)
-        formData.append('file', this.dataURLtoFileFun(res, localFile.name))
-        uploadFile(formData).then((res) => {
-          console.log(res)
-          if (res.success) {
-            this.filePathList.push(res.message)
-            // console.log(this.filePathList)
-            this.filePath = this.filePathList.join()
-            this.$message.success('上传成功')
-          }
-        })
+
+        let photo = {
+          imgName: localFile.name,
+          base64: res,
+        }
+
+        this.allImg.push(photo)
+
+        // console.log(this.dataURLtoFileFun(res, localFile.name))
       })
     },
     dataURLtoFileFun(dataurl, filename) {
@@ -270,6 +269,21 @@ export default {
     handleSubmit() {
       this.model.photo = this.filePath
       console.log(this.model)
+
+      this.allImg.forEach((item) => {
+        let formData = new FormData()
+        formData.append('biz', this.savePath)
+        formData.append('file', this.dataURLtoFileFun(item.base64, item.imgName))
+        uploadFile(formData).then((res) => {
+          console.log(res)
+          if (res.success) {
+            this.filePathList.push(res.message)
+            // console.log(this.filePathList)
+            this.filePath = this.filePathList.join()
+          }
+        })
+      })
+
       postAction(this.url.add, this.model).then((res) => {
         console.log(res)
         if (res.success) {

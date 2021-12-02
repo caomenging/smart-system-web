@@ -29,10 +29,10 @@
 
     <!-- table区域-begin -->
     <div>
-      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
+<!--      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
         <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
-      </div>
+      </div>-->
 
       <a-table
         ref="table"
@@ -70,7 +70,7 @@
 
         <span slot="action" slot-scope="text, record">
           <!--<a @click="handleEdit(record)">编辑</a>-->
-          <a @click="handleIssueExam(record)" v-show="record.paperStatus == '0'">发布考试</a>
+          <a @click="handleIssueSurvey(record)" v-show="record.paperStatus == '0'">发布调查问卷</a>
           <a-divider type="vertical" />
           <a @click="editTestPaper(record.id)">编辑</a>
           <a-divider type="vertical" />
@@ -94,7 +94,7 @@
     </div>
 
     <smart-paper-modal ref="modalForm" @ok="modalFormOk"></smart-paper-modal>
-    <!-- 发布考试弹框 -->
+    <!-- 发布调查问卷弹框 -->
     <ReleaseTest ref="releaseTestDialog" @ok="modalFormOk"/>
   </a-card>
 </template>
@@ -213,8 +213,8 @@
       //去创建新试卷
       createTestPaper() {
         const { href } = this.$router.resolve({
-          name: "createPaper",
-          params: { opt: 'add'}
+          name: "createSurvey",
+          params: { opt: 'addSurvey'}
         });
         const win  = window.open(href, "_blank");
         const loop = setInterval(item => {
@@ -228,7 +228,7 @@
       editTestPaper(id) {
         console.log(id);
         const { href } = this.$router.resolve({
-          name: "editPaper",
+          name: "editSurvey",
           params: { opt: 'edit', id}
         });
         const win = window.open(href, "_blank");
@@ -242,7 +242,7 @@
       detailPage(id){
         console.log(id);
         const { href } = this.$router.resolve({
-          name: "editPaper",
+          name: "editSurvey",
           params: { opt: 'detail', id}
         });
         const win = window.open(href, "_blank");
@@ -254,7 +254,7 @@
         }, 1000);
   },
       //试卷发布
-      handleIssueExam(record){
+      handleIssueSurvey(record){
         console.log(record)
         let paperId = record.id
         this.$refs.releaseTestDialog.releaseTest(paperId)
@@ -277,6 +277,3 @@
     },
   }
 </script>
-<style scoped>
-  @import '~@assets/less/common.less';
-</style>

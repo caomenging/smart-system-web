@@ -11,31 +11,20 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button button @click="perServe" type="primary" icon="serve">保存</a-button>
-      <a-button button @click="Cancel" type="primary" icon="cancel">取消</a-button>
-      <!--      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
-      <a-button type="primary" icon="download" @click="handleExportXls('举报信息表')">导出</a-button>
-      <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-              <a-button type="primary" icon="import">导入</a-button>
-            </a-upload>-->
+
       <!-- 高级查询区域 -->
-      <!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
+
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
-          <!--          <a-menu-item key="2" @click="batchDeal"><a-icon type="delete"/>处理</a-menu-item>-->
         </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
-
     </div>
 
     <!-- table区域-begin -->
     <div>
-      <!--      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
-              <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
-              <a style="margin-left: 24px" @click="onClearSelected">清空</a>
-            </div>-->
+<
 
       <a-table
         ref="table"
@@ -70,38 +59,27 @@
             下载
           </a-button>
         </template>
+
         <span slot="action" slot-scope="text, record">
-         <a @click="handleEdit(record)">查看举报信息</a>
+          <a @click="handleEdit(record)">处理举报信息</a>
+
+          <a-divider type="vertical" />
+          <a-dropdown>
+            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
+            <a-menu slot="overlay">
+              <a-menu-item>
+                <a @click="handleDetail(record)">详情</a>
+              </a-menu-item>
+              <a-menu-item>
+                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+                  <a>删除</a>
+                </a-popconfirm>
+              </a-menu-item>
+            </a-menu>
+          </a-dropdown>
         </span>
 
-<!--        <span slot="dealResult" slot-scope="text, record">
-         <a @click="handleAgree(record)">接受举报</a>
-          <a-divider type="vertical" />
-         <a @click="handleDisagree(record)">不接受举报</a>
-        </span>-->
-
-        <!--         <a @click="handleLook(record)">查看</a>
-                 <a-divider type="vertical" />
-                 <a @click="handleExportXls('举报信息表')" type="primary" icon="download" >导出</a>-->
-
-        <!--          <a-divider type="vertical" />
-                  <a-dropdown>
-                    <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-                    <a-menu slot="overlay">
-                      <a-menu-item>
-                        <a @click="handleDetail(record)">详情</a>
-                      </a-menu-item>
-                    <a-menu-item>
-                        <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                          <a>删除</a>
-                        </a-popconfirm>
-                     </a-menu-item>
-                  </a-dropdown>-->
-
-
-
       </a-table>
-
     </div>
 
     <smart-reporting-information-modal ref="modalForm" @ok="modalFormOk"/>
@@ -110,142 +88,112 @@
 
 <script>
 
-import {  postAction,getAction } from '@/api/manage'
-import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-import SmartReportingInformationModal from './modules/SmartReportingInformationModal'
-import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
-import '@/assets/less/TableExpand.less'
+  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import SmartReportingInformationModal from './modules/SmartReportingInformationModal'
+  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
+  import '@/assets/less/TableExpand.less'
 
-
-export default {
-  name: "SmartReportingInformationList",
-  mixins:[JeecgListMixin],
-  components: {
-    SmartReportingInformationModal
-  },
-  data () {
-    return {
-      description: '举报信息表管理页面',
-      // 表头
-      columns: [
-        {
-          title: '#',
-          dataIndex: '',
-          key:'rowIndex',
-          width:60,
-          align:"center",
-          customRender:function (t,r,index) {
-            return parseInt(index)+1;
+  export default {
+    name: "SmartReportingInformationList",
+    mixins:[JeecgListMixin],
+    components: {
+      SmartReportingInformationModal
+    },
+    data () {
+      return {
+        description: '举报信息表管理页面',
+        // 表头
+        columns: [
+          {
+            title: '#',
+            dataIndex: '',
+            key:'rowIndex',
+            width:60,
+            align:"center",
+            customRender:function (t,r,index) {
+              return parseInt(index)+1;
+            }
+          },
+          {
+            title:'被反映人信息',
+            align:"center",
+            dataIndex: 'reflectedInformation'
+          },
+          {
+            title:'被反映人单位',
+            align:"center",
+            dataIndex: 'reflectedDepartid'
+          },
+          {
+            title:'主要问题',
+            align:"center",
+            dataIndex: 'majorProblem'
+          },
+          {
+            title:'举报时间',
+            align:"center",
+            dataIndex: 'reportingTime'
+          },
+          {
+            title:'处理状态',
+            align:"center",
+            dataIndex: 'processingResult_dictText'
+          },
+          {
+            title:'举报人姓名',
+            align:"center",
+            dataIndex: 'reportingName'
+          },
+          {
+            title:'联系电话',
+            align:"center",
+            dataIndex: 'contactNumber'
+          },
+          {
+            title: '操作',
+            dataIndex: 'action',
+            align:"center",
+            fixed:"right",
+            width:147,
+            scopedSlots: { customRender: 'action' },
           }
-        },
-        {
-          title:'被反映人信息',
-          align:"center",
-          dataIndex: 'reflectedInformation'
-        },
-        {
-          title:'被反映人单位',
-          align:"center",
-          dataIndex: 'reflectedDepartid'
-        },
-        {
-          title:'主要问题',
-          align:"center",
-          dataIndex: 'majorProblem'
-        },
-        {
-          title:'举报时间',
-          align:"center",
-          dataIndex: 'reportingTime'
-        },
-        {
-          title:'处理状态',
-          align:"center",
-          dataIndex: 'processingResult_dictText'
-        },
-        {
-          title:'举报人姓名',
-          align:"center",
-          dataIndex: 'reportingName'
-        },
-        {
-          title:'联系电话',
-          align:"center",
-          dataIndex: 'contactNumber'
-        },
-        {
-          title: '操作',
-          dataIndex: 'action',
-          align:"center",
-          fixed:"right",
-          width:147,
-          scopedSlots: { customRender: 'action' },
-        }
-        /*{
-          title: '处理举报信息',
-          dataIndex: 'dealResult',
-          align:"center",
-          fixed:"right",
-          width:147,
-          scopedSlots: { customRender: 'dealResult' },
-        }*/
-      ],
-      url: {
-        list: "/smartReportingInformation/smartReportingInformation/list",
-        delete: "/smartReportingInformation/smartReportingInformation/delete",
-        deleteBatch: "/smartReportingInformation/smartReportingInformation/deleteBatch",
-        exportXlsUrl: "/smartReportingInformation/smartReportingInformation/exportXls",
-        importExcelUrl: "smartReportingInformation/smartReportingInformation/importExcel",
+        ],
+        url: {
+          list: "/smartReportingInformation/smartReportingInformation/list",
+          delete: "/smartReportingInformation/smartReportingInformation/delete",
+          deleteBatch: "/smartReportingInformation/smartReportingInformation/deleteBatch",
+          exportXlsUrl: "/smartReportingInformation/smartReportingInformation/exportXls",
+          importExcelUrl: "smartReportingInformation/smartReportingInformation/importExcel",
 
+        },
+        dictOptions:{},
+        superFieldList:[],
+      }
+    },
+    created() {
+      this.getSuperFieldList();
+    },
+    computed: {
+      importExcelUrl: function(){
+        return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
+      }
+    },
+    methods: {
+      initDictConfig(){
       },
-      dictOptions:{},
-      superFieldList:[],
-    }
-  },
-  created() {
-    this.getSuperFieldList();
-  },
-  computed: {
-    importExcelUrl: function(){
-      return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-    }
-  },
-  methods: {
-    initDictConfig(){
-    },
-    perServe(){//保存
-
-           this.$message.success("保存成功")
-
-           this.$router.push({ path: '/QRCodesame/QRcodesame' });
-
-
-
-
-    },
-    Cancel(){//取消
-      this.$router.push({path: '/QRCodesame/QRcodesame'});
-
-    },
-    /*handleAgree(){//处理(接受举报)
-
-      //this.$router.push({path: '/SmartReportingInformation/SmartReportingInformationList'});
-    },
-    handleDisagree(){//处理(不接受举报)
-      //this.$router.push({path: '/SmartReportingInformation/SmartReportingInformationList'});
-
-    }*/
-     getSuperFieldList(){
+      getSuperFieldList(){
         let fieldList=[];
          fieldList.push({type:'string',value:'reflectedInformation',text:'被反映人信息',dictCode:''})
          fieldList.push({type:'string',value:'reflectedDepartid',text:'被反映人单位',dictCode:''})
          fieldList.push({type:'string',value:'majorProblem',text:'主要问题',dictCode:''})
+         fieldList.push({type:'Blob',value:'photo',text:'照片',dictCode:''})
+         fieldList.push({type:'Text',value:'description',text:'附件',dictCode:''})
          fieldList.push({type:'datetime',value:'reportingTime',text:'举报时间'})
          fieldList.push({type:'string',value:'processingResult',text:'处理状态',dictCode:'processing_result'})
          fieldList.push({type:'string',value:'reportingName',text:'举报人姓名',dictCode:''})
          fieldList.push({type:'string',value:'contactNumber',text:'联系电话',dictCode:''})
         this.superFieldList = fieldList
       }
+    }
   }
-}
 </script>
