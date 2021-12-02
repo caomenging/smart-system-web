@@ -10,9 +10,9 @@
           </a-col>
           <a-col :span="24">
             <!-- TODO 审核层级还未实现 -->
-            <a-form-model-item label="审核层级" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="typeLevel">
+            <!-- <a-form-model-item label="审核层级" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="typeLevel">
               <a-input-number v-model="model.typeLevel" placeholder="请输入审核层级" style="width: 100%" />
-            </a-form-model-item>
+            </a-form-model-item> -->
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="是否审核" :labelCol="labelCol" :wrapperCol="wrapperCol">
@@ -33,9 +33,9 @@
             </a-form-model-item>
           </a-col> -->
           <a-col :span="24">
-            <a-form-model-item label="表单路径" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="typeModralPath">
+            <!-- <a-form-model-item label="表单路径" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="typeModralPath">
               <a-input v-model="model.typeModralPath" placeholder="请输入表单路径"></a-input>
-            </a-form-model-item>
+            </a-form-model-item> -->
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="填表说明" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="typeDesc">
