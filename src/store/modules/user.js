@@ -13,6 +13,7 @@ const user = {
     tenantid:'',
     welcome: '',
     avatar: '',
+    departid: '',
     role:[],
     permissionList: [],
     info: {},
@@ -44,6 +45,9 @@ const user = {
     SET_TENANT: (state, id) => {
       state.tenantid = id
     },
+    SET_DEPART: (state, id) => {
+      state.departid = id
+    },
     SET_SYS_SAFE_MODE: (state, sysSafeMode) => {
       if (typeof sysSafeMode === 'boolean') {
         state.sysSafeMode = sysSafeMode
@@ -70,6 +74,7 @@ const user = {
             commit('SET_NAME', { username: userInfo.username,realname: userInfo.realname, welcome: welcome() })
             commit('SET_AVATAR', userInfo.avatar)
             commit('SET_ROLE', userInfo.roleId)
+            commit('SET_DEPART', userInfo.departId)
             resolve(response)
           }else{
             resolve(response)
@@ -95,6 +100,7 @@ const user = {
             commit('SET_NAME', { username: userInfo.username,realname: userInfo.realname, welcome: welcome() })
             commit('SET_AVATAR', userInfo.avatar)
             commit('SET_ROLE', userInfo.roleId)
+            commit('SET_DEPART', userInfo.departId)
             resolve(response)
           }else{
             reject(response)
@@ -120,6 +126,7 @@ const user = {
         commit('SET_NAME', { username: userInfo.username,realname: userInfo.realname, welcome: welcome() })
         commit('SET_AVATAR', userInfo.avatar)
             commit('SET_ROLE', userInfo.roleId)
+            commit('SET_DEPART', userInfo.departId)
         resolve(response)
       }else{
         reject(response)
@@ -206,6 +213,7 @@ const user = {
             commit('SET_NAME', { username: userInfo.username,realname: userInfo.realname, welcome: welcome() })
             commit('SET_AVATAR', userInfo.avatar)
             commit('SET_ROLE', userInfo.roleId)
+            commit('SET_DEPART', userInfo.departId)
             resolve(response)
           }else{
             reject(response)

@@ -20,83 +20,39 @@
     </template>
 
     <a-spin :spinning="confirmLoading">
-      <a-form-model ref="form" :model="model" :rules="validatorRules">
 
-        <a-form-model-item label="用户账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="username">
-          <a-input placeholder="请输入用户账号" v-model="model.username" :readOnly="!!model.id"/>
-        </a-form-model-item>
-
-        <template v-if="!model.id">
-          <a-form-model-item label="登录密码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="password" >
-            <a-input type="password" placeholder="请输入登录密码" v-model="model.password" />
-          </a-form-model-item>
-  
-          <a-form-model-item label="确认密码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="confirmpassword" >
-            <a-input type="password" @blur="handleConfirmBlur" placeholder="请重新输入登录密码" v-model="model.confirmpassword"/>
-          </a-form-model-item>
-        </template>
-
-        <a-form-model-item label="用户姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="realname">
-          <a-input placeholder="请输入用户姓名" v-model="model.realname" />
+      <a-form-model ref="form" :model="model" :rules="validatorRules" >
+        <a-form-model-item label="姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="realname">
+          <a-input placeholder="请输入姓名" v-model="model.realname" />
         </a-form-model-item>
 
         <a-form-model-item label="工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="workNo">
           <a-input placeholder="请输入工号" v-model="model.workNo" />
         </a-form-model-item>
 
-<!--        <a-form-model-item label="职务" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
-<!--          <j-select-position placeholder="请选择职务" :multiple="false" v-model="model.post"/>-->
-<!--        </a-form-model-item>-->
+        <a-form-model-item label="角色分配" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="selectedroles" >
+          <a-radio-group v-model="model.selectedroles">
+            <a-radio :value="1463074308371800066">
+              村长
+            </a-radio>
+            <a-radio :value="1463112478345588738">
+              村民
+            </a-radio>
+          </a-radio-group>
+        </a-form-model-item>
 
-<!--        <a-form-model-item-->
-<!--          :labelCol="labelCol"-->
-<!--          :wrapperCol="wrapperCol"-->
-<!--          prop="positionRank"-->
-<!--          label="职级"-->
-<!--        >-->
-<!--          <j-dict-select-tag-->
-<!--            placeholder="请选择职级"-->
-<!--            dictCode="position_rank"-->
-<!--            v-model="model.positionRank"-->
-<!--          />-->
-<!--        </a-form-model-item>-->
-        <a-form-model-item label="角色分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!roleDisabled" >
-                    <a-radio-group v-model="model.selectedroles" placeholder="请选择角色">
-                      <a-radio value="1463074308371800066">
-                        村长
-                      </a-radio>
-                      <a-radio value="1463112478345588738">
-                        村民
-                      </a-radio>
-                    </a-radio-group>
-                </a-form-model-item>
-
-<!--        部门分配-->
-        <a-form-model-item label="单位分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">
-         <!-- <j-select-depart v-model="model.selecteddeparts" :multi="false" @back="backDepartInfo" :backDepart="true" :treeOpera="true"/>-->
+        <a-form-model-item label="单位分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled" prop="selecteddeparts">
+          <!-- <j-select-depart v-model="model.selecteddeparts" :multi="false" @back="backDepartInfo" :backDepart="true" :treeOpera="true"/>-->
           <a-tree-select
             style="width:100%"
             :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
-            :treeData="fuzeDepartTree"
+            :treeData="departTree"
             v-model="model.selecteddeparts"
             placeholder="请选择部门"
             allow-clear
             tree-default-expand-all>
           </a-tree-select>
         </a-form-model-item>
-<!--        <a-form-item label="单位">-->
-<!--          <j-select-fuze-depart placeholder="请选择单位"  v-model="queryParam.orgCode" customReturnField='orgCode' :multi="false"   :treeOpera="true"></j-select-fuze-depart>-->
-<!--        </a-form-item>-->
-
-        <!--租户分配-->
-        <!--<a-form-model-item label="租户分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">
-          <j-multi-select-tag
-            :disabled="disableSubmit"
-            v-model="model.relTenantIds"
-            :options="tenantsOptions"
-            placeholder="请选择租户">
-          </j-multi-select-tag>
-        </a-form-model-item>-->
 
         <a-form-model-item label="身份" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-radio-group  v-model="model.userIdentity"  @change="identityChange">
@@ -104,42 +60,34 @@
             <a-radio :value="2">单位负责人</a-radio>
           </a-radio-group>
         </a-form-model-item>
+
         <a-form-model-item label="负责单位" :labelCol="labelCol" :wrapperCol="wrapperCol"  v-if="departIdShow==true">
           <!--<j-select-depart v-model="model.departIds" :multi="true" @back="backDepartInfo" :backDepart="true" :treeOpera="true"></j-select-depart>-->
           <a-tree-select
             style="width:100%"
             :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
-            :treeData="fuzeDepartTree"
+            :treeData="departTree"
             v-model="model.departIds"
             placeholder="请选择部门"
             allow-clear
             tree-default-expand-all>
           </a-tree-select>
 
-<!--&lt;!&ndash;              <j-select-fuze-depart placeholder="请选择负责单位"  v-model="queryParam.orgCode" customReturnField='orgCode' :multi="false"   :treeOpera="true"></j-select-fuze-depart>&ndash;&gt;-->
-
-
-<!--          &lt;!&ndash;<j-multi-select-tag-->
-<!--            :disabled="disableSubmit"-->
-<!--            v-model="model.departIds"-->
-<!--            :options="nextDepartOptions"-->
-<!--            placeholder="请选择负责单位">-->
-<!--          </j-multi-select-tag>&ndash;&gt;-->
         </a-form-model-item>
 
         <a-form-model-item label="头像" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <j-image-upload class="avatar-uploader" text="上传" v-model="model.avatar" ></j-image-upload>
         </a-form-model-item>
 
-        <a-form-model-item label="生日" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-model-item label="出生日期" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-date-picker
             style="width: 100%"
-            placeholder="请选择生日"
+            placeholder="请选择出生日期"
             v-model="model.birthday"
             :format="dateFormat"
             :getCalendarContainer="node => node.parentNode"/>
         </a-form-model-item>
-     
+
         <a-form-model-item label="性别" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-select  v-model="model.sex"  placeholder="请选择性别" :getPopupContainer= "(target) => target.parentNode">
             <a-select-option :value="1">男</a-select-option>
@@ -148,17 +96,17 @@
         </a-form-model-item>
 
         <a-form-model-item
-        :labelCol="labelCol"
-        :wrapperCol="wrapperCol"
-        prop="politicalStatus"
-        required
-        label="政治面貌"
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          prop="politicalStatus"
+          required
+          label="政治面貌"
         >
-        <j-dict-select-tag
-          placeholder="请选择政治面貌"
-          dictCode="political_status"
-          v-model="model.politicalStatus"
-        />
+          <j-search-select-tag
+            placeholder="请选择政治面貌"
+            dict="political_status"
+            v-model="model.politicalStatus"
+          />
         </a-form-model-item>
 
         <a-form-model-item label="入党日期" :labelCol="labelCol" :wrapperCol="wrapperCol">
@@ -176,9 +124,9 @@
           prop="ethnicity"
           label="民族"
         >
-          <j-dict-select-tag
+          <j-search-select-tag
             placeholder="请选择民族"
-            dictCode="ethnicity"
+            dict="ethnicity"
             v-model="model.ethnicity"
           />
         </a-form-model-item>
@@ -195,9 +143,19 @@
           <a-input placeholder="请输入座机" v-model="model.telephone" />
         </a-form-model-item>
 
-        <a-form-model-item label="工作流引擎" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag  v-model="model.activitiSync"  placeholder="请选择是否同步工作流引擎" :type="'radio'" dictCode="activiti_sync"/>
+        <a-form-model-item label="用户账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="username">
+          <a-input placeholder="请输入用户账号" v-model="model.username" :readOnly="!!model.id"/>
         </a-form-model-item>
+
+        <template v-if="!model.id">
+          <a-form-model-item label="登录密码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="password" >
+            <a-input type="password" placeholder="请输入登录密码" v-model="model.password" />
+          </a-form-model-item>
+
+          <a-form-model-item label="确认密码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="confirmpassword" >
+            <a-input type="password" @blur="handleConfirmBlur" placeholder="请重新输入登录密码" v-model="model.confirmpassword"/>
+          </a-form-model-item>
+        </template>
 
       </a-form-model>
     </a-spin>
@@ -217,16 +175,19 @@
   import Vue from 'vue'
   import { ACCESS_TOKEN } from "@/store/mutation-types"
   import { getAction } from '@/api/manage'
-  import { addVillageUser,editVillageUser,queryUserRole,queryall } from '@/api/api'
+  import { addVillageUser,editVillageUser,queryUserRole,queryall} from '@/api/api'
   import { disabledAuthFilter } from "@/utils/authFilter"
-  import { duplicateCheck ,queryFuzeIdTree} from '@/api/api'
+  import { duplicateCheck ,queryFuzeIdTree,queryVillageIdTree} from '@/api/api'
+  import store from '@/store'
   export default {
     name: "VillageUserModal",
     components: {
     },
     data () {
       return {
+        departTree:[],
         fuzeDepartTree:[],
+        villageDepartTree:[],
         departDisabled: false, //是否是我的部门调用该页面
         roleDisabled: false, //是否是角色维护调用该页面
         modalWidth:800,
@@ -237,21 +198,22 @@
         disableSubmit:false,
         dateFormat:"YYYY-MM-DD",
         validatorRules:{
-          username:[{required: true, message: '请输入用户账号!'},
-                    {validator: this.validateUsername,}],
-          password: [{required: true,pattern:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/,message: '密码由8位数字、大小写字母和特殊符号组成!'},
-                     {validator: this.validateToNextPassword,trigger: 'change'}],
-          confirmpassword: [{required: true, message: '请重新输入登录密码!',},
-                            { validator: this.compareToFirstPassword,}],
-          realname:[{ required: true, message: '请输入用户名称!' }],
-          phone: [{required: true, message: '请输入手机号!'}, {validator: this.validatePhone}],
+          username:[
+            {validator: this.validateUsername,}],
+          password: [{pattern:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/,message: '密码由8位数字、大小写字母和特殊符号组成!'},
+            {validator: this.validateToNextPassword,trigger: 'change'}],
+          confirmpassword: [{ validator: this.compareToFirstPassword,}],
+          realname:[{ required: true, message: '请输入姓名!' }],
+          phone: [{required: true, message: '请输入手机号码!'}, {validator: this.validatePhone}],
           email: [{validator: this.validateEmail}],
           roles:{},
-          workNo:[ { required: true, message: '请输入工号' },
-                  { validator: this.validateWorkNo }],
+          /*workNo:[ { required: true, message: '请输入工号' },
+            { validator: this.validateWorkNo }],*/
           telephone: [{ pattern: /^0\d{2,3}-[1-9]\d{6,7}$/, message: '请输入正确的座机号码' },],
           ethnicity:  [{ required: true, message: '请选择民族' }],
-          politicalStatus:  [{ required: true, message: '请选择政治面貌' }]
+          politicalStatus:  [{ required: true, message: '请选择政治面貌' }],
+          selectedroles:  [{ required: true, message: '请选择村民的角色' }],
+          selecteddeparts:  [{ required: true, message: '请选择村民所在村' }]
         },
         departIdShow:false,
         title:"操作",
@@ -285,6 +247,7 @@
       this.headers = {"X-Access-Token":token}
       this.initRoleList()
       this.initTenantList()
+      this.selectDepartTree()
     },
     computed:{
       uploadAction:function () {
@@ -294,19 +257,34 @@
     methods: {
       loadFuzeTreeData(){
         var that = this;
+        this.departTee = []
         queryFuzeIdTree().then((result)=>{
           if(result.success){
-            that.fuzeDepartTree = [];
+            that.departTree = [];
             for (let j = 0; j < result.result.length; j++) {
               let temp2 = result.result[j];
-              that.fuzeDepartTree.push(temp2);
+              that.departTree.push(temp2);
+            }
+          }
+
+        })
+      },
+      loadVillageTreeData(){
+        var that = this;
+        this.departTee = []
+        queryVillageIdTree().then((res)=>{
+          if(res.success){
+            that.departTree = [];
+            for (let j = 0; j < res.result.length; j++) {
+              let temp = res.result[j];
+              that.departTree.push(temp);
             }
           }
 
         })
       },
       add () {
-        this.loadFuzeTreeData();
+        // this.loadFuzeTreeData();
         this.refresh();
         this.edit({activitiSync:'1',userIdentity:1});
       },
@@ -574,6 +552,16 @@
             this.departIdShow=false;
         }else{
             this.departIdShow=true;
+        }
+      },
+      selectDepartTree(){
+        if(store.getters.departid == "5d25a41d462242f3a8ee139ac87942e6" ){
+          this.loadVillageTreeData()
+          // this.departTree = this.villageDepartTree
+        }
+        else{
+          this.loadFuzeTreeData()
+          // this.departTree = this.fuzeDepartTree
         }
       }
     }
