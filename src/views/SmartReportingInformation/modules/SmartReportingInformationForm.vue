@@ -96,7 +96,7 @@
 
 <script>
 
-  import { putAction,getAction } from '@/api/manage'
+  import { putAction,getAction,postAction } from '@/api/manage'
   import { FormTypes,getRefPromise,VALIDATE_NO_PASSED } from '@/utils/JEditableTableUtil'
   import { JEditableTableModelMixin } from '@/mixins/JEditableTableModelMixin'
   import { validateDuplicateValue } from '@/utils/util'
@@ -286,6 +286,17 @@
             this.submitCallback();
           }
         })
+        //处理通过发送短信
+        postAction("/smartReportingInformation/smartReportingInformation/sendMessageAgree"
+          , this.model).then((res) => {
+          console.log(res)
+          if (res.success) {
+            //this.$message.success('发送成功')
+
+          } else {
+            //this.$message.warning('发送失败')
+          }
+        })
         getAction(this.url.list,params).then((res)=>{
           if(res.success){
             this.$router.go(0)
@@ -293,7 +304,6 @@
         })
 
       },
-
       handleDisagree(){
         //不受理
         const params={
@@ -306,11 +316,25 @@
             this.submitCallback();
           }
         })
+        //处理不通过发送短信
+        postAction("/smartReportingInformation/smartReportingInformation/sendMessageDisagree"
+          , this.model).then((res) => {
+          console.log(res)
+          if (res.success) {
+            /*this.$message.success('发送成功')*/
+
+          } else {
+            // this.$message.warning('发送失败')
+          }
+        })
         getAction(this.url.list,params).then((res)=>{
           if(res.success){
             this.$router.go(0)
           }
         })
+
+
+
       },
       handleFinish(){
         //已完结
@@ -324,11 +348,24 @@
             this.submitCallback();
           }
         })
+
+        postAction("/smartReportingInformation/smartReportingInformation/sendMessageFinish"
+          , this.model).then((res) => {
+          console.log(res)
+          if (res.success) {
+            /*this.$message.success('发送成功')*/
+
+          } else {
+            // this.$message.warning('发送失败')
+          }
+        })
+
         getAction(this.url.list,params).then((res)=>{
           if(res.success){
             this.$router.go(0)
           }
         })
+
       },
 
       submitCallback(){

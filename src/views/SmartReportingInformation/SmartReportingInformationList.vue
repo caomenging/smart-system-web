@@ -1,4 +1,9 @@
 <template>
+<!--提示音-->
+<!--  <audio id="audio" preload="auto" loop>-->
+<!--    <source src="./system.mp3" type="audio/mp3" />-->
+<!--  </audio>-->
+
   <a-card :bordered="false">
     <!-- 查询区域 -->
     <div class="table-page-search-wrapper">
@@ -24,7 +29,7 @@
 
     <!-- table区域-begin -->
     <div>
-<
+
 
       <a-table
         ref="table"
@@ -97,7 +102,7 @@
     name: "SmartReportingInformationList",
     mixins:[JeecgListMixin],
     components: {
-      SmartReportingInformationModal
+      SmartReportingInformationModal,
     },
     data () {
       return {
@@ -179,6 +184,31 @@
       }
     },
     methods: {
+     /* play () {
+        this.lastRunTime = Date.now()
+        let audio = document.querySelector('#audio')
+        if (!this.isPlaying) {
+          audio.play()
+          this.isPlaying = true
+        }
+        let timeOut = setTimeout(() => {
+          this.stop(timeOut)
+        }, 15000)
+      },
+      stop (timeOut) {
+        this.currentTime = Date.now()
+        let audio = document.querySelector('#audio')
+        if (this.currentTime - this.lastRunTime < 15000) {
+        } else {
+          if (this.isPlaying) {
+            audio.currentTime = 0
+            audio.pause()
+            this.isPlaying = false
+          }
+        }
+        clearTimeout(timeOut)
+      },*/
+
       initDictConfig(){
       },
       getSuperFieldList(){

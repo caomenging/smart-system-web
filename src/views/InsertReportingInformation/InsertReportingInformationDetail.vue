@@ -294,6 +294,17 @@ export default {
           this.$message.warning('请输入信息')
         }
       })
+
+      postAction("/smartReportingInformation/smartReportingInformation/sendMessage"
+        , this.model).then((res) => {
+        console.log(res)
+        if (res.success) {
+          //this.$message.success('发送成功')
+
+        } else {
+          //this.$message.warning('发送失败')
+        }
+      })
     },
   },
 }
