@@ -4,6 +4,16 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-model-item label="试卷名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="paperName">
+              <j-input placeholder="请输入试卷名称" v-model="queryParam.paperName"></j-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+            </span>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -117,6 +127,9 @@
     },
     data () {
       return {
+        queryParam:{
+          paperType:'2'
+        },
         description: '试卷表管理页面',
         // 表头
         columns: [
