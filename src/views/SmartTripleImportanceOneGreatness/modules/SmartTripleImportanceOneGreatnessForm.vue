@@ -30,7 +30,7 @@
             </a-form-model-item>
           </a-col>
 
-          <a-col :span="24" >
+<!--          <a-col :span="24" >
             <a-form-model-item label="参会人员" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingPeople">
               <select-user-by-dep v-model="model.meetingPeople" @info="getMeetingPeople"/>
             </a-form-model-item>
@@ -39,7 +39,7 @@
             <a-form-model-item label="参会人员姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingPeopleName" v-show="false">
               <a-input v-model="model.meetingPeopleName"/>
             </a-form-model-item>
-          </a-col>
+          </a-col>-->
 
 
           <a-col :span="24">
@@ -185,11 +185,12 @@
           columns: [
             {
               title: '参会人员',
-              key: 'pacpaId',
-              type: FormTypes.input,
+              key: 'pacpaName',
+              type: FormTypes.sel_user,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
+              validateRules: [{ required: true, message: '${title}不能为空' }],
             },
           ]
         },

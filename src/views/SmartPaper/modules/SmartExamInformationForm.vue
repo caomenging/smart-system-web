@@ -1,50 +1,50 @@
 <template>
-  <j-modal
-    :title="title"
-    :width="width"
-    :visible="visible"
-    :confirmLoading="confirmLoading"
-    switchFullscreen
-    @ok="handleOk"
-    @cancel="handleCancel"
-    cancelText="关闭">
-    <a-spin :spinning="confirmLoading">
-      <a-form-model ref="form" :model="model" :rules="validatorRules">
+  <a-spin :spinning="confirmLoading">
+    <j-form-container :disabled="formDisabled">
+      <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24">
-            <a-form-model-item label="参会人员ID" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="participantId">
-              <a-input v-model="model.participantId"placeholder="请输入参会人员ID" ></a-input>
+            <a-form-model-item label="考试名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="examName">
+              <a-input v-model="model.examName" placeholder="请输入考试名称"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="考试开始时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="examStarttime">
+              <j-date placeholder="请选择考试开始时间"  v-model="model.examStarttime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="考试结束时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="examEndtime">
+              <j-date placeholder="请选择考试结束时间"  v-model="model.examEndtime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
             </a-form-model-item>
           </a-col>
         </a-row>
       </a-form-model>
-    </a-spin>
-  </j-modal>
+    </j-form-container>
+  </a-spin>
 </template>
 
 <script>
 
-  import { httpAction } from '@/api/manage'
+  import { httpAction, getAction } from '@/api/manage'
   import { validateDuplicateValue } from '@/utils/util'
 
   export default {
-    name: "SmartDemocraticLifePeopleModal",
+    name: 'SmartExamInformationForm',
     components: {
     },
-    props:{
-      mainId:{
-        type:String,
-        required:false,
-        default:''
+    props: {
+      //表单禁用
+      disabled: {
+        type: Boolean,
+        default: false,
+        required: false
       }
     },
     data () {
       return {
-        title:"操作",
-        width:800,
-        visible: false,
         model:{
-        },
+         },
         labelCol: {
           xs: { span: 24 },
           sm: { span: 5 },
@@ -53,19 +53,23 @@
           xs: { span: 24 },
           sm: { span: 16 },
         },
-
         confirmLoading: false,
         validatorRules: {
         },
         url: {
-          add: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/addSmartDemocraticLifePeople",
-          edit: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/editSmartDemocraticLifePeople",
+          add: "/SmartPaper/smartMyExam/add",
+          edit: "/SmartPaper/smartMyExam/edit",
+          queryById: "/SmartPaper/smartMyExam/queryById"
         }
-
       }
     },
+    computed: {
+      formDisabled(){
+        return this.disabled
+      },
+    },
     created () {
-    //备份model原始值
+       //备份model原始值
       this.modelDefault = JSON.parse(JSON.stringify(this.model));
     },
     methods: {
@@ -76,12 +80,7 @@
         this.model = Object.assign({}, record);
         this.visible = true;
       },
-      close () {
-        this.$emit('close');
-        this.visible = false;
-        this.$refs.form.clearValidate();
-      },
-      handleOk () {
+      submitForm () {
         const that = this;
         // 触发表单验证
         this.$refs.form.validate(valid => {
@@ -96,7 +95,6 @@
               httpurl+=this.url.edit;
                method = 'put';
             }
-            this.model['meetingId'] = this.mainId
             httpAction(httpurl,this.model,method).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);
@@ -106,18 +104,11 @@
               }
             }).finally(() => {
               that.confirmLoading = false;
-              that.close();
             })
-          }else{
-             return false
           }
+         
         })
       },
-      handleCancel () {
-        this.close()
-      },
-
-
     }
   }
 </script>

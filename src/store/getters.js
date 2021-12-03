@@ -6,6 +6,8 @@ const getters = {
   color: state => state.app.color,
   token: state => state.user.token,
   avatar: state => {state.user.avatar = Vue.ls.get(USER_INFO).avatar; return state.user.avatar},
+  role: state => state.user.role,
+  departid: state => state.user.departid,
   username: state => state.user.username,
   nickname: state => {state.user.realname = Vue.ls.get(USER_INFO).realname; return state.user.realname},
   welcome: state => state.user.welcome,

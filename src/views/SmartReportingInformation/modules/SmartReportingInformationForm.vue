@@ -20,6 +20,11 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
+            <a-form-model-item label="照片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="photoString">
+              <j-image-upload isMultiple  v-model="model.photo" ></j-image-upload>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
             <a-form-model-item label="附件" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="description">
               <j-upload v-model="model.description"  ></j-upload>
             </a-form-model-item>
@@ -30,8 +35,8 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="处理状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="processingType">
-              <j-dict-select-tag type="list" v-model="model.processingType" dictCode="processing_type" placeholder="请选择处理状态" />
+            <a-form-model-item label="处理状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="processingResult">
+              <j-dict-select-tag type="list" v-model="model.processingResult" dictCode="processing_result" placeholder="请选择处理状态" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -44,7 +49,19 @@
               <a-input v-model="model.contactNumber" placeholder="请输入联系电话" ></a-input>
             </a-form-model-item>
           </a-col>
+
         </a-row>
+        <a-form-model-item
+          :wrapperCol="{ span: 24 }"
+          style="text-align: center"
+        >
+          <a-button @click="handleAgree" type="primary"
+                    :disabled="disableSubmit">已受理</a-button>
+          <a-button @click="handleDisagree" style="margin-left: 8px" type="primary"
+                    :disabled="disableSubmit">不受理</a-button>
+          <a-button @click="handleFinish" style="margin-left: 8px" type="primary"
+                    :disabled="disableSubmit">已完结</a-button>
+        </a-form-model-item>
       </a-form-model>
     </j-form-container>
       <!-- 子表单区域 -->
@@ -79,16 +96,17 @@
 
 <script>
 
-  import { getAction } from '@/api/manage'
+  import { putAction,getAction,postAction } from '@/api/manage'
   import { FormTypes,getRefPromise,VALIDATE_NO_PASSED } from '@/utils/JEditableTableUtil'
   import { JEditableTableModelMixin } from '@/mixins/JEditableTableModelMixin'
   import { validateDuplicateValue } from '@/utils/util'
-
+  import AFormItem from 'ant-design-vue/lib/form/FormItem'
 
   export default {
     name: 'SmartReportingInformationForm',
     mixins: [JEditableTableModelMixin],
     components: {
+      AFormItem
     },
     data() {
       return {
@@ -108,6 +126,8 @@
           xs: { span: 24 },
           sm: { span: 20 },
         },
+        disableSubmit: false,
+        processing_result:'未受理',
         model:{
         },
         // 新增时子表默认添加几行空数据
@@ -116,9 +136,14 @@
            reportingTime: [
               { required: true, message: '请输入举报时间!'},
            ],
-           processingType: [
+           processingResult: [
               { required: true, message: '请输入处理状态!'},
            ],
+          contactNumber: [
+            { required: true, message: '请输入联系电话!' },
+            { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!' },
+          ],
+
         },
         refKeys: ['smartReportingSurvey', 'smartReportingDescription', ],
         tableKeys:['smartReportingSurvey', 'smartReportingDescription', ],
@@ -248,6 +273,104 @@
       },
       validateError(msg){
         this.$message.error(msg)
+      },
+      handleAgree(){
+        //处理中
+        const params = {
+          id: this.model.id,
+          processingResult: '2'
+        }
+        putAction(this.url.edit, params).then((res) => {
+          if(res.success) {
+            this.$message.success(res.message)
+            this.submitCallback();
+          }
+        })
+        //处理通过发送短信
+        postAction("/smartReportingInformation/smartReportingInformation/sendMessageAgree"
+          , this.model).then((res) => {
+          console.log(res)
+          if (res.success) {
+            //this.$message.success('发送成功')
+
+          } else {
+            //this.$message.warning('发送失败')
+          }
+        })
+        getAction(this.url.list,params).then((res)=>{
+          if(res.success){
+            this.$router.go(0)
+          }
+        })
+
+      },
+      handleDisagree(){
+        //不受理
+        const params={
+          id:this.model.id,
+          processingResult: '3'
+        }
+        putAction(this.url.edit,params).then((res)=>{
+          if(res.success){
+            this.$message.success(res.message)
+            this.submitCallback();
+          }
+        })
+        //处理不通过发送短信
+        postAction("/smartReportingInformation/smartReportingInformation/sendMessageDisagree"
+          , this.model).then((res) => {
+          console.log(res)
+          if (res.success) {
+            /*this.$message.success('发送成功')*/
+
+          } else {
+            // this.$message.warning('发送失败')
+          }
+        })
+        getAction(this.url.list,params).then((res)=>{
+          if(res.success){
+            this.$router.go(0)
+          }
+        })
+
+
+
+      },
+      handleFinish(){
+        //已完结
+        const params={
+          id:this.model.id,
+          processingResult: '4'
+        }
+        putAction(this.url.edit,params).then((res)=>{
+          if(res.success){
+            this.$message.success(res.message)
+            this.submitCallback();
+          }
+        })
+
+        postAction("/smartReportingInformation/smartReportingInformation/sendMessageFinish"
+          , this.model).then((res) => {
+          console.log(res)
+          if (res.success) {
+            /*this.$message.success('发送成功')*/
+
+          } else {
+            // this.$message.warning('发送失败')
+          }
+        })
+
+        getAction(this.url.list,params).then((res)=>{
+          if(res.success){
+            this.$router.go(0)
+          }
+        })
+
+      },
+
+      submitCallback(){
+        this.$emit('ok');
+
       },
 
     }

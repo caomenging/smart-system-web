@@ -1,6 +1,6 @@
 <template>
   <j-modal
-    title="选择部门"
+    title="选择单位"
     :width="modalWidth"
     :visible="visible"
     :confirmLoading="confirmLoading"

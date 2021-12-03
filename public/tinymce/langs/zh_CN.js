@@ -235,6 +235,8 @@ tinymce.addI18n('zh_CN',{
 "Header": "\u8868\u5934",
 "Body": "\u8868\u4f53",
 "Footer": "\u8868\u5c3e",
+"Fonts": "\u5b57\u4f53",
+"Line height": "\u884c\u9ad8",
 "Border color": "\u8fb9\u6846\u989c\u8272",
 "Insert template": "\u63d2\u5165\u6a21\u677f",
 "Templates": "\u6a21\u677f",

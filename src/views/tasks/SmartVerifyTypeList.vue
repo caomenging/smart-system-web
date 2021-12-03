@@ -11,10 +11,10 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+      <!-- <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button> -->
       <a-button type="primary" icon="download" @click="handleExportXls('审核任务类型编码表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
+        <!-- <a-button type="primary" icon="import">导入</a-button> -->
       </a-upload>
       <!-- 高级查询区域 -->
       <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
@@ -153,11 +153,11 @@
               }
             }
           },
-          {
-            title:'表单路径',
-            align:"center",
-            dataIndex: 'typeModralPath'
-          },
+          // {
+          //   title:'表单路径',
+          //   align:"center",
+          //   dataIndex: 'typeModralPath'
+          // },
           {
             title:'填表说明',
             align:"center",

@@ -13,6 +13,8 @@ const user = {
     tenantid:'',
     welcome: '',
     avatar: '',
+    departid: '',
+    role:[],
     permissionList: [],
     info: {},
     // 系统安全模式
@@ -31,6 +33,9 @@ const user = {
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
     },
+    SET_ROLE: (state, role) => {
+      state.role = role
+    },
     SET_PERMISSIONLIST: (state, permissionList) => {
       state.permissionList = permissionList
     },
@@ -39,6 +44,9 @@ const user = {
     },
     SET_TENANT: (state, id) => {
       state.tenantid = id
+    },
+    SET_DEPART: (state, id) => {
+      state.departid = id
     },
     SET_SYS_SAFE_MODE: (state, sysSafeMode) => {
       if (typeof sysSafeMode === 'boolean') {
@@ -65,6 +73,8 @@ const user = {
             commit('SET_INFO', userInfo)
             commit('SET_NAME', { username: userInfo.username,realname: userInfo.realname, welcome: welcome() })
             commit('SET_AVATAR', userInfo.avatar)
+            commit('SET_ROLE', userInfo.roleId)
+            commit('SET_DEPART', userInfo.departId)
             resolve(response)
           }else{
             resolve(response)
@@ -89,6 +99,8 @@ const user = {
             commit('SET_INFO', userInfo)
             commit('SET_NAME', { username: userInfo.username,realname: userInfo.realname, welcome: welcome() })
             commit('SET_AVATAR', userInfo.avatar)
+            commit('SET_ROLE', userInfo.roleId)
+            commit('SET_DEPART', userInfo.departId)
             resolve(response)
           }else{
             reject(response)
@@ -113,6 +125,8 @@ const user = {
         commit('SET_INFO', userInfo)
         commit('SET_NAME', { username: userInfo.username,realname: userInfo.realname, welcome: welcome() })
         commit('SET_AVATAR', userInfo.avatar)
+            commit('SET_ROLE', userInfo.roleId)
+            commit('SET_DEPART', userInfo.departId)
         resolve(response)
       }else{
         reject(response)
@@ -198,6 +212,8 @@ const user = {
             commit('SET_INFO', userInfo)
             commit('SET_NAME', { username: userInfo.username,realname: userInfo.realname, welcome: welcome() })
             commit('SET_AVATAR', userInfo.avatar)
+            commit('SET_ROLE', userInfo.roleId)
+            commit('SET_DEPART', userInfo.departId)
             resolve(response)
           }else{
             reject(response)

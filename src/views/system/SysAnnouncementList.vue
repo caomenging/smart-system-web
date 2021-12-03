@@ -5,8 +5,16 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :span="6">
-            <a-form-item label="标题">
-              <a-input placeholder="请输入标题" v-model="queryParam.titile"></a-input>
+            <a-form-item label="消息类型">
+              <a-select
+                v-model="queryParam.msgCategory"
+                placeholder="请选择消息类型"
+              >
+                <a-select-option value="1">通知公告</a-select-option>
+                <!-- <a-select-option value="2">系统消息</a-select-option> -->
+                <a-select-option value="2">廉政提醒</a-select-option>
+                <a-select-option value="3">任务下发</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
           <!--<a-col :span="6">
@@ -86,6 +94,9 @@
                   <a>删除</a>
                 </a-popconfirm>
               </a-menu-item>
+              <a-menu-item v-if="record.sendStatus == 1">
+                  <a @click="checkDetail(record)">详情</a>
+              </a-menu-item>
               <a-menu-item v-if="record.sendStatus == 0">
                 <a-popconfirm title="确定发布吗?" @confirm="() => releaseData(record.id)">
                   <a>发布</a>
@@ -103,6 +114,7 @@
           </a-dropdown>
         </span>
       </a-table>
+      <show-announcement ref="ShowAnnouncement"></show-announcement>
     </div>
     <!-- table区域-end -->
 
@@ -118,23 +130,30 @@
       switchFullscreen
       :footer="null"
     >
-      <iframe v-if="detailModal.url" class="detail-iframe" :src="detailModal.url" />
+      <!-- <iframe v-if="detailModal.url" class="detail-iframe" :src="detailModal.url" /> -->
     </j-modal>
+    <!-- 发送情况统计 -->
+    <task-detail-modal @ok="modalFormOk" ref="taskDetailModal"></task-detail-modal>
   </a-card>
 </template>
 
 <script>
 import SysAnnouncementModal from './modules/SysAnnouncementModal'
+import ShowAnnouncement from '@/components/tools/ShowAnnouncement'
 import { doReleaseData, doReovkeData } from '@/api/api'
 import { getAction } from '@/api/manage'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
+import TaskDetailModal from '../message/module/TaskDetailModal.vue'
 
 export default {
   name: 'SysAnnouncementList',
   mixins: [JeecgListMixin],
   components: {
     SysAnnouncementModal,
+    TaskDetailModal,
+    ShowAnnouncement
+
   },
   data() {
     return {
@@ -154,7 +173,6 @@ export default {
             return parseInt(index) + 1
           },
         },
-
         {
           title: '标题',
           align: 'center',
@@ -186,11 +204,11 @@ export default {
             align: "center",
             dataIndex: 'endTime'
           },*/
-        {
-          title: '发布人',
-          align: 'center',
-          dataIndex: 'sender',
-        },
+        // {
+        //   title: '发布人',
+        //   align: 'center',
+        //   dataIndex: 'sender',
+        // },
         {
           title: '优先级',
           align: 'center',
@@ -259,29 +277,6 @@ export default {
           align: 'center',
           dataIndex: 'cancelTime',
         },
-        // {
-        //   title: '附件',
-        //   align: 'center',
-        //   dataIndex: 'fileList',
-        //   ellipsis: true,
-        //   customRender: function (text) {
-        //     console.log(text)
-        //     if (text) {
-        //       const fileList = text.split(',')
-        //       console.log(fileList)
-        //       for(let i of fileList){
-        //         const url = window._CONFIG['domianURL'] + '/sys/common/static/' + i
-        //         return <a href='url'>{i}</a>
-        //       }
-              
-        //     }
-        //   }
-        // },
-        /*{
-                title: '删除状态（0，正常，1已删除）',
-                align:"center",
-                dataIndex: 'delFlag'
-              },*/
         {
           title: '操作',
           dataIndex: 'action',
@@ -337,10 +332,16 @@ export default {
       getAction('sys/annountCement/syncNotic', { anntId: anntId })
     },
     handleDetail: function (record) {
-      const domain = window._CONFIG['domianURL']
-      const token = this.$ls.get(ACCESS_TOKEN)
-      this.detailModal.url = `${domain}/sys/annountCement/show/${record.id}?token=${token}`
-      this.detailModal.visible = true
+      this.$refs.ShowAnnouncement.detail(record);
+      // const domain = window._CONFIG['domianURL']
+      // const token = this.$ls.get(ACCESS_TOKEN)
+      // this.detailModal.url = `${domain}/sys/annountCement/show/${record.id}?token=${token}`
+      // this.detailModal.visible = true
+    },
+    checkDetail(record){
+      console.log(record)
+      this.$refs.taskDetailModal.edit(record)
+      this.$refs.taskDetailModal.title = record.titile + '统计详情'
     },
   },
 }
