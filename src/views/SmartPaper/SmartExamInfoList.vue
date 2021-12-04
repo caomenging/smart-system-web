@@ -6,7 +6,7 @@
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="考试名称">
-              <a-input placeholder="请输入考试名称" v-model="queryParam.examName"></a-input>
+              <j-input placeholder="请输入考试名称" v-model="queryParam.examName"></j-input>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -83,6 +83,10 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
+          <a-popconfirm title="确定取消吗?" @confirm="() => handleDeleteExam(record)">
+                  <a>取消发布</a>
+          </a-popconfirm>
+          <a-divider type="vertical" />
           <a @click="handleEdit(record)">编辑</a>
 
           <a-divider type="vertical" />
@@ -114,8 +118,12 @@
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SmartExamInformationModal from './modules/SmartExamInformationModal'
+  import { httpAction,putAction, postAction,getAction } from '@/api/manage'
 
   export default {
+    queryParam:{
+      examName:''
+    },
     name: 'SmartExamInformationList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
@@ -170,6 +178,7 @@
         },
         dictOptions:{},
         superFieldList:[],
+        loading:false
       }
     },
     created() {
@@ -181,6 +190,36 @@
       },
     },
     methods: {
+      handleDeleteExam(record){
+        console.log(record)
+        let id = record.id
+        let paperId = record.paperId
+        let url ="/SmartPaper/smartMyExam/deleteRelease";
+        let params = {
+          id:id,
+          paperId:paperId
+        }
+        postAction(url,params).then((res)=>{
+          if(res.success){
+            this.$elmessage({
+              type:"success",
+              message: "取消发布成功！",
+              duration:1000
+            })
+            //刷新表格
+            this.searchReset();
+          }else {
+            this.$elmessage({
+              type:"error",
+              message: "取消发布失败！",
+              duration:1000,
+            })
+          }
+        })
+
+        }
+
+      },
       initDictConfig(){
       },
       getSuperFieldList(){
@@ -190,7 +229,7 @@
         fieldList.push({type:'datetime',value:'examEndtime',text:'考试结束时间'})
         this.superFieldList = fieldList
       }
-    }
+
   }
 </script>
 <style scoped>
