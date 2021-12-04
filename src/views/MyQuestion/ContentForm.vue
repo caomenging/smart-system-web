@@ -5,14 +5,14 @@
         <a-row>
 
           <a-col :span="24">
-            <a-form-model-item label="考试开始时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="examStarttime">
-              <j-date placeholder="请选择考试开始时间"  v-model="model.examStarttime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
+            <a-form-model-item label="开始时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="examStarttime">
+              <j-date placeholder="请选择开始时间"  v-model="model.examStarttime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
             </a-form-model-item>
           </a-col>
 
           <a-col :span="24">
-            <a-form-model-item label="考试结束时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="examEndtime">
-              <j-date placeholder="请选择考试结束时间"  v-model="model.examEndtime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
+            <a-form-model-item label="结束时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="examEndtime">
+              <j-date placeholder="请选择结束时间"  v-model="model.examEndtime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
             </a-form-model-item>
           </a-col>
 
@@ -21,7 +21,6 @@
               <j-select-user-by-dep v-model="model.personId" :multi="true" />
             </a-form-model-item>
           </a-col>
-<!--         <a-col :span="12">选中的用户(v-model):{{ model.personId }}</a-col>&ndash;&gt;-->
 
 
           <a-col :span="24" >
@@ -98,11 +97,10 @@ export default {
       },*/
       url: {
          add: "/smartExamInformation/smartExamInformation/add",
-       // add:"/smartPaper/smartPaper/add",
         edit: "/smartExamInformation/smartExamInformation/edit",
-
         list:"/smartExamInformation/smartExamInformation/list",
-        queryById: "/smartExamInformation/smartExamInformation/queryById"
+        queryById: "/smartExamInformation/smartExamInformation/queryById",
+        addPeople:"/smartPeople/smartPeople/add"
 
       }
     }
@@ -177,13 +175,14 @@ export default {
       }
      /* putAction(this.url.edit, params).then((res) => {
         if(res.success) {
-          this.$message.success(res.message)
+          //this.$message.success(res.message)
+          this.$router.push({path:'/SmartSurvey/SmartSurveyList'})
         }
       })*/
       getAction(this.url.list,params).then((res)=>{
         if(res.success){
           this.$message.success('发布成功')
-          this.$router.push({path:'/MyQuestion/MyQuestionList'})
+          this.$router.push({path:'/SmartSurvey/SmartSurveyList'})
 
         }
       })
@@ -192,14 +191,25 @@ export default {
         if(res.success){
           //this.$message.success(res.message);
           that.$emit('ok');
-          this.$router.push({path:'/MyQuestion/MyQuestionList'})
+          this.$router.push({path:'/SmartSurvey/SmartSurveyList'})
 
         }
         else{
           this.$message.warning(res.message);
         }
       })
+      postAction(this.url.addPeople,this.model).then(res =>{
+        console.log(res)
+        if(res.success){
+          //this.$message.success(res.message);
+          that.$emit('ok');
+          this.$router.push({path:'/SmartSurvey/SmartSurveyList'})
 
+        }
+        else{
+          this.$message.warning(res.message);
+        }
+      })
     }
 
 

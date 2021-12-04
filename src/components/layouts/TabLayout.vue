@@ -38,6 +38,7 @@
   import { triggerWindowResizeEvent } from '@/utils/util'
   import Vue from 'vue'
   import { CACHE_INCLUDED_ROUTES } from '@/store/mutation-types'
+  import store from '@/store'
 
   const indexKey = '/dashboard/analysis'
 
@@ -50,6 +51,7 @@
     mixins: [mixin, mixinDevice],
     data() {
       return {
+        smartCenter:'',
         pageList: [],
         linkList: [],
         activePage: '',
@@ -81,6 +83,15 @@
       }
     },
     created() {
+      // this.smartCenter = ''
+      // for(let roleId of store.getters.role)
+      // {
+      //   if(roleId == "f6817f48af4fb3af11b9e8bf182f618b")
+      //   {
+      //     this.smartCenter = '/b5323bdac50f5bc855be3cf9c24f888a';
+      //   }
+      // }
+
       if (this.$route.path != indexKey) {
         this.addIndexToFirst()
       }
@@ -140,7 +151,7 @@
       },
       // update-begin-author:sunjianlei date:20191223 for: 修复从单页模式切换回多页模式后首页不居第一位的 BUG
       device() {
-        if (this.multipage && this.linkList.indexOf(indexKey) === -1) {
+        if (this.multipage && this.linkList.indexOf(indexKey) === -1 ) {
           this.addIndexToFirst()
         }
       },
@@ -196,6 +207,10 @@
           this.$message.warning('首页不能关闭!')
           return
         }
+        // if (key == this.smartCenter) {
+        //   this.$message.warning('服务中心不能关闭!')
+        //   return
+        // }
         if (this.pageList.length === 1) {
           this.$message.warning('这是最后一页，不能再关闭了啦')
           return

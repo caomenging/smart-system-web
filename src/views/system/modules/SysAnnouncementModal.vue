@@ -35,11 +35,7 @@
               prop="msgCategory"
               label="模板选择"
             >
-              <a-select
-                placeholder="请选择消息模板"
-                :disabled="disableSubmit"
-                @change="useTemplate"
-              >
+              <a-select placeholder="请选择消息模板" :disabled="disableSubmit" @change="useTemplate">
                 <a-select-option v-for="template in templates" :key="template.id">
                   {{ template.templateName }}
                 </a-select-option>
@@ -132,7 +128,7 @@
               prop="userIds"
               v-if="userType == 'USER'"
             >
-              <j-select-user-by-dep :multi="true" @change="choseUser"></j-select-user-by-dep>
+              <j-select-user-by-dep v-model="userIds" :multi="true"></j-select-user-by-dep>
             </a-form-model-item>
             <a-form-model-item
               label="选择部门"
@@ -234,8 +230,8 @@ export default {
         add: '/sys/annountCement/add',
         edit: '/sys/annountCement/edit',
       },
-      userType: 'ALL',
-      userIds: [],
+      userType: '',
+      userIds: '',
       departIds: '',
       selectedUser: [],
       disabled: false,
@@ -261,7 +257,7 @@ export default {
       this.model = Object.assign({}, record)
       // 指定用户
       if (record && record.msgType === 'USER') {
-        this.userType = true
+        this.userType = 'USER'
         this.userIds = record.userIds
         getAction(this.url.queryByIds, { userIds: this.userIds }).then((res) => {
           if (res.success) {
@@ -282,13 +278,13 @@ export default {
     },
     getTemplate() {
       getAction('/smartMessageTemplate/smartMessageTemplate/list').then((res) => {
-        if(res.success) {
+        if (res.success) {
           this.templates = res.result.records
         }
       })
     },
     useTemplate(value) {
-      let templateObj = this.templates.find(item => item.id === value)
+      let templateObj = this.templates.find((item) => item.id === value)
       let message = {}
       message.msgCategory = this.model.msgCategory
       message.titile = templateObj.title
@@ -366,21 +362,25 @@ export default {
       this.$refs.UserListModal.add(this.selectedUser, this.userIds)
     },
     chooseMsgType(value) {
+      console.log(value)
       if ('USER' == value) {
-        this.userType = 'UESR'
+        console.log("1")
+        this.userType = 'USER'
       } else if ('DEPART' == value) {
+        console.log("2")
         this.userType = 'DEPART'
       } else {
+        console.log("3")
         this.userType = 'ALL'
-        this.selectedUser = []
-        this.userIds = []
       }
+      this.departIds = ''
+      this.userIds = ''
     },
     // 子modal回调z
     choseUser(userList) {
-      // console.log(userList.length)
+      console.log(userList.length)
       this.selectedUser = []
-      this.userIds = []
+      this.userIds = ''
       for (var i = 0; i < userList.length; i++) {
         //update--begin--autor:wangshuai-----date:20200601------for：系统公告选人后，不能删除------
         var user = {}

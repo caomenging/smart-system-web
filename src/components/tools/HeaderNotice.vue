@@ -118,6 +118,7 @@
         hovered: false,
         announcement1:[],
         announcement2:[],
+        announcement3:[],
         msg1Count:"0",
         msg2Count:"0",
         msg3Count:"0",

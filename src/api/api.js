@@ -55,8 +55,9 @@ const deleteByDepartId   = (params)=>deleteAction("/sys/sysDepart/delete",params
 const queryTopicList = (params)=>getAction("/village/smartVillageTopic/queryTopicList",params);
 const queryCommentList = (params)=>getAction("/village/smartVillageTopic/queryCommentList",params);
 const addVillageUser = (params)=>postAction("/sys/user/addVillage",params);
-const editVillageUser = (params)=>postAction("/sys/user/editVillage",params);
+const editVillageUser = (params)=>putAction("/sys/user/editVillage",params);
 const getVillageUserList = (params)=>getAction("/sys/user/villageList",params);
+const queryVillageIdTree = (params)=>getAction("/sys/sysDepart/queryVillageIdTree",params);
 
 //二级部门管理
 const queryDepartPermission = (params)=>getAction("/sys/permission/queryDepartPermission",params);
@@ -123,6 +124,7 @@ export {
   addUser,
   addVillageUser,
   editUser,
+  editVillageUser,
   queryUserRole,
   getUserList,
   getVillageUserList,
@@ -146,6 +148,7 @@ export {
   queryDepartTreeSync,
   queryIdTree,
   queryFuzeIdTree,
+  queryVillageIdTree,
   queryNaturalIdTree,
   queryParentName,
   searchByKeywords,

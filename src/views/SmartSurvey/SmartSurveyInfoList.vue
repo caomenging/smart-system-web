@@ -1,14 +1,24 @@
 <template>
-<!--提示音-->
-<!--  <audio id="audio" preload="auto" loop>-->
-<!--    <source src="./system.mp3" type="audio/mp3" />-->
-<!--  </audio>-->
-
   <a-card :bordered="false">
     <!-- 查询区域 -->
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="调查问卷名称">
+              <a-input placeholder="请输入调查问卷名称" v-model="queryParam.examName"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a @click="handleToggleSearch" style="margin-left: 8px">
+                {{ toggleSearchStatus ? '收起' : '展开' }}
+                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
+              </a>
+            </span>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -16,9 +26,13 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-
+      <!--<a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
+      <a-button type="primary" icon="download" @click="handleExportXls('考试信息表')">导出</a-button>
+      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
+        <a-button type="primary" icon="import">导入</a-button>
+      </a-upload>
       <!-- 高级查询区域 -->
-
+      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
@@ -29,20 +43,23 @@
 
     <!-- table区域-begin -->
     <div>
-
+      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
+        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
+        <a style="margin-left: 24px" @click="onClearSelected">清空</a>
+      </div>
 
       <a-table
         ref="table"
         size="middle"
+        :scroll="{x:true}"
         bordered
         rowKey="id"
-        class="j-table-force-nowrap"
-        :scroll="{x:true}"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        class="j-table-force-nowrap"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -66,7 +83,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">处理举报信息</a>
+          <a @click="handleEdit(record)">编辑</a>
 
           <a-divider type="vertical" />
           <a-dropdown>
@@ -87,26 +104,26 @@
       </a-table>
     </div>
 
-    <smart-reporting-information-modal ref="modalForm" @ok="modalFormOk"/>
+    <smart-exam-information-modal ref="modalForm" @ok="modalFormOk"></smart-exam-information-modal>
   </a-card>
 </template>
 
 <script>
 
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartReportingInformationModal from './modules/SmartReportingInformationModal'
-  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import '@/assets/less/TableExpand.less'
+  import { mixinDevice } from '@/utils/mixin'
+  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import SmartExamInformationModal from './modules/SmartExamInformationModal'
 
   export default {
-    name: "SmartReportingInformationList",
-    mixins:[JeecgListMixin],
+    name: 'SmartExamInformationList',
+    mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartReportingInformationModal,
+      SmartExamInformationModal
     },
     data () {
       return {
-        description: '举报信息表管理页面',
+        description: '考试信息表管理页面',
         // 表头
         columns: [
           {
@@ -120,39 +137,19 @@
             }
           },
           {
-            title:'被反映人信息',
+            title:'调查问卷名称',
             align:"center",
-            dataIndex: 'reflectedInformation'
+            dataIndex: 'examName'
           },
           {
-            title:'被反映人单位',
+            title:'调查问卷开始时间',
             align:"center",
-            dataIndex: 'reflectedDepartid'
+            dataIndex: 'examStarttime'
           },
           {
-            title:'主要问题',
+            title:'调查问卷结束时间',
             align:"center",
-            dataIndex: 'majorProblem'
-          },
-          {
-            title:'举报时间',
-            align:"center",
-            dataIndex: 'reportingTime'
-          },
-          {
-            title:'处理状态',
-            align:"center",
-            dataIndex: 'processingResult_dictText'
-          },
-          {
-            title:'举报人姓名',
-            align:"center",
-            dataIndex: 'reportingName'
-          },
-          {
-            title:'联系电话',
-            align:"center",
-            dataIndex: 'contactNumber'
+            dataIndex: 'examEndtime'
           },
           {
             title: '操作',
@@ -160,15 +157,15 @@
             align:"center",
             fixed:"right",
             width:147,
-            scopedSlots: { customRender: 'action' },
+            scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
-          list: "/smartReportingInformation/smartReportingInformation/list",
-          delete: "/smartReportingInformation/smartReportingInformation/delete",
-          deleteBatch: "/smartReportingInformation/smartReportingInformation/deleteBatch",
-          exportXlsUrl: "/smartReportingInformation/smartReportingInformation/exportXls",
-          importExcelUrl: "smartReportingInformation/smartReportingInformation/importExcel",
+          list: "/SmartPaper/smartMyExam/list",
+          delete: "/SmartPaper/smartMyExam/delete",
+          deleteBatch: "/SmartPaper/smartMyExam/deleteBatch",
+          exportXlsUrl: "/SmartPaper/smartMyExam/exportXls",
+          importExcelUrl: "SmartPaper/smartMyExam/importExcel",
 
         },
         dictOptions:{},
@@ -176,54 +173,26 @@
       }
     },
     created() {
-      this.getSuperFieldList();
+    this.getSuperFieldList();
     },
     computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      }
+      },
     },
     methods: {
-     /* play () {
-        this.lastRunTime = Date.now()
-        let audio = document.querySelector('#audio')
-        if (!this.isPlaying) {
-          audio.play()
-          this.isPlaying = true
-        }
-        let timeOut = setTimeout(() => {
-          this.stop(timeOut)
-        }, 15000)
-      },
-      stop (timeOut) {
-        this.currentTime = Date.now()
-        let audio = document.querySelector('#audio')
-        if (this.currentTime - this.lastRunTime < 15000) {
-        } else {
-          if (this.isPlaying) {
-            audio.currentTime = 0
-            audio.pause()
-            this.isPlaying = false
-          }
-        }
-        clearTimeout(timeOut)
-      },*/
-
       initDictConfig(){
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'reflectedInformation',text:'被反映人信息',dictCode:''})
-         fieldList.push({type:'string',value:'reflectedDepartid',text:'被反映人单位',dictCode:''})
-         fieldList.push({type:'string',value:'majorProblem',text:'主要问题',dictCode:''})
-         fieldList.push({type:'Blob',value:'photo',text:'照片',dictCode:''})
-         fieldList.push({type:'Text',value:'description',text:'附件',dictCode:''})
-         fieldList.push({type:'datetime',value:'reportingTime',text:'举报时间'})
-         fieldList.push({type:'string',value:'processingResult',text:'处理状态',dictCode:'processing_result'})
-         fieldList.push({type:'string',value:'reportingName',text:'举报人姓名',dictCode:''})
-         fieldList.push({type:'string',value:'contactNumber',text:'联系电话',dictCode:''})
+        fieldList.push({type:'string',value:'examName',text:'考试名称',dictCode:''})
+        fieldList.push({type:'datetime',value:'examStarttime',text:'考试开始时间'})
+        fieldList.push({type:'datetime',value:'examEndtime',text:'考试结束时间'})
         this.superFieldList = fieldList
       }
     }
   }
 </script>
+<style scoped>
+  @import '~@assets/less/common.less';
+</style>

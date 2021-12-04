@@ -1,3 +1,4 @@
+<!--开始考试-->
 <template>
   <a-card :bordered="false">
     <!-- 查询区域 -->
@@ -5,8 +6,8 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="试卷名称">
-              <j-input placeholder="请输入试卷名称" v-model="queryParam.paperName"></j-input>
+            <a-form-item label="考试名称">
+              <j-input placeholder="请输入考试名称" v-model="queryParam.examName"></j-input>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -27,8 +28,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <!--<a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
-      <a-button @click="createTestPaper"  type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('试卷表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('考试信息表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -84,23 +84,20 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <!--<a @click="handleEdit(record)">编辑</a>-->
-          <a @click="handleIssueExam(record)" :class="isDisabled(record)" >发布考试</a>
-          <a-divider type="vertical" />
-          <a @click="editTestPaper(record.id)">编辑</a>
+          <a @click="handleExam(record)">开始调查</a>
+
           <a-divider type="vertical" />
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
-                <!--<a @click="handleDetail(record)">详情</a>-->
-                <a @click="detailPage(record.id)">详情</a>
+                <a @click="handleDetail(record)">详情</a>
               </a-menu-item>
-              <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)" v-show="record.paperStatus == '0'">
+<!--              <a-menu-item>
+                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
                   <a>删除</a>
                 </a-popconfirm>
-              </a-menu-item>
+              </a-menu-item>-->
             </a-menu>
           </a-dropdown>
         </span>
@@ -108,9 +105,7 @@
       </a-table>
     </div>
 
-    <smart-paper-modal ref="modalForm" @ok="modalFormOk"></smart-paper-modal>
-    <!-- 发布考试弹框 -->
-    <ReleaseTest ref="releaseTestDialog" @ok="modalFormOk"/>
+    <smart-exam-information-modal ref="modalForm" @ok="modalFormOk"></smart-exam-information-modal>
   </a-card>
 </template>
 
@@ -119,23 +114,18 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartPaperModal from './modules/SmartPaperModal'
-  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
-  import { httpAction,putAction, postAction,getAction } from '@/api/manage'
-  import ReleaseTest from './modules/ReleaseTest'
+  import SmartExamInformationModal from './modules/SmartExamInformationModal'
 
   export default {
-    name: 'SmartPaperList',
+    name: 'SmartExamInformationList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartPaperModal,ReleaseTest
+      SmartExamInformationModal
     },
     data () {
       return {
-        queryParam:{
-          paperType:'1'
-        },
-        description: '试卷表管理页面',
+        queryParam:{},
+        description: '考试信息表管理页面',
         // 表头
         columns: [
           {
@@ -148,59 +138,20 @@
               return parseInt(index)+1;
             }
           },
-         {
-            title:'试卷类型',
+          {
+            title:'调查问卷名称',
             align:"center",
-            dataIndex: 'paperType_dictText'
+            dataIndex: 'examName'
           },
           {
-            title:'试卷名称',
+            title:'调查问卷开始时间',
             align:"center",
-            dataIndex: 'paperName',
-            sorter: true
+            dataIndex: 'examStarttime'
           },
           {
-            title:'试卷状态',
+            title:'调查问卷结束时间',
             align:"center",
-            dataIndex: 'paperStatus_dictText',
-            sorter: true
-          },
-          {
-            title:'命卷人',
-            align:"center",
-            dataIndex: 'creatorName',
-            sorter: true
-          },
-          {
-            title:'命卷日期',
-            align:"center",
-            dataIndex: 'createTime',
-            sorter: true
-
-          },
-          {
-            title:'题目数量',
-            align:"center",
-            dataIndex: 'topicNum',
-            sorter: true
-          },
-          {
-            title:'总分',
-            align:"center",
-            dataIndex: 'totalScore',
-            sorter: true
-          },
-          {
-            title:'及格线',
-            align:"center",
-            dataIndex: 'passMark',
-            sorter: true
-          },
-          {
-            title:'答题时间',
-            align:"center",
-            dataIndex: 'time',
-            sorter: true
+            dataIndex: 'examEndtime'
           },
           {
             title: '操作',
@@ -212,11 +163,12 @@
           }
         ],
         url: {
-          list: "/SmartPaper/smartPaper/list",
-          delete: "/SmartPaper/smartPaper/delete",
-          deleteBatch: "/SmartPaper/smartPaper/deleteBatch",
-          exportXlsUrl: "/SmartPaper/smartPaper/exportXls",
-          importExcelUrl: "SmartPaper/smartPaper/importExcel",
+          list: "/SmartPaper/smartMyExam/myList",
+          delete: "/SmartPaper/smartMyExam/delete",
+          deleteBatch: "/SmartPaper/smartMyExam/deleteBatch",
+          exportXlsUrl: "/SmartPaper/smartMyExam/exportXls",
+          importExcelUrl: "SmartPaper/smartMyExam/importExcel",
+
         },
         dictOptions:{},
         superFieldList:[],
@@ -226,46 +178,21 @@
     this.getSuperFieldList();
     },
     computed: {
-      flag(){
-        console.log(this.$route.query.flag);
-        if(this.$route.query.flag){
-          this.getSuperFieldList()
-        }
-      },
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
       },
     },
     methods: {
-      isDisabled(record){
-        if ( record.paperStatus === "0") {
-          //激活开始考试
-          console.log('激活发布');
-        } else if ( record.paperStatus === "2"){
-          console.log('No发布');
-          return "disabled";
-        }
-      },
-      //去创建新试卷
-      createTestPaper() {
+      handleExam(record){
+        console.log(record);
+        let examId = record.id
+        let examName = record.examName
+        let paperId = record.paperId
+        let start = record.examStarttime
+        let deadline = record.examEndtime
         const { href } = this.$router.resolve({
-          name: "createPaper",
-          params: { opt: 'add'}
-        });
-        const win  = window.open(href, "_blank");
-        const loop = setInterval(item => {
-          if (win.closed) {
-            clearInterval(loop);
-            this.refresh();
-          }
-        }, 1000);
-      },
-      // 编辑试卷
-      editTestPaper(id) {
-        console.log(id);
-        const { href } = this.$router.resolve({
-          name: "editPaper",
-          params: { opt: 'edit', id}
+          name: "mySurvey",
+          query: { examId,examName,paperId,start,deadline}
         });
         const win = window.open(href, "_blank");
         const loop = setInterval(item => {
@@ -274,51 +201,16 @@
             this.$ref.table.reload();
           }
         }, 1000);
-      },
-      detailPage(id){
-        console.log(id);
-        const { href } = this.$router.resolve({
-          name: "editPaper",
-          params: { opt: 'detail', id}
-        });
-        const win = window.open(href, "_blank");
-        const loop = setInterval(item => {
-          if (win.closed) {
-            clearInterval(loop);
-            this.$ref.table.reload();
-          }
-        }, 1000);
-  },
-      //试卷发布
-      handleIssueExam(record){
-        console.log(record)
-        let paperId = record.id
-        this.$refs.releaseTestDialog.releaseTest(paperId)
       },
       initDictConfig(){
       },
       getSuperFieldList(){
         let fieldList=[];
-        fieldList.push({type:'string',value:'paperType',text:'试卷类型',dictCode:'paper_type'})
-        fieldList.push({type:'string',value:'paperName',text:'试卷名称',dictCode:''})
-        fieldList.push({type:'string',value:'paperStatus',text:'试卷状态',dictCode:'paper_status'})
-        fieldList.push({type:'string',value:'creatorName',text:'命卷人',dictCode:''})
-        fieldList.push({type:'datetime',value:'createTime',text:'命卷日期'})
-        fieldList.push({type:'string',value:'topicNum',text:'题目数量',dictCode:''})
-        fieldList.push({type:'string',value:'totalScore',text:'总分',dictCode:''})
-        fieldList.push({type:'string',value:'passMark',text:'及格线',dictCode:''})
-        fieldList.push({type:'int',value:'time',text:'答题时间',dictCode:''})
+        fieldList.push({type:'string',value:'examName',text:'调查问卷名称',dictCode:''})
+        fieldList.push({type:'datetime',value:'examStarttime',text:'调查问卷开始时间'})
+        fieldList.push({type:'datetime',value:'examEndtime',text:'调查问卷结束时间'})
         this.superFieldList = fieldList
       }
-    },
+    }
   }
 </script>
-<style scoped>
-  @import '~@assets/less/common.less';
-  .disabled {
-    pointer-events: none;
-    filter: alpha(opacity=50); /*IE滤镜，透明度50%*/
-    -moz-opacity: 0.5; /*Firefox私有，透明度50%*/
-    opacity: 0.5; /*其他，透明度50%*/
-  }
-</style>

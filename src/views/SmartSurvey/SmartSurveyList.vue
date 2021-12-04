@@ -5,18 +5,13 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="试卷名称">
+            <a-form-model-item label="试卷名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="paperName">
               <j-input placeholder="请输入试卷名称" v-model="queryParam.paperName"></j-input>
-            </a-form-item>
+            </a-form-model-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a @click="handleToggleSearch" style="margin-left: 8px">
-                {{ toggleSearchStatus ? '收起' : '展开' }}
-                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>
             </span>
           </a-col>
         </a-row>
@@ -44,10 +39,10 @@
 
     <!-- table区域-begin -->
     <div>
-      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
+<!--      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
         <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
-      </div>
+      </div>-->
 
       <a-table
         ref="table"
@@ -85,7 +80,7 @@
 
         <span slot="action" slot-scope="text, record">
           <!--<a @click="handleEdit(record)">编辑</a>-->
-          <a @click="handleIssueExam(record)" :class="isDisabled(record)" >发布考试</a>
+          <a @click="handleIssueSurvey(record)" v-show="record.paperStatus == '0'">发布调查问卷</a>
           <a-divider type="vertical" />
           <a @click="editTestPaper(record.id)">编辑</a>
           <a-divider type="vertical" />
@@ -97,7 +92,7 @@
                 <a @click="detailPage(record.id)">详情</a>
               </a-menu-item>
               <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)" v-show="record.paperStatus == '0'">
+                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
                   <a>删除</a>
                 </a-popconfirm>
               </a-menu-item>
@@ -109,7 +104,7 @@
     </div>
 
     <smart-paper-modal ref="modalForm" @ok="modalFormOk"></smart-paper-modal>
-    <!-- 发布考试弹框 -->
+    <!-- 发布调查问卷弹框 -->
     <ReleaseTest ref="releaseTestDialog" @ok="modalFormOk"/>
   </a-card>
 </template>
@@ -133,7 +128,7 @@
     data () {
       return {
         queryParam:{
-          paperType:'1'
+          paperType:'2'
         },
         description: '试卷表管理页面',
         // 表头
@@ -156,51 +151,42 @@
           {
             title:'试卷名称',
             align:"center",
-            dataIndex: 'paperName',
-            sorter: true
+            dataIndex: 'paperName'
           },
           {
             title:'试卷状态',
             align:"center",
-            dataIndex: 'paperStatus_dictText',
-            sorter: true
+            dataIndex: 'paperStatus_dictText'
           },
           {
             title:'命卷人',
             align:"center",
-            dataIndex: 'creatorName',
-            sorter: true
+            dataIndex: 'creatorName'
           },
           {
             title:'命卷日期',
             align:"center",
-            dataIndex: 'createTime',
-            sorter: true
-
+            dataIndex: 'createTime'
           },
           {
             title:'题目数量',
             align:"center",
-            dataIndex: 'topicNum',
-            sorter: true
+            dataIndex: 'topicNum'
           },
           {
             title:'总分',
             align:"center",
-            dataIndex: 'totalScore',
-            sorter: true
+            dataIndex: 'totalScore'
           },
           {
             title:'及格线',
             align:"center",
-            dataIndex: 'passMark',
-            sorter: true
+            dataIndex: 'passMark'
           },
           {
             title:'答题时间',
             align:"center",
-            dataIndex: 'time',
-            sorter: true
+            dataIndex: 'time'
           },
           {
             title: '操作',
@@ -237,20 +223,11 @@
       },
     },
     methods: {
-      isDisabled(record){
-        if ( record.paperStatus === "0") {
-          //激活开始考试
-          console.log('激活发布');
-        } else if ( record.paperStatus === "2"){
-          console.log('No发布');
-          return "disabled";
-        }
-      },
       //去创建新试卷
       createTestPaper() {
         const { href } = this.$router.resolve({
-          name: "createPaper",
-          params: { opt: 'add'}
+          name: "createSurvey",
+          params: { opt: 'addSurvey'}
         });
         const win  = window.open(href, "_blank");
         const loop = setInterval(item => {
@@ -264,7 +241,7 @@
       editTestPaper(id) {
         console.log(id);
         const { href } = this.$router.resolve({
-          name: "editPaper",
+          name: "editSurvey",
           params: { opt: 'edit', id}
         });
         const win = window.open(href, "_blank");
@@ -278,7 +255,7 @@
       detailPage(id){
         console.log(id);
         const { href } = this.$router.resolve({
-          name: "editPaper",
+          name: "editSurvey",
           params: { opt: 'detail', id}
         });
         const win = window.open(href, "_blank");
@@ -290,7 +267,7 @@
         }, 1000);
   },
       //试卷发布
-      handleIssueExam(record){
+      handleIssueSurvey(record){
         console.log(record)
         let paperId = record.id
         this.$refs.releaseTestDialog.releaseTest(paperId)
@@ -313,12 +290,3 @@
     },
   }
 </script>
-<style scoped>
-  @import '~@assets/less/common.less';
-  .disabled {
-    pointer-events: none;
-    filter: alpha(opacity=50); /*IE滤镜，透明度50%*/
-    -moz-opacity: 0.5; /*Firefox私有，透明度50%*/
-    opacity: 0.5; /*其他，透明度50%*/
-  }
-</style>

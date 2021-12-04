@@ -152,6 +152,7 @@
         this.$refs.sysAnnouncementModal.title="查看";
       },
       showAnnouncement(record){
+        console.log(record)
         putAction(this.url.editCementSend,{anntId:record.anntId}).then((res)=>{
           if(res.success){
             this.loadData();

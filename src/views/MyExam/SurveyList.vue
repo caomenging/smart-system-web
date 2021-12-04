@@ -2,26 +2,26 @@
   <div class="page-header-index-wide">
     <a-row :gutter="24">
 
-    <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }" >
-      <chart-card :loading="loading" title="优秀人数" :total="model.excellent_number">
+      <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }" >
+        <chart-card :loading="loading" title="优秀人数" :total="model.excellent_number">
 
-      </chart-card>
-    </a-col>
-    <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-      <chart-card :loading="loading" title="良好人数" :total="model.good_number">
+        </chart-card>
+      </a-col>
+      <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+        <chart-card :loading="loading" title="良好人数" :total="model.good_number">
 
-      </chart-card>
-    </a-col>
-    <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-      <chart-card :loading="loading" title="及格人数" :total="model.pass_number">
+        </chart-card>
+      </a-col>
+      <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+        <chart-card :loading="loading" title="及格人数" :total="model.pass_number">
 
-      </chart-card>
-    </a-col>
-    <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-      <chart-card :loading="loading" title="不及格人数" :total="model.fail_number">
+        </chart-card>
+      </a-col>
+      <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+        <chart-card :loading="loading" title="不及格人数" :total="model.fail_number">
 
-      </chart-card>
-    </a-col>
+        </chart-card>
+      </a-col>
     </a-row>
     <grade-result/>
   </div>
@@ -34,7 +34,7 @@ import { httpAction, postAction, getAction } from '@/api/manage'
 import GradeResult from './GradeResult'//调用成绩单表格
 import SmartGradeNumberModal from '../SmartGradeNumber/modules/SmartGradeNumberModal'
 export default {
-  name: 'GradeList',//成绩单
+  name: 'SurveyList',//调查问卷成绩单
   components:{
     ACol,
     ChartCard,
@@ -44,6 +44,7 @@ export default {
   data(){
     return{
       loading:false,
+
       model:{
         excellent_number:'0',
         good_number:'0',

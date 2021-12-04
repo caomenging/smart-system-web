@@ -33,7 +33,11 @@
     methods: {
       goUrl () {
         let url = this.$route.meta.url
+        console.log("0000000000000000000000000000000000000000000000")
+        console.log(this.url)
         let id = this.$route.path
+        console.log("11111111111111111111111111111111111111111111111111111")
+        console.log(id)
         this.id = id
         //url = "http://www.baidu.com"
         console.log("------url------"+url)
@@ -53,6 +57,8 @@
           if(this.$route.meta.internalOrExternal != undefined && this.$route.meta.internalOrExternal==true){
             this.closeCurrent();
             window.open(this.url);
+            console.log("22222222222222222222222222222222222222222222")
+            console.log(this.url)
           }
           /*update_end author:wuxianquan date:20190908 for:判断打开方式，新窗口打开时this.$route.meta.internalOrExternal==true */
 

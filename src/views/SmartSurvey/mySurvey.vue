@@ -7,7 +7,8 @@
         <h3 class="testName">{{ testData.testName }}</h3>
         <ul>
           <!--<li class="test-info">试卷Id: E{{ testData.id }}</li>-->
-          <li class="test-info">试卷名称: {{ testData.paperName }}</li>
+          <li class="test-info">调查问卷名称: {{ testData.paperName }}</li>
+
           <!--<li class="test-info">出卷者: {{testData.creatorName}}</li>-->
           <li class="test-info">答题时间: {{ testData.time }} 分钟</li>
           <li class="test-info">题目数量: 共 {{ testData.topicNum }} 道</li>
@@ -16,7 +17,7 @@
           <li class="test-info" v-if="finishTest">得分: {{ testData.userGrade.grade + '分' }}</li>
           <li class="test-info" v-else>剩余时间: {{ remainTime }}</li>
           <li class="fr">
-            <el-button type="primary" size="mini" @click="submitTestpaper" :disabled="isRead">交卷</el-button>
+            <el-button type="primary" size="mini" @click="submitTestsurvey" :disabled="isRead">交卷</el-button>
           </li>
         </ul>
       </div>
@@ -25,7 +26,15 @@
         <ul>
 
           <!--<li class="test-info">试卷Id: E{{ testData.id }}</li>-->
-          <li class="test-info">试卷名称: {{ testData.paperName }}</li>
+          <li class="test-info">调查问卷名称: {{ testData.paperName }}</li>
+          <el-select v-model="label" placeholder="请选择试卷类型">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
           <!--<li class="test-info">出卷者: {{testData.creatorName}}</li>-->
           <li class="test-info">答题时间: {{ testData.time }} 分钟</li>
           <li class="test-info">题目数量: 共 {{ testData.topicNum }} 道</li>
@@ -36,7 +45,7 @@
           <li class="test-info" v-else>剩余时间: {{ remainTime }}</li>
           <!-- {{expendTime}} -->
           <li class="fr">
-            <el-button type="primary" size="mini" @click="submitTestpaper" :disabled="isRead">交卷</el-button>
+            <el-button type="primary" size="mini" @click="submitTestsurvey" :disabled="isRead">交卷</el-button>
           </li>
         </ul>
       </div>
@@ -165,10 +174,20 @@
   import {postAction, httpAction, getAction ,putAction} from '@/api/manage'
 
   export default {
-    name: "MyExam",
+    name: "MySurvey",
     mixins: [testPaperMixin],
     data() {
       return {
+        model:{
+         // person_name:'',
+          //exam_grade:'',
+          excellent_number:'0',
+          good_number:'0',
+          pass_number:'0',
+          fail_number:'0',
+
+        },
+
         //按题目类型分类好的题目数据
         //题目类型==>  0:单选题  1:多选题  2:判断题  3:填空题  4:简答题
         sortedTopics: [
@@ -182,9 +201,10 @@
         testData: {
           testName:this.$route.params.examName,
           examInfo:{},
+          userGrade:{}
         },
 
-        remainTime: "", //考试剩余时间
+        remainTime: "00:00:00", //考试剩余时间
         expendTime: 0, //考试用时(秒)
         isRead: false, //是否为只读模式
         //forbid_copy: false, //是否禁止复制文本
@@ -195,7 +215,6 @@
         //侧导航栏是否悬浮
         isFixed: false,
         topic_nav_style: "top:0px",
-        grade:''
       };
     },
     computed:{
@@ -212,14 +231,7 @@
       //console.log(this.$route.query)
       this.getTestPaperData();
     },
-    watch:{
-      remainTime(){
-        //console.log(this.remainTime)
-        if(this.remainTime === "00:00:00"){
-          this.autoSubmit();
-        }
-      }
-    },
+
     mounted() {
       window.addEventListener("scroll", this.handleScroll);
       //window.addEventListener("visibilitychange", this.visibilitychange);
@@ -228,10 +240,9 @@
     methods: {
       //获取当前用户信息
       ...mapGetters(["nickname", "avatar","userInfo"]),
-      //提交试卷
-      submitTestpaper() {
+      //提交调查问卷
+      submitTestsurvey() {
         var topic = [];
-        var grade ='';
         console.log(this.testData.smartTopicVoList);
         for (let i = 0; i < this.testData.smartTopicVoList.length; i++) {
           var item = JSON.parse(JSON.stringify(this.testData.smartTopicVoList[i]))
@@ -263,13 +274,13 @@
         var request = {
           examId:examId,
           smartSubmitList: topic,
+
         };
         console.log(request);
-        postAction('/SmartPaper/smartExam/submitTestPaper' ,request).then(res =>{
+        postAction('/SmartPaper/smartSurvey/submitTestSurvey' ,request).then(res =>{
           if (res.success) {
             console.log(res.result);
-            grade = res.result;
-            console.log(this.grade)
+            var grade = res.result;
             this.$message.success(res.message);
             const h = this.$createElement;
             this.$msgbox({
@@ -281,30 +292,32 @@
               showCancelButton: true,
               confirmButtonText: '确定',
               cancelButtonText: '取消',
-              beforeClose: (action, instance, done) => {
+              /*beforeClose: (action, instance, done) => {
                 if (action === 'confirm') {
-                  instance.confirmButtonLoading = true
-                  instance.confirmButtonText = 'Loading...'
+                  instance.confirmButtonLoading = true;
+                  instance.confirmButtonText = '执行中...';
                   setTimeout(() => {
-                    done()
+                    done();
                     setTimeout(() => {
-                      instance.confirmButtonLoading = false
-                    }, 100)
-                  }, 1000)
+                      instance.confirmButtonLoading = false;
+                    }, 300);
+                  }, 3000);
                 } else {
-                  done()
+                  done();
                 }
-              },
+              }*/
             }).then(action => {
-                this.$elmessage({
-                  type:"info",
-                  message: "本次考试结束！",
-                  //onClose: close(),
+                this.$message.success({
+                  content: "考试完成！",
+                  duration: 3,
+                  onClose: close(),
                 });
+                close()
+                {
                   window.location.href="about:blank";
                   window.close();
                   window.opener.location.reload();
-
+                }
             });
           }
             //location.reload()
@@ -313,12 +326,26 @@
           }
         })
 
-        /*postAction('/smartPeople/smartPeople/add',this.model).then(res=>{
+        postAction('/SmartPeople/smartGradeNumber/excellentCount',this.model).then(res=>{
           if (res.success) {
             this.$message.success(res.message);
-
           }
-        })*/
+        })
+        postAction('/SmartPeople/smartGradeNumber/goodCount',this.model).then(res=>{
+          if (res.success) {
+            this.$message.success(res.message);
+          }
+        })
+        postAction('/SmartPeople/smartGradeNumber/passCount',this.model).then(res=>{
+          if (res.success) {
+            this.$message.success(res.message);
+          }
+        })
+        postAction('/SmartPeople/smartGradeNumber/failCount',this.model).then(res=>{
+          if (res.success) {
+            this.$message.success(res.message);
+          }
+        })
 
       },
 
@@ -366,8 +393,7 @@
           console.log("开始考试");
           this.finishTest = false
           this.isRead = false;
-        }
-        else {
+        } else {
           console.log("查看试卷");
           this.finishTest = true
           this.isRead = true;
@@ -406,6 +432,8 @@
           }
         }
 
+
+
         this.testData = testData;
         console.log("this.testData ==> ", this.testData);
 
@@ -425,25 +453,11 @@
           this.isRead = true;
         }
 
-        /* 判断试卷是否打乱题目顺序 */
-/*        if (testData.disruptOrder == 1) {
-          testData.smartTopicVoList.sort(function(){
-            return Math.random() > 0.5 ? -1:1
-          })
-        }*/
 
         //按题目类型分类并保存
         var topics = this.testData.smartTopicVoList;
         var topicsIndex = 1;
-        // for (let i = 0; i < topics.length; i++) {
-        //   for (let item of this.sortedTopics) {
-        //     if (topics[i].topicType == item.topicType) {
-        //       //添加
-        //       topics[i].index = topicsIndex++;
-        //       item.topic_content.push(topics[i]);
-        //     }
-        //   }
-        // }
+
         for (let item of this.sortedTopics) {
           for (let i = 0; i < topics.length; i++) {
             if (topics[i].topicType == item.topicType) {
@@ -462,97 +476,14 @@
           this.remainTime = this.computateTime(time);
           time--;
           this.expendTime++;
-          //console.log(this.remainTime)
           if (time < 0) {
-            //console.log(this.remainTime)
             clearInterval(timer);
-            //this.$message("考试结束");
+            this.$message("考试结束");
+            this.submitTestsurvey();
           }
         }, 1000);
       },
-      //答题时间到，自动交卷
-      autoSubmit() {
-        var topic = [];
-        var grade ='';
-        console.log(this.testData.smartTopicVoList);
-        for (let i = 0; i < this.testData.smartTopicVoList.length; i++) {
-          var item = JSON.parse(JSON.stringify(this.testData.smartTopicVoList[i]))
 
-          console.log(item);
-          //处理多选/填空答案
-          if (item.topicType == 1 || item.topicType == 3) {
-            if (item.submitAnswer instanceof Array) {
-              var submitAnswer = "";
-              item.submitAnswer.forEach((c) => {
-                submitAnswer += c + "\n";
-              });
-              item.submitAnswer = submitAnswer.slice(0, -1);
-            }
-          }
-          topic.push({
-            //questionId: item.questionId,
-            paperId: this.$route.query.paperId,
-            type:item.topicType,
-            submitAnswer: item.submitAnswer,
-          });
-        }
-
-        console.log(topic);
-        let examId = this.$route.query.examId
-        var request = {
-          examId:examId,
-          smartSubmitList: topic,
-        };
-        console.log(request);
-        postAction('/SmartPaper/smartExam/submitTestPaper' ,request).then(res =>{
-          console.log(res)
-          if (res.success) {
-            console.log(res.result);
-            grade = res.result;
-            console.log(grade)
-            const h = this.$createElement;
-            this.$msgbox({
-              title: '提醒',
-              message: h('p', null, [
-                h('span', null, '已到答题时间，自动交卷，本次考试成绩为 '),
-                h('i', { style: 'color: teal' }, grade)
-              ]),
-              showCancelButton: true,
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              beforeClose: (action, instance, done) => {
-                if (action === 'confirm') {
-                  instance.confirmButtonLoading = true
-                  instance.confirmButtonText = 'Loading...'
-                  setTimeout(() => {
-                    done()
-                    setTimeout(() => {
-                      instance.confirmButtonLoading = false
-                    }, 100)
-                  }, 1000)
-                } else {
-                  done()
-                }
-              },
-            }).then(action => {
-              this.$elmessage({
-                type:"success",
-                message: "考试完成！",
-                onClose:()=> {
-                  //此处写提示关闭后需要执行的函数
-                  window.location.href="about:blank";
-                  window.close();
-                  window.opener.location.reload();
-                }
-              });
-            });
-          }
-          //location.reload()
-          else{
-            this.$message.error(res.message);
-          }
-        })
-      },
       //格式化考试剩余时间
       computateTime(time) {
         var sec = "00";
@@ -593,30 +524,6 @@
           this.isFixed = false;
         }
       },
-
-      /*visibilitychange(){
-        if(this.testData.switchPage === -1){
-          return
-        }
-        if (document.visibilityState == "visible") {
-          console.log('页面回来了',this.switchPage);
-        }
-        if (document.visibilityState == "hidden") {
-          this.switchPage += 1;
-
-          if(this.switchPage >= this.testData.switchPage){
-            console.log('提交试卷');
-            this.submitTestpaper();
-          }else{
-            this.$msgbox({
-              title: '警告',
-              type: 'warning',
-              message: '页面已被切换，如果次数为0将会自动提交试卷！ 剩余可以切换次数：' + (this.testData.switchPage-this.switchPage),
-              confirmButtonText: '确定',
-            });
-          }
-        }
-      },*/
 
       //点击题号定位到题目位置
       topicNav(type,index) {

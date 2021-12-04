@@ -1,4 +1,3 @@
-<!--成绩统计查阅表格-->
 <template>
   <a-card :bordered="false">
     <!-- 查询区域 -->
@@ -6,19 +5,15 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="姓名">
-              <a-input placeholder="请输入姓名" v-model="queryParam.personName"></a-input>
+            <a-form-item label="考试名称">
+              <a-input placeholder="请输入考试名称" v-model="queryParam.examName"></a-input>
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="成绩">
-              <a-input placeholder="请输入成绩" v-model="queryParam.examGrade"></a-input>
-            </a-form-item>
-          </a-col>
+
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-<!--              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>-->
+              <!--              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>-->
 
             </span>
           </a-col>
@@ -30,17 +25,24 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+
+      <!-- 高级查询区域 -->
+<!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
         </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
-
     </div>
 
     <!-- table区域-begin -->
     <div>
+<!--      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
+        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
+        <a style="margin-left: 24px" @click="onClearSelected">清空</a>
+      </div>-->
+
       <a-table
         ref="table"
         size="middle"
@@ -75,30 +77,16 @@
           </a-button>
         </template>
 
+        <span slot="action" slot-scope="text, record">
+          <a @click="handleStart(record)">开始答题</a>
 
-     <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
 
-          <a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <a @click="handleDetail(record)">详情</a>
-              </a-menu-item>
-              <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a>删除</a>
-                </a-popconfirm>
-              </a-menu-item>
-            </a-menu>
-          </a-dropdown>
         </span>
 
       </a-table>
     </div>
 
-    <smart-people-modal ref="modalForm" @ok="modalFormOk"></smart-people-modal>
+    <smart-exam-information-modal ref="modalForm" @ok="modalFormOk"></smart-exam-information-modal>
   </a-card>
 </template>
 
@@ -107,17 +95,17 @@
 import '@/assets/less/TableExpand.less'
 import { mixinDevice } from '@/utils/mixin'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-import SmartPeopleModal from '../SmartPeople/modules/SmartPeopleModal'
+import SmartExamInformationModal from '../SmartExamInformation/modules/SmartExamInformationModal'
 
 export default {
-  name: 'GradeResult',
+  name: 'SmartExamInformationList',
   mixins:[JeecgListMixin, mixinDevice],
   components: {
-    SmartPeopleModal,
+    SmartExamInformationModal
   },
   data () {
     return {
-      description: '成绩单',
+      description: '开始答题',
       // 表头
       columns: [
         {
@@ -131,45 +119,36 @@ export default {
           }
         },
         {
-          title:'姓名',
+          title:'考试名称',
           align:"center",
-          dataIndex: 'personName'
-
+          dataIndex: 'examName'
         },
         {
-          title:'成绩',
+          title:'考试开始时间',
           align:"center",
-          dataIndex: 'examGrade'
-        },
-        /*{
-          title:'提交时间',
-          align:"center",
-          dataIndex: 'submitTime'
+          dataIndex: 'examStarttime'
         },
         {
-          title:'ip地址',
+          title:'考试结束时间',
           align:"center",
-          dataIndex: 'ipAddress'
-        },*/
-        /*{
+          dataIndex: 'examEndtime'
+        },
+        {
           title: '操作',
           dataIndex: 'action',
           align:"center",
           fixed:"right",
           width:147,
           scopedSlots: { customRender: 'action' }
-        }*/
+        }
       ],
       url: {
-        list: "/SmartPaper/smartPeople/list",
-        delete: "/SmartPaper/smartPeople/delete",
-        deleteBatch: "/SmartPaper/smartPeople/deleteBatch",
-        exportXlsUrl: "/SmartPaper/smartPeople/exportXls",
-
-        importExcelUrl: "SmartPaper/smartPeople/importExcel",
-
-        importExcelUrl: "/SmartPaper/smartPeople/importExcel",
-
+        add:"/smartExamInformation/smartExamInformation/add",
+        list: "/smartExamInformation/smartExamInformation/list",
+        delete: "/smartExamInformation/smartExamInformation/delete",
+        deleteBatch: "/smartExamInformation/smartExamInformation/deleteBatch",
+        exportXlsUrl: "/smartExamInformation/smartExamInformation/exportXls",
+        importExcelUrl: "smartExamInformation/smartExamInformation/importExcel",
 
       },
       dictOptions:{},
@@ -185,13 +164,21 @@ export default {
     },
   },
   methods: {
+    handleStart(){
+      const { href } = this.$router.resolve({
+        //name: "editPaper",
+        path:'/SmartPaper/myExam',
+        //params: {id}
+      });
+      const win = window.open(href, "_blank");
+    },
     initDictConfig(){
     },
     getSuperFieldList(){
       let fieldList=[];
-      fieldList.push({type:'int',value:'examGrade',text:'成绩',dictCode:''})
-      fieldList.push({type:'datetime',value:'submitTime',text:'提交时间'})
-      fieldList.push({type:'string',value:'ipAddress',text:'ip地址',dictCode:''})
+      fieldList.push({type:'string',value:'examName',text:'考试名称',dictCode:''})
+      fieldList.push({type:'datetime',value:'examStarttime',text:'考试开始时间'})
+      fieldList.push({type:'datetime',value:'examEndtime',text:'考试结束时间'})
       this.superFieldList = fieldList
     }
   }
