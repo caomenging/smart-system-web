@@ -17,7 +17,7 @@
           <li class="test-info" v-if="finishTest">得分: {{ testData.userGrade.grade + '分' }}</li>
           <li class="test-info" v-else>剩余时间: {{ remainTime }}</li>
           <li class="fr">
-            <el-button type="primary" size="mini" @click="submitTestpaper" :disabled="isRead">交卷</el-button>
+            <el-button type="primary" size="mini" @click="submitTestsurvey" :disabled="isRead">交卷</el-button>
           </li>
         </ul>
       </div>
@@ -45,7 +45,7 @@
           <li class="test-info" v-else>剩余时间: {{ remainTime }}</li>
           <!-- {{expendTime}} -->
           <li class="fr">
-            <el-button type="primary" size="mini" @click="submitTestpaper" :disabled="isRead">交卷</el-button>
+            <el-button type="primary" size="mini" @click="submitTestsurvey" :disabled="isRead">交卷</el-button>
           </li>
         </ul>
       </div>
@@ -240,8 +240,8 @@
     methods: {
       //获取当前用户信息
       ...mapGetters(["nickname", "avatar","userInfo"]),
-      //提交试卷
-      submitTestpaper() {
+      //提交调查问卷
+      submitTestsurvey() {
         var topic = [];
         console.log(this.testData.smartTopicVoList);
         for (let i = 0; i < this.testData.smartTopicVoList.length; i++) {
@@ -277,7 +277,7 @@
 
         };
         console.log(request);
-        postAction('/SmartPaper/smartExam/submitTestPaper' ,request).then(res =>{
+        postAction('/SmartPaper/smartSurvey/submitTestSurvey' ,request).then(res =>{
           if (res.success) {
             console.log(res.result);
             var grade = res.result;
@@ -326,9 +326,22 @@
           }
         })
 
-
-
-        postAction('/smartGradeNumber/smartGradeNumber/addPersonNumber',this.model).then(res=>{
+        postAction('/SmartPeople/smartGradeNumber/excellentCount',this.model).then(res=>{
+          if (res.success) {
+            this.$message.success(res.message);
+          }
+        })
+        postAction('/SmartPeople/smartGradeNumber/goodCount',this.model).then(res=>{
+          if (res.success) {
+            this.$message.success(res.message);
+          }
+        })
+        postAction('/SmartPeople/smartGradeNumber/passCount',this.model).then(res=>{
+          if (res.success) {
+            this.$message.success(res.message);
+          }
+        })
+        postAction('/SmartPeople/smartGradeNumber/failCount',this.model).then(res=>{
           if (res.success) {
             this.$message.success(res.message);
           }
@@ -466,7 +479,7 @@
           if (time < 0) {
             clearInterval(timer);
             this.$message("考试结束");
-            this.submitTestpaper();
+            this.submitTestsurvey();
           }
         }, 1000);
       },

@@ -196,7 +196,7 @@
     </div>
     <!-- table区域-end -->
 
-    <village-user-modal ref="modalForm" @ok="modalFormOk"></village-user-modal>
+    <people-modal ref="modalForm" @ok="modalFormOk"></people-modal>
 
     <password-modal ref="passwordmodal" @ok="passwordModalOk"></password-modal>
 
@@ -209,10 +209,10 @@
 </template>
 
 <script>
-  import VillageUserModal from './modules/VillageUserModal'
+  import peopleModal from './modules/peopleModal'
   import PasswordModal from './modules/PasswordModal'
   import {putAction,getFileAccessHttpUrl} from '@/api/manage';
-  import {frozenBatch,queryFuzeIdTree,queryVillageIdTree} from '@/api/api'
+  import {frozenBatch,queryFuzeIdTree,queryNaturalIdTree} from '@/api/api'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import SysUserAgentModal from "./modules/SysUserAgentModal";
   import JInput from '@/components/jeecg/JInput'
@@ -223,13 +223,13 @@
   import store from '@/store'
 
   export default {
-    name: "VillagePeopleList",
+    name: "peopleList",
     mixins: [JeecgListMixin],
     components: {
       JSelectFuzeDepartModal,
       JThirdAppButton,
       SysUserAgentModal,
-      VillageUserModal,
+      peopleModal,
       PasswordModal,
       JInput,
       UserRecycleBinModal,
@@ -241,7 +241,7 @@
         villageDepartTree:[],
         fuzeDepartTree:[],
         description: '这是用户管理页面',
-        queryParam: {peopleType:2},
+        queryParam: {peopleType:1},
         recycleBinVisible: false,
         columns: [
           /*{
@@ -312,17 +312,17 @@
             width: 180,
             dataIndex: 'departIds_dictText'
           },
-          // {  title: '职务',
-          //   width: 180,
-          //   align: 'center',
-          //   dataIndex: 'post_dictText'
-          // },
-          // {
-          //   title: '职级',
-          //   align: "center",
-          //   width: 180,
-          //   dataIndex: 'positionRank_dictText'
-          // },
+          {  title: '职务',
+            width: 180,
+            align: 'center',
+            dataIndex: 'post_dictText'
+          },
+          {
+            title: '职级',
+            align: "center",
+            width: 180,
+            dataIndex: 'positionRank_dictText'
+          },
           {
             title: '状态',
             align: "center",
@@ -346,7 +346,7 @@
         ],
         url: {
           syncUser: "/act/process/extActProcess/doSyncUser",
-          list: "/sys/user/villageList",
+          list: "/sys/user/peopleList",
           delete: "/sys/user/delete",
           deleteBatch: "/sys/user/deleteBatch",
           exportXlsUrl: "/sys/user/exportXls",
@@ -356,7 +356,7 @@
     },
     created() {
       // this.selectDepartTree()
-      this.loadFuzeTreeData()
+      this.loadNaturalTreeData()
       },
     computed: {
       importExcelUrl: function(){
@@ -364,9 +364,9 @@
       }
     },
     methods: {
-      loadVillageTreeData(){
+      loadNaturalTreeData(){
         var that = this;
-        queryVillageIdTree().then((res)=>{
+        queryNaturalIdTree().then((res)=>{
           if(res.success){
             that.departTree = [];
             for (let j = 0; j < res.result.length; j++) {

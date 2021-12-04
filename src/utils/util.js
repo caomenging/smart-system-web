@@ -86,14 +86,8 @@ export function formatDate(value, fmt) {
 // 生成首页路由
 export function generateIndexRouter(data) {
   var firstUrl
+  var titlea
   let flag = 0
-  for(let roleId of store.getters.role)
-  {
-    if(roleId == "1463074308371800066"||roleId == "1463112478345588738")
-    {
-      flag = 2;
-    }
-  }
   for(let roleId of store.getters.role)
   {
     if(roleId == "f6817f48af4fb3af11b9e8bf182f618b")
@@ -104,19 +98,18 @@ export function generateIndexRouter(data) {
   if(flag === 1)
   {
     firstUrl = '/b5323bdac50f5bc855be3cf9c24f888a';
-  }else if(flag === 2)
-  {
-    firstUrl = '/interaction/home1';
+    titlea = '智慧村务服务中心'
   }
   else {
-    firstUrl = '/ok';
+    firstUrl = '/dashboard/analysis';
+    titlea = '首页'
   }
   let indexRouter = [{
     path: '/',
     name: 'dashboard',
     //component: () => import('@/components/layouts/BasicLayout'),
     component: resolve => require(['@/components/layouts/TabLayout'], resolve),
-    meta: { title: '首页' },
+    meta: { title: titlea },
     redirect: firstUrl,
     children: [
       ...generateChildRouters(data)

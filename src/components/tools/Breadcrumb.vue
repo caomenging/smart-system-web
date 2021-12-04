@@ -48,7 +48,7 @@ export default {
       //   this.breadList.push({ name: 'dashboard-analysis', path: '/b5323bdac50f5bc855be3cf9c24f888a', meta: { title: '首页' } })
       // }else if(this.flag === 2)
       // {
-      //   this.breadList.push({ name: 'dashboard-analysis', path: '/interaction/home1', meta: { title: '首页' } })
+      //   this.breadList.push({ name: 'dashboard-analysis', path: '/interaction/home1', meta: { title: '村情首页' } })
       // }
       // else {
       //   this.breadList.push({ name: 'dashboard-analysis', path: '/ok', meta: { title: '首页' } })

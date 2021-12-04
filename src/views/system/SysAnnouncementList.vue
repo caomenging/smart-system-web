@@ -204,11 +204,11 @@ export default {
             align: "center",
             dataIndex: 'endTime'
           },*/
-        {
-          title: '发布人',
-          align: 'center',
-          dataIndex: 'sender',
-        },
+        // {
+        //   title: '发布人',
+        //   align: 'center',
+        //   dataIndex: 'sender',
+        // },
         {
           title: '优先级',
           align: 'center',

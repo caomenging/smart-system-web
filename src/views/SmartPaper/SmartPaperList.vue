@@ -4,6 +4,21 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="试卷名称">
+              <j-input placeholder="请输入试卷名称" v-model="queryParam.paperName"></j-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a @click="handleToggleSearch" style="margin-left: 8px">
+                {{ toggleSearchStatus ? '收起' : '展开' }}
+                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
+              </a>
+            </span>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -70,7 +85,7 @@
 
         <span slot="action" slot-scope="text, record">
           <!--<a @click="handleEdit(record)">编辑</a>-->
-          <a @click="handleIssueExam(record)" v-show="record.paperStatus == '0'">发布考试</a>
+          <a @click="handleIssueExam(record)" :class="isDisabled(record)" >发布考试</a>
           <a-divider type="vertical" />
           <a @click="editTestPaper(record.id)">编辑</a>
           <a-divider type="vertical" />
@@ -82,7 +97,7 @@
                 <a @click="detailPage(record.id)">详情</a>
               </a-menu-item>
               <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)" v-show="record.paperStatus == '0'">
                   <a>删除</a>
                 </a-popconfirm>
               </a-menu-item>
@@ -117,6 +132,9 @@
     },
     data () {
       return {
+        queryParam:{
+          paperType:'1'
+        },
         description: '试卷表管理页面',
         // 表头
         columns: [
@@ -138,42 +156,51 @@
           {
             title:'试卷名称',
             align:"center",
-            dataIndex: 'paperName'
+            dataIndex: 'paperName',
+            sorter: true
           },
           {
             title:'试卷状态',
             align:"center",
-            dataIndex: 'paperStatus_dictText'
+            dataIndex: 'paperStatus_dictText',
+            sorter: true
           },
           {
             title:'命卷人',
             align:"center",
-            dataIndex: 'creatorName'
+            dataIndex: 'creatorName',
+            sorter: true
           },
           {
             title:'命卷日期',
             align:"center",
-            dataIndex: 'createTime'
+            dataIndex: 'createTime',
+            sorter: true
+
           },
           {
             title:'题目数量',
             align:"center",
-            dataIndex: 'topicNum'
+            dataIndex: 'topicNum',
+            sorter: true
           },
           {
             title:'总分',
             align:"center",
-            dataIndex: 'totalScore'
+            dataIndex: 'totalScore',
+            sorter: true
           },
           {
             title:'及格线',
             align:"center",
-            dataIndex: 'passMark'
+            dataIndex: 'passMark',
+            sorter: true
           },
           {
             title:'答题时间',
             align:"center",
-            dataIndex: 'time'
+            dataIndex: 'time',
+            sorter: true
           },
           {
             title: '操作',
@@ -210,6 +237,15 @@
       },
     },
     methods: {
+      isDisabled(record){
+        if ( record.paperStatus === "0") {
+          //激活开始考试
+          console.log('激活发布');
+        } else if ( record.paperStatus === "2"){
+          console.log('No发布');
+          return "disabled";
+        }
+      },
       //去创建新试卷
       createTestPaper() {
         const { href } = this.$router.resolve({
@@ -279,4 +315,10 @@
 </script>
 <style scoped>
   @import '~@assets/less/common.less';
+  .disabled {
+    pointer-events: none;
+    filter: alpha(opacity=50); /*IE滤镜，透明度50%*/
+    -moz-opacity: 0.5; /*Firefox私有，透明度50%*/
+    opacity: 0.5; /*其他，透明度50%*/
+  }
 </style>
