@@ -163,11 +163,11 @@ export default {
         }*/
       ],
       url: {
-        list: "/smartPeople/smartPeople/list",
-        delete: "/smartPeople/smartPeople/delete",
-        deleteBatch: "/smartPeople/smartPeople/deleteBatch",
-        exportXlsUrl: "/smartPeople/smartPeople/exportXls",
-        importExcelUrl: "smartPeople/smartPeople/importExcel",
+        list: "/SmartPaper/smartPeople/list",
+        delete: "/SmartPaper/smartPeople/delete",
+        deleteBatch: "/SmartPaper/smartPeople/deleteBatch",
+        exportXlsUrl: "/SmartPaper/smartPeople/exportXls",
+        importExcelUrl: "SmartPaper/smartPeople/importExcel",
 
       },
       dictOptions:{},
