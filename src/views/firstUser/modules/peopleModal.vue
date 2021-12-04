@@ -30,15 +30,29 @@
           <a-input placeholder="请输入工号" v-model="model.workNo" />
         </a-form-model-item>
 
-        <a-form-model-item label="角色分配" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="selectedroles" >
-          <a-radio-group v-model="model.selectedroles">
-            <a-radio value="1463074308371800066">
-              村长
-            </a-radio>
-            <a-radio value="1463112478345588738">
-              村民
-            </a-radio>
-          </a-radio-group>
+        <a-form-model-item label="职务" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <j-select-position placeholder="请选择职务" :multiple="false" v-model="model.post"/>
+        </a-form-model-item>
+
+        <a-form-model-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          prop="positionRank"
+          label="职级"
+        >
+          <j-dict-select-tag
+            placeholder="请选择职级"
+            dictCode="position_rank"
+            v-model="model.positionRank"
+          />
+        </a-form-model-item>
+        <a-form-model-item label="角色分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!roleDisabled" >
+          <j-multi-select-tag
+            :disabled="disableSubmit"
+            v-model="model.selectedroles"
+            :options="rolesOptions"
+            placeholder="请选择角色">
+          </j-multi-select-tag>
         </a-form-model-item>
 
         <a-form-model-item label="单位分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled" prop="selecteddeparts">
@@ -175,12 +189,12 @@
   import Vue from 'vue'
   import { ACCESS_TOKEN } from "@/store/mutation-types"
   import { getAction } from '@/api/manage'
-  import { addVillageUser,editVillageUser,queryUserRole,queryall} from '@/api/api'
+  import { addPeople,editVillageUser,queryUserRole,queryall} from '@/api/api'
   import { disabledAuthFilter } from "@/utils/authFilter"
-  import { duplicateCheck ,queryFuzeIdTree,queryVillageIdTree} from '@/api/api'
+  import { duplicateCheck ,queryFuzeIdTree,queryNaturalIdTree} from '@/api/api'
   import store from '@/store'
   export default {
-    name: "VillageUserModal",
+    name: "peopleModal",
     components: {
     },
     data () {
@@ -212,8 +226,8 @@
           telephone: [{ pattern: /^0\d{2,3}-[1-9]\d{6,7}$/, message: '请输入正确的座机号码' },],
           ethnicity:  [{ required: true, message: '请选择民族' }],
           politicalStatus:  [{ required: true, message: '请选择政治面貌' }],
-          selectedroles:  [{ required: true, message: '请选择村民的角色' }],
-          selecteddeparts:  [{ required: true, message: '请选择村民所在村' }]
+          selectedroles:  [{ required: true, message: '请选择用户角色' }],
+          selecteddeparts:  [{ required: true, message: '请选择用户单位' }]
         },
         departIdShow:false,
         title:"操作",
@@ -247,7 +261,7 @@
       this.headers = {"X-Access-Token":token}
       this.initRoleList()
       this.initTenantList()
-      this.loadFuzeTreeData()
+      this.loadNaturalTreeData()
     },
     computed:{
       uploadAction:function () {
@@ -269,10 +283,10 @@
 
         })
       },
-      loadVillageTreeData(){
+      loadNaturalTreeData(){
         var that = this;
         this.departTee = []
-        queryVillageIdTree().then((res)=>{
+        queryNaturalIdTree().then((res)=>{
           if(res.success){
             that.departTree = [];
             for (let j = 0; j < res.result.length; j++) {

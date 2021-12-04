@@ -13,7 +13,9 @@ const addUser = (params)=>postAction("/sys/user/add",params);
 const editUser = (params)=>putAction("/sys/user/edit",params);
 const queryUserRole = (params)=>getAction("/sys/user/queryUserRole",params);
 const getUserList = (params)=>getAction("/sys/user/list",params);
+const getPeopleList = (params)=>getAction("/sys/user/peopleList",params);
 const frozenBatch = (params)=>putAction("/sys/user/frozenBatch",params);
+const addPeople = (params)=>postAction("/sys/user/addPeople",params);
 
 //村民用户管理
 // const addVillageUser = (params)=>postAction("/sys/user/addVillage",params);
@@ -122,11 +124,13 @@ export {
   editRole,
   checkRoleCode,
   addUser,
+  addPeople,
   addVillageUser,
   editUser,
   editVillageUser,
   queryUserRole,
   getUserList,
+  getPeopleList,
   getVillageUserList,
   queryall,
   frozenBatch,
