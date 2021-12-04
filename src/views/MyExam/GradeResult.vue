@@ -165,7 +165,11 @@ export default {
         delete: "/SmartPaper/smartPeople/delete",
         deleteBatch: "/SmartPaper/smartPeople/deleteBatch",
         exportXlsUrl: "/SmartPaper/smartPeople/exportXls",
+
+        importExcelUrl: "SmartPaper/smartPeople/importExcel",
+
         importExcelUrl: "/SmartPaper/smartPeople/importExcel",
+
 
       },
       dictOptions:{},
