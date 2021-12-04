@@ -84,7 +84,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleExam(record)">开始考试</a>
+          <a @click="handleExam(record)" :class="isDisabled(record)" >开始考试</a>
 
           <a-divider type="vertical" />
           <a-dropdown>
@@ -154,6 +154,11 @@
             dataIndex: 'examEndtime'
           },
           {
+            title:'最高成绩',
+            align:"center",
+            dataIndex: 'examGrade'
+          },
+          {
             title: '操作',
             dataIndex: 'action',
             align:"center",
@@ -183,6 +188,25 @@
       },
     },
     methods: {
+      isDisabled(record){
+        //判断考试是否已经结束
+        let nowDate = new Date().getTime();
+        let startTime = record.examStarttime;
+        let deadline = record.examEndtime;
+        console.log('deadline',deadline);
+        let startDate = new Date(
+          Date.parse(startTime.replace(/-/g, "/"))
+        ).getTime();
+        let deadlineDate = new Date(
+          Date.parse(deadline.replace(/-/g, "/"))
+        ).getTime();
+        if (nowDate < deadlineDate && startDate < nowDate) {
+          //激活开始考试
+          console.log('激活开始考试');
+        } else {
+          return "disabled";
+        }
+      },
       handleExam(record){
         console.log(record);
         let examId = record.id
@@ -209,6 +233,7 @@
         fieldList.push({type:'string',value:'examName',text:'考试名称',dictCode:''})
         fieldList.push({type:'datetime',value:'examStarttime',text:'考试开始时间'})
         fieldList.push({type:'datetime',value:'examEndtime',text:'考试结束时间'})
+        fieldList.push({type:'int',value:'examGrade',text:'最高成绩'})
         this.superFieldList = fieldList
       }
     }
@@ -216,4 +241,10 @@
 </script>
 <style scoped>
   @import '~@assets/less/common.less';
+  .disabled {
+    pointer-events: none;
+    filter: alpha(opacity=50); /*IE滤镜，透明度50%*/
+    -moz-opacity: 0.5; /*Firefox私有，透明度50%*/
+    opacity: 0.5; /*其他，透明度50%*/
+  }
 </style>
