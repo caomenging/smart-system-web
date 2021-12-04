@@ -108,7 +108,7 @@ import 'ant-design-vue/dist/antd.less';  // or 'ant-design-vue/dist/antd.less'
 import '@/permission' // permission control
 import '@/utils/filter' // base filter
 import Print from 'vue-print-nb-jeecg'
-
+import moment from 'moment'
 
 /*import '@babel/polyfill'*/
 import preview from 'vue-photo-preview'
@@ -235,6 +235,7 @@ Vue.prototype.$elconfirm = MessageBox.confirm;
 Vue.prototype.$prompt = MessageBox.prompt;
 Vue.prototype.$notify = Notification;
 Vue.prototype.$elmessage = Message;
+Vue.prototype.$moment = moment
 // Vue.use(Buefy);
 
 Vue.use(mavonEditor);
