@@ -143,11 +143,11 @@
               return parseInt(index)+1;
             }
           },
-         {
+         /*{
             title:'试卷类型',
             align:"center",
             dataIndex: 'paperType_dictText'
-          },
+          },*/
           {
             title:'试卷名称',
             align:"center",

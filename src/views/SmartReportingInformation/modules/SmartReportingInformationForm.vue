@@ -282,7 +282,7 @@
         }
         putAction(this.url.edit, params).then((res) => {
           if(res.success) {
-            this.$message.success(res.message)
+            this.$message.success('操作成功')
             this.submitCallback();
           }
         })
@@ -312,7 +312,7 @@
         }
         putAction(this.url.edit,params).then((res)=>{
           if(res.success){
-            this.$message.success(res.message)
+            this.$message.success('操作成功')
             this.submitCallback();
           }
         })
@@ -344,7 +344,7 @@
         }
         putAction(this.url.edit,params).then((res)=>{
           if(res.success){
-            this.$message.success(res.message)
+            this.$message.success('操作成功')
             this.submitCallback();
           }
         })

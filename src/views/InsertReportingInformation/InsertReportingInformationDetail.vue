@@ -92,7 +92,6 @@
           </a-row>
           <a-form-model-item :wrapperCol="{ span: 24 }" style="text-align: center">
             <a-button @click="handleSubmit" type="primary">提交</a-button>
-            <a-button style="margin-left: 8px">取消</a-button>
           </a-form-model-item>
         </a-form-model>
       </j-form-container>
@@ -285,9 +284,10 @@ export default {
       })
 
       postAction(this.url.add, this.model).then((res) => {
+
         console.log(res)
         if (res.success) {
-          this.$message.success(res.message)
+          //this.$message.success(res.message)
           //that.$emit('ok');
           this.$router.push({ path: '/InsertReportingInformation/Success' })
         } else {
@@ -299,10 +299,10 @@ export default {
         , this.model).then((res) => {
         console.log(res)
         if (res.success) {
-          //this.$message.success('发送成功')
+         // this.$message.success('发送成功')
 
         } else {
-          //this.$message.warning('发送失败')
+         // this.$message.warning('发送失败')
         }
       })
     },

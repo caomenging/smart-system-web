@@ -307,12 +307,26 @@
           }
         })
 
-        /*postAction('/smartPeople/smartPeople/add',this.model).then(res=>{
+        postAction('/SmartPeople/smartGradeNumber/excellentCount',this.model).then(res=>{
           if (res.success) {
             this.$message.success(res.message);
-
           }
-        })*/
+        })
+        postAction('/SmartPeople/smartGradeNumber/goodCount',this.model).then(res=>{
+          if (res.success) {
+            this.$message.success(res.message);
+          }
+        })
+        postAction('/SmartPeople/smartGradeNumber/passCount',this.model).then(res=>{
+          if (res.success) {
+            this.$message.success(res.message);
+          }
+        })
+        postAction('/SmartPeople/smartGradeNumber/failCount',this.model).then(res=>{
+          if (res.success) {
+            this.$message.success(res.message);
+          }
+        })
 
       },
 
