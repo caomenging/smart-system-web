@@ -16,9 +16,10 @@
           <li class="test-info" style="margin-top: 3px">总分: {{ totalScore }} 分</li>
           <li class="test-info">
             及格分数:
-            <el-input-number v-model="testData.passMark" controls-position="right" :step="1" size="mini" :min="0" :max="totalScore" :disabled="isRead"/>
+            <el-input-number v-model="testData.passMark" controls-position="right" :step="1" size="mini" :min="0" :disabled="isRead"/>
             分
           </li>
+          <!--:max="totalScore"-->
           <li class="fr">
             <el-button v-if="params.opt === 'add' || params.opt === 'edit'" size="mini" type="primary" @click="submit()">保存试卷</el-button>
             <!--<el-button v-if="testData.releasing === 0 || params.type === 'add'" size="mini" type="primary" @click="submit()">保存试卷</el-button>-->
@@ -465,11 +466,12 @@
 
         //处理正确答案
         for(let item of topicData) {
-          if(!item.correctAnswer){
+          /*if(!item.correctAnswer){
+            console.log("empty")
             this.isCorrect = false
             //this.$message.warning("有题目未选答案！");
             return
-          }
+          }*/
           //选择题答案非空
           if(item.correctAnswer.length === 0){
             this.isCorrect = false
@@ -484,9 +486,9 @@
             let j = 0
             let length = item.correctAnswer.length
             console.log(item.correctAnswer)
-            if(length === 1 && item.correctAnswer[0] === ''){
+            if(length == 1 && item.correctAnswer[0] === ''){
               this.isCorrect = false
-              //this.$message.warning("有题目未选答案！");
+              this.$elmessage.warning("有题目答案为空！");
               console.log("444")
               return
             }else{
@@ -516,11 +518,13 @@
         //testData.autoMack = testData.autoMack == true ? "1" : "0";
         //testData.disruptOrder = testData.disruptOrder == true ? "1" : "0";
         //testData.permitCopy = testData.permitCopy == true ? "1" : "0";
-        if(this.isCorrect === false && this.isEmpty === false){
+
+        /*if(this.isCorrect === false && this.isEmpty === false){
           console.log("isCorrect")
           this.$elmessage.warning("有题目答案为空！");
           this.isCorrect =true
-        }else if(this.isEmpty === true &&this.isCorrect === true){
+        }else*/
+          if(this.isEmpty === true &&this.isCorrect === true){
           console.log("isEmpty")
           this.$elmessage.warning("有题目存在空选项！");
           this.isEmpty = false
@@ -531,57 +535,71 @@
           this.$elmessage.warning("有题目存在空选项！");
           this.isEmpty = false
           this.isCorrect =true
-        }
+        }else if(this.testData.paperName === ''){
+            this.$elmessage.warning("试卷标题为空！");
+          }else if(this.testData.smartTopicVoList.length === 0){
+            this.$elmessage.warning("不能创建空试卷！");
+          }
         else {
-          if (this.params.opt === "edit") {
-            let id = this.$route.params.id
-            let url = "/SmartPaper/smartPaper/edit/"+id;
-            putAction(url, this.testData).then((res) => {
-              if (res.success) {
-                this.$elmessage({
-                  type:"success",
-                  message: "修改成功！",
-                  duration:1000,
-                  onClose:()=> {
-                    //此处写提示关闭后需要执行的函数
-                    window.location.href="about:blank";
-                    window.close();
-                    window.opener.location.reload();
-                  }
-                })
-              }
-              else{
-                this.$elmessage({
-                  type:"error",
-                  message: "修改失败！",
-                  duration:1000,
-                })
-              }
-            });
-          } else if (this.params.opt === "add") {
-            let url = "/SmartPaper/smartPaper/add";
-            postAction(url, this.testData).then((res) => {
-              if (res.success) {
-                this.$elmessage({
-                  type:"success",
-                  message: "添加成功！",
-                  duration:300,
-                  onClose:()=> {
-                    //此处写提示关闭后需要执行的函数
-                    window.location.href="about:blank";
-                    window.close();
-                    window.opener.location.reload();
-                  }
-                })
-              }
-              else{
-                this.$elmessage({
-                  type:"error",
-                  message: "添加失败！",
-                  duration:300,
-                })
-              }
-            });
+          if(this.testData.passMark>this.totalScore){
+            console.log(this.testData.passMark,this.testData.totalScore)
+            this.$elmessage({
+              type: "error",
+              message: "及格分不能超过总分！",
+              duration: 1000,
+            })
+          }else{
+            if (this.params.opt === "edit") {
+              let id = this.$route.params.id
+              let url = "/SmartPaper/smartPaper/edit/"+id;
+              putAction(url, this.testData).then((res) => {
+                if (res.success) {
+                  this.$elmessage({
+                    type:"success",
+                    message: "修改成功！",
+                    duration:1000,
+                    onClose:()=> {
+                      //此处写提示关闭后需要执行的函数
+                      window.location.href="about:blank";
+                      window.close();
+                      window.opener.location.reload();
+                    }
+                  })
+                }
+                else{
+                  this.$elmessage({
+                    type:"error",
+                    message: "修改失败！",
+                    duration:1000,
+                  })
+                }
+              });
+            }
+            else if (this.params.opt === "add") {
+              let url = "/SmartPaper/smartPaper/add";
+              postAction(url, this.testData).then((res) => {
+                if (res.success) {
+                  this.$elmessage({
+                    type:"success",
+                    message: "添加成功！",
+                    duration:300,
+                    onClose:()=> {
+                      //此处写提示关闭后需要执行的函数
+                      window.location.href="about:blank";
+                      window.close();
+                      window.opener.location.reload();
+                    }
+                  })
+                }
+                else{
+                  this.$elmessage({
+                    type:"error",
+                    message: "添加失败！",
+                    duration:300,
+                  })
+                }
+              });
+            }
           }
         }
 

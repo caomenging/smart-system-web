@@ -16,7 +16,8 @@
           <li class="test-info" v-if="finishTest">得分: {{ testData.userGrade.grade + '分' }}</li>
           <li class="test-info" v-else>剩余时间: {{ remainTime }}</li>
           <li class="fr">
-            <el-button type="primary" size="mini" @click="submitTestpaper" :disabled="isRead">交卷</el-button>
+            <el-button type="primary" size="mini" @click="submitTestpaper"
+                        :disabled="isRead">交卷</el-button>
           </li>
         </ul>
       </div>
@@ -195,7 +196,8 @@
         //侧导航栏是否悬浮
         isFixed: false,
         topic_nav_style: "top:0px",
-        grade:''
+        grade:'',
+        fullscreenLoading: false
       };
     },
     computed:{
@@ -297,7 +299,7 @@
               },
             }).then(action => {
                 this.$elmessage({
-                  type:"info",
+                  type:"success",
                   message: "本次考试结束！",
                   //onClose: close(),
                 });
@@ -350,7 +352,13 @@
         /* 处理试卷的题目数据 */
         testData.smartTopicVoList.forEach((item) => {
           //按换行符分割字符串
-          item.choice = item.choice.split(/[\n]/g);
+          if (item.topicType == 1 || item.topicType == 0){
+            item.choice = item.choice.split(/[\n]/g);
+          }
+          /*else{
+            let choice ={choice:[""]}
+            item.push(choice)
+          }*/
           // item.correct_answer = item.correct_answer.split(/[\n]/g);
           //添加用户答案
           if (item.topicType == 1 || item.topicType == 3) {
