@@ -16,7 +16,8 @@
           <li class="test-info" v-if="finishTest">得分: {{ testData.userGrade.grade + '分' }}</li>
           <li class="test-info" v-else>剩余时间: {{ remainTime }}</li>
           <li class="fr">
-            <el-button type="primary" size="mini" @click="submitTestpaper" :disabled="isRead">交卷</el-button>
+            <el-button type="primary" size="mini" @click="submitTestpaper"
+                        :disabled="isRead">交卷</el-button>
           </li>
         </ul>
       </div>
@@ -195,7 +196,8 @@
         //侧导航栏是否悬浮
         isFixed: false,
         topic_nav_style: "top:0px",
-        grade:''
+        grade:'',
+        fullscreenLoading: false
       };
     },
     computed:{
@@ -297,7 +299,7 @@
               },
             }).then(action => {
                 this.$elmessage({
-                  type:"info",
+                  type:"success",
                   message: "本次考试结束！",
                   //onClose: close(),
                 });
