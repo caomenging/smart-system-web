@@ -148,11 +148,11 @@
               return parseInt(index)+1;
             }
           },
-         {
+/*         {
             title:'试卷类型',
             align:"center",
             dataIndex: 'paperType_dictText'
-          },
+          },*/
           {
             title:'试卷名称',
             align:"center",
@@ -240,9 +240,9 @@
       isDisabled(record){
         if ( record.paperStatus === "0") {
           //激活开始考试
-          console.log('激活发布');
+          //console.log('激活发布');
         } else if ( record.paperStatus === "2"){
-          console.log('No发布');
+          //console.log('No发布');
           return "disabled";
         }
       },
