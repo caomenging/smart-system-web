@@ -120,7 +120,7 @@
   import ReleaseTest from './modules/ReleaseTest'
 
   export default {
-    name: 'SmartPaperList',
+    name: 'SmartSurveyList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       SmartPaperModal,ReleaseTest

@@ -114,13 +114,13 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartExamInformationModal from './modules/SmartExamInformationModal'
+  import SmartSurveyInformationModal from './modules/SmartSurveyInformationModal'
 
   export default {
-    name: 'SmartExamInformationList',
+    name: 'SmartSurveyInformationList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartExamInformationModal
+      SmartSurveyInformationModal
     },
     data () {
       return {
