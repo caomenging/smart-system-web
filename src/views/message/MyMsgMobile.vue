@@ -36,12 +36,11 @@
 
 <script>
 import { filterObj } from '@/utils/util';
-import Answer from './module/Answer.vue';
 import { getAction } from '../../api/manage';
 import ShowAnnouncement from '@/components/tools/ShowAnnouncement'
 
 export default {
-  components: { Answer, ShowAnnouncement },
+  components: {ShowAnnouncement },
   created() {
     this.loadData()
   },
