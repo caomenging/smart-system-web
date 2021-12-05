@@ -174,7 +174,7 @@
 
                   <div class="fillInBlank">
                     <div v-for="(q, index) in fillSymbolStr(t.question)" :key="index">
-                      <el-input type="textarea" autosize placeholder="请回答" v-if="delCorrect(3, tIndex, index,t.question)"
+                      <el-input type="textarea" autosize placeholder="请回答" v-if="index!=fillSymbolStr(t.question).length-1"
                                 v-model="t.correctAnswer[index]"
                                 :disabled="isRead" >
                       </el-input>
@@ -484,21 +484,23 @@
             let j = 0
             let length = item.correctAnswer.length
             console.log(item.correctAnswer)
-            for (j = 0; j < length; j++) {
-              if ( item.correctAnswer[j] === "") {
-                console.log("444")
-                this.$elmessage.warning("有题目答案为空！");
-                this.isCorrect = false
-                return
-              }
-            }
-            console.log(this.isCorrect)
-           /* if(item.correctAnswer.length === 1 && item.correctAnswer[0] === ''){
+            if(length === 1 && item.correctAnswer[0] === ''){
               this.isCorrect = false
               //this.$message.warning("有题目未选答案！");
               console.log("444")
               return
-            }*/
+            }else{
+              for (j = 0; j < length; j++) {
+                console.log(length)
+                if ( item.correctAnswer[j] === "") {
+                  console.log("555")
+                  this.$elmessage.warning("有题目答案为空！");
+                  this.isCorrect = false
+                  return
+                }
+              }
+            }
+            console.log(this.isCorrect)
             let correctAnswer = "";
             item.correctAnswer.forEach((c) => {
               correctAnswer += c + "\n";
@@ -694,7 +696,7 @@
 
       //新建题目
       newTopic(type) {
-        if(type === '0' || type === '1'){
+        if(type == 0 || type == 1){
           this.sortedTopics[type].topic_content.push({
             //u_id: this.userData.id,
             topicType: type,
@@ -777,16 +779,19 @@
 
       //添加选项，最多10个
       addRadios(type, tIndex) {
-        let choiceLength = this.sortedTopics[type].topic_content[tIndex].choice.length + 1;
-        if (choiceLength > 10) {
-          this.$message({
-            message: "不能再添加选项了喔!",
-            type: "warning",
-          });
-          return;
+        if(this.sortedTopics[type].topic_content[tIndex].choice!=undefined) {
+          let choiceLength = this.sortedTopics[type].topic_content[tIndex].choice.length + 1;
+          console.log(choiceLength)
+          if (choiceLength > 10) {
+            this.$message({
+              message: "不能再添加选项了喔!",
+              type: "warning",
+            });
+            return;
+          }
+          //this.sortedTopics[type].topic_content[tIndex].choice.push("请输入选项" + choiceLength);
+          this.sortedTopics[type].topic_content[tIndex].choice.push('');
         }
-        //this.sortedTopics[type].topic_content[tIndex].choice.push("请输入选项" + choiceLength);
-        this.sortedTopics[type].topic_content[tIndex].choice.push('');
       },
       //转换选项为A,B,C,D
       getOption(index){
