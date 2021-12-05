@@ -68,7 +68,8 @@
 </template>
 
 <script>
-import { getAction, postAction, putAction } from '../../../api/manage'
+import { getAction } from '../../../api/manage'
+
 export default {
   name: 'AnswerModal',
   components: {},
@@ -86,7 +87,6 @@ export default {
           this.ipagination.page = page
           this.getComment()
         },
-        
         // pageSizeOptions: ['10', '20', '30'],
         showTotal: (total, range) => {
           return range[0] + '-' + range[1] + ' 共' + total + '条'
@@ -94,11 +94,6 @@ export default {
         showQuickJumper: true,
         showSizeChanger: true,
         total: 0,
-      },
-      modelStyle: {
-        width: document.body.clientWidth < 600 ? '100%' : '70%',
-        style: { top: '20px' },
-        fullScreen: false,
       },
       labelCol: {
         xs: { span: 24 },
@@ -115,6 +110,11 @@ export default {
         padding: '0',
         height: window.innerHeight * 0.8 + 'px',
         'overflow-y': 'auto',
+      },
+      modelStyle: {
+        width: '70%',
+        style: { top: '20px' },
+        fullScreen: false,
       },
     }
   },

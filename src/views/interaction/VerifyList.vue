@@ -66,7 +66,7 @@
         >项
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
       </div>
-      <h1>待审核列表</h1>
+      <h1>待审核问题</h1>
 
       <a-table
         ref="table"
