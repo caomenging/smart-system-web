@@ -10,8 +10,8 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="被反映人单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reflectedDepartid">
-              <a-input v-model="model.reflectedDepartid" placeholder="请输入被反映人单位" ></a-input>
+            <a-form-model-item label="被反映人单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reflectedDocumentid">
+              <a-input v-model="model.reflectedDocumentid" placeholder="请输入被反映人单位" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -26,7 +26,7 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="附件" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="description">
-              <j-upload v-model="model.description"  ></j-upload>
+              <j-upload v-model="model.description" ></j-upload>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
