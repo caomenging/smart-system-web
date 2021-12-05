@@ -350,7 +350,13 @@
         /* 处理试卷的题目数据 */
         testData.smartTopicVoList.forEach((item) => {
           //按换行符分割字符串
-          item.choice = item.choice.split(/[\n]/g);
+          if (item.topicType == 1 || item.topicType == 0){
+            item.choice = item.choice.split(/[\n]/g);
+          }
+          /*else{
+            let choice ={choice:[""]}
+            item.push(choice)
+          }*/
           // item.correct_answer = item.correct_answer.split(/[\n]/g);
           //添加用户答案
           if (item.topicType == 1 || item.topicType == 3) {
