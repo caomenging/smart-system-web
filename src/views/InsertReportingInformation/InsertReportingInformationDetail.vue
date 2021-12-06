@@ -231,8 +231,10 @@ export default {
         })
       })
       setTimeout(() =>{
-        //this.filePath = this.filePathList.join()
-        this.model.photoList = this.filePathList
+        
+        this.filePath = this.filePathList.join()
+        console.log(this.filePath)
+        this.model.photo = this.filePath
         postAction(this.url.add, this.model).then((res) => {
             
         console.log(res)
