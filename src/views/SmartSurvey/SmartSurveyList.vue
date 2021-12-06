@@ -22,19 +22,8 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <!--<a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
-      <a-button @click="createTestPaper"  type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('试卷表')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>
-      <!-- 高级查询区域 -->
-      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
-      <a-dropdown v-if="selectedRowKeys.length > 0">
-        <a-menu slot="overlay">
-          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
-        </a-menu>
-        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
-      </a-dropdown>
+      <a-button @click="createTestPaper"  type="primary" icon="plus">创建调查问卷</a-button>
+
     </div>
 
     <!-- table区域-begin -->
@@ -82,7 +71,7 @@
           <!--<a @click="handleEdit(record)">编辑</a>-->
           <a @click="handleIssueSurvey(record)" v-show="record.paperStatus == '0'">发布调查问卷</a>
           <a-divider type="vertical" />
-          <a @click="editTestPaper(record.id)">编辑</a>
+          <a @click="editTestPaper(record.id)">修改调查问卷</a>
           <a-divider type="vertical" />
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
@@ -192,7 +181,6 @@
             title: '操作',
             dataIndex: 'action',
             align:"center",
-            fixed:"right",
             width:147,
             scopedSlots: { customRender: 'action' }
           }

@@ -70,7 +70,7 @@ export default {
   },
   data() {
     return {
-      title:'发布考试',
+      title:'发布调查问卷',
       width:800,
       visible: false,
       disableSubmit: false,
@@ -117,11 +117,19 @@ export default {
           let url = "/SmartExam/smartRelease/releaseExam/" + paperId;
           postAction(url,this.model).then((res)=>{
             if(res.success){
-              that.$message.success(res.message);
               this.visible = false;
+              this.$elmessage({
+                type:"success",
+                message: "发布成功！",
+                duration:1000
+              })
               that.$emit('ok');
             }else{
-              that.$message.warning(res.message);
+              this.$elmessage({
+                type:"error",
+                message: "发布失败！",
+                duration:1000,
+              })
             }
           }).finally(() => {
             that.confirmLoading = false;

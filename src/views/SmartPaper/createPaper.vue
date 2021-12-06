@@ -117,7 +117,7 @@
                   <div class="question">
                     <strong class="question_nunber">{{ topicNavIndex_mixin(s_topics.type,tIndex) }}、</strong>
                     <span v-if="isEdit(s_topics.type,tIndex)">
-                      <el-input v-model="t.question" type="textarea" autosize placeholder="请输入题干" :disabled="isRead"></el-input>
+                      <el-input v-model="t.question" type="textarea" autosize placeholder="请输入题干" :disabled="isRead" required = "required"></el-input>
                     </span>
                     <span v-else>{{ t.question }}</span>
                   </div>
@@ -128,7 +128,7 @@
                       <el-radio v-for="(item, index) in t.choice" :key="index" v-model="t.correctAnswer" :label="getOption(index)" :disabled="isRead">
                         <span class="topicNavIndex">{{String.fromCharCode(65+index)}}、</span>
                         <span v-if="editInedx.type==0&&editInedx.index==tIndex">
-                          <el-input v-model="t.choice[index]" type="textarea" autosize placeholder="请输入选项内容" :disabled="isRead"></el-input>
+                          <el-input v-model="t.choice[index]" type="textarea" autosize placeholder="请输入选项内容" :disabled="isRead" required = "required"></el-input>
                           <el-button class="delRadios" size="mini" type="danger" v-if="t.choice.length>2" @click="delRadios(0,tIndex,index)" v-show="isShow">
                             <i class="el-icon-close"></i>
                           </el-button>
@@ -146,7 +146,7 @@
                         <el-checkbox :label="getOption(index)" v-for="(item, index) in t.choice" :key="index">
                           <span class="topicNavIndex">{{String.fromCharCode(65+index)}}、</span>
                           <span v-if="editInedx.type==1&&editInedx.index==tIndex">
-                            <el-input v-model="t.choice[index]" type="textarea" autosize placeholder="请输入选项内容" :disabled="isRead"></el-input>
+                            <el-input v-model="t.choice[index]" type="textarea" autosize placeholder="请输入选项内容" :disabled="isRead" required = "required"></el-input>
                             <!--<el-input v-model="t.choice[index]" type="textarea" autosize placeholder="请输入选项内容"></el-input>-->
                             <el-button class="delRadios" size="mini" type="danger" v-if="t.choice.length>2" @click="delRadios(1,tIndex,index)" v-show="isShow">
                               <i class="el-icon-close"></i>
@@ -174,7 +174,8 @@
 
                   <div class="fillInBlank">
                     <div v-for="(q, index) in fillSymbolStr(t.question)" :key="index">
-                      <el-input type="textarea" autosize placeholder="请回答" v-if="index!=fillSymbolStr(t.question).length-1" v-model="t.correctAnswer[index]" :disabled="isRead">
+                      <el-input type="textarea" autosize placeholder="请回答" v-if="index!=fillSymbolStr(t.question).length-1" v-model="t.correctAnswer[index]"
+                                :disabled="isRead" required = "required">
                       </el-input>
                     </div>
                   </div>
@@ -185,7 +186,7 @@
                     <div class="text">
                       <strong>&nbsp;&nbsp;关键字</strong>
                       <div v-for="(q, index) in t.correctAnswer" :key="index">
-                        <el-input type="textarea" autosize placeholder="请输入关键字" v-model="t.correctAnswer[index]" :disabled="isRead"> </el-input>
+                        <el-input type="textarea" autosize placeholder="请输入关键字" v-model="t.correctAnswer[index]" :disabled="isRead" required = "required"> </el-input>
                       </div>
                       <el-button class="addRadios" size="mini" icon="el-icon-plus" @click="addKeyWord(tIndex)" v-show="isShow">添加关键字</el-button>
                       <!-- {{t.correctAnswer}} -->
@@ -391,7 +392,6 @@
     },
 
     methods: {
-
       //获取出题者姓名
       getCreatorName:function (){
         if(this.testData.creatorName){
@@ -429,22 +429,34 @@
         //处理选择题选项
         topicData.forEach((item) => {
           let choice = "";
-          item.choice.forEach((c) => {
-            choice += c + "\n";
-          });
-          item.choice = choice.slice(0, -1);
-          //item.required = item.required === true ? 1:0
+
+          if(item.topicType ==="0" || item.topicType === "1") {
+
+            item.choice.forEach((c) => {
+              console.log(item.choice)
+              console.log(c)
+              if(c ===""){
+                this.$message.warning("有题目存在空选项！");
+                return
+              }else{
+                choice += c + "\n";
+                item.choice = choice.slice(0, -1);
+              }
+
+            });
+          }
+
         });
 
         //处理正确答案
         for(let item of topicData) {
           if(!item.correctAnswer){
-            this.$message.warning("有题目未选答案");
+            this.$message.warning("有题目未选答案！");
             return
           }
           if (item.correctAnswer instanceof Array) {
             if(item.correctAnswer.length === 1 && item.correctAnswer[0] === ''){
-              this.$message.warning("有题目未选答案");
+              this.$message.warning("有题目未选答案！");
               return
             }
             let correctAnswer = "";
@@ -468,33 +480,48 @@
           let url = "/SmartPaper/smartPaper/edit/"+id;
           putAction(url, this.testData).then((res) => {
             if (res.success) {
-              this.$message.success({
-                content: "修改成功！",
-                duration: 3,
-                onClose: close(),
-              });
-              close()
-              {
-                window.location.href="about:blank";
-                window.close();
-                window.opener.location.reload();
-              }
+              this.$elmessage({
+                type:"success",
+                message: "修改成功！",
+                duration:300,
+                onClose:()=> {
+                  //此处写提示关闭后需要执行的函数
+                  window.location.href="about:blank";
+                  window.close();
+                  window.opener.location.reload();
+                }
+              })
             }
             else{
-              this.$message.error(res.message)
+              this.$elmessage({
+                type:"error",
+                message: "修改失败！",
+                duration:300,
+              })
             }
           });
         } else if (this.params.opt === "add") {
           let url = "/SmartPaper/smartPaper/add";
           postAction(url, this.testData).then((res) => {
             if (res.success) {
-              this.$message.success(res.message);
-              window.location.href="about:blank";
-              window.close();
-              window.opener.location.reload();
+              this.$elmessage({
+                type:"success",
+                message: "添加成功！",
+                duration:300,
+                onClose:()=> {
+                  //此处写提示关闭后需要执行的函数
+                  window.location.href="about:blank";
+                  window.close();
+                  window.opener.location.reload();
+                }
+              })
             }
             else{
-              this.$message.error(res.message)
+              this.$elmessage({
+                type:"error",
+                message: "添加失败！",
+                duration:300,
+              })
             }
           });
         }
@@ -611,7 +638,7 @@
           //u_id: this.userData.id,
           topicType: type,
           question: "",
-          choice: ["", "", "", ""],
+          choice: [],
           correctAnswer: [],
           //analysis: "",
           //difficulty: "中等",

@@ -4,7 +4,7 @@
 
       <!-- 试卷信息 -->
       <div class="title ">
-        <el-input v-model="testData.paperName" class="testName" placeholder="请输入试卷标题" :disabled="isRead"></el-input>
+        <el-input v-model="testData.paperName" class="testName" placeholder="请输入调查问卷标题" :disabled="isRead"></el-input>
 
         <ul>
           <li class="test-info" style="margin-top: 3px" >出卷者: {{ getCreatorName()}}</li>
@@ -30,7 +30,7 @@
       </div>
 
       <div class="title fixed" v-if="isFixed">
-        <el-input v-model="testData.paperName" class="testName" placeholder="请输入试卷标题" :disabled="isRead"></el-input>
+        <el-input v-model="testData.paperName" class="testName" placeholder="请输入调查问卷标题" :disabled="isRead"></el-input>
 
         <ul>
           <li class="test-info" style="margin-top: 3px" >出卷者: {{ getCreatorName()}}</li>

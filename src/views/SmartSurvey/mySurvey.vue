@@ -201,10 +201,10 @@
         testData: {
           testName:this.$route.params.examName,
           examInfo:{},
-          userGrade:{}
+          //userGrade:{}
         },
 
-        remainTime: "00:00:00", //考试剩余时间
+        remainTime: "", //考试剩余时间
         expendTime: 0, //考试用时(秒)
         isRead: false, //是否为只读模式
         //forbid_copy: false, //是否禁止复制文本
@@ -231,6 +231,14 @@
       //console.log(this.$route.query)
       this.getTestPaperData();
     },
+    watch:{
+      remainTime(){
+        //console.log(this.remainTime)
+        if(this.remainTime === "00:00:00"){
+          this.autoSubmit();
+        }
+      }
+    },
 
     mounted() {
       window.addEventListener("scroll", this.handleScroll);
@@ -243,6 +251,7 @@
       //提交调查问卷
       submitTestsurvey() {
         var topic = [];
+        var grade='';
         console.log(this.testData.smartTopicVoList);
         for (let i = 0; i < this.testData.smartTopicVoList.length; i++) {
           var item = JSON.parse(JSON.stringify(this.testData.smartTopicVoList[i]))
@@ -277,22 +286,22 @@
 
         };
         console.log(request);
-        postAction('/SmartPaper/smartSurvey/submitTestSurvey' ,request).then(res =>{
+        postAction('/SmartPaper/smartExam/submitTestSurvey' ,request).then(res =>{
           if (res.success) {
             console.log(res.result);
-            var grade = res.result;
+            grade = res.result;
             this.$message.success(res.message);
             const h = this.$createElement;
             this.$msgbox({
               title: '成绩',
               message: h('p', null, [
-                h('span', null, '本次考试成绩为 '),
+                h('span', null, '本次调查成绩为 '),
                 h('i', { style: 'color: teal' }, grade)
               ]),
               showCancelButton: true,
               confirmButtonText: '确定',
               cancelButtonText: '取消',
-              /*beforeClose: (action, instance, done) => {
+              beforeClose: (action, instance, done) => {
                 if (action === 'confirm') {
                   instance.confirmButtonLoading = true;
                   instance.confirmButtonText = '执行中...';
@@ -300,17 +309,16 @@
                     done();
                     setTimeout(() => {
                       instance.confirmButtonLoading = false;
-                    }, 300);
-                  }, 3000);
+                    }, 100);
+                  }, 1000);
                 } else {
                   done();
                 }
-              }*/
+              },
             }).then(action => {
                 this.$message.success({
-                  content: "考试完成！",
-                  duration: 3,
-                  onClose: close(),
+                  type:"info",
+                  message: "本次调查结束！",
                 });
                 close()
                 {
@@ -326,26 +334,26 @@
           }
         })
 
-        postAction('/SmartPeople/smartGradeNumber/excellentCount',this.model).then(res=>{
+       /* postAction('/SmartPaper/smartGradeNumber/excellentCount',this.model).then(res=>{
           if (res.success) {
             this.$message.success(res.message);
           }
         })
-        postAction('/SmartPeople/smartGradeNumber/goodCount',this.model).then(res=>{
+        postAction('/SmartPaper/smartGradeNumber/goodCount',this.model).then(res=>{
           if (res.success) {
             this.$message.success(res.message);
           }
         })
-        postAction('/SmartPeople/smartGradeNumber/passCount',this.model).then(res=>{
+        postAction('/SmartPaper/smartGradeNumber/passCount',this.model).then(res=>{
           if (res.success) {
             this.$message.success(res.message);
           }
         })
-        postAction('/SmartPeople/smartGradeNumber/failCount',this.model).then(res=>{
+        postAction('/SmartPaper/smartGradeNumber/failCount',this.model).then(res=>{
           if (res.success) {
             this.$message.success(res.message);
           }
-        })
+        })*/
 
       },
 
@@ -478,10 +486,93 @@
           this.expendTime++;
           if (time < 0) {
             clearInterval(timer);
-            this.$message("考试结束");
-            this.submitTestsurvey();
+            //this.$message("考试结束");
+             //this.submitTestsurvey();
           }
         }, 1000);
+      },
+      //答题时间到，自动交卷
+      autoSubmit() {
+        var topic = [];
+        var grade ='';
+        console.log(this.testData.smartTopicVoList);
+        for (let i = 0; i < this.testData.smartTopicVoList.length; i++) {
+          var item = JSON.parse(JSON.stringify(this.testData.smartTopicVoList[i]))
+
+          console.log(item);
+          //处理多选/填空答案
+          if (item.topicType == 1 || item.topicType == 3) {
+            if (item.submitAnswer instanceof Array) {
+              var submitAnswer = "";
+              item.submitAnswer.forEach((c) => {
+                submitAnswer += c + "\n";
+              });
+              item.submitAnswer = submitAnswer.slice(0, -1);
+            }
+          }
+          topic.push({
+            //questionId: item.questionId,
+            paperId: this.$route.query.paperId,
+            type:item.topicType,
+            submitAnswer: item.submitAnswer,
+          });
+        }
+
+        console.log(topic);
+        let examId = this.$route.query.examId
+        var request = {
+          examId:examId,
+          smartSubmitList: topic,
+        };
+        console.log(request);
+        postAction('/SmartPaper/smartExam/submitTestSurvey' ,request).then(res =>{
+          console.log(res)
+          if (res.success) {
+            console.log(res.result);
+            grade = res.result;
+            console.log(grade)
+            const h = this.$createElement;
+            this.$msgbox({
+              title: '提醒',
+              message: h('p', null, [
+                h('span', null, '已到答题时间，自动交卷，本次考试成绩为 '),
+                h('i', { style: 'color: teal' }, grade)
+              ]),
+              showCancelButton: true,
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              beforeClose: (action, instance, done) => {
+                if (action === 'confirm') {
+                  instance.confirmButtonLoading = true
+                  instance.confirmButtonText = 'Loading...'
+                  setTimeout(() => {
+                    done()
+                    setTimeout(() => {
+                      instance.confirmButtonLoading = false
+                    }, 100)
+                  }, 1000)
+                } else {
+                  done()
+                }
+              },
+            }).then(action => {
+              this.$elmessage({
+                type:"success",
+                message: "考试完成！",
+                onClose:()=> {
+                  //此处写提示关闭后需要执行的函数
+                  window.location.href="about:blank";
+                  window.close();
+                  window.opener.location.reload();
+                }
+              });
+            });
+          }
+          //location.reload()
+          else{
+            this.$message.error(res.message);
+          }
+        })
       },
 
       //格式化考试剩余时间

@@ -13,7 +13,9 @@ const addUser = (params)=>postAction("/sys/user/add",params);
 const editUser = (params)=>putAction("/sys/user/edit",params);
 const queryUserRole = (params)=>getAction("/sys/user/queryUserRole",params);
 const getUserList = (params)=>getAction("/sys/user/list",params);
+const getPeopleList = (params)=>getAction("/sys/user/peopleList",params);
 const frozenBatch = (params)=>putAction("/sys/user/frozenBatch",params);
+const addPeople = (params)=>postAction("/sys/user/addPeople",params);
 
 //村民用户管理
 // const addVillageUser = (params)=>postAction("/sys/user/addVillage",params);
@@ -55,8 +57,9 @@ const deleteByDepartId   = (params)=>deleteAction("/sys/sysDepart/delete",params
 const queryTopicList = (params)=>getAction("/village/smartVillageTopic/queryTopicList",params);
 const queryCommentList = (params)=>getAction("/village/smartVillageTopic/queryCommentList",params);
 const addVillageUser = (params)=>postAction("/sys/user/addVillage",params);
-const editVillageUser = (params)=>postAction("/sys/user/editVillage",params);
+const editVillageUser = (params)=>putAction("/sys/user/editVillage",params);
 const getVillageUserList = (params)=>getAction("/sys/user/villageList",params);
+const queryVillageIdTree = (params)=>getAction("/sys/sysDepart/queryVillageIdTree",params);
 
 //二级部门管理
 const queryDepartPermission = (params)=>getAction("/sys/permission/queryDepartPermission",params);
@@ -121,10 +124,13 @@ export {
   editRole,
   checkRoleCode,
   addUser,
+  addPeople,
   addVillageUser,
   editUser,
+  editVillageUser,
   queryUserRole,
   getUserList,
+  getPeopleList,
   getVillageUserList,
   queryall,
   frozenBatch,
@@ -146,6 +152,7 @@ export {
   queryDepartTreeSync,
   queryIdTree,
   queryFuzeIdTree,
+  queryVillageIdTree,
   queryNaturalIdTree,
   queryParentName,
   searchByKeywords,

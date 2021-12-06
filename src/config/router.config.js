@@ -6,9 +6,6 @@ import { UserLayout, TabLayout, RouteView, BlankLayout, PageView } from '@/compo
  */
 
 
-
-
-
 export const asyncRouterMap = [
  /* {
     path:'/InsertReportingInformation',

@@ -4,21 +4,6 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="调查问卷名称">
-              <a-input placeholder="请输入调查问卷名称" v-model="queryParam.examName"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a @click="handleToggleSearch" style="margin-left: 8px">
-                {{ toggleSearchStatus ? '收起' : '展开' }}
-                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>
-            </span>
-          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -26,8 +11,8 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <!--<a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
-      <a-button type="primary" icon="download" @click="handleExportXls('考试信息表')">导出</a-button>
+      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('日历事件')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -104,7 +89,7 @@
       </a-table>
     </div>
 
-    <smart-exam-information-modal ref="modalForm" @ok="modalFormOk"></smart-exam-information-modal>
+    <calendar-event-modal ref="modalForm" @ok="modalFormOk"></calendar-event-modal>
   </a-card>
 </template>
 
@@ -113,17 +98,17 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartSurveyInformationModal from './modules/SmartSurveyInformationModal'
+  import CalendarEventModal from './modules/CalendarEventModal'
 
   export default {
-    name: 'SmartSurveyInformationList',
+    name: 'CalendarEventList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartSurveyInformationModal
+      CalendarEventModal
     },
     data () {
       return {
-        description: '考试信息表管理页面',
+        description: '日历事件管理页面',
         // 表头
         columns: [
           {
@@ -137,19 +122,34 @@
             }
           },
           {
-            title:'调查问卷名称',
+            title:'创建人',
             align:"center",
-            dataIndex: 'examName'
+            dataIndex: 'createBy'
           },
           {
-            title:'调查问卷开始时间',
+            title:'事件标题',
             align:"center",
-            dataIndex: 'examStarttime'
+            dataIndex: 'title'
           },
           {
-            title:'调查问卷结束时间',
+            title:'事件详情',
             align:"center",
-            dataIndex: 'examEndtime'
+            dataIndex: 'eventDetail'
+          },
+          {
+            title:'完成情况',
+            align:"center",
+            dataIndex: 'isFinished'
+          },
+          {
+            title:'开始时间',
+            align:"center",
+            dataIndex: 'startTime'
+          },
+          {
+            title:'结束时间',
+            align:"center",
+            dataIndex: 'endTime'
           },
           {
             title: '操作',
@@ -161,11 +161,11 @@
           }
         ],
         url: {
-          list: "/SmartPaper/smartMySurvey/list",
-          delete: "/SmartPaper/smartMySurvey/delete",
-          deleteBatch: "/SmartPaper/smartMySurvey/deleteBatch",
-          exportXlsUrl: "/SmartPaper/smartMySurvey/exportXls",
-          importExcelUrl: "SmartPaper/smartMySurvey/importExcel",
+          list: "/calendarEvent/calendarEvent/list",
+          delete: "/calendarEvent/calendarEvent/delete",
+          deleteBatch: "/calendarEvent/calendarEvent/deleteBatch",
+          exportXlsUrl: "/calendarEvent/calendarEvent/exportXls",
+          importExcelUrl: "calendarEvent/calendarEvent/importExcel",
 
         },
         dictOptions:{},
@@ -185,9 +185,12 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-        fieldList.push({type:'string',value:'examName',text:'考试名称',dictCode:''})
-        fieldList.push({type:'datetime',value:'examStarttime',text:'考试开始时间'})
-        fieldList.push({type:'datetime',value:'examEndtime',text:'考试结束时间'})
+        fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
+        fieldList.push({type:'string',value:'title',text:'事件标题',dictCode:''})
+        fieldList.push({type:'Text',value:'eventDetail',text:'事件详情',dictCode:''})
+        fieldList.push({type:'string',value:'isFinished',text:'完成情况',dictCode:''})
+        fieldList.push({type:'datetime',value:'startTime',text:'开始时间'})
+        fieldList.push({type:'datetime',value:'endTime',text:'结束时间'})
         this.superFieldList = fieldList
       }
     }
