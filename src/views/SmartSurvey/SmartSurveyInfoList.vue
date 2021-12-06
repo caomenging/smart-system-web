@@ -58,7 +58,6 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -126,37 +125,38 @@
         description: '考试信息表管理页面',
         // 表头
         columns: [
-          {
-            title: '#',
-            dataIndex: '',
-            key:'rowIndex',
-            width:60,
-            align:"center",
-            customRender:function (t,r,index) {
-              return parseInt(index)+1;
-            }
-          },
+          // {
+          //   title: '#',
+          //   dataIndex: '',
+          //   key:'rowIndex',
+          //   width:60,
+          //   align:"center",
+          //   customRender:function (t,r,index) {
+          //     return parseInt(index)+1;
+          //   }
+          // },
           {
             title:'调查问卷名称',
-            align:"center",
-            dataIndex: 'examName'
+            align:"left",
+            dataIndex: 'examName',
+            width:50,
           },
           {
             title:'调查问卷开始时间',
             align:"center",
             dataIndex: 'examStarttime'
           },
-          {
-            title:'调查问卷结束时间',
-            align:"center",
-            dataIndex: 'examEndtime'
-          },
+          // {
+          //   title:'调查问卷结束时间',
+          //   align:"center",
+          //   dataIndex: 'examEndtime'
+          // },
           {
             title: '操作',
             dataIndex: 'action',
             align:"center",
             fixed:"right",
-            width:147,
+            width:50,
             scopedSlots: { customRender: 'action' }
           }
         ],
