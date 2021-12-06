@@ -108,6 +108,7 @@
       >
         <a-button htmlType="submit" type="primary" >提交</a-button>
         <a-button style="margin-left: 8px" href	='../../QRCode/QRcode'>取消</a-button>
+        <a-button type="primary" href="../../InsertReportingInformation/InsertReportingInformationDetail">去举报</a-button>
       </a-form-item>
     </a-form>
   </a-card>
