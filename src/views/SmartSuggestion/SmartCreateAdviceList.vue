@@ -207,8 +207,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["Logout"]),
-    ...mapGetters(["nickname", "avatar","userInfo"]),
+    ...mapGetters(["userInfo"]),
     initDictConfig() {},
     getSuperFieldList() {
       let fieldList = []
