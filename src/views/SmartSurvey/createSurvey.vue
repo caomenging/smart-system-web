@@ -21,7 +21,7 @@
             分
           </li>
           <li class="fr">
-            <el-button v-if="params.opt === 'addSurvey' || params.opt === 'edit'" size="mini" type="primary" @click="submit()">保存试卷</el-button>
+            <el-button v-if="params.opt === 'addSurvey' || params.opt === 'edit'" size="mini" type="primary" @click="submit()">保存调查问卷</el-button>
           </li>
 
           <li style="clear:both;"></li>
@@ -47,7 +47,7 @@
             分
           </li>
           <li class="fr">
-            <el-button v-if="params.opt === 'addSurvey' || params.opt === 'edit'" size="mini" type="primary" @click="submit()">保存试卷</el-button>
+            <el-button v-if="params.opt === 'addSurvey' || params.opt === 'edit'" size="mini" type="primary" @click="submit()">保存调查问卷</el-button>
           </li>
           <!-- <li class="test-info">所属班级: {{ testData.classes_name }}</li> -->
           <li style="clear:both;"></li>

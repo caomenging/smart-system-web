@@ -114,7 +114,7 @@ export default {
         if (valid) {
           that.confirmLoading = true;
           let paperId = that.paperId;
-          let url = "/SmartExam/smartRelease/releaseExam/" + paperId;
+          let url = "/SmartExam/smartRelease/releaseSurvey/" + paperId;
           postAction(url,this.model).then((res)=>{
             if(res.success){
               this.visible = false;

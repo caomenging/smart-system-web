@@ -43,7 +43,7 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -122,7 +122,7 @@
         description: '试卷表管理页面',
         // 表头
         columns: [
-          {
+         /* {
             title: '#',
             dataIndex: '',
             key:'rowIndex',
@@ -131,7 +131,7 @@
             customRender:function (t,r,index) {
               return parseInt(index)+1;
             }
-          },
+          },*/
          /*{
             title:'试卷类型',
             align:"center",
@@ -167,11 +167,11 @@
             align:"center",
             dataIndex: 'totalScore'
           },
-          {
+          /*{
             title:'及格线',
             align:"center",
             dataIndex: 'passMark'
-          },
+          },*/
           {
             title:'答题时间',
             align:"center",
