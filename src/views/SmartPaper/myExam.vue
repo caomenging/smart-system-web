@@ -271,7 +271,6 @@
           if (res.success) {
             console.log(res.result);
             grade = res.result;
-            console.log(this.grade)
             this.$message.success(res.message);
             const h = this.$createElement;
             this.$msgbox({
@@ -315,10 +314,24 @@
           }
         })
 
-        /*postAction('/smartPeople/smartPeople/add',this.model).then(res=>{
+       /* postAction('/SmartPaper/smartGradeNumber/excellentCount',this.model).then(res=>{
           if (res.success) {
             this.$message.success(res.message);
-
+          }
+        })
+        postAction('/SmartPaper/smartGradeNumber/goodCount',this.model).then(res=>{
+          if (res.success) {
+            this.$message.success(res.message);
+          }
+        })
+        postAction('/SmartPaper/smartGradeNumber/passCount',this.model).then(res=>{
+          if (res.success) {
+            this.$message.success(res.message);
+          }
+        })
+        postAction('/SmartPaper/smartGradeNumber/failCount',this.model).then(res=>{
+          if (res.success) {
+            this.$message.success(res.message);
           }
         })*/
 

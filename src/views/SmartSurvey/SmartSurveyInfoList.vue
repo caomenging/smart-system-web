@@ -112,13 +112,13 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartExamInformationModal from './modules/SmartExamInformationModal'
+  import SmartSurveyInformationModal from './modules/SmartSurveyInformationModal'
 
   export default {
-    name: 'SmartExamInformationList',
+    name: 'SmartSurveyInformationList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartExamInformationModal
+      SmartSurveyInformationModal
     },
     data () {
       return {
@@ -161,11 +161,11 @@
           }
         ],
         url: {
-          list: "/SmartPaper/smartMyExam/list",
-          delete: "/SmartPaper/smartMyExam/delete",
-          deleteBatch: "/SmartPaper/smartMyExam/deleteBatch",
-          exportXlsUrl: "/SmartPaper/smartMyExam/exportXls",
-          importExcelUrl: "SmartPaper/smartMyExam/importExcel",
+          list: "/SmartPaper/smartMySurvey/list",
+          delete: "/SmartPaper/smartMySurvey/delete",
+          deleteBatch: "/SmartPaper/smartMySurvey/deleteBatch",
+          exportXlsUrl: "/SmartPaper/smartMySurvey/exportXls",
+          importExcelUrl: "SmartPaper/smartMySurvey/importExcel",
 
         },
         dictOptions:{},

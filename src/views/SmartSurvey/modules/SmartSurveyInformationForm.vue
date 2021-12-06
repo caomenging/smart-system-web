@@ -4,18 +4,18 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24">
-            <a-form-model-item label="考试名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="examName">
-              <a-input v-model="model.examName" placeholder="请输入考试名称"  ></a-input>
+            <a-form-model-item label="调查问卷名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="examName">
+              <a-input v-model="model.examName" placeholder="请输入调查问卷名称"  ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="考试开始时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="examStarttime">
-              <j-date placeholder="请选择考试开始时间"  v-model="model.examStarttime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
+            <a-form-model-item label="调查问卷开始时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="examStarttime">
+              <j-date placeholder="请选择调查问卷开始时间"  v-model="model.examStarttime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="考试结束时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="examEndtime">
-              <j-date placeholder="请选择考试结束时间"  v-model="model.examEndtime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
+            <a-form-model-item label="调查问卷结束时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="examEndtime">
+              <j-date placeholder="请选择调查问卷结束时间"  v-model="model.examEndtime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -30,7 +30,7 @@
   import { validateDuplicateValue } from '@/utils/util'
 
   export default {
-    name: 'SmartExamInformationForm',
+    name: 'SmartSurveyInformationForm',
     components: {
     },
     props: {
@@ -106,7 +106,7 @@
               that.confirmLoading = false;
             })
           }
-         
+
         })
       },
     }

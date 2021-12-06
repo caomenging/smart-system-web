@@ -92,7 +92,6 @@
           </a-row>
           <a-form-model-item :wrapperCol="{ span: 24 }" style="text-align: center">
             <a-button @click="handleSubmit"   type="primary">提交</a-button>
-            <a-button style="margin-left: 8px">取消</a-button>
           </a-form-model-item>
         </a-form-model>
       </j-form-container>
@@ -111,7 +110,7 @@ export default {
   components: { AFormItem, JUpload, JImageUpload },
   data() {
     return {
-      
+
       savePath: 'report',
       filePath: '',
       filePathList: [],
@@ -180,7 +179,7 @@ export default {
 
         this.allImg.push(photo)
 
-        // console.log(this.dataURLtoFileFun(res, localFile.name))
+        console.log(this.dataURLtoFileFun(res, localFile.name))
       })
     },
     dataURLtoFileFun(dataurl, filename) {
@@ -214,9 +213,9 @@ export default {
 
     // 提交
     handleSubmit() {
-      //this.model.photo = this.filePath
+      this.model.photo = this.filePath
       console.log(this.model)
-      
+
       this.allImg.forEach((item) => {
         let formData = new FormData()
         formData.append('biz', this.savePath)
@@ -225,8 +224,8 @@ export default {
           console.log(res)
           if (res.success) {
             this.filePathList.push(res.message)
-            // console.log(this.filePathList)
-            
+            console.log(this.filePathList)
+            this.filePath = this.filePathList.join()
           }
         })
       })
@@ -234,7 +233,7 @@ export default {
         //this.filePath = this.filePathList.join()
         this.model.photoList = this.filePathList
         postAction(this.url.add, this.model).then((res) => {
-            
+
         console.log(res)
         if (res.success) {
           this.$message.success(res.message)
@@ -246,7 +245,7 @@ export default {
       })
     },100)
 
-    
+
 
       postAction("/smartReportingInformation/smartReportingInformation/sendMessage"
         , this.model).then((res) => {

@@ -8,17 +8,18 @@
     :okButtonProps="{ class:{'jee-hidden': disableSubmit} }"
     @cancel="handleCancel"
     cancelText="关闭">
-    <smart-exam-information-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></smart-exam-information-form>
+    <smart-survey-information-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></smart-survey-information-form>
   </j-modal>
 </template>
 
 <script>
 
-  import SmartExamInformationForm from './SmartExamInformationForm'
+
+  import SmartSurveyInformationForm from './SmartSurveyInformationForm'
   export default {
-    name: 'SmartExamInformationModal',
+    name: 'SmartSurveyInformationModal',
     components: {
-      SmartExamInformationForm
+      SmartSurveyInformationForm
     },
     data () {
       return {
