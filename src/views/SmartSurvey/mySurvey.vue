@@ -17,7 +17,8 @@
           <li class="test-info" v-if="finishTest">得分: {{ testData.userGrade.grade + '分' }}</li>
           <li class="test-info" v-else>剩余时间: {{ remainTime }}</li>
           <li class="fr">
-            <el-button type="primary" size="mini" @click="submitTestsurvey" :disabled="isRead">交卷</el-button>
+            <el-button type="primary" size="mini" @click="submitTestsurvey"
+                       :disabled="isRead">交卷</el-button>
           </li>
         </ul>
       </div>
@@ -201,7 +202,7 @@
         testData: {
           testName:this.$route.params.examName,
           examInfo:{},
-          //userGrade:{}
+
         },
 
         remainTime: "", //考试剩余时间
@@ -215,6 +216,8 @@
         //侧导航栏是否悬浮
         isFixed: false,
         topic_nav_style: "top:0px",
+        grade:'',
+        fullscreenLoading: false
       };
     },
     computed:{
@@ -317,8 +320,8 @@
               },
             }).then(action => {
                 this.$message.success({
-                  type:"info",
-                  message: "本次调查结束！",
+                  type:"success",
+                  message: "本次调查问卷结束！",
                 });
                 close()
                 {
