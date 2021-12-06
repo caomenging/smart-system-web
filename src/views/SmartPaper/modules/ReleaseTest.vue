@@ -102,6 +102,37 @@ export default {
     };
   },
   methods: {
+    time(){
+      //判断考试时间
+      let nowDate = new Date().getTime();
+      let startTime = this.model.examStarttime;
+      let deadline = this.model.examEndtime;
+      console.log('deadline',deadline);
+      let startDate = new Date(
+        Date.parse(startTime.replace(/-/g, "/"))
+      ).getTime();
+      let deadlineDate = new Date(
+        Date.parse(deadline.replace(/-/g, "/"))
+      ).getTime();
+      //考试时间至少大于当前时间，并且开始时间小于结束时间
+      if ( startDate < nowDate ) {
+        //开始时间小于当前时间
+        this.$elmessage({
+          type:"error",
+          message:"开始时间小于当前时间!"
+        })
+        return false
+        //console.log('开始时间小于结束时间');
+      } else if ( startDate > deadlineDate ) {
+        this.$elmessage({
+          type:"error",
+          message:"开始时间大于结束时间!"
+        })
+        return false
+      }else {
+        return true
+      }
+    },
     releaseTest(paperId){
       this.visible = true;
       this.paperId= paperId
@@ -111,29 +142,33 @@ export default {
       // 触发表单验证
       console.log(that.paperId);
       this.$refs.form.validate(valid => {
+        let time = that.time()
+        console.log(time)
         if (valid) {
-          that.confirmLoading = true;
-          let paperId = that.paperId;
-          let url = "/SmartExam/smartRelease/releaseExam/" + paperId;
-          postAction(url,this.model).then((res)=>{
-            if(res.success){
-              this.visible = false;
-              this.$elmessage({
-                type:"success",
-                message: "发布成功！",
-                duration:1000
-              })
-              that.$emit('ok');
-            }else{
-              this.$elmessage({
-                type:"error",
-                message: "发布失败！",
-                duration:1000,
-              })
-            }
-          }).finally(() => {
-            that.confirmLoading = false;
-          })
+          if(time){
+            that.confirmLoading = true;
+            let paperId = that.paperId;
+            let url = "/SmartExam/smartRelease/releaseExam/" + paperId;
+            postAction(url,this.model).then((res)=>{
+              if(res.success){
+                this.visible = false;
+                this.$elmessage({
+                  type:"success",
+                  message: "发布成功！",
+                  duration:1000
+                })
+                that.$emit('ok');
+              }else{
+                this.$elmessage({
+                  type:"error",
+                  message: "发布失败！",
+                  duration:1000,
+                })
+              }
+            }).finally(() => {
+              that.confirmLoading = false;
+            })
+          }
         }
 
       })
