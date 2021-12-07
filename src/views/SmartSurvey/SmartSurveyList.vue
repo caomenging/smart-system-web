@@ -72,7 +72,7 @@
           <a @click="handleIssueSurvey(record)" v-show="record.paperStatus == '0'">发布调查问卷</a>
           <a-divider type="vertical" />
           <a @click="editTestPaper(record.id)">修改调查问卷</a>
-          <a-divider type="vertical" />
+
         </span>
 
       </a-table>
@@ -126,32 +126,38 @@
           {
             title:'试卷名称',
             align:"center",
-            dataIndex: 'paperName'
+            dataIndex: 'paperName',
+            sorter: true
           },
           {
             title:'试卷状态',
             align:"center",
-            dataIndex: 'paperStatus_dictText'
+            dataIndex: 'paperStatus_dictText',
+            sorter: true
           },
           {
             title:'命卷人',
             align:"center",
-            dataIndex: 'creatorName'
+            dataIndex: 'creatorName',
+            sorter: true
           },
           {
             title:'命卷日期',
             align:"center",
-            dataIndex: 'createTime'
+            dataIndex: 'createTime',
+            sorter: true
           },
           {
             title:'题目数量',
             align:"center",
-            dataIndex: 'topicNum'
+            dataIndex: 'topicNum',
+            sorter: true
           },
           {
             title:'总分',
             align:"center",
-            dataIndex: 'totalScore'
+            dataIndex: 'totalScore',
+            sorter: true
           },
           /*{
             title:'及格线',
@@ -161,7 +167,8 @@
           {
             title:'答题时间',
             align:"center",
-            dataIndex: 'time'
+            dataIndex: 'time',
+            sorter: true
           },
           {
             title: '操作',
