@@ -8,7 +8,9 @@
         </a-row>
       </a-form>
     </div>
-
+    <div class="table-operator">
+      <a-button type="primary" icon="download" @click="handleExportXls('举报信息表')">导出</a-button>
+    </div>
 
     <!-- table区域-begin -->
    <div>
@@ -24,7 +26,6 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -48,26 +49,9 @@
         </template>
 
        <span slot="action" slot-scope="text, record">
-<!--          <a @click="handleEdit(record)">编辑</a>-->
-
 
          <a @click="handleLook(record)">查看</a>
-         <a-divider type="vertical" />
-         <a @click="handleExportXls('举报信息表')" type="primary" icon="download" >导出</a>
 
-<!--          <a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <a @click="handleDetail(record)">详情</a>
-              </a-menu-item>
-            <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a>删除</a>
-                </a-popconfirm>
-             </a-menu-item>
-          </a-dropdown>-->
         </span>
 
       </a-table>
@@ -169,17 +153,17 @@ export default {
     },
     handleLook(){//查看
       this.$router.push({path: '/SmartReportingInformation/SmartReportingInformationList'});
-    }
-   /* getSuperFieldList(){
+    },
+    getSuperFieldList(){
       let fieldList=[];
       fieldList.push({type:'string',value:'reflectedInformation',text:'被反映人信息',dictCode:''})
       fieldList.push({type:'string',value:'reflectedDocumentid',text:'被反映人单位',dictCode:''})
       fieldList.push({type:'datetime',value:'reportingTime',text:'举报时间'})
-      fieldList.push({type:'string',value:'processingType',text:'处理类型',dictCode:'processing_type'})
+      fieldList.push({type:'string',value:'processingResult',text:'处理类型',dictCode:'processing_result'})
       fieldList.push({type:'string',value:'reportingName',text:'举报人姓名',dictCode:''})
       fieldList.push({type:'string',value:'contactNumber',text:'联系电话',dictCode:''})
       this.superFieldList = fieldList
-    }*/
+    }
   }
 }
 </script>
