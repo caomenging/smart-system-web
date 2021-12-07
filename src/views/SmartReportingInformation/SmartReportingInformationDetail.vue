@@ -8,7 +8,11 @@
         </a-row>
       </a-form>
     </div>
+    <div class="table-operator">
 
+      <!-- 高级查询区域 -->
+      <a-button type="primary" icon="download" @click="handleExportXls('举报信息表')">导出</a-button>
+    </div>
 
     <!-- table区域-begin -->
    <div>
@@ -48,26 +52,9 @@
         </template>
 
        <span slot="action" slot-scope="text, record">
-<!--          <a @click="handleEdit(record)">编辑</a>-->
-
 
          <a @click="handleLook(record)">查看</a>
-         <a-divider type="vertical" />
-         <a @click="handleExportXls('举报信息表')" type="primary" icon="download" >导出</a>
 
-<!--          <a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <a @click="handleDetail(record)">详情</a>
-              </a-menu-item>
-            <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a>删除</a>
-                </a-popconfirm>
-             </a-menu-item>
-          </a-dropdown>-->
         </span>
 
       </a-table>
