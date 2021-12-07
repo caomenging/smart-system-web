@@ -1,7 +1,7 @@
 <template>
   <a-card :bordered="false">
     <!-- 查询区域 -->
-    <div v-if="roleId.indexOf('1465163864583323650') == -1" class="table-page-search-wrapper">
+    <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -122,7 +122,6 @@
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import SmartCreateAdviceModal from './modules/SmartCreateAdviceModal'
 import '@/assets/less/TableExpand.less'
-import { mapActions, mapGetters,mapState } from 'vuex'
 
 export default {
   name: 'SmartCreateAdviceList',
@@ -133,7 +132,6 @@ export default {
   data() {
     return {
       description: '制发建议表管理页面',
-      roleId: [],
       // 表头
       columns: [
         {
@@ -198,7 +196,6 @@ export default {
     }
   },
   created() {
-    this.roleId = this.userInfo().roleId
     this.getSuperFieldList()
   },
   computed: {
@@ -207,8 +204,6 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["Logout"]),
-    ...mapGetters(["nickname", "avatar","userInfo"]),
     initDictConfig() {},
     getSuperFieldList() {
       let fieldList = []

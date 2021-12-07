@@ -6,6 +6,9 @@ import { UserLayout, TabLayout, RouteView, BlankLayout, PageView } from '@/compo
  */
 
 
+
+
+
 export const asyncRouterMap = [
  /* {
     path:'/InsertReportingInformation',
@@ -484,7 +487,12 @@ export const constantRouterMap = [
     component: () => import('@/views/SmartEvaluate/modules/SmartEvaluateForm')
   },
 
+  //纠治四风扫描二维码
+  {
+    path:'/InsertReportingInformation/InsertReportingInformationDetail',
+    component: () => import('@views/InsertReportingInformation/InsertReportingInformationDetail')
 
+  },
   // @TODO 政策查询
   // {
   //   path: '/webview/search',

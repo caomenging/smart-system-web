@@ -16,8 +16,7 @@
           <li class="test-info" v-if="finishTest">得分: {{ testData.userGrade.grade + '分' }}</li>
           <li class="test-info" v-else>剩余时间: {{ remainTime }}</li>
           <li class="fr">
-            <el-button type="primary" size="mini" @click="submitTestpaper"
-                        :disabled="isRead">交卷</el-button>
+            <el-button type="primary" size="mini" @click="submitTestpaper" :disabled="isRead">交卷</el-button>
           </li>
         </ul>
       </div>
@@ -196,8 +195,7 @@
         //侧导航栏是否悬浮
         isFixed: false,
         topic_nav_style: "top:0px",
-        grade:'',
-        fullscreenLoading: false
+        grade:''
       };
     },
     computed:{
@@ -271,6 +269,7 @@
           if (res.success) {
             console.log(res.result);
             grade = res.result;
+            console.log(this.grade)
             this.$message.success(res.message);
             const h = this.$createElement;
             this.$msgbox({
@@ -298,7 +297,7 @@
               },
             }).then(action => {
                 this.$elmessage({
-                  type:"success",
+                  type:"info",
                   message: "本次考试结束！",
                   //onClose: close(),
                 });
@@ -314,24 +313,10 @@
           }
         })
 
-       /* postAction('/SmartPaper/smartGradeNumber/excellentCount',this.model).then(res=>{
+        /*postAction('/smartPeople/smartPeople/add',this.model).then(res=>{
           if (res.success) {
             this.$message.success(res.message);
-          }
-        })
-        postAction('/SmartPaper/smartGradeNumber/goodCount',this.model).then(res=>{
-          if (res.success) {
-            this.$message.success(res.message);
-          }
-        })
-        postAction('/SmartPaper/smartGradeNumber/passCount',this.model).then(res=>{
-          if (res.success) {
-            this.$message.success(res.message);
-          }
-        })
-        postAction('/SmartPaper/smartGradeNumber/failCount',this.model).then(res=>{
-          if (res.success) {
-            this.$message.success(res.message);
+
           }
         })*/
 
@@ -365,13 +350,7 @@
         /* 处理试卷的题目数据 */
         testData.smartTopicVoList.forEach((item) => {
           //按换行符分割字符串
-          if (item.topicType == 1 || item.topicType == 0){
-            item.choice = item.choice.split(/[\n]/g);
-          }
-          /*else{
-            let choice ={choice:[""]}
-            item.push(choice)
-          }*/
+          item.choice = item.choice.split(/[\n]/g);
           // item.correct_answer = item.correct_answer.split(/[\n]/g);
           //添加用户答案
           if (item.topicType == 1 || item.topicType == 3) {

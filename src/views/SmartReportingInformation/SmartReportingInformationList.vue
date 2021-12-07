@@ -96,7 +96,7 @@
         // 表头
         columns: [
           {
-            title: '编号',
+            title: '#',
             dataIndex: '',
             key:'rowIndex',
             width:60,
@@ -113,7 +113,7 @@
           {
             title:'被反映人单位',
             align:"center",
-            dataIndex: 'reflectedDocumentid'
+            dataIndex: 'reflectedDepartid'
           },
           {
             title:'主要问题',
@@ -200,7 +200,7 @@
       getSuperFieldList(){
         let fieldList=[];
          fieldList.push({type:'string',value:'reflectedInformation',text:'被反映人信息',dictCode:''})
-         fieldList.push({type:'string',value:'reflectedDocumentid',text:'被反映人单位',dictCode:''})
+         fieldList.push({type:'string',value:'reflectedDepartid',text:'被反映人单位',dictCode:''})
          fieldList.push({type:'string',value:'majorProblem',text:'主要问题',dictCode:''})
          fieldList.push({type:'Blob',value:'photo',text:'照片',dictCode:''})
          fieldList.push({type:'Text',value:'description',text:'附件',dictCode:''})
