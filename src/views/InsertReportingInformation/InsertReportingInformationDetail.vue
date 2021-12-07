@@ -230,6 +230,7 @@ export default {
         })
       })
       setTimeout(() =>{
+        
         this.filePath = this.filePathList.join()
         console.log(this.filePath)
         this.model.photo = this.filePath
