@@ -28,7 +28,7 @@
               </a-col>
 
               <a-col :span="24" >
-                <a-form-model-item label="指定人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="personId" >
+                <a-form-model-item label="指定人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="users" >
                   <j-select-user-by-dep v-model="model.users" :multi="true" />
                 </a-form-model-item>
               </a-col>
@@ -111,11 +111,15 @@ export default {
       let startDate = new Date(
         Date.parse(startTime.replace(/-/g, "/"))
       ).getTime();
+      console.log(new Date())
+      console.log( new Date(
+        Date.parse(startTime.replace(/-/g, "/"))
+      ))
       let deadlineDate = new Date(
         Date.parse(deadline.replace(/-/g, "/"))
       ).getTime();
       //考试时间至少大于当前时间，并且开始时间小于结束时间
-      if ( startDate < nowDate ) {
+      if ( startDate > nowDate ) {
         //开始时间小于当前时间
         this.$elmessage({
           type:"error",
