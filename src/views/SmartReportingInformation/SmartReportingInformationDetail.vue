@@ -62,7 +62,7 @@
 </template>
 
 <script>
-
+import { mixinDevice } from '@/utils/mixin'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import SmartReportingInformationModal from './modules/SmartReportingInformationModal'
 import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
@@ -70,7 +70,7 @@ import '@/assets/less/TableExpand.less'
 
 export default {
   name: "SmartReportingInformationList",
-  mixins:[JeecgListMixin],
+  mixins:[JeecgListMixin, mixinDevice],
   components: {
     SmartReportingInformationModal
   },
