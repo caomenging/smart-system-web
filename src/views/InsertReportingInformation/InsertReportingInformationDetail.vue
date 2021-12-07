@@ -213,7 +213,7 @@ export default {
 
     // 提交
     handleSubmit() {
-      this.model.photo = this.filePath
+      // this.model.photo = this.filePath
       console.log(this.model)
 
       this.allImg.forEach((item) => {
@@ -225,7 +225,7 @@ export default {
           if (res.success) {
             this.filePathList.push(res.message)
             console.log(this.filePathList)
-            this.filePath = this.filePathList.join()
+            // this.filePath = this.filePathList.join()
           }
         })
       })

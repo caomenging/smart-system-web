@@ -14,22 +14,10 @@
     </div>
     <!-- 查询区域-END -->
 
-    <!-- 操作按钮区域 -->
-    <div class="table-operator">
 
-      <!-- 高级查询区域 -->
-
-      <a-dropdown v-if="selectedRowKeys.length > 0">
-        <a-menu slot="overlay">
-          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
-        </a-menu>
-        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
-      </a-dropdown>
-    </div>
 
     <!-- table区域-begin -->
     <div>
-
 
       <a-table
         ref="table"
@@ -67,7 +55,6 @@
 
         <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)">处理举报信息</a>
-
         </span>
 
       </a-table>
