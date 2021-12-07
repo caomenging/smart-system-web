@@ -441,6 +441,28 @@ export const constantRouterMap = [
     }
   },
 
+  //纠治四风扫描二维码之前以及扫码后页面
+  {
+    path:'/InsertReportingInformation/InsertReportingInformationDetail',
+    name:'InsertReportingInformation',
+    component: () => import('@views/InsertReportingInformation/InsertReportingInformationDetail'),
+    meta:{
+      title:'填写举报信息'
+    }
+  },
+
+  //纠治四风扫描二维码填写信息后（跳转中）
+  {
+    path:'/InsertReportingInformation/Success',
+    name:'success',
+    component: () => import('@views/InsertReportingInformation/Success'),
+    meta:{
+      title:'跳转成功'
+    }
+
+  },
+
+
   /**
    * 下面代码为了简化APP端访问后台，取消侧边栏
    */

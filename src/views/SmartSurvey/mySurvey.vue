@@ -284,10 +284,12 @@
             this.$message.success(res.message);
             const h = this.$createElement;
             this.$msgbox({
-              title: '成绩',
+              title: '',
               message: h('p', null, [
                 h('span', null, '本次考试成绩为 '),
                 h('i', { style: 'color: teal' }, grade)
+                h('span', null, '本次调查结束，感谢您的配合'),
+
               ]),
               showCancelButton: true,
               confirmButtonText: '确定',
