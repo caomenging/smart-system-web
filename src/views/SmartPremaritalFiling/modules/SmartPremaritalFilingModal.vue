@@ -35,8 +35,7 @@
     methods:{
       add () {
         this.visible=true
-        getAction('/taskType/smartVerifyType/queryByTypeName',{typeName:this.typeName}).then((res)
-        => {
+        getAction('/taskType/smartVerifyType/queryByTypeName',{typeName:this.typeName}).then((res)  => {
           if(res.success){
             this.typeDesc = res.result
           }
