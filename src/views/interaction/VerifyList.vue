@@ -66,7 +66,6 @@
         >项
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
       </div>
-      <h1>待审核问题</h1>
 
       <a-table
         ref="table"
@@ -108,7 +107,6 @@
         </span>
       </a-table>
       
-      <h1>待审核评论</h1>
       <a-table
         ref="comment"
         size="middle"
@@ -150,7 +148,6 @@
     </div>
 
     <topic-verify-modal ref="modalForm" @ok="modalFormOk" />
-    <comment-modal ref="commentModal" @ok="getCommentList" />
   </a-card>
 </template>
 
@@ -160,20 +157,17 @@ import '@/assets/less/TableExpand.less'
 import CreateModal from './module/CreateModal.vue'
 import TopicVerifyModal from './module/TopicVerifyModal.vue'
 import { getAction } from '../../api/manage'
-import CommentModal from './module/CommentModal.vue'
 
 export default {
   name: 'SmartSupervisionList',
   mixins: [JeecgListMixin],
   components: {
     TopicVerifyModal,
-    CommentModal,
   },
   data() {
     return {
       description: '问题审核',
       commentDataSource:[],
-      commonModalShow: false,
       commentIpagination: {
         current: 1,
         pageSize: 10,
@@ -264,7 +258,7 @@ export default {
         },
       ],
       url: {
-        list: '/interaction/verifyList',
+        list: '/interaction/list',
         delete: '/smartSupervision/smartSupervision/delete',
         deleteBatch: '/smartSupervision/smartSupervision/deleteBatch',
         exportXlsUrl: '/smartSupervision/smartSupervision/exportXls',
@@ -286,7 +280,7 @@ export default {
   },
   methods: {
     handleVerify(record) {
-        // this.$refs.modalForm.title = 'haha'
+        this.$refs.modalForm.title = 'haha'
         this.$refs.modalForm.edit(record)
     },
     getCommentList(){
@@ -295,11 +289,6 @@ export default {
           this.commentDataSource = res.result.records
         }
       })
-    },
-    handleCommentVerify(record) {
-      // this.$refs.modalForm.title = 'haha'
-      console.log(record)
-      this.$refs.commentModal.edit(record)
     },
     initDictConfig() {},
     getSuperFieldList() {

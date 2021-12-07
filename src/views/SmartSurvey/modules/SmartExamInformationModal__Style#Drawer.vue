@@ -7,7 +7,7 @@
     @close="close"
     destroyOnClose
     :visible="visible">
-    <smart-survey-information-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit" normal></smart-survey-information-form>
+    <smart-exam-information-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit" normal></smart-exam-information-form>
     <div class="drawer-footer">
       <a-button @click="handleCancel" style="margin-bottom: 0;">关闭</a-button>
       <a-button v-if="!disableSubmit"  @click="handleOk" type="primary" style="margin-bottom: 0;">提交</a-button>
@@ -17,13 +17,12 @@
 
 <script>
 
-
-  import SmartSurveyInformationForm from './SmartSurveyInformationForm'
+  import SmartExamInformationForm from './SmartExamInformationForm'
 
   export default {
-    name: 'SmartSurveyInformationModal',
+    name: 'SmartExamInformationModal',
     components: {
-      SmartSurveyInformationForm
+      SmartExamInformationForm
     },
     data () {
       return {

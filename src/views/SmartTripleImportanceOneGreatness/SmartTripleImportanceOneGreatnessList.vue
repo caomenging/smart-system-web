@@ -1,8 +1,7 @@
 <template>
   <a-card :bordered="false">
     <!-- 查询区域 -->
-    <div v-if="roleId.indexOf('1465163864583323650') == -1"
-         class="table-page-search-wrapper">
+    <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -106,7 +105,6 @@
   import SmartTripleImportanceOneGreatnessModal from './modules/SmartTripleImportanceOneGreatnessModal'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import '@/assets/less/TableExpand.less'
-  import { mapActions,mapGetters,mapState } from 'vuex'
 
   export default {
     name: "SmartTripleImportanceOneGreatnessList",
@@ -232,7 +230,6 @@
       }
     },
     created() {
-      this.roleId=this.userInfo().roleId
       this.getSuperFieldList();
     },
     computed: {
@@ -241,9 +238,6 @@
       }
     },
     methods: {
-
-      ...mapGetters(["userInfo"]),
-
       initDictConfig(){
       },
       getSuperFieldList(){

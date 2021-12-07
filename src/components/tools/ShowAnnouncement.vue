@@ -52,7 +52,7 @@ export default {
         'overflow-y': 'auto',
       },
       modelStyle: {
-        width: document.body.clientWidth < 600 ? '100%' : '70%',
+        width: '60%',
         style: { top: '20px' },
         fullScreen: false,
       },
