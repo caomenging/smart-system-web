@@ -1,6 +1,6 @@
 <template>
   <j-modal
-    :title="title"
+    :title="title+'统计详情'"
     :width="1000"
     :visible="visible"
     :maskClosable="false"
@@ -10,7 +10,7 @@
     @cancel="handleCancel"
   >
     <a-row style="padding:0 24px">
-      <a-button type="primary" @click="remindAll(anntId)" > 一键提醒 </a-button>
+      <a-button type="primary" @click="remindAll(anntId,title)" > 一键提醒 </a-button>
       <a-button type="primary" @click="handleBatchDownload(title)" style="margin-left: 8px"> 一键下载附件 </a-button>
     </a-row>
     <task-detail-list ref="realList" @ok="submitCallback" :disabled="disableSubmit" />
@@ -43,8 +43,9 @@ export default {
     edit(record) {
       this.visible = true
       console.log(record)
-      this.title = record.titile
+      this.title = "【" + record.titile + "】"
       this.anntId = record.id
+      this.ty
       this.$nextTick(() => {
         this.$refs.realList.edit(record)
       })
@@ -66,8 +67,8 @@ export default {
     handleBatchDownload(record) {
       this.$refs.realList.handleBatchDownload(record)
     },
-    remindAll(anntId) {
-      getAction('/sys/sysAnnouncementSend/remindAll',{anntId: anntId}).then((res) => {
+    remindAll(anntId, type) {
+      getAction('/sys/sysAnnouncementSend/remindAll',{anntId: anntId, type:type}).then((res) => {
         if(res.success) {
           this.$message.success(res.message)
         }

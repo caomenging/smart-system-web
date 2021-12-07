@@ -341,7 +341,7 @@ export default {
     checkDetail(record){
       console.log(record)
       this.$refs.taskDetailModal.edit(record)
-      this.$refs.taskDetailModal.title = record.titile + '统计详情'
+      // this.$refs.taskDetailModal.title = record.titile
     },
   },
 }
