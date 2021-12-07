@@ -20,8 +20,8 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="照片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="photo">
-              <j-image-upload isMultiple  v-model="fileList" ></j-image-upload>
+            <a-form-model-item label="照片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="photoString">
+              <j-image-upload isMultiple  v-model="model.photo" ></j-image-upload>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -110,7 +110,6 @@
     },
     data() {
       return {
-        fileList:[],
         labelCol: {
           xs: { span: 24 },
           sm: { span: 6 },
@@ -245,8 +244,6 @@
           let params = { id: this.model.id }
           this.requestSubTableData(this.url.smartReportingSurvey.list, params, this.smartReportingSurveyTable)
           this.requestSubTableData(this.url.smartReportingDescription.list, params, this.smartReportingDescriptionTable)
-          
-          this.fileList= this.model.photo;
         }
       },
       //校验所有一对一子表表单

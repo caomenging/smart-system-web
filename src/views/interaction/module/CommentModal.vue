@@ -8,33 +8,40 @@
     @cancel="handleCancel"
   >
     <template slot="footer">
+      <a-button type="primary" key="submit" @click="handleSubmit">提交</a-button>
       <a-button key="back" @click="handleCancel">关闭</a-button>
-      <a-button v-if="record.openType === 'url'" type="primary" @click="toHandle">去处理</a-button>
     </template>
     <a-card class="daily-article" :loading="loading">
-      <a-card-meta :title="record.titile" :description="'发布人：' + record.sender + ' 发布时间： ' + record.sendTime">
+      <a-card-meta
+        :title="record.title"
+      >
       </a-card-meta>
       <a-divider />
-      <span v-html="record.msgContent" class="article-content"></span>
-      <div v-if="fieldList !== {}">
-        <a-divider />
-        <div>附件</div>
-        <a-upload :fileList="fileList"></a-upload>
-      </div>
+      <div v-html="record.content" class="article-content"></div>
+      <div style="padding:2rem 0">回答人：{{record.createBy}} 回答时间：{{record.createTime}}</div>
+      <div v-if="fieldList !== {}"></div>
     </a-card>
+    <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
+      <a-form-model-item label="是否通过">
+        <a-radio-group v-model="status">
+          <a-radio value='1'> 是 </a-radio>
+          <a-radio value='2'> 否 </a-radio>
+        </a-radio-group>
+      </a-form-model-item>
+    </a-form-model>
   </j-modal>
 </template>
 
 <script>
+import { putAction } from '../../../api/manage'
 export default {
-  name: 'SysAnnouncementModal',
+  name: 'CommentModal',
   components: {},
   data() {
     return {
-      title: '通知消息',
-      upurl: window._CONFIG['domianURL'] + '/sys/common/static/',
-      fileList: {},
+      title: '评论详情',
       record: {},
+      status: '',
       labelCol: {
         xs: { span: 24 },
         sm: { span: 5 },
@@ -52,35 +59,22 @@ export default {
         'overflow-y': 'auto',
       },
       modelStyle: {
-        width: document.body.clientWidth < 600 ? '100%' : '70%',
+        width: '60%',
         style: { top: '20px' },
         fullScreen: false,
       },
     }
   },
   beforeCreate() {
-    console.log(this.record)
   },
   created() {
-    console.log(this.record)
-    this.displayFile();
   },
-  mounted() {
-    
-  },
+  mounted() {},
   methods: {
-    detail(record) {
+    edit(record) {
       this.visible = true
       this.record = record
       console.log(record)
-      const fileList = record.fileList.split(',').map((item,index) => {
-        return item = {
-          uid: index,
-          name:item.split('/').slice(-1)[0],
-          url: this.upurl + item
-        }
-      })
-      this.fileList = fileList
     },
     handleCancel() {
       this.visible = false
@@ -104,10 +98,23 @@ export default {
         this.$router.push({ path: this.record.openPage })
       }
     },
-    displayFile() {
-      fileList = this.record.fileList.split(',')
-      console.log(fileList)
-    }
+    handleSubmit() {
+      const params = {
+        id: this.record.id,
+        status: this.status,
+      }
+      console.log(params)
+      putAction('/interaction/comment/edit',params).then((res) => {
+        if(res.success) {
+          this.$message.success(res.message)
+          this.$emit('ok')
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+      this.status = ''
+      this.visible = false
+    },
   },
 }
 </script>
