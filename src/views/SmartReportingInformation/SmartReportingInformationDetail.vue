@@ -9,6 +9,8 @@
       </a-form>
     </div>
     <div class="table-operator">
+
+      <!-- 高级查询区域 -->
       <a-button type="primary" icon="download" @click="handleExportXls('举报信息表')">导出</a-button>
     </div>
 
@@ -26,6 +28,7 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
+        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -153,17 +156,17 @@ export default {
     },
     handleLook(){//查看
       this.$router.push({path: '/SmartReportingInformation/SmartReportingInformationList'});
-    },
-    getSuperFieldList(){
+    }
+   /* getSuperFieldList(){
       let fieldList=[];
       fieldList.push({type:'string',value:'reflectedInformation',text:'被反映人信息',dictCode:''})
       fieldList.push({type:'string',value:'reflectedDocumentid',text:'被反映人单位',dictCode:''})
       fieldList.push({type:'datetime',value:'reportingTime',text:'举报时间'})
-      fieldList.push({type:'string',value:'processingResult',text:'处理类型',dictCode:'processing_result'})
+      fieldList.push({type:'string',value:'processingType',text:'处理类型',dictCode:'processing_type'})
       fieldList.push({type:'string',value:'reportingName',text:'举报人姓名',dictCode:''})
       fieldList.push({type:'string',value:'contactNumber',text:'联系电话',dictCode:''})
       this.superFieldList = fieldList
-    }
+    }*/
   }
 }
 </script>

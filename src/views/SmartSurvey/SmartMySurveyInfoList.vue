@@ -71,8 +71,6 @@
 
         <span slot="action" slot-scope="text, record">
           <a @click="handleExam(record)">开始调查</a>
-
-
         </span>
 
       </a-table>
