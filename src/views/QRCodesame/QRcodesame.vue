@@ -19,7 +19,7 @@
     //props: ['sex','name'],
     data () {
       return {
-        url: 'http://192.168.1.100:8080/smart-system/qrCode/generate/v3?content=http://192.168.1.100:3000/InsertReportingInformation/InsertReportingInformationDetail',
+        url: 'http://127.0.0.1:8080/smart-system/qrCode/generate/v3?content=http://127.0.0.1:3000/InsertReportingInformation/InsertReportingInformationDetail',
         name: '纠治四风',
         formLayout: 'horizontal',
         model: {},

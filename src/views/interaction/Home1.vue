@@ -1,7 +1,7 @@
 <template>
 <div>
   <Header />
-  <!-- <Statistics /> -->
+  <Statistics />
   <Tiles ref="tiles" />
 </div>
 </template>

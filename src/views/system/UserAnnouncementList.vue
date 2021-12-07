@@ -92,11 +92,6 @@
           align:"center",
           dataIndex: 'sender'
         },{
-          title: '发布部门',
-          align:"center",
-          dataIndex: "senderDepart"
-        },
-        {
           title: '发布时间',
           align:"center",
           dataIndex: 'sendTime'
