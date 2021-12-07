@@ -1,12 +1,11 @@
 <template>
   <a-card :bordered="false">
     <!-- 查询区域 -->
-    <div v-if="roleId.indexOf('1465163864583323650') == -1"
-    class="table-page-search-wrapper">
+    <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="单位">
+            <a-form-item label="单位ID">
               <!-- <a-input placeholder="请输入单位ID" v-model="queryParam.departId"></a-input> -->
               <j-select-depart
                 placeholder="请选择单位"
@@ -124,7 +123,6 @@ import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import SmartPremaritalFilingModal from './modules/SmartPremaritalFilingModal'
 import { filterMultiDictText } from '@/components/dict/JDictSelectUtil'
 import '@/assets/less/TableExpand.less'
-import { mapActions, mapGetters,mapState } from 'vuex'
 
 export default {
   name: 'SmartPremaritalFilingList',
@@ -343,7 +341,6 @@ export default {
     }
   },
   created() {
-    this.roleId = this.userInfo().roleId
     this.getSuperFieldList()
   },
   computed: {
@@ -352,7 +349,6 @@ export default {
     },
   },
   methods: {
-    ...mapGetters(["userInfo"]),
     initDictConfig() {},
     getSuperFieldList() {
       let fieldList = []

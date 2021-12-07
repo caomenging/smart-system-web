@@ -106,6 +106,11 @@ export default {
           },
         },
         {
+          title: '标题',
+          align: 'center',
+          dataIndex: 'titile',
+        },
+        {
           title: '接收人',
           align: 'center',
           dataIndex: 'username',
@@ -163,6 +168,10 @@ export default {
               return <a href={url}>{fileName}</a>
             }
           },
+        },
+        {
+          title: '下载时间',
+          align: 'center',
         },
         {
           title: '操作',
