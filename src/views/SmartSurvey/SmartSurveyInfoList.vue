@@ -58,7 +58,6 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -113,59 +112,60 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartExamInformationModal from './modules/SmartExamInformationModal'
+  import SmartSurveyInformationModal from './modules/SmartSurveyInformationModal'
 
   export default {
-    name: 'SmartExamInformationList',
+    name: 'SmartSurveyInformationList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartExamInformationModal
+      SmartSurveyInformationModal
     },
     data () {
       return {
         description: '考试信息表管理页面',
         // 表头
         columns: [
-          {
-            title: '#',
-            dataIndex: '',
-            key:'rowIndex',
-            width:60,
-            align:"center",
-            customRender:function (t,r,index) {
-              return parseInt(index)+1;
-            }
-          },
+          // {
+          //   title: '#',
+          //   dataIndex: '',
+          //   key:'rowIndex',
+          //   width:60,
+          //   align:"center",
+          //   customRender:function (t,r,index) {
+          //     return parseInt(index)+1;
+          //   }
+          // },
           {
             title:'调查问卷名称',
-            align:"center",
-            dataIndex: 'examName'
+            align:"left",
+            dataIndex: 'examName',
+            width:50,
           },
           {
             title:'调查问卷开始时间',
             align:"center",
             dataIndex: 'examStarttime'
           },
-          {
-            title:'调查问卷结束时间',
-            align:"center",
-            dataIndex: 'examEndtime'
-          },
+          // {
+          //   title:'调查问卷结束时间',
+          //   align:"center",
+          //   dataIndex: 'examEndtime'
+          // },
           {
             title: '操作',
             dataIndex: 'action',
             align:"center",
             fixed:"right",
-            width:147,
+            width:50,
             scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
-          list: "/SmartPaper/smartMyExam/list",
-          delete: "/SmartPaper/smartMyExam/delete",
-          deleteBatch: "/SmartPaper/smartMyExam/deleteBatch",
-          exportXlsUrl: "/SmartPaper/smartMyExam/exportXls",
-          importExcelUrl: "SmartPaper/smartMyExam/importExcel",
+          list: "/SmartPaper/smartMySurvey/list",
+          delete: "/SmartPaper/smartMySurvey/delete",
+          deleteBatch: "/SmartPaper/smartMySurvey/deleteBatch",
+          exportXlsUrl: "/SmartPaper/smartMySurvey/exportXls",
+          importExcelUrl: "SmartPaper/smartMySurvey/importExcel",
 
         },
         dictOptions:{},

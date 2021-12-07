@@ -275,12 +275,12 @@
               return !text?"":(text.length>10?text.substr(0,10):text)
             }
           },
-          {
+          /*{
             title:'处分状态',
             align:"center",
             dataIndex: 'statu_dictText',
             sorter: true
-          },
+          },*/
           {
             title: '操作',
             dataIndex: 'action',
