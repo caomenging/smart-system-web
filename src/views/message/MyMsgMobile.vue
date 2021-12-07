@@ -3,19 +3,19 @@
     <div style="padding: 10px">
       <a-list
         :bordered="false"
-        style="width: 100%; background-color: white"
+        style="width: 100%; background-color: white; padding: 1rem 0"
         :pagination="ipagination"
         :data-source="listData"
       >
         <a-list-item slot="renderItem" slot-scope="item, index">
-          <a-row style="width:100%; flex-flow: row nowrap" type="flex" justify="start" align="middle">
+          <a-row style="width:100%; flex-flow: row nowrap; padding:0 0.75rem" type="flex" justify="start" align="middle">
             <a-col style="margin-right: 1rem">
-              <a-avatar shape="square" :size="64" :style="{ backgroundColor: 'blue', verticalAlign: 'middle' }"
+              <a-avatar shape="square" :size="60" :style="{ backgroundColor: 'blue', verticalAlign: 'middle' }"
                 >{{item.sender.slice(0,3)}}</a-avatar
               >
             </a-col>
-            <a-col :flex="10">
-              <h3>{{item.titile}}</h3>
+            <a-col :flex="10" style="padding:0 5px">
+              <div style="font-size: 0.9rem; font-weight:bold" >{{item.titile}}</div>
               <!-- <p>这是内容简介，这是内容简介，这是内容简介，这是内容简介</p> -->
               <a-row type="flex" style="font-size: 0.5rem; color: gray">
                 <div>{{ item.sender }} </div>
@@ -24,7 +24,7 @@
               </a-row>
             </a-col>
             <a-col :flex="1">
-              <a-button @click="handleDetail(item)">查看详情</a-button>
+              <a-button @click="handleDetail(item)">详情</a-button>
             </a-col>
           </a-row>
         </a-list-item>
