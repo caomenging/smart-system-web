@@ -80,7 +80,7 @@
             if (text == '1') {
               return "通知公告";
             } else if (text == "2") {
-              return "系统消息";
+              return "廉政提醒";
             } else if (text == "3"){
               return "任务下发";
             } else {
