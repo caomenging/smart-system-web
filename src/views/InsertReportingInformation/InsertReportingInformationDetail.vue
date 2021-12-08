@@ -241,16 +241,17 @@ export default {
         }
       })
 
-    //   postAction('/smartReportingInformation/smartReportingInformation/sendMessage', this.model).// then((res) => {
-    //     console.log(res)
-    //     if (res.success) {
-    //       //this.$message.success('发送成功')
-    //     } else {
-    //       //this.$message.warning('发送失败')
-    //     }
-    //   })
+       postAction('/smartReportingInformation/smartReportingInformation/sendMessage', this.model).
+       then((res) => {
+           console.log(res)
+           if (res.success) {
+               this.$message.success('发送成功')
+           } else {
+               this.$message.warning('发送失败')
+           }
+         })
     },
   },
 }
-// this.$refs.form.resetFields();
+   this.$refs.form.resetFields();
 </script>
