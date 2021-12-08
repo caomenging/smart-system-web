@@ -56,7 +56,7 @@
         </a-steps>
       </div>-->
     </my-result>
-    <div class="prompt_text" style="text-align: center"><span id="num">{{count}}</span>秒后自动跳转阳光评廉首页</div>
+    <div class="prompt_text" style="text-align: center"><span id="num">{{count}}</span>秒后自动跳转</div>
   </a-card>
 </template>
 
@@ -101,7 +101,7 @@
               clearInterval(this.timer);
               this.timer = null;
               //跳转的页面写在此处
-              this.$router.push({path: '../../QRCode/QRcode'});
+              this.$router.push({path: '../../SmartEvaluate/SmartPeopleAvgList'});
             }
           },1000)
         }

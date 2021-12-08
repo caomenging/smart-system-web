@@ -1,34 +1,35 @@
 <template>
   <j-modal
     :title="title"
-    :width="width"
+    :width="1200"
     :visible="visible"
+    :maskClosable="false"
     switchFullscreen
     @ok="handleOk"
     :okButtonProps="{ class:{'jee-hidden': disableSubmit} }"
-    @cancel="handleCancel"
-    cancelText="关闭">
-    <smart-exam-information-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></smart-exam-information-form>
+    @cancel="handleCancel">
+    <smart-post-marriage-report-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"/>
   </j-modal>
 </template>
 
 <script>
 
-  import SmartExamInformationForm from './SmartExamInformationForm'
+  import SmartPostMarriageReportForm from './SmartPostMarriageReportForm'
+
   export default {
-    name: 'SmartExamInformationModal',
+    name: 'SmartPostMarriageReportModal',
     components: {
-      SmartExamInformationForm
+      SmartPostMarriageReportForm
     },
-    data () {
+    data() {
       return {
         title:'',
         width:800,
         visible: false,
-        disableSubmit: false
+        disableSubmit: false,
       }
     },
-    methods: {
+    methods:{
       add () {
         this.visible=true
         this.$nextTick(()=>{
@@ -46,7 +47,7 @@
         this.visible = false;
       },
       handleOk () {
-        this.$refs.realForm.submitForm();
+        this.$refs.realForm.handleOk();
       },
       submitCallback(){
         this.$emit('ok');
@@ -54,7 +55,17 @@
       },
       handleCancel () {
         this.close()
+      },
+      postAdd(record) {
+        this.visible=true;
+        this.$nextTick(()=>{
+          this.$refs.realForm.model.preId = record.id;
+          this.$refs.realForm.add();
+        })
       }
     }
   }
 </script>
+
+<style scoped>
+</style>

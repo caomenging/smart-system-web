@@ -62,7 +62,7 @@
             :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
             :treeData="naturalDepartTree"
             v-model="model.selecteddeparts"
-            placeholder="请选择部门"
+            placeholder="请选择单位"
             allow-clear
             tree-default-expand-all>
           </a-tree-select>
@@ -91,7 +91,7 @@
             :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
             :treeData="naturalDepartTree"
             v-model="model.departIds"
-            placeholder="请选择部门"
+            placeholder="请选择单位"
             allow-clear
             tree-default-expand-all>
           </a-tree-select>
@@ -107,7 +107,7 @@
           <j-image-upload class="avatar-uploader" text="上传" v-model="model.avatar" ></j-image-upload>
         </a-form-model-item>
 
-        <a-form-model-item label="出生日期" :labelCol="labelCol" :wrapperCol="wrapperCol" prop='birthday'>
+        <a-form-model-item label="出生日期" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="birthday">
           <a-date-picker
             style="width: 100%"
             placeholder="请选择出生日期"
@@ -137,7 +137,7 @@
         />
         </a-form-model-item>
 
-        <a-form-model-item label="入党日期" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-model-item label="入党日期" :labelCol="labelCol" :wrapperCol="wrapperCol"  prop="joinPartyDate">
           <a-date-picker
             style="width: 100%"
             placeholder="请选择入党日期"
@@ -240,6 +240,8 @@
           telephone: [{ pattern: /^0\d{2,3}-[1-9]\d{6,7}$/, message: '请输入正确的座机号码' },],
           ethnicity:  [{ required: true, message: '请选择民族' }],
           politicalStatus:  [{ required: true, message: '请选择政治面貌' }],
+          birthday:[{validator:this.validateBirthday,trigger:'change'}],
+          joinPartyDate:[{validator:this.validateJoinPartyDate,trigger:'change'}]
         },
         departIdShow:false,
         title:"操作",
@@ -530,6 +532,36 @@
         }
       })
       },
+      validateBirthday(rule, value, callback){
+          //判断出生日期时间
+          let nowDate = new Date().getTime();
+          let birthday = this.model.birthday._d;
+          let birthdayDate = birthday.getTime();
+          console.log(birthdayDate)
+        //出生日期大于当前时间
+          if ( birthdayDate > nowDate ) {
+            callback("出生日期大于当前日期，请输入正确的出生日期！")
+          } else {
+            callback()
+          }
+      },
+      validateJoinPartyDate(rule, value, callback){
+        //判断入党日期时间
+        let time = new Date();
+        let currentDate = new Date().getTime();
+        console.log(time,currentDate)
+        let joinParty = this.model.joinPartyDate._d;
+        console.log(joinParty)
+        let joinPartyDate = joinParty.getTime();
+        console.log(joinPartyDate)
+        //入党日期大于当前时间
+        if ( joinPartyDate > currentDate ) {
+          callback("入党日期大于当前日期，请输入正确的入党日期！")
+        } else {
+          callback()
+        }
+      },
+
       validateWorkNo(rule, value, callback){
         var params = {
           tableName: 'sys_user',

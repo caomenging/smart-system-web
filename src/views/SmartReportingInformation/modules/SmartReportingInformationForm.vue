@@ -10,8 +10,8 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="被反映人单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reflectedDepartid">
-              <a-input v-model="model.reflectedDepartid" placeholder="请输入被反映人单位" ></a-input>
+            <a-form-model-item label="被反映人单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reflectedDocumentid">
+              <a-input v-model="model.reflectedDocumentid" placeholder="请输入被反映人单位" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -20,13 +20,13 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="照片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="photoString">
+            <a-form-model-item label="照片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="photo">
               <j-image-upload isMultiple  v-model="model.photo" ></j-image-upload>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="附件" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="description">
-              <j-upload v-model="model.description"  ></j-upload>
+              <j-upload v-model="model.description" ></j-upload>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -110,6 +110,7 @@
     },
     data() {
       return {
+        fileList:[],
         labelCol: {
           xs: { span: 24 },
           sm: { span: 6 },
@@ -244,6 +245,7 @@
           let params = { id: this.model.id }
           this.requestSubTableData(this.url.smartReportingSurvey.list, params, this.smartReportingSurveyTable)
           this.requestSubTableData(this.url.smartReportingDescription.list, params, this.smartReportingDescriptionTable)
+          this.fileList= this.model.photo;
         }
       },
       //校验所有一对一子表表单
@@ -282,7 +284,7 @@
         }
         putAction(this.url.edit, params).then((res) => {
           if(res.success) {
-            this.$message.success(res.message)
+            this.$message.success('操作成功')
             this.submitCallback();
           }
         })
@@ -312,7 +314,7 @@
         }
         putAction(this.url.edit,params).then((res)=>{
           if(res.success){
-            this.$message.success(res.message)
+            this.$message.success('操作成功')
             this.submitCallback();
           }
         })
@@ -344,7 +346,7 @@
         }
         putAction(this.url.edit,params).then((res)=>{
           if(res.success){
-            this.$message.success(res.message)
+            this.$message.success('操作成功')
             this.submitCallback();
           }
         })

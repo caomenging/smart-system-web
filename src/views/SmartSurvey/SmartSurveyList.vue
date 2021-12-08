@@ -22,19 +22,8 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <!--<a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
-      <a-button @click="createTestPaper"  type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('试卷表')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>
-      <!-- 高级查询区域 -->
-      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
-      <a-dropdown v-if="selectedRowKeys.length > 0">
-        <a-menu slot="overlay">
-          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
-        </a-menu>
-        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
-      </a-dropdown>
+      <a-button @click="createTestPaper"  type="primary" icon="plus">创建调查问卷</a-button>
+
     </div>
 
     <!-- table区域-begin -->
@@ -54,7 +43,7 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -82,22 +71,8 @@
           <!--<a @click="handleEdit(record)">编辑</a>-->
           <a @click="handleIssueSurvey(record)" v-show="record.paperStatus == '0'">发布调查问卷</a>
           <a-divider type="vertical" />
-          <a @click="editTestPaper(record.id)">编辑</a>
-          <a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <!--<a @click="handleDetail(record)">详情</a>-->
-                <a @click="detailPage(record.id)">详情</a>
-              </a-menu-item>
-              <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a>删除</a>
-                </a-popconfirm>
-              </a-menu-item>
-            </a-menu>
-          </a-dropdown>
+          <a @click="editTestPaper(record.id)">修改调查问卷</a>
+
         </span>
 
       </a-table>
@@ -120,7 +95,7 @@
   import ReleaseTest from './modules/ReleaseTest'
 
   export default {
-    name: 'SmartPaperList',
+    name: 'SmartSurveyList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       SmartPaperModal,ReleaseTest
@@ -133,7 +108,7 @@
         description: '试卷表管理页面',
         // 表头
         columns: [
-          {
+         /* {
             title: '#',
             dataIndex: '',
             key:'rowIndex',
@@ -142,57 +117,63 @@
             customRender:function (t,r,index) {
               return parseInt(index)+1;
             }
-          },
-         {
+          },*/
+         /*{
             title:'试卷类型',
             align:"center",
             dataIndex: 'paperType_dictText'
-          },
+          },*/
           {
             title:'试卷名称',
             align:"center",
-            dataIndex: 'paperName'
+            dataIndex: 'paperName',
+            sorter: true
           },
           {
             title:'试卷状态',
             align:"center",
-            dataIndex: 'paperStatus_dictText'
+            dataIndex: 'paperStatus_dictText',
+            sorter: true
           },
           {
             title:'命卷人',
             align:"center",
-            dataIndex: 'creatorName'
+            dataIndex: 'creatorName',
+            sorter: true
           },
           {
             title:'命卷日期',
             align:"center",
-            dataIndex: 'createTime'
+            dataIndex: 'createTime',
+            sorter: true
           },
           {
             title:'题目数量',
             align:"center",
-            dataIndex: 'topicNum'
+            dataIndex: 'topicNum',
+            sorter: true
           },
           {
             title:'总分',
             align:"center",
-            dataIndex: 'totalScore'
+            dataIndex: 'totalScore',
+            sorter: true
           },
-          {
+          /*{
             title:'及格线',
             align:"center",
             dataIndex: 'passMark'
-          },
+          },*/
           {
             title:'答题时间',
             align:"center",
-            dataIndex: 'time'
+            dataIndex: 'time',
+            sorter: true
           },
           {
             title: '操作',
             dataIndex: 'action',
             align:"center",
-            fixed:"right",
             width:147,
             scopedSlots: { customRender: 'action' }
           }
@@ -223,6 +204,15 @@
       },
     },
     methods: {
+      isDisabled(record){
+        if ( record.paperStatus === "0") {
+          //激活开始考试
+          //console.log('激活发布');
+        } else if ( record.paperStatus === "2"){
+          //console.log('No发布');
+          return "disabled";
+        }
+      },
       //去创建新试卷
       createTestPaper() {
         const { href } = this.$router.resolve({

@@ -6,9 +6,6 @@ import { UserLayout, TabLayout, RouteView, BlankLayout, PageView } from '@/compo
  */
 
 
-
-
-
 export const asyncRouterMap = [
  /* {
     path:'/InsertReportingInformation',
@@ -441,6 +438,28 @@ export const constantRouterMap = [
     }
   },
 
+  //纠治四风扫描二维码之前以及扫码后页面
+  {
+    path:'/InsertReportingInformation/InsertReportingInformationDetail',
+    name:'InsertReportingInformation',
+    component: () => import('@views/InsertReportingInformation/InsertReportingInformationDetail'),
+    meta:{
+      title:'填写举报信息'
+    }
+  },
+
+  //纠治四风扫描二维码填写信息后（跳转中）
+  {
+    path:'/InsertReportingInformation/Success',
+    name:'success',
+    component: () => import('@views/InsertReportingInformation/Success'),
+    meta:{
+      title:'跳转成功'
+    }
+
+  },
+
+
   /**
    * 下面代码为了简化APP端访问后台，取消侧边栏
    */
@@ -465,12 +484,7 @@ export const constantRouterMap = [
     component: () => import('@/views/SmartEvaluate/modules/SmartEvaluateForm')
   },
 
-  //纠治四风扫描二维码
-  {
-    path:'/InsertReportingInformation/InsertReportingInformationDetail',
-    component: () => import('@views/InsertReportingInformation/InsertReportingInformationDetail')
 
-  },
   // @TODO 政策查询
   // {
   //   path: '/webview/search',

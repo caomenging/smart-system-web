@@ -4,7 +4,7 @@
 
       <!-- 试卷信息 -->
       <div class="title ">
-        <el-input v-model="testData.paperName" class="testName" placeholder="请输入试卷标题" :disabled="isRead"></el-input>
+        <el-input v-model="testData.paperName" class="testName" placeholder="请输入调查问卷标题" :disabled="isRead"></el-input>
 
         <ul>
           <li class="test-info" style="margin-top: 3px" >出卷者: {{ getCreatorName()}}</li>
@@ -21,7 +21,7 @@
             分
           </li>
           <li class="fr">
-            <el-button v-if="params.opt === 'addSurvey' || params.opt === 'edit'" size="mini" type="primary" @click="submit()">保存试卷</el-button>
+            <el-button v-if="params.opt === 'addSurvey' || params.opt === 'edit'" size="mini" type="primary" @click="submit()">保存调查问卷</el-button>
           </li>
 
           <li style="clear:both;"></li>
@@ -30,7 +30,7 @@
       </div>
 
       <div class="title fixed" v-if="isFixed">
-        <el-input v-model="testData.paperName" class="testName" placeholder="请输入试卷标题" :disabled="isRead"></el-input>
+        <el-input v-model="testData.paperName" class="testName" placeholder="请输入调查问卷标题" :disabled="isRead"></el-input>
 
         <ul>
           <li class="test-info" style="margin-top: 3px" >出卷者: {{ getCreatorName()}}</li>
@@ -47,7 +47,7 @@
             分
           </li>
           <li class="fr">
-            <el-button v-if="params.opt === 'addSurvey' || params.opt === 'edit'" size="mini" type="primary" @click="submit()">保存试卷</el-button>
+            <el-button v-if="params.opt === 'addSurvey' || params.opt === 'edit'" size="mini" type="primary" @click="submit()">保存调查问卷</el-button>
           </li>
           <!-- <li class="test-info">所属班级: {{ testData.classes_name }}</li> -->
           <li style="clear:both;"></li>
@@ -343,31 +343,81 @@
               //深拷贝
               let newItem = JSON.parse(JSON.stringify(item));
               topicData.push(newItem);
+
             });
           }
         });
 
         //处理选择题选项
         topicData.forEach((item) => {
-          let choice = "";
-          item.choice.forEach((c) => {
-            choice += c + "\n";
-          });
-          item.choice = choice.slice(0, -1);
-          //item.required = item.required === true ? 1:0
+          if (item.choice instanceof Array) {
+            let i = 0
+            let length = item.choice.length
+            for (i = 0; i < length; i++) {
+              if (item.choice[i] === '') {
+                console.log("111")
+                //this.$message.warning("有题目存在空选项！");
+                this.isEmpty = true
+                return
+              }
+            }
+            let choice = "";
+            console.log(item)
+            item.choice.forEach((c) => {
+              //console.log(item.choice)
+              //console.log(c)
+              if (c === "") {
+                console.log("222")
+                //this.$message.warning("有题目存在空选项！");
+                this.isEmpty = true
+                return
+              } else {
+                choice += c + "\n";
+              }
+            });
+            item.choice = choice.slice(0, -1);
+          }
         });
 
         //处理正确答案
         for(let item of topicData) {
-          if(!item.correctAnswer){
-            this.$message.warning("有题目未选答案");
+          /*if(!item.correctAnswer){
+            console.log("empty")
+            this.isCorrect = false
+            //this.$message.warning("有题目未选答案！");
+            return
+          }*/
+          //选择题答案非空
+          if(item.correctAnswer.length === 0){
+            this.isCorrect = false
+            console.log("333")
+            console.log(this.isCorrect)
+            this.$elmessage.warning("有题目答案为空！");
             return
           }
+          //填空，简答答案非空
           if (item.correctAnswer instanceof Array) {
-            if(item.correctAnswer.length === 1 && item.correctAnswer[0] === ''){
-              this.$message.warning("有题目未选答案");
+            console.log("array")
+            let j = 0
+            let length = item.correctAnswer.length
+            console.log(item.correctAnswer)
+            if(length == 1 && item.correctAnswer[0] === ''){
+              this.isCorrect = false
+              this.$elmessage.warning("有题目答案为空！");
+              console.log("444")
               return
+            }else{
+              for (j = 0; j < length; j++) {
+                console.log(length)
+                if ( item.correctAnswer[j] === "") {
+                  console.log("555")
+                  this.$elmessage.warning("有题目答案为空！");
+                  this.isCorrect = false
+                  return
+                }
+              }
             }
+            console.log(this.isCorrect)
             let correctAnswer = "";
             item.correctAnswer.forEach((c) => {
               correctAnswer += c + "\n";
@@ -380,49 +430,88 @@
         this.testData.creatorName = this.getCreatorName();
         this.testData.smartTopicVoList= topicData;
         this.testData.topicNum = topicData.length;
-        //testData.autoMack = testData.autoMack == true ? "1" : "0";
-        //testData.disruptOrder = testData.disruptOrder == true ? "1" : "0";
-        //testData.permitCopy = testData.permitCopy == true ? "1" : "0";
 
-        if (this.params.opt === "edit") {
-          let id = this.$route.params.id
-          let url = "/SmartPaper/smartPaper/edit/"+id;
-          putAction(url, this.testData).then((res) => {
-            if (res.success) {
-              this.$message.success({
-                content: "修改成功！",
-                duration: 3,
 
-                onClose: close(),
-              });
-              close()
-              {
-                window.location.href="about:blank";
-                window.close();
-                window.opener.location.reload();
-              }
-            }
-            else{
-              this.$message.error(res.message)
-            }
-          });
-        } else if (this.params.opt === "addSurvey") {
-          let url = "/SmartPaper/smartPaper/addSurvey";
-          postAction(url, this.testData).then((res) => {
-            if (res.success) {
-              this.$message.success({
-                content:"添加成功",
-
-                });
-              window.location.href="about:blank";
-              window.close();
-              window.opener.location.reload();
-            }
-            else{
-              this.$message.error(res.message)
-            }
-          });
+        if(this.isEmpty === true &&this.isCorrect === true){
+          console.log("isEmpty")
+          this.$elmessage.warning("有题目存在空选项！");
+          this.isEmpty = false
         }
+        else if(this.isCorrect === false && this.isEmpty === true){
+          console.log("all")
+          this.$elmessage.warning("有题目答案为空！");
+          this.$elmessage.warning("有题目存在空选项！");
+          this.isEmpty = false
+          this.isCorrect =true
+        }else if(this.testData.paperName === ''){
+          this.$elmessage.warning("试卷标题为空！");
+        }else if(this.testData.smartTopicVoList.length === 0){
+          this.$elmessage.warning("不能创建空试卷！");
+        }
+        else {
+          if(this.testData.passMark>this.totalScore){
+            console.log(this.testData.passMark,this.testData.totalScore)
+            this.$elmessage({
+              type: "error",
+              message: "及格分不能超过总分！",
+              duration: 1000,
+            })
+          }else{
+            if (this.params.opt === "edit") {
+              let id = this.$route.params.id
+              let url = "/SmartPaper/smartPaper/edit/"+id;
+              putAction(url, this.testData).then((res) => {
+                if (res.success) {
+                  this.$elmessage({
+                    type:"success",
+                    message: "修改成功！",
+                    duration:1000,
+                    onClose:()=> {
+                      //此处写提示关闭后需要执行的函数
+                      window.location.href="about:blank";
+                      window.close();
+                      window.opener.location.reload();
+                    }
+                  })
+                }
+                else{
+                  this.$elmessage({
+                    type:"error",
+                    message: "修改失败！",
+                    duration:1000,
+                  })
+                }
+              });
+            }
+            else if (this.params.opt === "addSurvey") {
+              let url = "/SmartPaper/smartPaper/addSurvey";
+              postAction(url, this.testData).then((res) => {
+                if (res.success) {
+                  this.$elmessage({
+                    type:"success",
+                    message: "添加成功！",
+                    duration:300,
+                    onClose:()=> {
+                      //此处写提示关闭后需要执行的函数
+                      window.location.href="about:blank";
+                      window.close();
+                      window.opener.location.reload();
+                    }
+                  })
+                }
+                else{
+                  this.$elmessage({
+                    type:"error",
+                    message: "添加失败！",
+                    duration:300,
+                  })
+                }
+              });
+            }
+          }
+        }
+
+
         console.log(this.testData);
       },
 

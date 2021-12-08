@@ -161,7 +161,8 @@
           {
             title:'填表说明',
             align:"center",
-            dataIndex: 'typeDesc'
+            dataIndex: 'typeDesc',
+            ellipsis: true
           },
           {
             title: '操作',

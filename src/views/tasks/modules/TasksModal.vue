@@ -13,14 +13,19 @@
     <!-- <test-verify-form v-if="type==='婚前报备'" ref="realForm" :disabled="disableSubmit" /> -->
     <!-- <test v-if="type==='婚前报备'" ref="realForm" :disabled="disableSubmit" /> -->
     <smart-premarital-filing-form v-if="type === '婚前报备'" ref="realForm" :disabled="disableSubmit" />
+    <smart-three-meeting-one-lesson-form v-if="type === '三会一课'" ref="realForm" :disabled="disableSubmit" />
+    <smart-8-regulations-for-reception-form v-if="type === '公务接待'" ref="realForm" :disabled="disableSubmit" />
     <smart-supervision-form v-if="type === '监督检查'" ref="realForm" :disabled="disableSubmit" />
     <smart-post-marriage-report-form v-if="type === '婚后报备'" ref="realForm" :disabled="disableSubmit" />
     <smart-create-advice-form v-if="type === '制发建议'" ref="realForm" :disabled="disableSubmit" />
     <smart-org-meeting-form v-if="type === '组织生活会'" ref="realForm" :disabled="disableSubmit" />
     <smart-democratic-life-meeting-form v-if="type === '民主生活会'" ref="realForm" :disabled="disableSubmit" />
     <smart-finance-result-form v-if="type === '财务收支'" ref="realForm" :disabled="disableSubmit" />
+    <smart-inner-party-talk-form v-if="type === '党内谈话'" ref="realForm" :disabled="disableSubmit" />
+    <smart-first-form-people-form v-if="type === '执行第一形态人'" ref="realForm" :disabled="disableSubmit" />
 
     <smart-triple-importance-one-greatness-form v-if="type === '三重一大'" ref="realForm" :disabled="disableSubmit" />
+    <smart-evaluate-meeting-form v-if="type === '述责述廉'" ref="realForm" :disabled="disableSubmit" />
 
     <!-- <h3 :style="{ padding: '24px', background: '#9cdcfe', textAlign: 'center' }" >审核区域</h3> -->
 
@@ -70,6 +75,11 @@ import SplitPanel from '../../jeecg/SplitPanel.vue'
 import SmartOrgMeetingForm from "../../SmartOrgMeeting/modules/SmartOrgMeetingForm";
 import SmartFinanceResultForm from "../../SmartFinanceResult/modules/SmartFinanceResultForm";
 import SmartDemocraticLifeMeetingForm from "../../smartDemocraticLifeMeeting/modules/SmartDemocraticLifeMeetingForm";
+import SmartThreeMeetingOneLessonForm from '../../smartThreeMeetingOneLesson/modules/SmartThreeMeetingOneLessonForm.vue'
+import Smart_8regulationsForReceptionForm from '../../Smart_8regulationsForReception/modules/Smart_8regulationsForReceptionForm.vue'
+import SmartInnerPartyTalkForm from '../../SmartInnerPartyTalk/modules/SmartInnerPartyTalkForm.vue'
+import SmartFirstFormPeopleForm from '../../SmartFirstFormPeople/modules/SmartFirstFormPeopleForm.vue'
+import SmartEvaluateMeetingForm from '../../SmartEvaluateMeeting/modules/SmartEvaluateMeetingForm.vue'
 
 export default {
   name: 'TaskModal',
@@ -86,6 +96,11 @@ export default {
     SmartTripleImportanceOneGreatnessForm,
     SmartCreateAdviceForm,
     SplitPanel,
+    SmartThreeMeetingOneLessonForm,
+    Smart_8regulationsForReceptionForm,
+    SmartInnerPartyTalkForm,
+    SmartFirstFormPeopleForm,
+    SmartEvaluateMeetingForm,
   },
   mounted(){
     this.getVerigyResult()
