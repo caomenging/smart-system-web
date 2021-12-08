@@ -97,16 +97,16 @@ export default {
           dataIndex: 'examName',
           width:50,
         },
-             {
-                    title:'考试开始时间',
+             /*{
+                    title:'调查问卷开始时间',
                     align:"center",
                     dataIndex: 'examStarttime'
                   },
                   {
-                    title:'考试结束时间',
+                    title:'调查问卷结束时间',
                     align:"center",
                     dataIndex: 'examEndtime'
-                  },
+                  },*/
         {
           title:'成绩',
           align:"center",
