@@ -1,7 +1,7 @@
 <template>
   <a-card :bordered="false">
     <!-- 查询区域 -->
-    <div class="table-page-search-wrapper">
+    <div v-if="roleId.indexOf('1465163864583323650') == -1" class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -44,7 +44,7 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+      <!-- <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button> -->
       <a-button type="primary" icon="download" @click="handleExportXls('8项规定婚后报备表')">导出</a-button>
       <a-upload
         name="file"
@@ -138,6 +138,7 @@ import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import SmartPostMarriageReportModal from './modules/SmartPostMarriageReportModal'
 import { filterMultiDictText } from '@/components/dict/JDictSelectUtil'
 import '@/assets/less/TableExpand.less'
+import { mapActions, mapGetters,mapState } from 'vuex'
 // import func from 'vue-editor-bridge'
 
 export default {
@@ -301,6 +302,7 @@ export default {
     }
   },
   created() {
+    this.roleId = this.userInfo().roleId
     this.getSuperFieldList()
   },
   computed: {
@@ -309,6 +311,7 @@ export default {
     },
   },
   methods: {
+    ...mapGetters(["userInfo"]),
     initDictConfig() {},
     getSuperFieldList() {
       let fieldList = []

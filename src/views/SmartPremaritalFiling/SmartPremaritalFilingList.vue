@@ -103,17 +103,21 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
+          <a-divider type="vertical"/>
+           <a @click="postAdd(record)">婚后报备</a>
+           <a-divider type="vertical" /> 
            <a v-show="record.verifyStatus == '3'" @click="handleEdit(record)">编辑</a>         
            <a-divider type="vertical"/>
            <a @click="handleDetail(record)">详情</a>        
            <a-divider type="vertical" />        
            <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-           <a v-show="record.verifyStatus == '3'">删除</a> 
+           <a v-show="record.verifyStatus == '3'">删除</a>     
            </a-popconfirm>
         </span>
       </a-table>
     </div>
-
+    
+    <smart-post-marriage-report-modal ref="postForm"></smart-post-marriage-report-modal>
     <smart-premarital-filing-modal ref="modalForm" @ok="modalFormOk" />
   </a-card>
 </template>
@@ -121,6 +125,7 @@
 <script>
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import SmartPremaritalFilingModal from './modules/SmartPremaritalFilingModal'
+import SmartPostMarriageReportModal from './module/SmartPostMarriageReportModal'
 import { filterMultiDictText } from '@/components/dict/JDictSelectUtil'
 import '@/assets/less/TableExpand.less'
 
@@ -129,9 +134,11 @@ export default {
   mixins: [JeecgListMixin],
   components: {
     SmartPremaritalFilingModal,
+    SmartPostMarriageReportModal,
   },
   data() {
     return {
+      showAddPost:false,
       description: '8项规定婚前报备表管理页面',
       // 表头
       columns: [
@@ -349,6 +356,12 @@ export default {
     },
   },
   methods: {
+    postAdd(record){
+      console.log(record)
+      
+      this.$refs.postForm.postAdd(record)
+
+    },
     initDictConfig() {},
     getSuperFieldList() {
       let fieldList = []
