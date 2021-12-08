@@ -107,7 +107,7 @@
           <j-image-upload class="avatar-uploader" text="上传" v-model="model.avatar" ></j-image-upload>
         </a-form-model-item>
 
-        <a-form-model-item label="出生日期" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-model-item label="出生日期" :labelCol="labelCol" :wrapperCol="wrapperCol" prop='birthday'>
           <a-date-picker
             style="width: 100%"
             placeholder="请选择出生日期"
@@ -239,7 +239,7 @@
             { validator: this.validateWorkNo }],*/
           telephone: [{ pattern: /^0\d{2,3}-[1-9]\d{6,7}$/, message: '请输入正确的座机号码' },],
           ethnicity:  [{ required: true, message: '请选择民族' }],
-          politicalStatus:  [{ required: true, message: '请选择政治面貌' }]
+          politicalStatus:  [{ required: true, message: '请选择政治面貌' }],
         },
         departIdShow:false,
         title:"操作",

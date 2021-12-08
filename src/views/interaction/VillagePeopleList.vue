@@ -355,8 +355,8 @@
       }
     },
     created() {
-      // this.selectDepartTree()
-      this.loadFuzeTreeData()
+      this.selectDepartTree()
+      // this.loadFuzeTreeData()
       },
     computed: {
       importExcelUrl: function(){

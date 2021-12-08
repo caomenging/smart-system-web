@@ -48,6 +48,7 @@
     "vue-print-nb-jeecg": "^1.0.9",
     "vue-router": "^3.0.1",
     "vue-splitpane": "^1.0.4",
+    "vue2-org-tree": "^1.3.5",
     "vuedraggable": "^2.20.0",
     "vuex": "^3.1.0",
     "vxe-table": "2.9.13",
@@ -123,5 +124,9 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 10"
-  ]
+  ],
+  "main": "index.js",
+  "repository": "https://github.com/MrYsL/smart-system-web.git",
+  "author": "MrYsL <1501010883@qq.com>",
+  "license": "MIT"
 }
