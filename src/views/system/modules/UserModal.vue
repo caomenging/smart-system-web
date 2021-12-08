@@ -62,7 +62,7 @@
             :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
             :treeData="naturalDepartTree"
             v-model="model.selecteddeparts"
-            placeholder="请选择部门"
+            placeholder="请选择单位"
             allow-clear
             tree-default-expand-all>
           </a-tree-select>
@@ -91,7 +91,7 @@
             :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
             :treeData="naturalDepartTree"
             v-model="model.departIds"
-            placeholder="请选择部门"
+            placeholder="请选择单位"
             allow-clear
             tree-default-expand-all>
           </a-tree-select>
