@@ -204,6 +204,15 @@
       },
     },
     methods: {
+      isDisabled(record){
+        if ( record.paperStatus === "0") {
+          //激活开始考试
+          //console.log('激活发布');
+        } else if ( record.paperStatus === "2"){
+          //console.log('No发布');
+          return "disabled";
+        }
+      },
       //去创建新试卷
       createTestPaper() {
         const { href } = this.$router.resolve({
