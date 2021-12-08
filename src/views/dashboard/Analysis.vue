@@ -3,6 +3,7 @@
     <index-chart v-if="indexStyle==1"></index-chart>
     <index-bdc v-if="indexStyle==2"></index-bdc>
     <index-task v-if="indexStyle==3"></index-task>
+    <fullcalendar :disabled="false" initialView="dayGridMonth"></fullcalendar>
 <!--    <div style="width: 100%;text-align: right;margin-top: 20px">-->
 <!--      请选择首页样式：-->
 <!--      <a-radio-group v-model="indexStyle">-->
@@ -18,13 +19,15 @@
   import IndexChart from './IndexChart'
   import IndexTask from "./IndexTask"
   import IndexBdc from './IndexBdc'
+  import fullcalendar from "../calendar/fullcalendar"
 
   export default {
     name: "Analysis",
     components: {
       IndexChart,
       IndexTask,
-      IndexBdc
+      IndexBdc,
+      fullcalendar
     },
     data() {
       return {
