@@ -36,7 +36,7 @@
             <!--                </a-form-model-item>-->
             <!--              </a-col>-->
             <a-col :span="24">
-              <a-form-model-item label="上传图片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="photoString">
+              <a-form-model-item label="照片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="photoString">
                 <div>
                   <div>
                     <a-button icon="camera" v-on:click="imgClick()">拍照举报</a-button>
@@ -58,7 +58,7 @@
               </a-form-model-item>
             </a-col>
             <a-col :span="24">
-              <a-form-model-item label="上传视频" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="description">
+              <a-form-model-item label="视频" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="description">
                 <!-- 录像-- -->
                 <div>
                   <j-upload v-model="model.description">点击上传</j-upload>
@@ -241,17 +241,16 @@ export default {
         }
       })
 
-       postAction('/smartReportingInformation/smartReportingInformation/sendMessage', this.model).
-       then((res) => {
-           console.log(res)
-           if (res.success) {
-               this.$message.success('发送成功')
-           } else {
-               this.$message.warning('发送失败')
-           }
-         })
+      postAction('/smartReportingInformation/smartReportingInformation/sendMessage', this.model).then((res) => {
+        console.log(res)
+        if (res.success) {
+          //this.$message.success('发送成功')
+        } else {
+          //this.$message.warning('发送失败')
+        }
+      })
     },
   },
 }
-   this.$refs.form.resetFields();
+// this.$refs.form.resetFields();
 </script>
