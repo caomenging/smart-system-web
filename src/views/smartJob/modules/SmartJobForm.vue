@@ -45,7 +45,7 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="提醒类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="type">
-              <j-dict-select-tag type="list" v-model="model.type" dictCode="msgType" placeholder="请选择提醒类型" />
+              <j-dict-select-tag type="list" v-model="model.type" dictCode="TimerSend" placeholder="请选择提醒类型" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -92,6 +92,12 @@
     data () {
       return {
         model:{
+          jobType:'',
+          isLoop:'',
+          isToAll:'',
+          jobName:'',
+          jobDescribe:'',
+          type:'',
          },
         labelCol: {
           xs: { span: 24 },
@@ -130,6 +136,38 @@
           edit: "/smartJob/smartJob/edit",
           queryById: "/smartJob/smartJob/queryById"
         }
+      }
+    },
+    watch:{
+      model:{
+        deep:true,
+        // handler(){
+				// 		if(this.model.jobType == '0'){
+        //       console.log("入党纪念日提醒")
+        //       this.model.isLoop = '0'
+        //       this.model.isToAll = '0'
+        //       this.model.jobName = '入党纪念日提醒任务'
+        //       this.model.jobDescribe = '每日提醒当日入党人员'
+        //       this.model.type = '1'
+        //     }else if(this.model.jobType == '1'){
+        //       console.log("解除处分提醒")
+        //       this.model.isLoop = '0'
+        //       this.model.isToAll = '0'
+        //       this.model.jobName = '解除处分人员提醒'
+        //       this.model.jobDescribe = '每日提醒当日解除处分人员'
+        //       this.model.type = '1'
+        //     }else if(this.model.jobType == '2'){
+        //       console.log("其他")
+        //       // this.form = this.$options.data().form
+        //     }else{
+        //       console.log("婚后报备提醒")
+        //       this.model.isLoop = '0'
+        //       this.model.isToAll = '0'
+        //       this.model.jobName = '婚后报备提醒'
+        //       this.model.jobDescribe = '每日提醒婚礼结束十五日内未婚后报备人员'
+        //       this.model.type = '1'
+        //     }
+				// 	}
       }
     },
     computed: {
