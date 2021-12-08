@@ -157,7 +157,7 @@
           </a-col>
           <a-col :span="12" >
             <a-form-model-item label="报告时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reportTime">
-              <j-date placeholder="请选择报告时间" v-model="model.reportTime" style="width: 100%" />
+              <j-date placeholder="请选择报告时间" v-model="model.reportTime" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="12" >
