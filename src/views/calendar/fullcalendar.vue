@@ -30,6 +30,7 @@
     <FullCalendar
       ref='fullCalendar'
       :options='calendarOptions'
+      calendarHeight="auto"
     >
       <template v-slot:eventContent='arg'>
         <b>{{ arg.timeText }}</b>
@@ -137,7 +138,7 @@ export default {
         eventsSet: this.handleEvents,
         timeZone: 'local',
         firstDay: this.firstDay,
-        height: this.calendarHeight,
+        height: 'auto',
         views: {
           dayGrid: {
             // options apply to dayGridMonth, dayGridWeek, and dayGridDay views
