@@ -21,10 +21,12 @@
           </a-row>
         </a-tab-pane>
         <a-tab-pane :tab="pieTitle" key="2">
+          <a-row >
+            <span :style="{marginLeft: '120px',marginTop: '-50px',paddingTop:'-50px'}">评价标准：完全满意-10、非常满意-8、基本满意-6、不满意-4、非常不满意-2</span>
+          </a-row>
           <a-row>
             <a-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
               <pie title="全区评价满意度比例图" :height="height" :dataSource="pieData"/>
-              <span :style="{marginLeft: '100px',marginTop: '50px',paddingBottom:'50px'}">评价标准：完全满意-10、非常满意-8、基本满意-6、不满意-4、非常不满意-2</span>
             </a-col>
             <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
               <rank-list :title="rankGradeTitle" :list="rankGradeData"/>
