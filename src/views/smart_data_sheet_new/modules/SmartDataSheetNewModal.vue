@@ -8,17 +8,17 @@
     :okButtonProps="{ class:{'jee-hidden': disableSubmit} }"
     @cancel="handleCancel"
     cancelText="关闭">
-    <smart-window-unit-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></smart-window-unit-form>
+    <smart-data-sheet-new-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></smart-data-sheet-new-form>
   </j-modal>
 </template>
 
 <script>
 
-  import SmartWindowUnitForm from './SmartWindowUnitForm'
+  import SmartDataSheetNewForm from './SmartDataSheetNewForm'
   export default {
-    name: 'SmartWindowUnitModal',
+    name: 'SmartDataSheetNewModal',
     components: {
-      SmartWindowUnitForm
+      SmartDataSheetNewForm
     },
     data () {
       return {
