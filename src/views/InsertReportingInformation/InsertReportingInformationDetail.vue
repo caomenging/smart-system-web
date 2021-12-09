@@ -36,7 +36,7 @@
             <!--                </a-form-model-item>-->
             <!--              </a-col>-->
             <a-col :span="24">
-              <a-form-model-item label="上传图片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="photoString">
+              <a-form-model-item label="照片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="photoString">
                 <div>
                   <div>
                     <a-button icon="camera" v-on:click="imgClick()">拍照举报</a-button>
@@ -51,13 +51,14 @@
                     type="file"
                     id="uploadFile"
                     accept="image/*"
+                    capture="camera"
                     v-on:change="readLocalFile()"
                   />
                 </div>
               </a-form-model-item>
             </a-col>
             <a-col :span="24">
-              <a-form-model-item label="上传视频" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="description">
+              <a-form-model-item label="视频" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="description">
                 <!-- 录像-- -->
                 <div>
                   <j-upload v-model="model.description">点击上传</j-upload>
@@ -91,7 +92,7 @@
             </a-col>
           </a-row>
           <a-form-model-item :wrapperCol="{ span: 24 }" style="text-align: center">
-            <a-button @click="handleSubmit"   type="primary">提交</a-button>
+            <a-button @click="handleSubmit" type="primary">提交</a-button>
           </a-form-model-item>
         </a-form-model>
       </j-form-container>
@@ -110,7 +111,6 @@ export default {
   components: { AFormItem, JUpload, JImageUpload },
   data() {
     return {
-
       savePath: 'report',
       filePath: '',
       filePathList: [],
@@ -157,7 +157,7 @@ export default {
   methods: {
     deleteImg: function (index) {
       this.imgs.splice(index, 1)
-      this.allImg.splice(index,1)
+      this.filePathList.splice(index, 1)
     },
 
     //图片click
@@ -171,13 +171,24 @@ export default {
       this.getBase64(localFile).then((res) => {
         console.log('----------------' + res + '-----------')
         this.imgs.push(res)
+        let formData = new FormData()
+        formData.append('biz', this.savePath)
+        formData.append('file', this.dataURLtoFileFun(res, localFile.name))
+        uploadFile(formData).then((res) => {
+          console.log(res)
+          if (res.success) {
+            this.filePathList.push(res.message)
+            console.log(this.filePathList)
+            // this.filePath = this.filePathList.join()
+          }
+        })
 
-        let photo = {
-          imgName: localFile.name,
-          base64: res,
-        }
+        // let photo = {
+        //   imgName: localFile.name,
+        //   base64: res,
+        // }
 
-        this.allImg.push(photo)
+        // this.allImg.push(photo)
 
         console.log(this.dataURLtoFileFun(res, localFile.name))
       })
@@ -216,26 +227,10 @@ export default {
       // this.model.photo = this.filePath
       console.log(this.model)
 
-      this.allImg.forEach((item) => {
-        let formData = new FormData()
-        formData.append('biz', this.savePath)
-        formData.append('file', this.dataURLtoFileFun(item.base64, item.imgName))
-        uploadFile(formData).then((res) => {
-          console.log(res)
-          if (res.success) {
-            this.filePathList.push(res.message)
-            console.log(this.filePathList)
-            // this.filePath = this.filePathList.join()
-          }
-        })
-      })
-      setTimeout(() =>{
-        
-        this.filePath = this.filePathList.join()
-        console.log(this.filePath)
-        this.model.photo = this.filePath
-        postAction(this.url.add, this.model).then((res) => {
-
+      this.filePath = this.filePathList.join()
+      console.log(this.filePath)
+      this.model.photo = this.filePath
+      postAction(this.url.add, this.model).then((res) => {
         console.log(res)
         if (res.success) {
           this.$message.success(res.message)
@@ -245,16 +240,11 @@ export default {
           this.$message.warning('请输入信息')
         }
       })
-    },100)
 
-
-
-      postAction("/smartReportingInformation/smartReportingInformation/sendMessage"
-        , this.model).then((res) => {
+      postAction('/smartReportingInformation/smartReportingInformation/sendMessage', this.model).then((res) => {
         console.log(res)
         if (res.success) {
           //this.$message.success('发送成功')
-
         } else {
           //this.$message.warning('发送失败')
         }
