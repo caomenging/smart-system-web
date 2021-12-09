@@ -431,7 +431,7 @@
             if(!this.model.id){
               this.model.id = this.userId;
               this.model.peopleType = 2;
-              obj=addVillageUser(this.model);
+              obj=addPeople(this.model);
             }else{
               obj=editVillageUser(this.model);
               console.log(this.model);

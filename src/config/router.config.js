@@ -492,7 +492,7 @@ export const constantRouterMap = [
   // 调查问卷
   {
     path: '/webview/survey/statistics',
-    component: () => import('@/views/MyExam/SurveyList')
+    component: () => import('@/views/SmartSurvey/SmartSurveyList')
   },
   {
     path: '/webview/survey',

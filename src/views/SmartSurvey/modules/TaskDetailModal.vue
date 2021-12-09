@@ -1,7 +1,7 @@
 <template>
   <j-modal
     :title="title"
-    :width="1200"
+    :width="1000"
     :visible="visible"
     :maskClosable="false"
     switchFullscreen
@@ -9,52 +9,40 @@
     :okButtonProps="{ class: { 'jee-hidden': disableSubmit } }"
     @cancel="handleCancel"
   >
-    <a-row type="flex" justify="center">
-      <a-col :span="22">
-        <a-card style="width: 100%; margin: 1rem 0">
-          <a-card-meta title="填表说明" :description="typeDesc"> </a-card-meta>
-        </a-card>
-      </a-col>
-    </a-row>
-    <smart-premarital-filing-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit" />
+    <task-detail-list ref="realList" @ok="submitCallback" :disabled="disableSubmit" />
+    <!-- <smart-supervision-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"/> -->
   </j-modal>
 </template>
 
 <script>
 import { getAction } from '../../../api/manage'
-import SmartPremaritalFilingForm from './SmartPremaritalFilingForm'
-
+import TaskDetailList from './TaskDetailList.vue'
 export default {
-  name: 'SmartPremaritalFilingModal',
-  components: {
-    SmartPremaritalFilingForm,
-  },
+  name: 'TaskDetailModal',
+  components: { TaskDetailList },
   data() {
     return {
-      title: '',
+      title: '详情',
       width: 800,
       visible: false,
       disableSubmit: false,
-      typeDesc: '',
-      typeName: '婚前报备',
+      anntId: ''
     }
   },
   methods: {
     add() {
       this.visible = true
-      getAction('/taskType/smartVerifyType/queryByTypeName', { typeName: this.typeName }).then((res) => {
-        if (res.success) {
-          this.typeDesc = res.result
-        }
-      })
       this.$nextTick(() => {
         this.$refs.realForm.add()
       })
     },
-    edit(record) {
+    edit(examId) {
       this.visible = true
+      console.log(examId)
+      // this.title = "【" + record.titile + "】"
+      // this.anntId = record.id
       this.$nextTick(() => {
-        this.$refs.realForm.edit(record)
+        this.$refs.realList.edit(examId)
       })
     },
     close() {
@@ -71,6 +59,16 @@ export default {
     handleCancel() {
       this.close()
     },
+    handleBatchDownload(record) {
+      this.$refs.realList.handleBatchDownload(record)
+    },
+    remindAll(anntId, type) {
+      getAction('/sys/sysAnnouncementSend/remindAll',{anntId: anntId, type:type}).then((res) => {
+        if(res.success) {
+          this.$message.success(res.message)
+        }
+      })
+    }
   },
 }
 </script>

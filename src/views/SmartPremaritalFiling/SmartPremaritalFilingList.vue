@@ -5,8 +5,8 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="单位ID">
-              <!-- <a-input placeholder="请输入单位ID" v-model="queryParam.departId"></a-input> -->
+            <a-form-item label="单位">
+              <!-- <a-input placeholder="请输入单位" v-model="queryParam.departId"></a-input> -->
               <j-select-depart
                 placeholder="请选择单位"
                 v-model="queryParam.departId"

@@ -72,6 +72,8 @@
           <a @click="handleIssueSurvey(record)" v-show="record.paperStatus == '0'">发布调查问卷</a>
           <a-divider type="vertical" />
           <a @click="editTestPaper(record.id)">修改调查问卷</a>
+          <a-divider type="vertical" />
+          <a @click="showScore(record)">查看成绩</a>
 
         </span>
 
@@ -79,6 +81,7 @@
     </div>
 
     <smart-paper-modal ref="modalForm" @ok="modalFormOk"></smart-paper-modal>
+    <task-detail-modal ref="scoreModal" @ok="modalFormOk"></task-detail-modal>
     <!-- 发布调查问卷弹框 -->
     <ReleaseTest ref="releaseTestDialog" @ok="modalFormOk"/>
   </a-card>
@@ -93,12 +96,15 @@
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import { httpAction,putAction, postAction,getAction } from '@/api/manage'
   import ReleaseTest from './modules/ReleaseTest'
+  import TaskDetailModal from './modules/TaskDetailModal.vue'
 
   export default {
     name: 'SmartSurveyList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartPaperModal,ReleaseTest
+      SmartPaperModal,
+      ReleaseTest,
+      TaskDetailModal
     },
     data () {
       return {
@@ -127,54 +133,55 @@
             title:'试卷名称',
             align:"center",
             dataIndex: 'paperName',
+            width: 100,
             sorter: true
           },
-          {
-            title:'试卷状态',
-            align:"center",
-            dataIndex: 'paperStatus_dictText',
-            sorter: true
-          },
-          {
-            title:'命卷人',
-            align:"center",
-            dataIndex: 'creatorName',
-            sorter: true
-          },
-          {
-            title:'命卷日期',
-            align:"center",
-            dataIndex: 'createTime',
-            sorter: true
-          },
-          {
-            title:'题目数量',
-            align:"center",
-            dataIndex: 'topicNum',
-            sorter: true
-          },
-          {
-            title:'总分',
-            align:"center",
-            dataIndex: 'totalScore',
-            sorter: true
-          },
-          /*{
-            title:'及格线',
-            align:"center",
-            dataIndex: 'passMark'
-          },*/
-          {
-            title:'答题时间',
-            align:"center",
-            dataIndex: 'time',
-            sorter: true
-          },
+          // {
+          //   title:'试卷状态',
+          //   align:"center",
+          //   dataIndex: 'paperStatus_dictText',
+          //   sorter: true
+          // },
+          // {
+          //   title:'命卷人',
+          //   align:"center",
+          //   dataIndex: 'creatorName',
+          //   sorter: true
+          // },
+          // {
+          //   title:'命卷日期',
+          //   align:"center",
+          //   dataIndex: 'createTime',
+          //   sorter: true
+          // },
+          // {
+          //   title:'题目数量',
+          //   align:"center",
+          //   dataIndex: 'topicNum',
+          //   sorter: true
+          // },
+          // {
+          //   title:'总分',
+          //   align:"center",
+          //   dataIndex: 'totalScore',
+          //   sorter: true
+          // },
+          // /*{
+          //   title:'及格线',
+          //   align:"center",
+          //   dataIndex: 'passMark'
+          // },*/
+          // {
+          //   title:'答题时间',
+          //   align:"center",
+          //   dataIndex: 'time',
+          //   sorter: true
+          // },
           {
             title: '操作',
             dataIndex: 'action',
             align:"center",
-            width:147,
+            width:100,
             scopedSlots: { customRender: 'action' }
           }
         ],
@@ -204,6 +211,10 @@
       },
     },
     methods: {
+      showScore(record) {
+        console.log(record)
+        this.$refs.scoreModal.edit(record.id)
+      },
       isDisabled(record){
         if ( record.paperStatus === "0") {
           //激活开始考试
