@@ -110,7 +110,7 @@ export default {
         {
           title:'处理状态',
           align:"center",
-          dataIndex: 'processingResult'
+          dataIndex: 'processingResult_dictText'
         },
        /* {
           title:'举报人姓名',

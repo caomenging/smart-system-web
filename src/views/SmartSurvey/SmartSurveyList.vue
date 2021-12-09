@@ -5,8 +5,8 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-model-item label="试卷名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="paperName">
-              <j-input placeholder="请输入试卷名称" v-model="queryParam.paperName"></j-input>
+            <a-form-model-item label="调查问卷名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="paperName">
+              <j-input placeholder="请输入调查问卷名称" v-model="queryParam.paperName"></j-input>
             </a-form-model-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
