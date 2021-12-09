@@ -91,8 +91,7 @@
             </a-col>
           </a-row>
           <a-form-model-item :wrapperCol="{ span: 24 }" style="text-align: center">
-            <a-button @click="handleSubmit" type="primary">提交</a-button>
-            <a-button style="margin-left: 8px">取消</a-button>
+            <a-button @click="handleSubmit"   type="primary">提交</a-button>
           </a-form-model-item>
         </a-form-model>
       </j-form-container>
@@ -111,6 +110,7 @@ export default {
   components: { AFormItem, JUpload, JImageUpload },
   data() {
     return {
+
       savePath: 'report',
       filePath: '',
       filePathList: [],
@@ -157,7 +157,9 @@ export default {
   methods: {
     deleteImg: function (index) {
       this.imgs.splice(index, 1)
+      this.allImg.splice(index,1)
     },
+
     //图片click
     imgClick: function () {
       document.getElementById('uploadFile').click()
@@ -177,7 +179,7 @@ export default {
 
         this.allImg.push(photo)
 
-        // console.log(this.dataURLtoFileFun(res, localFile.name))
+        console.log(this.dataURLtoFileFun(res, localFile.name))
       })
     },
     dataURLtoFileFun(dataurl, filename) {
@@ -208,66 +210,10 @@ export default {
         }
       })
     },
-    // 录像
-    // 调用摄像头 上传视频
-    openCamera(t) {
-      let that = this
-      let duration
-      let selectedFile = e.target.files[0]
-      let reader = new FileReader() //这是核心,读取操作就是由它完成.
-      reader.onload = function (e) {
-        let strContent = this.result
-        //获取视频或者音频时长
-        let fileurl = URL.createObjectURL(selectedFile)
-        let audioElement = new Audio(fileurl)
-        //经测试，发现audio也可获取视频的时长
-        audioElement.addEventListener('loadedmetadata', function (_event) {
-          duration = audioElement.duration
-          if (duration > 8) {
-            that.$message.error('视频时间过长，请重新录制')
-          } else {
-            that.base64ToFile(strContent)
-          }
-        })
-      }
-      reader.readAsDataURL(selectedFile) //读取文件的内容,也可以读取文件的URL
-    },
-    //将bes64转成文件
-    base64ToFile(base64Data) {
-      // base64转blob
-      let arr = base64Data.split(','),
-        mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[1]),
-        n = bstr.length,
-        u8arr = new Uint8Array(n)
-      while (n--) {
-        u8arr[n] = bstr.charCodeAt(n)
-      }
-      let blob = new Blob([u8arr], {
-        type: mime,
-      })
-      // 将blob转为文件
-      blob.lastModifiedDate = new Date()
-      blob.name = 'file'
-      let config = {
-        //其他配置
-      }
-      this.Request(blob, config) //发起请求
-    },
-    Request(data, config) {
-      axios
-        .post('/url', data, config)
-        .then((res) => {
-          console.log('成功')
-        })
-        .catch((err) => {
-          console.log('失败')
-        })
-    },
 
     // 提交
     handleSubmit() {
-      this.model.photo = this.filePath
+      // this.model.photo = this.filePath
       console.log(this.model)
 
       this.allImg.forEach((item) => {
@@ -278,13 +224,18 @@ export default {
           console.log(res)
           if (res.success) {
             this.filePathList.push(res.message)
-            // console.log(this.filePathList)
-            this.filePath = this.filePathList.join()
+            console.log(this.filePathList)
+            // this.filePath = this.filePathList.join()
           }
         })
       })
+      setTimeout(() =>{
+        
+        this.filePath = this.filePathList.join()
+        console.log(this.filePath)
+        this.model.photo = this.filePath
+        postAction(this.url.add, this.model).then((res) => {
 
-      postAction(this.url.add, this.model).then((res) => {
         console.log(res)
         if (res.success) {
           this.$message.success(res.message)
@@ -294,6 +245,9 @@ export default {
           this.$message.warning('请输入信息')
         }
       })
+    },100)
+
+
 
       postAction("/smartReportingInformation/smartReportingInformation/sendMessage"
         , this.model).then((res) => {

@@ -8,31 +8,14 @@
         </a-row>
       </a-form>
     </div>
-    <!-- 查询区域-END -->
-
-<!--    &lt;!&ndash; 操作按钮区域 &ndash;&gt;
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+
+      <!-- 高级查询区域 -->
       <a-button type="primary" icon="download" @click="handleExportXls('举报信息表')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>
-      &lt;!&ndash; 高级查询区域 &ndash;&gt;
-      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
-      <a-dropdown v-if="selectedRowKeys.length > 0">
-        <a-menu slot="overlay">
-          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
-        </a-menu>
-        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
-      </a-dropdown>
-    </div>-->
+    </div>
 
     <!-- table区域-begin -->
    <div>
-<!--      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
-        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
-        <a style="margin-left: 24px" @click="onClearSelected">清空</a>
-      </div>-->
 
       <a-table
         ref="table"
@@ -45,7 +28,7 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -69,26 +52,9 @@
         </template>
 
        <span slot="action" slot-scope="text, record">
-<!--          <a @click="handleEdit(record)">编辑</a>-->
-
 
          <a @click="handleLook(record)">查看</a>
-         <a-divider type="vertical" />
-         <a @click="handleExportXls('举报信息表')" type="primary" icon="download" >导出</a>
 
-<!--          <a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <a @click="handleDetail(record)">详情</a>
-              </a-menu-item>
-            <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a>删除</a>
-                </a-popconfirm>
-             </a-menu-item>
-          </a-dropdown>-->
         </span>
 
       </a-table>
@@ -99,7 +65,7 @@
 </template>
 
 <script>
-
+import { mixinDevice } from '@/utils/mixin'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import SmartReportingInformationModal from './modules/SmartReportingInformationModal'
 import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
@@ -107,7 +73,7 @@ import '@/assets/less/TableExpand.less'
 
 export default {
   name: "SmartReportingInformationList",
-  mixins:[JeecgListMixin],
+  mixins:[JeecgListMixin, mixinDevice],
   components: {
     SmartReportingInformationModal
   },
