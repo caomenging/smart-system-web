@@ -17,7 +17,7 @@
             <div class="i-box">
               <div>
                 <section id="c-i-tabTitle" class="c-infor-tabTitle c-tab-title">
-                  <a name="c-i" class="current" title="课程详情">课程详情</a>
+                  <a name="c-i" class="current" title="专题详情">专题详情</a>
                 </section>
               </div>
               <article class="ml10 mr10 pt20">
@@ -28,7 +28,7 @@
 
                 <!-- 课程大纲 开始-->
                 <h6 class="c-g-content c-infor-title">
-                    <span>课程大纲</span>
+                    <span>专题学习</span>
                 </h6>
                   <section class="mt20">
                     <div class="lh-menu-wrap">
@@ -40,99 +40,23 @@
                                         <em class="lh-menu-i-1 icon18 mr10"/>{{ chapter.title }}
                                     </a>
                                     <ol class="lh-menu-ol" style="display: block;">
-                                         <li v-for="video in chapter.children"  :key="video.id" class="lh-menu-second ml30"> 
-                                           <div v-if="video.title==='学习指南'">
-                                            <a :href="'/learning/guide/'+video.id">
+                                         <li v-for="video in chapter.children"  :key="video.id" class="lh-menu-second ml30">
+                                            <div v-if="video.title==='在线听课'">
+<!--                                            <a :href="'/learning/player/'+video.wordOneUrl"  @click="submit"  target="_blank">-->
+                                              <a @click="handlePreview(video)"  target="_blank">
                                                 <span  class="fr">
                                                     <i class="free-icon vam mr10">点击学习</i>
                                                 </span>
-                                                <em class="lh-menu-i-2 icon16 mr5">&nbsp;</em>{{ video.title}}
-                                            </a>
-                                            </div>
-
-                                            <div v-if="video.title==='在线听课(一)'">
-                                            <a :href="'/learning/player/'+video.videoSourceId"  @click="submit"  target="_blank">
-                                                <span  class="fr">
-                                                    <i class="free-icon vam mr10">点击学习</i>
-                                                </span>
-                                                <em class="lh-menu-i-2 icon16 mr5">&nbsp;</em>{{ video.title}}
+                                                <em class="lh-menu-i-2 icon16 mr5">&nbsp;</em>{{ video.wordOneName}}
                                             </a>
                                            </div>
-                                              <div v-if="video.title==='在线听课(二)'">
-                                            <a :href="'/learning/player/'+video.videoSourceId"  @click="submit"  target="_blank">
-                                                <span  class="fr">
-                                                    <i class="free-icon vam mr10">点击学习</i>
-                                                </span>
-                                                <em class="lh-menu-i-2 icon16 mr5">&nbsp;</em>{{ video.title}}
-                                            </a>
-                                           </div>
-                                             <div v-if="video.title==='在线听课(三)'">
-                                            <a :href="'/learning/player/'+video.videoSourceId"  @click="submit"  target="_blank">
-                                                <span  class="fr">
-                                                    <i class="free-icon vam mr10">点击学习</i>
-                                                </span>
-                                                <em class="lh-menu-i-2 icon16 mr5">&nbsp;</em>{{ video.title}}
-                                            </a>
-                                           </div>
-                                             <div v-if="video.title==='拓展听课(一)'">
-                                            <a :href="'/learning/player/'+video.videoSourceId"  @click="submit"  target="_blank">
-                                                <span  class="fr">
-                                                    <i class="free-icon vam mr10">点击学习</i>
-                                                </span>
-                                                <em class="lh-menu-i-2 icon16 mr5">&nbsp;</em>{{ video.title}}
-                                            </a>
-                                           </div>
-                                        
-                                            <div v-if="video.title==='拓展听课(二)'">
-                                            <a :href="'/learning/player/'+video.videoSourceId"  @click="submit"  target="_blank">
-                                                <span  class="fr">
-                                                    <i class="free-icon vam mr10">点击学习</i>
-                                                </span>
-                                                <em class="lh-menu-i-2 icon16 mr5">&nbsp;</em>{{ video.title}}
-                                            </a>
-                                           </div>
-                                            <div v-if="video.title==='拓展听课(三)'">
-                                            <a :href="'/learning/player/'+video.videoSourceId"  @click="submit"  target="_blank">
-                                                <span  class="fr">
-                                                    <i class="free-icon vam mr10">点击学习</i>
-                                                </span>
-                                                <em class="lh-menu-i-2 icon16 mr5">&nbsp;</em>{{ video.title}}
-                                            </a>
-                                           </div>
-                                            <div v-if="video.title==='拓展听课(四)'">
-                                            <a :href="'/learning/player/'+video.videoSourceId"  @click="submit"  target="_blank">
-                                                <span  class="fr">
-                                                    <i class="free-icon vam mr10">点击学习</i>
-                                                </span>
-                                                <em class="lh-menu-i-2 icon16 mr5">&nbsp;</em>{{ video.title}}
-                                            </a>
-                                           </div>
-                                            <div v-if="video.title==='拓展听课(五)'">
-                                            <a :href="'/learning/player/'+video.videoSourceId"  @click="submit"  target="_blank">
-                                                <span  class="fr">
-                                                    <i class="free-icon vam mr10">点击学习</i>
-                                                </span>
-                                                <em class="lh-menu-i-2 icon16 mr5">&nbsp;</em>{{ video.title}}
-                                            </a>
-                                           </div>
-                                           
-
-                                
-                                              <div v-if="video.title==='电子课件'">
-                                            <a :href="video.wordOneUrl">
+                                              <div v-if="video.title==='学习资料'">
+<!--                                            <a :href="video.wordOneUrl">-->
+                                                <a @click="handlePreview(video)">
                                                 <span class="fr">
-                                                    <i class="free-icon vam mr10">点击下载</i>
+                                                    <i class="free-icon vam mr10">浏览学习</i>
                                                 </span>
-                                                <em class="lh-menu-i-2 icon16 mr5">&nbsp;</em>{{ video.title}}
-                                            </a>
-                                            </div>
-                                            
-                                              <div v-if="video.title==='课后习题'">
-                                            <a :href="'/learning/exercises/'+video.id">
-                                                <span  class="fr">
-                                                    <i class="free-icon vam mr10">点击学习</i>
-                                                </span>
-                                                <em class="lh-menu-i-2 icon16 mr5">&nbsp;</em>{{ video.title}}
+                                                <em class="lh-menu-i-2 icon16 mr5">&nbsp;</em>{{ video.wordOneName}}
                                             </a>
                                             </div>
                                         </li>
@@ -148,65 +72,10 @@
             </div>
           </section>
         </article>
-        <!-- <aside class="fl col-3">
-          <div class="i-box">
-        
-          </div>
-        </aside> -->
         <div class="clear"/>
       </div>
     </section>
     <!-- /课程详情 结束 -->
-
-    <div class="mt50 commentHtml"><div>
-      <h6 class="c-c-content c-infor-title" id="i-art-comment">
-        <span class="commentTitle">在线答疑</span>
-      </h6>
-      <section class="lh-bj-list pr mt20 replyhtml">
-        <ul>
-          <li class="unBr">
-            <aside class="noter-pic">
-<!--              <img width="50" height="50" class="picImg" src="~/assets/img/avatar-boy.gif">-->
-              </aside>
-            <div class="of">
-              <section class="n-reply-wrap">
-                <fieldset>
-                  <textarea name="" v-model="comment.content" placeholder="输入您要评论的文字" id="commentContent"></textarea>
-                </fieldset>
-                <p class="of mt5 tar pl10 pr10">
-                  <span class="fl "><tt class="c-red commentContentmeg" style="display: none;"></tt></span>
-                  <input type="button" @click="addComment()" value="回复" class="lh-reply-btn">
-                </p>
-              </section>
-            </div>
-          </li>
-        </ul>
-      </section>
-      <section class="">
-          <section class="question-list lh-bj-list pr">
-            <ul class="pr10">
-              <li v-for="(comment,index) in data.items" v-bind:key="index">
-                <!-- <li v-for="comment in data.items" :key="comment.id"> -->
-                  <aside class="noter-pic">
-                    <img width="50" height="50" class="picImg" :src="comment.avatar">
-                    </aside>
-                  <div class="of">
-                    <span class="fl"> 
-                    <font class="fsize12 c-blue"> 
-                      {{comment.nickname}}</font>
-                    <font class="fsize12 c-999 ml5">评论：</font></span>
-                  </div>
-                  <div class="noter-txt mt5">
-                    <p>{{comment.content}}</p>
-                  </div>
-                  <div class="of mt5">
-                    <span class="fr"><font class="fsize12 c-999 ml5">{{comment.gmtCreate}}</font></span>
-                  </div>
-                </li>
-              
-              </ul>
-          </section>
-        </section>
             <!-- 公共分页 开始 -->
         <div class="paging">
             <!-- undisable这个class是否存在，取决于数据属性hasPrevious -->
@@ -241,8 +110,7 @@
         </div>
         <!-- 公共分页 结束 -->
       </div>
-    </div>
-  </div>
+
 </template>
 
 <script>
@@ -251,6 +119,7 @@ import {login} from "../api/api/login";
 import comment from '../api/api/comment'
 
 import cookie from 'js-cookie'
+import {Base64} from "js-base64";
 export default {
 
 
@@ -270,20 +139,18 @@ export default {
 
   created() {
     //this.initCourseInfo()
-     
 
-    if(this.istoken()==true){
-        this.init()
-        this.initComment()
-        this.gotoPage(1)
+    this.init()
+//        this.initComment()
+//        this.gotoPage(1)
          
-     }
-    else{
-       this.$message.error('您未登入，不能使用该功能，请登入后使用！') 
-       }
-  
-  },
 
+  },
+  computed: {
+    importExcelUrl: function () {
+      return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
+    },
+  },
   watch:{
     $route(to,from){
       this.init()
@@ -292,31 +159,24 @@ export default {
 
 
     methods: {
-       istoken(){
-        if(cookie.get('guli_token')){
-          return true
-        }
-        else{
-          return false
-        }
+
+      handlePreview(video) {
+        let url = window._CONFIG['staticDomainURL'] + "/" + video.wordOneUrl
+        let previewURL = 'http://127.0.0.1:8012/onlinePreview?url='
+        window.location.href = previewURL + encodeURIComponent(Base64.encode(url))
+      },
+      videoPlay(video){
+        this.$router.push({
+          path: '/courcopy/learning/player/_vid?url='+video.wordOneUrl,
+        })
       },
 
-  //   asyncData({ params, error }) {
-  //   return learn.getAllChapterVideo(params.id).then(response => {
-  //     //console.log(response);
-  //     return { 
-  //       //course: response.data.data.course,
-  //       courseId: params.id,
-  //       chapterVideoList: response.data.data.allChapterVideo
-  //     }
-  //   })
-  // },  
-
-
-      initCourseInfo(Id){
-        learn.getAllChapterVideo(Id)
+      initCourseInfo(){
+        learn.getAllChapterVideo(this.courseId)
         .then(response=>{
-            this.chapterVideoList= response.data.data.getAllChapterVideo();
+          console.log(response);
+//          this.chapterVideoList = response.data
+          this.chapterVideoList= response.data.allChapterVideo;
               // allChapterVideo
             //console.log(222222);
             //console.log(Id);
@@ -326,12 +186,15 @@ export default {
 
       init(){
            if (this.$route.params && this.$route.params.id) {
-                const Id = this.$route.params.id  //从路径中获取id值
-                this.courseId=Id
+             this.courseId = this.$route.params.id
+             console.log(this.$route.params.id)
+             this.initCourseInfo()
+             // const Id = this.$route.params.id  //从路径中获取id值
+                // this.courseId=Id
                 //console.log(11111111111);
                 //console.log(Id);
                 //console.log(this.courseId);
-                this.initCourseInfo(Id)
+                //this.initCourseInfo(Id)
                 //this.getInfo(id)//根据id查询
           }
           },
@@ -373,7 +236,7 @@ export default {
  
     initComment(){
        comment.getPageList(this.page, this.limit, this.courseId).then(response => {
-           this.data = response.data.data
+           this.data = response.result
        })
     },
     //添加评论
@@ -390,9 +253,10 @@ export default {
 
       gotoPage(page){
             comment.getPageList(page, this.limit,this.courseId).then(response => {
-                this.data = response.data.data
+                this.data = response.result
             })
         }
+
         
     },
         

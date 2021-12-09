@@ -5,10 +5,11 @@ import request from '@/utils/desform/request'
 export default {
 
 
-    //根据课程id查询所有章节和小节
+    //根据课程id查询所有章节和小节!
   getAllChapterVideo(courseId) {
     return request({
         url: `/serviceedu/edu-chapter-copy/getChapterVideo/${courseId}`,
+        params: { courseId: courseId },
         method: 'get',
         })
       },

@@ -217,6 +217,7 @@ export default {
   data() {
     return {
       saveBtnDisabled: false, // 保存按钮是否禁用
+      saveVideoBtnDisabled: false,
       courseId:'',
       chapterVideoList:[],
       chapter:{//封装章节
@@ -235,8 +236,8 @@ export default {
 
       },
       dialogChapterFormVisible:false,//章节弹框
-      dialogVideoFormVisible:false,  //小节弹框
-      dialogVideoFormVisibleupdate:false,  //修改小节弹框
+      dialogVideoFormVisible:false,  //小节弹框 
+      dialogVideoFormVisibleupdate:false,  //修改小节弹框 
       fileList: [],//上传视频列表
       fileListcopy: [],//上传文件列表
       BASE_API: process.env.BASE_API // 接口API地址
@@ -251,7 +252,7 @@ export default {
        //根据课程id查询章节和小节
        this.getChapterVideo()
      }
-
+    
   },
 
 
@@ -266,10 +267,8 @@ export default {
       var encoderURLtwo = encodeURIComponent(encoderURLone)        //第二次编码
       video.deleteAliyunWj(encoderURLtwo)                //9.14前端请求报跨域错误，后端swagger测试删除文件正常！
       .then(() => {
-      this.$message({
-        type: 'success',
-        message: '删除文件成功!'
-       });
+      this.$message.success("ok");
+
        //把文件列表
        this.fileListcopy=[]
        //把文件url和名称清空
@@ -303,10 +302,7 @@ export default {
       //调用接口删除视频
       video.deleteAliyunvod(this.video.videoSourceId)
       .then(() => {
-      this.$message({
-        type: 'success',
-        message: '删除视频成功!'
-       });
+      this.$message.success("ok");
        //把文件列表
        this.fileList=[]
        //把video视频id和视频名称清空
@@ -346,10 +342,10 @@ export default {
       this.fileList=[]
       this.fileListcopy=[]
       //tinymce.remove()
-
+      
       //this.$refs.content.setContent("")
 
-
+      
       //设置章节id
       this.video.chapterId=chapterId
 
@@ -358,7 +354,7 @@ export default {
 
     //删除小节
     removeVideo(id){
-
+      
       this.$confirm('此操作将永久删除该小节, 是否继续?', '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
@@ -367,17 +363,14 @@ export default {
       video.deleteVideo(id)
       .then(() => {
 
-      this.$message({
-        type: 'success',
-        message: '删除成功!'
-      });
-       this.getChapterVideo()// 刷新列表
+      this.$message.success("ok");
+      this.getChapterVideo()// 刷新列表
 
       })
-
+ 
     })
     },
-
+    
     //添加小节
     addVideo(){
       //设置课程id
@@ -388,10 +381,7 @@ export default {
           //关弹框
           this.dialogVideoFormVisible = false
           //提示信息
-          this.$message({
-            type: 'success',
-            message: '添加小节成功!'
-          });
+          this.$message.success("ok");
           //刷新页面
           this.getChapterVideo()
 
@@ -411,9 +401,9 @@ export default {
         //this.$refs.content.setContent("")
         //tinymce.remove()
 
-
+        
       })
-
+      
     },
     //修改小节
     updateVideo(){
@@ -421,35 +411,32 @@ export default {
       .then(response=>{
         //关弹框
         this.dialogVideoFormVisibleupdate = false
-
+        
         //tinymce.remove()
         //提示信息
-         this.$message({
-          type: 'success',
-          message: '修改课程小节成功!'
-        });
+         this.$message.success("ok");
         //刷新页面
         this.getChapterVideo()
         this.video.id=''
-
-
+        
+        
       })
     },
 
     save(){
-
+      
         this.addVideo()
     },
     Update(){
-
+      
         this.updateVideo()
-
+      
     },
 
     quxiao(){
       this.video.id=''
       this.dialogVideoFormVisibleupdate = false
-
+      
     },
 
     //===================================章节操作===============================//
@@ -463,15 +450,12 @@ export default {
     }).then(() => {//点击确定
       chapter.deleteChapter(chapterId)
       .then(() => {
-
-      this.$message({
-        type: 'success',
-        message: '删除成功!'
-      });
+     
+      this.$message.success("ok");
        this.getChapterVideo()// 刷新列表
 
       })
-
+ 
     })
 },
 
@@ -484,9 +468,9 @@ export default {
       .then(response=>{
         this.chapter=response.data.chapter
       })
-
+      
     },
-
+    
     //弹出章节页面
     openChapterDialog(){
       //弹框
@@ -503,13 +487,10 @@ export default {
         //关弹框
         this.dialogChapterFormVisible = false
         //提示信息
-         this.$message({
-          type: 'success',
-          message: '修改课程章节成功!'
-        });
+         this.$message.success("ok");
         //刷新页面
         this.getChapterVideo()
-
+        
       })
     },
 
@@ -523,13 +504,10 @@ export default {
         //关弹框
         this.dialogChapterFormVisible = false
         //提示信息
-         this.$message({
-          type: 'success',
-          message: '添加课程章节成功!'
-        });
+         this.$message.success("ok");
         //刷新页面
         this.getChapterVideo()
-
+        
       })
     },
     saveOrUpdate(){
@@ -538,19 +516,19 @@ export default {
       }else{
         this.updateChapter()
       }
-
-
+      
+     
     },
-
+   
    //查询所有章节小节
     getChapterVideo(){
       chapter.getAllChapterVideo(this.courseId)
       .then(response=>{
-        this.chapterVideoList = response.data.allChapterVideo
+        this.chapterVideoList = response.result
       })
 
     },
-
+    
     previous() {
       console.log('previous')
       this.$router.push({ path: '/courcopy/info/'+this.courseId})
@@ -563,50 +541,48 @@ export default {
   }
 }
 </script>
+<!--<style scoped>-->
+<!--.chanpterList{-->
+<!--    position: relative;-->
+<!--    list-style: none;-->
+<!--    margin: 0;-->
+<!--    padding: 0;-->
+<!--}-->
+<!--.chanpterList li{-->
+<!--  position: relative;-->
+<!--}-->
+<!--.chanpterList p{-->
+<!--  float: left;-->
+<!--  font-size: 20px;-->
+<!--  margin: 10px 0;-->
+<!--  padding: 10px;-->
+<!--  height: 70px;-->
+<!--  line-height: 50px;-->
+<!--  width: 100%;-->
+<!--  border: 1px solid #DDD;-->
+<!--}-->
+<!--.chanpterList .acts {-->
+<!--    float: right;-->
+<!--    font-size: 14px;-->
+<!--}-->
 
-<style scoped>
-.chanpterList{
-    position: relative;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-.chanpterList li{
-  position: relative;
-}
-.chanpterList p{
-  float: left;
-  font-size: 20px;
-  margin: 10px 0;
-  padding: 10px;
-  height: 70px;
-  line-height: 50px;
-  width: 100%;
-  border: 1px solid #DDD;
-}
-.chanpterList .acts {
-    float: right;
-    font-size: 14px;
-}
+<!--.videoList{-->
+<!--  padding-left: 50px;-->
+<!--}-->
+<!--.videoList p{-->
+<!--  float: left;-->
+<!--  font-size: 14px;-->
+<!--  margin: 10px 0;-->
+<!--  padding: 10px;-->
+<!--  height: 50px;-->
+<!--  line-height: 30px;-->
+<!--  width: 100%;-->
+<!--  border: 1px dotted #DDD;-->
+<!--}-->
 
-.videoList{
-  padding-left: 50px;
-}
-.videoList p{
-  float: left;
-  font-size: 14px;
-  margin: 10px 0;
-  padding: 10px;
-  height: 50px;
-  line-height: 30px;
-  width: 100%;
-  border: 1px dotted #DDD;
-}
-
-</style>
-<style scoped>
-.tinymce-container {
-  line-height: 29px;
-}
-</style>
-
+<!--</style>-->
+<!--<style scoped>-->
+<!--.tinymce-container {-->
+<!--  line-height: 29px;-->
+<!--}-->
+<!--</style>-->

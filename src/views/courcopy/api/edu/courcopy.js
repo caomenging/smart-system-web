@@ -15,6 +15,7 @@ export default {
   getCourseInfoId(id) {
     return request({
       url: `/serviceedu/edu-course-copy/getCourseInfo/${id}`,
+      params: { courseId: id },
       method: 'get',
     })
   },
