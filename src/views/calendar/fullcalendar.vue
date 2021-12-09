@@ -101,6 +101,11 @@ export default {
       type: String | Number,
       required: false,
       default: null
+    },
+    calendarHeight: {
+      type: String | Number,
+      required: false,
+      default: null
     }
   },
   data() {
@@ -132,6 +137,7 @@ export default {
         eventsSet: this.handleEvents,
         timeZone: 'local',
         firstDay: this.firstDay,
+        height: this.calendarHeight,
         views: {
           dayGrid: {
             // options apply to dayGridMonth, dayGridWeek, and dayGridDay views
