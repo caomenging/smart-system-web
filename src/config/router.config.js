@@ -533,7 +533,7 @@ export const constantRouterMap = [
   },
   {
     path: '/webview/study',
-    component: () => import('@/views/SmartSurvey/SmartMySurveyAppList')
+    component: () => import('@/views/courcopy/learning/index')
   },
   {
     path: '/webview/study/statistics',

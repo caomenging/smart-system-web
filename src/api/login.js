@@ -1,6 +1,6 @@
 import api from './index'
 import { axios } from '@/utils/request'
-
+import request from '@/utils/request'
 /**
  * login func
  * parameter: {
@@ -75,13 +75,39 @@ export function thirdLogin(token,thirdType) {
 
 /**
  * 强退其他账号
- * @param token
  * @returns {*}
+ * @param parameter
  */
 export function forceLogout(parameter) {
   return axios({
     url: '/sys/online/forceLogout',
     method: 'post',
     data: parameter
+  })
+}
+
+
+export function submitLoginUser(userInfo) {
+  return request({
+    url: `/educenter/member/login`,
+    method: 'post',
+    data: userInfo
+  })
+}
+
+//token获取用户信息
+export function getLoginUserInfo() {
+  return request({
+    url: `/educenter/member/getMemberInfo`,
+    method: 'get',
+  })
+}
+
+//修改密码
+export function updateMember(ucenterMember){
+  return request({
+    url: `/educenter/member/updateMember`,
+    method: 'post',
+    data: ucenterMember
   })
 }

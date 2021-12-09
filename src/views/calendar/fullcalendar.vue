@@ -30,6 +30,7 @@
     <FullCalendar
       ref='fullCalendar'
       :options='calendarOptions'
+      calendarHeight="auto"
     >
       <template v-slot:eventContent='arg'>
         <b>{{ arg.timeText }}</b>
@@ -98,6 +99,11 @@ export default {
       default: null
     },
     listHeight: {
+      type: String | Number,
+      required: false,
+      default: null
+    },
+    calendarHeight: {
       type: String | Number,
       required: false,
       default: null

@@ -69,11 +69,11 @@
 
         <span slot="action" slot-scope="text, record">
           <!--<a @click="handleEdit(record)">编辑</a>-->
-          <a @click="handleIssueSurvey(record)" v-show="record.paperStatus == '0'">发布调查问卷</a>
+          <a @click="handleIssueSurvey(record)" v-show="record.paperStatus == '0'">发布</a>
           <a-divider type="vertical" />
-          <a @click="editTestPaper(record.id)">修改调查问卷</a>
+          <a @click="editTestPaper(record.id)">修改</a>
           <a-divider type="vertical" />
-          <a @click="showScore(record)">查看成绩</a>
+          <a @click="showScore(record)">查看</a>
 
         </span>
 
