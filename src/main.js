@@ -13,6 +13,7 @@ import { VueAxios } from "@/utils/request"
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css';
 
+
 require('@jeecg/antd-online-mini')
 require('@jeecg/antd-online-mini/dist/OnlineForm.css')
 

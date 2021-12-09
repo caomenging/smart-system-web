@@ -5,8 +5,8 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="单位ID">
-              <a-input placeholder="请输入单位ID" v-model="queryParam.departmentid"></a-input>
+            <a-form-item label="文件主题">
+              <a-input placeholder="请输入文件主题" v-model="queryParam.name"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -26,27 +26,27 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('窗口单位')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>
+<!--      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
+<!--      <a-button type="primary" icon="download" @click="handleExportXls('资料库')">导出</a-button>-->
+<!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
+<!--        <a-button type="primary" icon="import">导入</a-button>-->
+<!--      </a-upload>-->
       <!-- 高级查询区域 -->
-      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
-      <a-dropdown v-if="selectedRowKeys.length > 0">
-        <a-menu slot="overlay">
-          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
-        </a-menu>
-        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
-      </a-dropdown>
+<!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
+<!--      <a-dropdown v-if="selectedRowKeys.length > 0">-->
+<!--        <a-menu slot="overlay">-->
+<!--          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>-->
+<!--        </a-menu>-->
+<!--        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>-->
+<!--      </a-dropdown>-->
     </div>
 
     <!-- table区域-begin -->
     <div>
-      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
-        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
-        <a style="margin-left: 24px" @click="onClearSelected">清空</a>
-      </div>
+<!--      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">-->
+<!--        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项-->
+<!--        <a style="margin-left: 24px" @click="onClearSelected">清空</a>-->
+<!--      </div>-->
 
       <a-table
         ref="table"
@@ -58,7 +58,7 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -83,27 +83,14 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-<!--          <a @click="handleEdit(record)">编辑</a>-->
           <a @click="handleDetail(record)">详情</a>
-          <a-divider type="vertical" />
-<!--          <a-menu slot="overlay">-->
-<!--            <a-menu-item>-->
-              <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                <a>删除</a>
-              </a-popconfirm>
-<!--            </a-menu-item>-->
-<!--          </a-menu>-->
-          
-<!--          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-
-          </a-dropdown>-->
+<!--          <a-divider type="vertical" />-->
         </span>
 
       </a-table>
     </div>
 
-    <smart-window-unit-modal ref="modalForm" @ok="modalFormOk"></smart-window-unit-modal>
+    <smart-data-sheet-new-modal ref="modalForm" @ok="modalFormOk"></smart-data-sheet-new-modal>
   </a-card>
 </template>
 
@@ -112,17 +99,18 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartWindowUnitModal from './modules/SmartWindowUnitModal'
+  import SmartDataSheetNewModal from './modules/SmartDataSheetNewModal'
+  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
 
   export default {
-    name: 'SmartWindowUnitList',
+    name: 'SmartDataSheetNewList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartWindowUnitModal
+      SmartDataSheetNewModal
     },
     data () {
       return {
-        description: '窗口单位管理页面',
+        description: '资料库管理页面',
         // 表头
         columns: [
           {
@@ -136,30 +124,46 @@
             }
           },
           {
-            title:'单位名称',
+            title:'文件主题',
             align:"center",
             dataIndex: 'name'
           },
+          // {
+          //   title:'文件类型',
+          //   align:"center",
+          //   dataIndex: 'type_dictText'
+          // },
           {
-            title:'主管单位',
+            title:'发布单位',
             align:"center",
-            dataIndex: 'pid_dictText'
+            dataIndex: 'departmentid'
+          },
+          // {
+          //   title:'发布人',
+          //   align:"center",
+          //   dataIndex: 'publisher'
+          // },
+          {
+            title:'文件描述',
+            align:"center",
+            dataIndex: 'describeA',
+            scopedSlots: {customRender: 'htmlSlot'}
           },
           {
-            title:'负责人',
+            title:'创建日期',
             align:"center",
-            dataIndex: 'principal_dictText'
+            dataIndex: 'createTime'
           },
           {
-            title:'联系电话',
+            title:'文件下载',
             align:"center",
-            dataIndex: 'phone'
+            dataIndex: 'file',
+            scopedSlots: {customRender: 'fileSlot'}
           },
           {
-            title:'二维码',
+            title:'下载次数',
             align:"center",
-            dataIndex: 'qrcode',
-            scopedSlots: {customRender: 'imgSlot'}
+            dataIndex: 'times'
           },
           {
             title: '操作',
@@ -171,11 +175,11 @@
           }
         ],
         url: {
-          list: "/smart_window_unit/smartWindowUnit/list",
-          delete: "/smart_window_unit/smartWindowUnit/delete",
-          deleteBatch: "/smart_window_unit/smartWindowUnit/deleteBatch",
-          exportXlsUrl: "/smart_window_unit/smartWindowUnit/exportXls",
-          importExcelUrl: "smart_window_unit/smartWindowUnit/importExcel",
+          list: "/smart_data_sheet_new/smartDataSheetNewP/list",
+          delete: "/smart_data_sheet_new/smartDataSheetNewP/delete",
+          deleteBatch: "/smart_data_sheet_new/smartDataSheetNewP/deleteBatch",
+          exportXlsUrl: "/smart_data_sheet_new/smartDataSheetNewP/exportXls",
+          importExcelUrl: "smart_data_sheet_new/smartDataSheetNewP/importExcel",
           
         },
         dictOptions:{},
@@ -195,12 +199,14 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-        fieldList.push({type:'string',value:'departmentid',text:'单位ID',dictCode:''})
-        fieldList.push({type:'string',value:'name',text:'单位名称',dictCode:''})
-        fieldList.push({type:'sel_depart',value:'pid',text:'主管单位'})
-        fieldList.push({type:'sel_user',value:'principal',text:'负责人'})
-        fieldList.push({type:'string',value:'phone',text:'联系电话',dictCode:''})
-        fieldList.push({type:'string',value:'qrcode',text:'二维码',dictCode:''})
+        fieldList.push({type:'string',value:'name',text:'文件主题',dictCode:''})
+        fieldList.push({type:'int',value:'type',text:'文件类型',dictCode:'type_data'})
+        fieldList.push({type:'string',value:'departmentid',text:'发布单位',dictCode:''})
+        fieldList.push({type:'sel_user',value:'publisher',text:'发布人'})
+        fieldList.push({type:'Text',value:'describe1',text:'文件描述',dictCode:''})
+        fieldList.push({type:'datetime',value:'createTime',text:'创建日期'})
+        fieldList.push({type:'string',value:'file',text:'上传文件',dictCode:''})
+        fieldList.push({type:'int',value:'times',text:'下载次数',dictCode:''})
         this.superFieldList = fieldList
       }
     }
