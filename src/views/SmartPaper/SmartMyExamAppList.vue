@@ -219,7 +219,17 @@
           name: "myExamAdaptive",
           query: { examId,examName,paperId,start,deadline}
         });
+
+        const win = window.open(href, "_self");
+        const loop = setInterval(item => {
+          if (win.closed) {
+            clearInterval(loop);
+            this.$ref.table.reload();
+          }
+        }, 1000);
+
         window.location.href = href;
+
       },
       initDictConfig(){
       },
