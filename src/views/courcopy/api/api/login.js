@@ -1,6 +1,9 @@
 import api from './index'
 import { axios } from '@/utils/request'
-import request from '@/utils/request'
+import request from '@/utils/desform/request'
+
+
+
 /**
  * login func
  * parameter: {

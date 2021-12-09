@@ -4,32 +4,17 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="单位ID">
-              <a-input placeholder="请输入单位ID" v-model="queryParam.departmentid"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a @click="handleToggleSearch" style="margin-left: 8px">
-                {{ toggleSearchStatus ? '收起' : '展开' }}
-                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>
-            </span>
-          </a-col>
         </a-row>
       </a-form>
     </div>
     <!-- 查询区域-END -->
-
+    
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('窗口单位')">导出</a-button>
+<!--      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
+      <a-button type="primary" icon="download" @click="handleExportXls('资料库')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
+<!--        <a-button type="primary" icon="import">导入</a-button>-->
       </a-upload>
       <!-- 高级查询区域 -->
       <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
@@ -51,15 +36,15 @@
       <a-table
         ref="table"
         size="middle"
-        :scroll="{x:true}"
         bordered
         rowKey="id"
+        class="j-table-force-nowrap"
+        :scroll="{x:true}"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-        class="j-table-force-nowrap"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -86,43 +71,44 @@
 <!--          <a @click="handleEdit(record)">编辑</a>-->
           <a @click="handleDetail(record)">详情</a>
           <a-divider type="vertical" />
-<!--          <a-menu slot="overlay">-->
-<!--            <a-menu-item>-->
-              <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                <a>删除</a>
-              </a-popconfirm>
-<!--            </a-menu-item>-->
-<!--          </a-menu>-->
-          
-<!--          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
+<!--          <a-dropdown>-->
+<!--            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>-->
+<!--            <a-menu slot="overlay">-->
+<!--              <a-menu-item>-->
 
-          </a-dropdown>-->
+<!--              </a-menu-item>-->
+<!--              <a-menu-item>-->
+<!--                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">-->
+<!--                  <a>删除</a>-->
+<!--                </a-popconfirm>-->
+<!--              </a-menu-item>-->
+<!--            </a-menu>-->
+<!--          </a-dropdown>-->
         </span>
 
       </a-table>
     </div>
 
-    <smart-window-unit-modal ref="modalForm" @ok="modalFormOk"></smart-window-unit-modal>
+    <smart-data-sheet-modal ref="modalForm" @ok="modalFormOk"/>
   </a-card>
 </template>
 
 <script>
 
-  import '@/assets/less/TableExpand.less'
-  import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartWindowUnitModal from './modules/SmartWindowUnitModal'
+  import SmartDataSheetModal from './modules/SmartDataSheetModal'
+  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
+  import '@/assets/less/TableExpand.less'
 
   export default {
-    name: 'SmartWindowUnitList',
-    mixins:[JeecgListMixin, mixinDevice],
+    name: "SmartDataSheetList",
+    mixins:[JeecgListMixin],
     components: {
-      SmartWindowUnitModal
+      SmartDataSheetModal
     },
     data () {
       return {
-        description: '窗口单位管理页面',
+        description: '资料库管理页面',
         // 表头
         columns: [
           {
@@ -136,30 +122,30 @@
             }
           },
           {
-            title:'单位名称',
+            title:'文件名',
             align:"center",
             dataIndex: 'name'
           },
           {
-            title:'主管单位',
+            title:'文件类型',
             align:"center",
-            dataIndex: 'pid_dictText'
+            dataIndex: 'type_dictText'
           },
           {
-            title:'负责人',
+            title:'发布时间',
             align:"center",
-            dataIndex: 'principal_dictText'
+            dataIndex: 'time'
           },
           {
-            title:'联系电话',
+            title:'发布人',
             align:"center",
-            dataIndex: 'phone'
+            dataIndex: 'publisher_dictText'
           },
           {
-            title:'二维码',
+            title:'文件描述',
             align:"center",
-            dataIndex: 'qrcode',
-            scopedSlots: {customRender: 'imgSlot'}
+            dataIndex: 'describe',
+            scopedSlots: {customRender: 'htmlSlot'}
           },
           {
             title: '操作',
@@ -167,15 +153,15 @@
             align:"center",
             fixed:"right",
             width:147,
-            scopedSlots: { customRender: 'action' }
+            scopedSlots: { customRender: 'action' },
           }
         ],
         url: {
-          list: "/smart_window_unit/smartWindowUnit/list",
-          delete: "/smart_window_unit/smartWindowUnit/delete",
-          deleteBatch: "/smart_window_unit/smartWindowUnit/deleteBatch",
-          exportXlsUrl: "/smart_window_unit/smartWindowUnit/exportXls",
-          importExcelUrl: "smart_window_unit/smartWindowUnit/importExcel",
+          list: "/smart_data_sheet/smartDataSheetP/list",
+          delete: "/smart_data_sheet/smartDataSheetP/delete",
+          deleteBatch: "/smart_data_sheet/smartDataSheetP/deleteBatch",
+          exportXlsUrl: "/smart_data_sheet/smartDataSheetP/exportXls",
+          importExcelUrl: "smart_data_sheet/smartDataSheetP/importExcel",
           
         },
         dictOptions:{},
@@ -183,24 +169,23 @@
       }
     },
     created() {
-    this.getSuperFieldList();
+      this.getSuperFieldList();
     },
     computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      },
+      }
     },
     methods: {
       initDictConfig(){
       },
       getSuperFieldList(){
         let fieldList=[];
-        fieldList.push({type:'string',value:'departmentid',text:'单位ID',dictCode:''})
-        fieldList.push({type:'string',value:'name',text:'单位名称',dictCode:''})
-        fieldList.push({type:'sel_depart',value:'pid',text:'主管单位'})
-        fieldList.push({type:'sel_user',value:'principal',text:'负责人'})
-        fieldList.push({type:'string',value:'phone',text:'联系电话',dictCode:''})
-        fieldList.push({type:'string',value:'qrcode',text:'二维码',dictCode:''})
+         fieldList.push({type:'string',value:'name',text:'文件名',dictCode:''})
+         fieldList.push({type:'int',value:'type',text:'文件类型',dictCode:'type_data'})
+         fieldList.push({type:'datetime',value:'time',text:'发布时间'})
+         fieldList.push({type:'sel_user',value:'publisher',text:'发布人'})
+         fieldList.push({type:'Text',value:'describe',text:'文件描述',dictCode:''})
         this.superFieldList = fieldList
       }
     }
