@@ -219,7 +219,7 @@
           name: "myExam",
           query: { examId,examName,paperId,start,deadline}
         });
-        const win = window.open(href, "_blank");
+        const win = window.open(href, "_self");
         const loop = setInterval(item => {
           if (win.closed) {
             clearInterval(loop);

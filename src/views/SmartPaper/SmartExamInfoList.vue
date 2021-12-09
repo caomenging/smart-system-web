@@ -13,10 +13,10 @@
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a @click="handleToggleSearch" style="margin-left: 8px">
+             <!-- <a @click="handleToggleSearch" style="margin-left: 8px">
                 {{ toggleSearchStatus ? '收起' : '展开' }}
                 <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>
+              </a>-->
             </span>
           </a-col>
         </a-row>
@@ -32,7 +32,7 @@
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
       <!-- 高级查询区域 -->
-      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
+      <!--<j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
@@ -84,13 +84,14 @@
 
         <span slot="action" slot-scope="text, record">
           <a-popconfirm title="确定取消吗?" @confirm="() => handleDeleteExam(record)">
-                  <a>取消发布</a>
+                  <a :class="isDisabled(record)">取消发布</a>
           </a-popconfirm>
           <a-divider type="vertical" />
-          <a @click="handleEdit(record)">编辑</a>
+          <a @click="handleEdit(record)" :class="isDisabled(record)">修改考试时间</a>
 
           <a-divider type="vertical" />
-          <a-dropdown>
+          <a @click="showScore(record)">查看成绩</a>
+         <!-- <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
@@ -102,13 +103,14 @@
                 </a-popconfirm>
               </a-menu-item>
             </a-menu>
-          </a-dropdown>
+          </a-dropdown>-->
         </span>
 
       </a-table>
     </div>
 
     <smart-exam-information-modal ref="modalForm" @ok="modalFormOk"></smart-exam-information-modal>
+    <task-detail-modal ref="scoreModal" @ok="modalFormOk"></task-detail-modal>
   </a-card>
 </template>
 
@@ -119,6 +121,7 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SmartExamInformationModal from './modules/SmartExamInformationModal'
   import { httpAction,putAction, postAction,getAction } from '@/api/manage'
+  import TaskDetailModal from './modules/TaskDetailModal.vue'
 
   export default {
     queryParam:{
@@ -127,7 +130,7 @@
     name: 'SmartExamInformationList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartExamInformationModal
+      SmartExamInformationModal,TaskDetailModal
     },
     data () {
       return {
@@ -190,6 +193,24 @@
       },
     },
     methods: {
+      isDisabled(record){
+        //判断考试是否开始
+        let nowDate = new Date().getTime();
+        let startTime = record.examStarttime;
+        let startDate = new Date(
+          Date.parse(startTime.replace(/-/g, "/"))
+        ).getTime();
+        if (startDate > nowDate) {
+          //激活开始考试
+          console.log('激活取消考试，编辑');
+        } else {
+          return "disabled";
+        }
+      },
+      showScore(record) {
+        console.log(record)
+        this.$refs.scoreModal.edit(record.paperId)
+      },
       handleDeleteExam(record){
         console.log(record)
         let id = record.id
@@ -234,4 +255,10 @@
 </script>
 <style scoped>
   @import '~@assets/less/common.less';
+  .disabled {
+    pointer-events: none;
+    filter: alpha(opacity=50); /*IE滤镜，透明度50%*/
+    -moz-opacity: 0.5; /*Firefox私有，透明度50%*/
+    opacity: 0.5; /*其他，透明度50%*/
+  }
 </style>

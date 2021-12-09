@@ -80,7 +80,7 @@
         </el-card>
     </a-spin>
   </a-modal>
-  <vue2-org-tree />
+
 </template>
 
 <script>

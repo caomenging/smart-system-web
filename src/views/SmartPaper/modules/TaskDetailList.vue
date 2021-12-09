@@ -51,7 +51,7 @@ export default {
   },
   data() {
     return {
-      description: '系统通告表管理页面',
+      description: '成绩单',
       upurl: window._CONFIG['domianURL'] + '/sys/common/static/',
       fileList: [],
       dataSource: [],
@@ -163,7 +163,7 @@ export default {
             let i = 0
             for(i=0;i<this.dataSource.length;i++){
               if(this.dataSource[i].examGrade === '' || this.dataSource[i].examGrade == null || this.dataSource[i].examGrade === 'undefined' ){
-                this.dataSource[i].examGrade = '未参与调查'
+                this.dataSource[i].examGrade = '未考试'
               }
             }
             if (res.result.total) {

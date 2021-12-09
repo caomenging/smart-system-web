@@ -86,20 +86,20 @@
         <span slot="action" slot-scope="text, record">
           <a @click="handleExam(record)" :class="isDisabled(record)" >开始考试</a>
 
-          <a-divider type="vertical" />
+          <!--<a-divider type="vertical" />
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
                 <a @click="handleDetail(record)">详情</a>
               </a-menu-item>
-<!--              <a-menu-item>
+&lt;!&ndash;              <a-menu-item>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
                   <a>删除</a>
                 </a-popconfirm>
-              </a-menu-item>-->
+              </a-menu-item>&ndash;&gt;
             </a-menu>
-          </a-dropdown>
+          </a-dropdown>-->
         </span>
 
       </a-table>
@@ -154,7 +154,7 @@
             dataIndex: 'examEndtime'
           },
           {
-            title:'最高成绩',
+            title:'成绩',
             align:"center",
             dataIndex: 'examGrade'
           },
@@ -233,8 +233,9 @@
         fieldList.push({type:'string',value:'examName',text:'考试名称',dictCode:''})
         fieldList.push({type:'datetime',value:'examStarttime',text:'考试开始时间'})
         fieldList.push({type:'datetime',value:'examEndtime',text:'考试结束时间'})
-        fieldList.push({type:'int',value:'examGrade',text:'最高成绩'})
+        fieldList.push({type:'int',value:'examGrade',text:'成绩'})
         this.superFieldList = fieldList
+        console.log(this.superFieldList)
       }
     }
   }
