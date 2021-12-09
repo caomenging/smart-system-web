@@ -169,16 +169,10 @@ export default {
       let start = record.examStarttime
       let deadline = record.examEndtime
       const { href } = this.$router.resolve({
-        name: "mySurvey",
+        name: "mySurveyAdaptive",
         query: { examId,examName,paperId,start,deadline}
       });
-      const win = window.open(href, "_blank");
-      const loop = setInterval(item => {
-        if (win.closed) {
-          clearInterval(loop);
-          this.$ref.table.reload();
-        }
-      }, 1000);
+      window.location.href = href;
     },
     initDictConfig(){
     },

@@ -412,6 +412,14 @@ export const constantRouterMap = [
       title: '考试页面'
     }
   },
+  {
+    path: '/myExamAdaptive',
+    name: 'myExamAdaptive',
+    component: () => import( '@/views/SmartPaper/myExamAdaptive.vue'),
+    meta: {
+      title: '小程序考试页面'
+    }
+  },
 
   {
     path: '/createSurvey/:opt',
@@ -435,6 +443,14 @@ export const constantRouterMap = [
     component: () => import( '@/views/SmartSurvey/mySurvey.vue'),
     meta: {
       title: '调查问卷页面'
+    }
+  },
+  {
+    path: '/mySurveyAdaptive',
+    name: 'mySurveyAdaptive',
+    component: () => import( '@/views/SmartSurvey/mySurveyAdaptive.vue'),
+    meta: {
+      title: '小程序调查问卷页面'
     }
   },
 
@@ -465,39 +481,67 @@ export const constantRouterMap = [
    */
   // 通知公告
   {
-    path: '/webview/info',
-    component: () => import('@/views/system/UserAnnouncementList')
+    path: '/webview/notify',
+    component: () => import('@/views/message/MyMsgMobile')
   },
   // @TODO 信息公示
   // {
   //   path: '/webview/msg',
   //   component: () => import('@/views/system/UserAnnouncementList')
   // },
-  // @TODO 调查问卷
-  // {
-  //   path: '/webview/survey',
-  //   component: () => import('@/views/system/UserAnnouncementList')
-  // },
+  // 调查问卷
+  {
+    path: '/webview/survey/statistics',
+    component: () => import('@/views/SmartSurvey/SmartSurveyList')
+  },
+  {
+    path: '/webview/survey',
+    component: () => import('@/views/SmartSurvey/SmartMySurveyAppList')
+  },
   // 阳光评廉
   {
-    path: '/webview/sun',
+    path: '/SmartEvaluate/modules/SmartEvaluateForm',
     component: () => import('@/views/SmartEvaluate/modules/SmartEvaluateForm')
   },
+  {
+    path: '/webview/success',
+    component: () => import('@/views/SmartEvaluate/modules/Success')
+  },
+  {
+    path: '/webview/sun/statistics',
+    component: () => import('@/views/SmartEvaluate/SmartPeopleAvgList')
+  },
+  {
+    path: '/webview/sun/report',
+    component: () => import('@/views/InsertReportingInformation/InsertReportingInformationDetail')
+  },
 
-
-  // @TODO 政策查询
-  // {
-  //   path: '/webview/search',
-  //   component: () => import('@/views/system/UserAnnouncementList')
-  // },
-  // @TODO 村情互动
-  // {
-  //   path: '/webview/study',
-  //   component: () => import('@/views/system/UserAnnouncementList')
-  // },
-  // @TODO 学习园地
-  // {
-  //   path: '/webview/study',
-  //   component: () => import('@/views/system/UserAnnouncementList')
-  // },
+  // 政策查询
+  {
+    path: '/webview/search',
+    component: () => import('@/views/smart_data_sheet_new/SmartDataSheetNewPAPList')
+  },
+  // 村情互动
+  {
+    path: '/webview/village',
+    component: () => import('@/views/interaction/Home1')
+  },
+  // 学习园地
+  {
+    path: '/webview/study/exam',
+    component: () => import('@/views/SmartPaper/SmartMyExamAppList')
+  },
+  {
+    path: '/webview/study',
+    component: () => import('@/views/courcopy/learning/index')
+  },
+  {
+    path: '/webview/study/statistics',
+    component: () => import('@/views/MyExam/GradeList')
+  },
+  // 日历
+  {
+    path: '/webview/calendar',
+    component: () => import('@/views/calendar/fullcalendar')
+  },
 ]

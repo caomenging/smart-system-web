@@ -10,7 +10,7 @@
             'exeDept',
             {rules: [{ required: true, message: '主管单位' }]}
           ]"
-          name="exeDept"                 
+          name="exeDept"
           placeholder="主管单位" />
       </a-form-item>
       <!--<a-form-item
@@ -245,7 +245,7 @@ export default {
             if(res.success){
               that.$message.success(res.message);
               //that.$emit('ok');
-              that.$router.push({path: 'Success'});
+              that.$router.push({path: '/webview/success'});
             }else{
               that.$message.warning(res.message);
             }

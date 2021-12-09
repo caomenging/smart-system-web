@@ -101,7 +101,7 @@
               clearInterval(this.timer);
               this.timer = null;
               //跳转的页面写在此处
-              this.$router.push({path: '../../SmartEvaluate/SmartPeopleAvgList'});
+              this.$router.push({path: '/webview/sun/statistics'});
             }
           },1000)
         }
