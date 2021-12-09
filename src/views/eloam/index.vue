@@ -3,7 +3,7 @@
     <a-button type="primary" @click="openCamera">打开高拍仪</a-button>
     <a-row>
       <a-col :span="5">
-        <fullcalendar :disabled="true" :timeGridHeight='1152' initialView="listWeek"></fullcalendar>
+        <fullcalendar :disabled="true" calendarHeight="auto" initialView="listWeek"></fullcalendar>
       </a-col>
     </a-row>
     <eloam-modal ref="modalCamera" @ok="modalCameraOk"></eloam-modal>

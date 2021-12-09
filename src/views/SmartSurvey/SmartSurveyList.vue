@@ -5,8 +5,8 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-model-item label="试卷名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="paperName">
-              <j-input placeholder="请输入试卷名称" v-model="queryParam.paperName"></j-input>
+            <a-form-model-item label="调查问卷名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="paperName">
+              <j-input placeholder="请输入调查问卷名称" v-model="queryParam.paperName"></j-input>
             </a-form-model-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -69,11 +69,11 @@
 
         <span slot="action" slot-scope="text, record">
           <!--<a @click="handleEdit(record)">编辑</a>-->
-          <a @click="handleIssueSurvey(record)" v-show="record.paperStatus == '0'">发布调查问卷</a>
+          <a @click="handleIssueSurvey(record)" v-show="record.paperStatus == '0'">发布</a>
           <a-divider type="vertical" />
-          <a @click="editTestPaper(record.id)">修改调查问卷</a>
+          <a @click="editTestPaper(record.id)">修改</a>
           <a-divider type="vertical" />
-          <a @click="showScore(record)">查看成绩</a>
+          <a @click="showScore(record)">查看</a>
 
         </span>
 
@@ -133,14 +133,15 @@
             title:'试卷名称',
             align:"center",
             dataIndex: 'paperName',
+            width: 100,
             sorter: true
           },
-          {
-            title:'试卷状态',
-            align:"center",
-            dataIndex: 'paperStatus_dictText',
-            sorter: true
-          },
+          // {
+          //   title:'试卷状态',
+          //   align:"center",
+          //   dataIndex: 'paperStatus_dictText',
+          //   sorter: true
+          // },
           // {
           //   title:'命卷人',
           //   align:"center",
@@ -180,7 +181,7 @@
             title: '操作',
             dataIndex: 'action',
             align:"center",
-            width:147,
+            width:100,
             scopedSlots: { customRender: 'action' }
           }
         ],

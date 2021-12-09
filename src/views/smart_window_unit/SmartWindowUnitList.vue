@@ -51,18 +51,20 @@
       <a-table
         ref="table"
         size="middle"
-        rowKey="id"
-        class="j-table-force-nowrap"
         :scroll="{x:true}"
+        bordered
+        rowKey="id"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :expandedRowKeys="expandedRowKeys"
-        @change="handleTableChange"
-        @expand="handleExpand"
-        v-bind="tableProps">
+        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        class="j-table-force-nowrap"
+        @change="handleTableChange">
 
+        <template slot="htmlSlot" slot-scope="text">
+          <div v-html="text"></div>
+        </template>
         <template slot="imgSlot" slot-scope="text">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
           <img v-else :src="getImgView(text)" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
@@ -81,42 +83,40 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
-
+<!--          <a @click="handleEdit(record)">编辑</a>-->
+          <a @click="handleDetail(record)">详情</a>
           <a-divider type="vertical" />
-          <a-dropdown>
+<!--          <a-menu slot="overlay">-->
+<!--            <a-menu-item>-->
+              <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+                <a>删除</a>
+              </a-popconfirm>
+<!--            </a-menu-item>-->
+<!--          </a-menu>-->
+          
+<!--          <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <a @click="handleAddChild(record)">添加下级</a>
-              </a-menu-item>
-              <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDeleteNode(record.id)" placement="topLeft">
-                  <a>删除</a>
-                </a-popconfirm>
-              </a-menu-item>
-            </a-menu>
-          </a-dropdown>
+
+          </a-dropdown>-->
         </span>
 
       </a-table>
     </div>
 
-    <smartWindowUnit-modal ref="modalForm" @ok="modalFormOk"></smartWindowUnit-modal>
+    <smart-window-unit-modal ref="modalForm" @ok="modalFormOk"></smart-window-unit-modal>
   </a-card>
 </template>
 
 <script>
 
-  import { getAction, deleteAction } from '@/api/manage'
+  import '@/assets/less/TableExpand.less'
+  import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SmartWindowUnitModal from './modules/SmartWindowUnitModal'
-  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
-  import { filterObj } from '@/utils/util';
 
   export default {
-    name: "SmartWindowUnitList",
-    mixins:[JeecgListMixin],
+    name: 'SmartWindowUnitList',
+    mixins:[JeecgListMixin, mixinDevice],
     components: {
       SmartWindowUnitModal
     },
@@ -126,28 +126,38 @@
         // 表头
         columns: [
           {
+            title: '#',
+            dataIndex: '',
+            key:'rowIndex',
+            width:60,
+            align:"center",
+            customRender:function (t,r,index) {
+              return parseInt(index)+1;
+            }
+          },
+          {
             title:'单位名称',
-            align:"left",
+            align:"center",
             dataIndex: 'name'
           },
           {
+            title:'主管单位',
+            align:"center",
+            dataIndex: 'pid_dictText'
+          },
+          {
             title:'负责人',
-            align:"left",
+            align:"center",
             dataIndex: 'principal_dictText'
           },
           {
             title:'联系电话',
-            align:"left",
+            align:"center",
             dataIndex: 'phone'
           },
           {
-            title:'工作人员',
-            align:"left",
-            dataIndex: 'people_dictText'
-          },
-          {
             title:'二维码',
-            align:"left",
+            align:"center",
             dataIndex: 'qrcode',
             scopedSlots: {customRender: 'imgSlot'}
           },
@@ -157,217 +167,31 @@
             align:"center",
             fixed:"right",
             width:147,
-            scopedSlots: { customRender: 'action' },
+            scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
-          list: "/smart_window_unit/smartWindowUnit/rootList",
-          childList: "/smart_window_unit/smartWindowUnit/childList",
-          getChildListBatch: "/smart_window_unit/smartWindowUnit/getChildListBatch",
+          list: "/smart_window_unit/smartWindowUnit/list",
           delete: "/smart_window_unit/smartWindowUnit/delete",
           deleteBatch: "/smart_window_unit/smartWindowUnit/deleteBatch",
           exportXlsUrl: "/smart_window_unit/smartWindowUnit/exportXls",
           importExcelUrl: "smart_window_unit/smartWindowUnit/importExcel",
+          
         },
-        expandedRowKeys:[],
-        hasChildrenField:"hasChild",
-        pidField:"pid",
-        dictOptions: {},
-        loadParent: false,
+        dictOptions:{},
         superFieldList:[],
       }
     },
     created() {
-      this.getSuperFieldList();
+    this.getSuperFieldList();
     },
     computed: {
-      importExcelUrl(){
+      importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
       },
-      tableProps() {
-        let _this = this
-        return {
-          // 列表项是否可选择
-          rowSelection: {
-            selectedRowKeys: _this.selectedRowKeys,
-            onChange: (selectedRowKeys) => _this.selectedRowKeys = selectedRowKeys
-          }
-        }
-      }
     },
     methods: {
-      loadData(arg){
-        if(arg==1){
-          this.ipagination.current=1
-        }
-        this.loading = true
-        let params = this.getQueryParams()
-        params.hasQuery = 'true'
-        getAction(this.url.list,params).then(res=>{
-          if(res.success){
-            let result = res.result
-            if(Number(result.total)>0){
-              this.ipagination.total = Number(result.total)
-              this.dataSource = this.getDataByResult(res.result.records)
-              return this.loadDataByExpandedRows(this.dataSource)
-            }else{
-              this.ipagination.total=0
-              this.dataSource=[]
-            }
-          }else{
-            this.$message.warning(res.message)
-          }
-        }).finally(()=>{
-          this.loading = false
-        })
-      },
-      // 根据已展开的行查询数据（用于保存后刷新时异步加载子级的数据）
-      loadDataByExpandedRows(dataList) {
-        if (this.expandedRowKeys.length > 0) {
-          return getAction(this.url.getChildListBatch,{ parentIds: this.expandedRowKeys.join(',') }).then(res=>{
-            if (res.success && res.result.records.length>0) {
-              //已展开的数据批量子节点
-              let records = res.result.records
-              const listMap = new Map();
-              for (let item of records) {
-                let pid = item[this.pidField];
-                if (this.expandedRowKeys.join(',').includes(pid)) {
-                 let mapList = listMap.get(pid);
-                  if (mapList == null) {
-                    mapList = [];
-                  }
-                  mapList.push(item);
-                  listMap.set(pid, mapList);
-                }
-              }
-              let childrenMap = listMap;
-              let fn = (list) => {
-                if(list) {
-                  list.forEach(data => {
-                    if (this.expandedRowKeys.includes(data.id)) {
-                      data.children = this.getDataByResult(childrenMap.get(data.id))
-                      fn(data.children)
-                    }
-                  })
-                }
-              }
-              fn(dataList)
-            }
-          })
-        } else {
-          return Promise.resolve()
-        }
-      },
-      getQueryParams(arg) {
-        //获取查询条件
-        let sqp = {}
-        let param = {}
-        if(this.superQueryParams){
-          sqp['superQueryParams']=encodeURI(this.superQueryParams)
-          sqp['superQueryMatchType'] = this.superQueryMatchType
-        }
-        if(arg){
-          param = Object.assign(sqp, this.isorter ,this.filters);
-        }else{
-          param = Object.assign(sqp, this.queryParam, this.isorter ,this.filters);
-        }
-        if(JSON.stringify(this.queryParam) === "{}" || arg){
-          param.hasQuery = 'false'
-        }else{
-          param.hasQuery = 'true'
-        }
-        param.field = this.getQueryField();
-        param.pageNo = this.ipagination.current;
-        param.pageSize = this.ipagination.pageSize;
-        return filterObj(param);
-      },
-      searchReset() {
-        //重置
-        this.expandedRowKeys = []
-        this.queryParam = {}
-        this.loadData(1);
-      },
-      getDataByResult(result){
-        if(result){
-          return result.map(item=>{
-            //判断是否标记了带有子节点
-            if(item[this.hasChildrenField]=='1'){
-              let loadChild = { id: item.id+'_loadChild', name: 'loading...', isLoading: true }
-              item.children = [loadChild]
-            }
-            return item
-          })
-        }
-      },
-      handleExpand(expanded, record){
-        // 判断是否是展开状态
-        if (expanded) {
-          this.expandedRowKeys.push(record.id)
-          if (record.children.length>0 && record.children[0].isLoading === true) {
-            let params = this.getQueryParams(1);//查询条件
-            params[this.pidField] = record.id
-            params.hasQuery = 'false'
-            params.superQueryParams=""
-            getAction(this.url.childList,params).then((res)=>{
-              if(res.success){
-                if(res.result.records){
-                  record.children = this.getDataByResult(res.result.records)
-                  this.dataSource = [...this.dataSource]
-                }else{
-                  record.children=''
-                  record.hasChildrenField='0'
-                }
-              }else{
-                this.$message.warning(res.message)
-              }
-            })
-          }
-        }else{
-          let keyIndex = this.expandedRowKeys.indexOf(record.id)
-          if(keyIndex>=0){
-            this.expandedRowKeys.splice(keyIndex, 1);
-          }
-        }
-      },
-      handleAddChild(record){
-        this.loadParent = true
-        let obj = {}
-        obj[this.pidField] = record['id']
-        this.$refs.modalForm.add(obj);
-      },
-      handleDeleteNode(id) {
-        if(!this.url.delete){
-          this.$message.error("请设置url.delete属性!")
-          return
-        }
-        var that = this;
-        deleteAction(that.url.delete, {id: id}).then((res) => {
-          if (res.success) {
-             that.loadData(1)
-          } else {
-            that.$message.warning(res.message);
-          }
-        });
-      },
-      batchDel(){
-        if(this.selectedRowKeys.length<=0){
-          this.$message.warning('请选择一条记录！');
-          return false;
-        }else{
-          let ids = "";
-          let that = this;
-          that.selectedRowKeys.forEach(function(val) {
-            ids+=val+",";
-          });
-          that.$confirm({
-            title:"确认删除",
-            content:"是否删除选中数据?",
-            onOk: function(){
-              that.handleDeleteNode(ids)
-              that.onClearSelected();
-            }
-          });
-        }
+      initDictConfig(){
       },
       getSuperFieldList(){
         let fieldList=[];
@@ -376,7 +200,6 @@
         fieldList.push({type:'sel_depart',value:'pid',text:'主管单位'})
         fieldList.push({type:'sel_user',value:'principal',text:'负责人'})
         fieldList.push({type:'string',value:'phone',text:'联系电话',dictCode:''})
-        fieldList.push({type:'sel_user',value:'people',text:'工作人员'})
         fieldList.push({type:'string',value:'qrcode',text:'二维码',dictCode:''})
         this.superFieldList = fieldList
       }

@@ -11,10 +11,21 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/user/login', '/user/register', '/user/register-result','/user/alteration',
   '/InsertReportingInformation/InsertReportingInformationDetail',
-  '/InsertReportingInformation/Success','/QRCodesame/QRcodesame'] // no redirect whitelist
+  '/InsertReportingInformation/Success','/QRCodesame/QRcodesame', '/SmartEvaluate/modules/SmartEvaluateForm'] // no redirect whitelist
 const appWhiteList = [
-  '/webview/info',
-  '/webview/sun',
+  '/webview/notify', // 通知公告
+  '/webview/survey/statistics', // 调查问卷统计
+  '/webview/survey', // 调查问卷填写
+  '/webview/sun/statistics', // 阳光评廉结果
+  '/webview/sun/report', // 纠四风，举报
+  '/webview/village', // 村情互动
+  '/webview/study/exam', // 学习园地 我的考试
+  '/webview/study', // 学习园地 去学习
+  '/webview/study/statistics', // 学习园地 统计数据
+  '/webview/search', // 政策查询
+  '/webview/calendar', // 日历
+  '/webview/sun', // 阳光评廉
+  '/webview/success', // 评价成功
 ]
 whiteList.push(OAUTH2_LOGIN_PAGE_PATH)
 
