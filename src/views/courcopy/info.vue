@@ -35,7 +35,7 @@
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload">
-          <img v-if="courseInfo.cover" :src="courseInfo.cover" class="avatar">
+          <img v-if="courseInfo.cover" :src="courseInfo.cover" class="avatar1">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
@@ -188,7 +188,7 @@ export default {
   line-height: 178px;
   text-align: center;
 }
-.avatar {
+.avatar1 {
   width: 178px;
   height: 178px;
   display: block;
