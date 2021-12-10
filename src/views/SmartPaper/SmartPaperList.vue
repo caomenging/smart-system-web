@@ -77,14 +77,14 @@
           <!--<a @click="handleEdit(record)">编辑</a>-->
           <a @click="handleIssueExam(record)" :class="isDisabled(record)" >发布考试</a>
           <a-divider type="vertical" />
-          <a @click="editTestPaper(record.id)">编辑</a>
+          <a @click="editTestPaper(record.id)"  :class="isDisabled(record)">编辑</a>
           <a-divider type="vertical" />
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
                 <!--<a @click="handleDetail(record)">详情</a>-->
-                <a @click="detailPage(record.id)">详情</a>
+                <a @click="detailPage(record.id)">查看试卷</a>
               </a-menu-item>
               <a-menu-item>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)" v-show="record.paperStatus == '0'">

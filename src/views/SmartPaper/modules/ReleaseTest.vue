@@ -70,7 +70,7 @@ export default {
   },
   data() {
     return {
-      title:'发布调查问卷',
+      title:'发布考试',
       width:800,
       visible: false,
       disableSubmit: false,

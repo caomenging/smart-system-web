@@ -216,24 +216,28 @@
         let start = record.examStarttime
         let deadline = record.examEndtime
         const { href } = this.$router.resolve({
-          name: "myExam",
+          name: "myExamAdaptive",
           query: { examId,examName,paperId,start,deadline}
         });
-        const win = window.open(href, "_blank");
+
+        const win = window.open(href, "_self");
         const loop = setInterval(item => {
           if (win.closed) {
             clearInterval(loop);
             this.$ref.table.reload();
           }
         }, 1000);
+
+        window.location.href = href;
+
       },
       initDictConfig(){
       },
       getSuperFieldList(){
         let fieldList=[];
         fieldList.push({type:'string',value:'examName',text:'考试名称',dictCode:''})
-        fieldList.push({type:'datetime',value:'examStarttime',text:'考试开始时间'})
-        fieldList.push({type:'datetime',value:'examEndtime',text:'考试结束时间'})
+        // fieldList.push({type:'datetime',value:'examStarttime',text:'考试开始时间'})
+        // fieldList.push({type:'datetime',value:'examEndtime',text:'考试结束时间'})
         fieldList.push({type:'int',value:'examGrade',text:'成绩'})
         this.superFieldList = fieldList
       }
