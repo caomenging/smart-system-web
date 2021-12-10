@@ -541,48 +541,48 @@ export default {
   }
 }
 </script>
-<!--<style scoped>-->
-<!--.chanpterList{-->
-<!--    position: relative;-->
-<!--    list-style: none;-->
-<!--    margin: 0;-->
-<!--    padding: 0;-->
-<!--}-->
-<!--.chanpterList li{-->
-<!--  position: relative;-->
-<!--}-->
-<!--.chanpterList p{-->
-<!--  float: left;-->
-<!--  font-size: 20px;-->
-<!--  margin: 10px 0;-->
-<!--  padding: 10px;-->
-<!--  height: 70px;-->
-<!--  line-height: 50px;-->
-<!--  width: 100%;-->
-<!--  border: 1px solid #DDD;-->
-<!--}-->
-<!--.chanpterList .acts {-->
-<!--    float: right;-->
-<!--    font-size: 14px;-->
-<!--}-->
+<style scoped>
+.chanpterList{
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.chanpterList li{
+  position: relative;
+}
+.chanpterList p{
+  float: left;
+  font-size: 20px;
+  margin: 10px 0;
+  padding: 10px;
+  height: 70px;
+  line-height: 50px;
+  width: 100%;
+  border: 1px solid #DDD;
+}
+.chanpterList .acts {
+    float: right;
+    font-size: 14px;
+}
 
-<!--.videoList{-->
-<!--  padding-left: 50px;-->
-<!--}-->
-<!--.videoList p{-->
-<!--  float: left;-->
-<!--  font-size: 14px;-->
-<!--  margin: 10px 0;-->
-<!--  padding: 10px;-->
-<!--  height: 50px;-->
-<!--  line-height: 30px;-->
-<!--  width: 100%;-->
-<!--  border: 1px dotted #DDD;-->
-<!--}-->
+.videoList{
+  padding-left: 50px;
+}
+.videoList p{
+  float: left;
+  font-size: 14px;
+  margin: 10px 0;
+  padding: 10px;
+  height: 50px;
+  line-height: 30px;
+  width: 100%;
+  border: 1px dotted #DDD;
+}
 
-<!--</style>-->
-<!--<style scoped>-->
-<!--.tinymce-container {-->
-<!--  line-height: 29px;-->
-<!--}-->
-<!--</style>-->
+</style>
+<style scoped>
+.tinymce-container {
+  line-height: 29px;
+}
+</style>

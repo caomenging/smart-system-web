@@ -10,7 +10,6 @@
       <!-- 课程基本信息 开始 -->
 
       <!-- /课程基本信息 结束 -->
-
       <div class="mt20 c-infor-box">
         <article class="fl col-7">
           <section class="mr30">
@@ -286,3 +285,27 @@ export default {
   },
 }
 </script>
+
+<style>
+@import "../assets/css/global.css";
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.bg-fa{background-color:#fafafa}
+.of{overflow:hidden}.ov{overflow:visible}
+.container{margin-left:auto;margin-right:auto;width:1160px}
+.mt20{margin-top:20px}.mr20{margin-right:20px}.mb20{margin-bottom:20px}.ml20{margin-left:20px}
+.c-infor-box .col-3,.c-infor-box .col-7{width:100%}
+.c-infor-box .col-7{margin:0 0 20px 0}
+.c-infor-box .col-7 .mr30{margin:0}
+.fl{float:left}.fr{float:right}
+.col-7{width:70%}.col-3{width:30%}
+</style>
