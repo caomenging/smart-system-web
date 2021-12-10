@@ -24,35 +24,17 @@
               <li v-for="item in list" :key="item.id">
                 <div class="cc-l-wrap">
                   <section class="course-img">
-                    <img :src="item.cover" class="head_pic" @click="startLearn(item.id)" width="40" height="40" :alt="item.title">
-<!--                    <div class="cc-mask">-->
-<!--                      <a @click="startLearn(item.id)">开始学习</a>-->
-<!--&lt;!&ndash;                      <a :href="'/courcopy/learning/_id/:id'+item.id" title="开始学习" class="comm-btn c-btn-1">开始学习</a>&ndash;&gt;-->
-<!--                    </div>-->
+                    <img :src="item.cover" class="head_pic" @click="startLearn(item.id)"  :alt="item.title">
+                    <div class="cc-mask">
+                      <a @click="startLearn(item.id)"></a>
+                      <a :href="'/courcopy/learning/_id/'+item.id" title="开始学习" class="comm-btn c-btn-1">开始学习</a>
+                    </div>
                   </section>
                   <h3 class="hLh30 txtOf mt10">
                     <a :href="'/courcopy/learning/_id/'+item.id" :title="item.title" class="course-title fsize18 c-333">{{item.title}}</a>
                   </h3>
                 </div>
               </li>
-              <div class="demo-image">
-                <div class="block" v-for="fit in fits" :key="fit">
-                  <span class="demonstration">{{ fit }}</span>
-                  <el-image
-                    style="width: 100px; height: 100px"
-                    :src="item.cover"
-                    :fit="fit"></el-image>
-                </div>
-              </div>
-<!--              <div class="demo-image">-->
-<!--                <div class="block" v-for="item in list" :key="item.id">-->
-<!--                  <span class="demonstration"></span>-->
-<!--                  <el-image-->
-<!--                    style="width: 100px; height: 100px"-->
-<!--                    :src="item.cover"-->
-<!--                    :item="item.title"></el-image>-->
-<!--                </div>-->
-<!--              </div>-->
             </ul>
 
             <div class="clear"></div>
@@ -110,3 +92,7 @@ export default {
   }
 };
 </script>
+<style>
+@import "../assets/css/global.css";
+
+</style>
