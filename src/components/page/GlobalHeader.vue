@@ -153,7 +153,7 @@
             let rightWidth = '360px'
             this.topMenuStyle.topNavHeader = { 'min-width': '165px' }
             this.topMenuStyle.topSmenuStyle = { 'width': 'calc(100% - 165px)' }
-            this.topMenuStyle.headerIndexRight = { 'min-width': rightWidth }
+            this.topMenuStyle.headerIndexRight = { 'min-width': rightWidth}
             this.topMenuStyle.headerIndexLeft = { 'width': `calc(100% - ${rightWidth})` }
           }
         }
