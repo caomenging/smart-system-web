@@ -41,8 +41,9 @@
                                     <ol class="lh-menu-ol" style="display: block;">
                                          <li v-for="video in chapter.children"  :key="video.id" class="lh-menu-second ml30">
                                             <div v-if="video.title==='在线听课'">
-<!--                                            <a :href="'/learning/player/'+video.wordOneUrl"  @click="submit"  target="_blank">-->
-                                              <a @click="handlePreview(video)"  target="_blank">
+<!--                                              <a :href="'/courcopy/learning/player/SmartVideoText?url='+video.wordOneUrl"  target="_blank">-->
+                                            <a :href="'/courcopy/learning/player/SmartVideoText?url='+video.wordOneUrl"  >
+<!--                                              <a @click="handlePreview(video)"  target="_blank">-->
                                                 <span  class="fr">
                                                     <i class="free-icon vam mr10">点击学习</i>
                                                 </span>
