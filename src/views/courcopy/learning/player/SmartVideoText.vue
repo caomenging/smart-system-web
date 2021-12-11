@@ -1,36 +1,47 @@
 <template>
-  <div class='video'>
-    <video-player class="video-player vjs-custom-skin"
-                  ref="videoPlayer"
-                  :playsinline="true"
-                  :options="playerOptions"
-                  @play="onPlayerPlay($event)"
-                  @pause="onPlayerPause($event)"
-                  @ended="onPlayerEnded($event)"
-                  @loadeddata="onPlayerLoadeddata($event)"
-                  @waiting="onPlayerWaiting($event)"
-                  @playing="onPlayerPlaying($event)"
-                  @timeupdate="onPlayerTimeupdate($event)"
-                  @canplay="onPlayerCanplay($event)"
-                  @canplaythrough="onPlayerCanplaythrough($event)"
-                  @ready="playerReadied"
-                  @statechanged="playerStateChanged($event)"
-    ></video-player>
+  <div class="post-index cardDiv-faan">
+    <div>
+      <div class='video'>
+        <video-player class="video-player vjs-custom-skin"
+                      ref="videoPlayer"
+                      :playsinline="true"
+                      :options="playerOptions"
+                      @play="onPlayerPlay($event)"
+                      @pause="onPlayerPause($event)"
+                      @ended="onPlayerEnded($event)"
+                      @loadeddata="onPlayerLoadeddata($event)"
+                      @waiting="onPlayerWaiting($event)"
+                      @playing="onPlayerPlaying($event)"
+                      @timeupdate="onPlayerTimeupdate($event)"
+                      @canplay="onPlayerCanplay($event)"
+                      @canplaythrough="onPlayerCanplaythrough($event)"
+                      @ready="playerReadied"
+                      @statechanged="playerStateChanged($event)"
+        ></video-player>
+      </div>
+    </div>
   </div>
-
 </template>
 
 <script>
-// 导入组件
-import {videoPlayer} from 'vue-video-player'
+import { videoPlayer } from 'vue-video-player'
+import {AwesomeSwiper} from  'vue-awesome-swiper'
+import { swiper, swiperSlide } from "vue-awesome-swiper";
+import "swiper/dist/css/swiper.css";
 import 'video.js/dist/video-js.css'
-import axios from "axios";
+require('video.js/dist/video-js.css');
+require('vue-video-player/src/custom-theme.css');
+import 'videojs-flash'
+import 'videojs-contrib-hls'
+import progress from "ant-design-vue/lib/progress/progress"
+
 
 export default {
-  name: 'VideoPlayer',
+  name: "video",
   components: {
     videoPlayer
   },
+
   data() {
     return {
       playerOptions: {
@@ -40,7 +51,7 @@ export default {
         loop: true, // 导致视频一结束就重新开始。
         preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
         language: 'zh-CN',
-        aspectRatio: '4:3', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+        aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
         fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
         sources: [{
           type: "video/mp4",//这里的种类支持很多种：基本视频格式、直播、流媒体等，具体可以参看git网址项目
@@ -54,25 +65,28 @@ export default {
           timeDivider: true,
           durationDisplay: true,
           remainingTimeDisplay: false,
-          fullscreenToggle: true  //全屏按钮
+          fullscreenToggle: true,  //全屏按钮
         }
       }
     }
   },
   created() {
     //获取视频的url
-    this.get_num()
-    //this.url = require("D:\\doc\\study\\Code\\Java\\smart-system-server\\upload_file"+this.getUrlKey("url"));
+     this.get_num()
+     //this.url = require("D:/soft_ware/Idea_Project/[HYSUB]Ganbare Douki-chan[10][BIG5_MP4][1920X1080].mp4");
+    // this.url = require("D:\\doc\\study\\Code\\Java\\smart-system-server\\upload_file"+this.getUrlKey("url"));
     this.playerOptions['sources'][0]['src'] = this.url;
-    this.onPlayerPlay()
+    this.onPlayerPlay
   },
 
-
+  // mounted() {
+  //   this.videoPlayer()
+  // },
+  // 对应的methods
   methods: {
     getUrlKey: function (name) {
       return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.href) || [, ""])[1].replace(/\+/g, '%20')) || null
     },
-
     get_num() {
       let path=decodeURIComponent(this.getUrlKey('url'))
       console.log(path)
@@ -85,13 +99,14 @@ export default {
       //   axios.get('${this.$settings.HOST}/planes/repair/${this.num}',
       //   )
       //     .then(response => {
-          // **最关键的地方**
-          // *加粗样式#响应成功的数据中提取url赋值给变量url
-          this.url = "http://localhost:8080/smart-system/sys/common/static/" + this.num;
-          //         #将url赋值给src
-          this.playerOptions['sources'][0]['src'] = this.url;
+      // **最关键的地方**
+      // *加粗样式#响应成功的数据中提取url赋值给变量url
+      this.url = "http://localhost:8080/smart-system/sys/common/static/" + this.num;
+      // this.url = "D:/doc/study/Code/Java/smart-system-server/upload_file" + this.num;
+      //         #将url赋值给src
+      this.playerOptions['sources'][0]['src'] = this.url;
 
-          console.log(this.url)
+      console.log(this.url)
       //   }).catch(error => {
       //     console.log(error);
       //     console.log('‘对不起维修信息获取失败‘')
@@ -101,9 +116,50 @@ export default {
     },
 
 
+
+/*    videoPlayer(){
+      const that = this;
+      let resetTime = 0;//拖动后重置播放时间
+      let curTime = 0;//当前播放时间
+      const vd = document.getElementById("video");//获取video对象
+      const getCurTime = localStorage.getItem("remTime");//获取本地存储
+      console.log(getCurTime)
+      if(getCurTime >0.1){
+        curTime = getCurTime;
+        resetTime = getCurTime;
+        vd.addEventListener("paly",function () {
+          setTimeout(function (){
+            vd.currentTime = get_Component;
+            setInterval(timer,100);
+            },2000);
+          })
+      }else{
+        vd.play();
+        setInterval(timer,100);
+      }//定时器
+
+      function timer() {
+        curTime = vd.currentTime;
+        var apartTime = curTime - resetTime;
+        if(apartTime > 2){
+          vd.currentTime = resetTime;
+        }else{
+          resetTime = curTime;
+        }
+        that.currentTime = curTime;
+      }
+      vd.addEventListener("pause",function (){
+        localStorage.setItem("remTime",that.curTime);
+      });
+    },
+    gogo(){
+      this.$router.push("/Request");
+    },
+
+ */
     //监听播放
     onPlayerPlay(player) {
-//      console.log(player);
+      console.log(player);
       // this.$refs.videoPlayer.player.play();
     },
 
@@ -112,7 +168,6 @@ export default {
       console.log(player);
       // this.$refs.videoPlayer.player.pause();
     },
-
     //监听播放状态改变
     playerStateChanged(player) {
       // console.log(player);
@@ -142,7 +197,7 @@ export default {
     onPlayerTimeupdate(player) {
       console.log(player.cache_.currentTime);
       // 禁止拖动进度条
-      const timer = setInterval(function () {
+      const timer = setInterval(function() {
         const currentTime = player.cache_.currentTime
         let originTime = player.cache_.originTime
         // console.log(currentTime, originTime)
@@ -167,16 +222,15 @@ export default {
     playerReadied(player) {
       // debugger
       // this.sources.src = require( "E:\\java\\WorkSpace\\ISPER_UI_9_19\\src\\views\\business\\progress\\video\\bunn.mp4" )
-      player.currentTime(0)	//视频开始播放的时间
+      player.currentTime(0)
     }
-  },
-}
+  }
+};
 </script>
 
-<style scoped>
-.vjs-progress-control {
+<style type="text/css" lang="scss" rel="stylesheet/scss">
+.vjs-progress-control{
   pointer-events: none !important;
 }
+
 </style>
-
-
