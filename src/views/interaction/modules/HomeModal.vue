@@ -1,4 +1,3 @@
-<script src='../../../../../../../Documents/WeChat Files/wxid_phazgprm4eso22/FileStorage/File/2021-11/main.js'></script>
 <template>
   <a-modal
     :title="title"
@@ -86,10 +85,6 @@
 <script>
   import ATextarea from 'ant-design-vue/es/input/TextArea'
   import {queryCommentList} from '@/api/api'
-  import Vue from 'vue'
-  import ElementUI from 'element-ui'
-  import 'element-ui/lib/theme-chalk/index.css'
-  Vue.use(ElementUI)
 
   export default {
     name: "HomeModal",
