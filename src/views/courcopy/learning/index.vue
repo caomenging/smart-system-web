@@ -9,7 +9,7 @@
         <a-card>
           <el-image slot='cover'
                     alt='example'
-                    :src='item.cover'
+                    :src='"http://localhost:8080/smart-system/sys/common/static/"+item.cover'
                     @click='startLearn(item.id)'
                     style='cursor: pointer;'
                     :alt='item.title'
