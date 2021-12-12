@@ -101,7 +101,8 @@ export default {
       //     .then(response => {
       // **最关键的地方**
       // *加粗样式#响应成功的数据中提取url赋值给变量url
-      this.url = "http://localhost:8080/smart-system/sys/common/static/" + this.num;
+      // 2021-12-12 修改url地址，去掉ip @Author CabbSir
+      this.url = "/smart-system/sys/common/static/" + this.num;
       // this.url = "D:/doc/study/Code/Java/smart-system-server/upload_file" + this.num;
       //         #将url赋值给src
       this.playerOptions['sources'][0]['src'] = this.url;
