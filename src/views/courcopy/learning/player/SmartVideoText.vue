@@ -228,10 +228,3 @@ export default {
   }
 };
 </script>
-
-<style type="text/css" rel="stylesheet/scss">
-.vjs-progress-control{
-  pointer-events: none !important;
-}
-
-</style>
