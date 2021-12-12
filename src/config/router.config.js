@@ -533,7 +533,12 @@ export const constantRouterMap = [
   },
   {
     path: '/webview/study',
-    component: () => import('@/views/courcopy/learning/index')
+    component: () => import('@/views/courcopy/learning/wxIndex')
+  },
+  // 课程列表
+  {
+    path: '/webview/class/list/:id',
+    component: () => import('@/views/courcopy/learning/_id')
   },
   {
     path: '/webview/study/statistics',
@@ -543,5 +548,14 @@ export const constantRouterMap = [
   {
     path: '/webview/calendar',
     component: () => import('@/views/calendar/fullcalendar')
+  },
+  // 视频播放
+  {
+    path: '/webview/player',
+    component: () => import('@/views/courcopy/learning/player/SmartVideoText')
+  },
+  {
+    path: '/player',
+    component: () => import('@/views/courcopy/learning/player/SmartVideoText')
   },
 ]
