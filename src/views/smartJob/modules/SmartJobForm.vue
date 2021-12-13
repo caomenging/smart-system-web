@@ -4,38 +4,65 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24">
-            <a-form-model-item label="任务类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="jobType"  @blur.native.capture="splitText">
+            <a-form-model-item
+              label="任务类型"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+              prop="jobType"
+              @blur.native.capture="splitText"
+            >
               <j-dict-select-tag type="list" v-model="model.jobType" dictCode="job_type" placeholder="请选择任务类型" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="任务名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="jobName">
-              <a-input v-model="model.jobName" placeholder="请输入任务名称"  ></a-input>
+              <a-input v-model="model.jobName" placeholder="请输入任务名称"></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="任务描述" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="jobDescribe">
-              <a-input v-model="model.jobDescribe" placeholder="请输入任务描述"  ></a-input>
+              <a-input v-model="model.jobDescribe" placeholder="请输入任务描述"></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="是否每日提醒" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="isLoop">
-              <j-dict-select-tag type="list" v-model="model.isLoop" dictCode="is_loop" placeholder="请选择是否每日提醒" />
+              <j-dict-select-tag
+                type="list"
+                v-model="model.isLoop"
+                dictCode="is_loop"
+                placeholder="请选择是否每日提醒"
+              />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item v-if="model.isLoop=='1'" label="执行时间(日）" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="executeTimeDay">
-              <j-date placeholder="请选择执行时间(日）" v-model="model.executeTimeDay"  style="width: 100%" />
+            <a-form-model-item
+              v-if="model.isLoop == '1'"
+              label="执行时间(日）"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+              prop="executeTimeDay"
+            >
+              <j-date placeholder="请选择执行时间(日）" v-model="model.executeTimeDay" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="执行时间(时）" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="executeTimeHour">
-              <j-time placeholder="请选择执行时间(时）"  v-model="model.executeTimeHour" style="width: 100%" />
+            <a-form-model-item
+              label="执行时间(时）"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+              prop="executeTimeHour"
+            >
+              <j-time placeholder="请选择执行时间(时）" v-model="model.executeTimeHour" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="提醒全体人员" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="isToAll">
-              <j-dict-select-tag type="list" v-model="model.isToAll" dictCode="is_loop" placeholder="请选择提醒全体人员" />
+              <j-dict-select-tag
+                type="list"
+                v-model="model.isToAll"
+                dictCode="is_loop"
+                placeholder="请选择提醒全体人员"
+              />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" v-show="model.isToAll == '1'">
@@ -58,12 +85,12 @@
                 code="tem_test"
                 :multi="true"
                 @input="popupCallback"
-                />
+              />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="模板内容" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="templateContent">
-              <a-input v-model="model.templateContent" placeholder="请输入模板内容" disabled ></a-input>
+              <a-input v-model="model.templateContent" placeholder="请输入模板内容" disabled></a-input>
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -73,161 +100,174 @@
 </template>
 
 <script>
+import { httpAction, getAction } from '@/api/manage'
+import { validateDuplicateValue } from '@/utils/util'
 
-  import { httpAction, getAction } from '@/api/manage'
-  import { validateDuplicateValue } from '@/utils/util'
-
-  export default {
-    name: 'SmartJobForm',
-    components: {
+export default {
+  name: 'SmartJobForm',
+  components: {},
+  props: {
+    //表单禁用
+    disabled: {
+      type: Boolean,
+      default: false,
+      required: false,
     },
-    props: {
-      //表单禁用
-      disabled: {
-        type: Boolean,
-        default: false,
-        required: false
-      }
-    },
-    data () {
-      return {
-        model:{
-          jobType:'',
-          isLoop:'',
-          isToAll:'',
-          jobName:'',
-          jobDescribe:'',
-          type:'',
-         },
-        labelCol: {
-          xs: { span: 24 },
-          sm: { span: 5 },
-        },
-        wrapperCol: {
-          xs: { span: 24 },
-          sm: { span: 16 },
-        },
-        confirmLoading: false,
-        validatorRules: {
-           jobType: [
-              { required: true, message: '请输入任务类型!'},
-           ],
-           isLoop: [
-              { required: true, message: '请输入是否每日提醒!'},
-           ],
-           executeTimeHour: [
-              { required: true, message: '请输入执行时间(时）!'},
-           ],
-           isToAll: [
-              { required: true, message: '请输入提醒全体人员!'},
-           ],
-           type: [
-              { required: true, message: '请输入提醒类型!'},
-           ],
-           templateName: [
-              { required: true, message: '请输入模板名!'},
-           ],
-           templateContent: [
-              { required: true, message: '请输入模板内容!'},
-           ],
-        },
-        url: {
-          add: "/smartJob/smartJob/add",
-          edit: "/smartJob/smartJob/edit",
-          queryById: "/smartJob/smartJob/queryById"
+  },
+  data() {
+    let checkIsLoop = (rule, value, callback) => {
+      if (this.model.jobType == '0' || this.model.jobType == '1' || this.model.jobType == '3') {
+        if (this.model.isLoop != '0') {
+          callback(new Error('请选择"是"'))
+        } else {
+          callback()
         }
+      } else {
+        callback()
       }
-    },
-    watch:{
-      model:{
-        deep:true,
-        // handler(){
-				// 		if(this.model.jobType == '0'){
-        //       console.log("入党纪念日提醒")
-        //       this.model.isLoop = '0'
-        //       this.model.isToAll = '0'
-        //       this.model.jobName = '入党纪念日提醒任务'
-        //       this.model.jobDescribe = '每日提醒当日入党人员'
-        //       this.model.type = '1'
-        //     }else if(this.model.jobType == '1'){
-        //       console.log("解除处分提醒")
-        //       this.model.isLoop = '0'
-        //       this.model.isToAll = '0'
-        //       this.model.jobName = '解除处分人员提醒'
-        //       this.model.jobDescribe = '每日提醒当日解除处分人员'
-        //       this.model.type = '1'
-        //     }else if(this.model.jobType == '2'){
-        //       console.log("其他")
-        //       // this.form = this.$options.data().form
-        //     }else{
-        //       console.log("婚后报备提醒")
-        //       this.model.isLoop = '0'
-        //       this.model.isToAll = '0'
-        //       this.model.jobName = '婚后报备提醒'
-        //       this.model.jobDescribe = '每日提醒婚礼结束十五日内未婚后报备人员'
-        //       this.model.type = '1'
-        //     }
-				// 	}
+    }
+    let checkIsToAll = (rule, value, callback) => {
+      if (this.model.jobType == '0' || this.model.jobType == '1' || this.model.jobType == '3') {
+        if (this.model.isToAll != '0') {
+          callback(new Error('请选择"是"'))
+        } else {
+          callback()
+        }
+      } else {
+        callback()
       }
-    },
-    computed: {
-      formDisabled(){
-        return this.disabled
+    }
+    return {
+      model: {
+        jobType: '',
+        isLoop: '',
+        isToAll: '',
+        jobName: '',
+        jobDescribe: '',
+        type: '',
       },
-    },
-    created () {
-       //备份model原始值
-      this.modelDefault = JSON.parse(JSON.stringify(this.model));
-    },
-    methods: {
-
-      // splitText(){
-      //   if(model.jobType == "入党纪念日提醒"){
-      //     model.isLoop = '0'
-      //     model.isToAll = '0'
-      //     model.jobName = "smart"
-      //   }
-      // },
-
-      add () {
-        this.edit(this.modelDefault);
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 5 },
       },
-      edit (record) {
-        this.model = Object.assign({}, record);
-        this.visible = true;
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 },
       },
-      submitForm () {
-        const that = this;
-        // 触发表单验证
-        this.$refs.form.validate(valid => {
-          if (valid) {
-            that.confirmLoading = true;
-            let httpurl = '';
-            let method = '';
-            if(!this.model.id){
-              httpurl+=this.url.add;
-              method = 'post';
-            }else{
-              httpurl+=this.url.edit;
-               method = 'put';
-            }
-            httpAction(httpurl,this.model,method).then((res)=>{
-              if(res.success){
-                that.$message.success(res.message);
-                that.$emit('ok');
-              }else{
-                that.$message.warning(res.message);
-              }
-            }).finally(() => {
-              that.confirmLoading = false;
-            })
-          }
-         
-        })
+      confirmLoading: false,
+      validatorRules: {
+        jobType: [{ required: true, message: '请输入任务类型!' }],
+        isLoop: [
+          { required: true, message: '请输入是否每日提醒!' },
+          { validator: checkIsLoop, trigger: 'change' },
+        ],
+        executeTimeHour: [{ required: true, message: '请输入执行时间(时）!' }],
+        isToAll: [
+          { required: true, message: '请输入提醒全体人员!' },
+          { validator: checkIsToAll, trigger: 'change' },
+        ],
+        type: [{ required: true, message: '请输入提醒类型!' }],
+        templateName: [{ required: true, message: '请输入模板名!' }],
+        templateContent: [{ required: true, message: '请输入模板内容!' }],
       },
-      popupCallback(value,row){
-         this.model = Object.assign(this.model, row);
+      url: {
+        add: '/smartJob/smartJob/add',
+        edit: '/smartJob/smartJob/edit',
+        queryById: '/smartJob/smartJob/queryById',
       },
     }
-  }
+  },
+  watch: {
+    model: {
+      deep: true,
+      // handler(){
+      // 		if(this.model.jobType == '0'){
+      //       console.log("入党纪念日提醒")
+      //       this.model.isLoop = '0'
+      //       this.model.isToAll = '0'
+      //       this.model.jobName = '入党纪念日提醒任务'
+      //       this.model.jobDescribe = '每日提醒当日入党人员'
+      //       this.model.type = '1'
+      //     }else if(this.model.jobType == '1'){
+      //       console.log("解除处分提醒")
+      //       this.model.isLoop = '0'
+      //       this.model.isToAll = '0'
+      //       this.model.jobName = '解除处分人员提醒'
+      //       this.model.jobDescribe = '每日提醒当日解除处分人员'
+      //       this.model.type = '1'
+      //     }else if(this.model.jobType == '2'){
+      //       console.log("其他")
+      //       // this.form = this.$options.data().form
+      //     }else{
+      //       console.log("婚后报备提醒")
+      //       this.model.isLoop = '0'
+      //       this.model.isToAll = '0'
+      //       this.model.jobName = '婚后报备提醒'
+      //       this.model.jobDescribe = '每日提醒婚礼结束十五日内未婚后报备人员'
+      //       this.model.type = '1'
+      //     }
+      // 	}
+    },
+  },
+  computed: {
+    formDisabled() {
+      return this.disabled
+    },
+  },
+  created() {
+    //备份model原始值
+    this.modelDefault = JSON.parse(JSON.stringify(this.model))
+  },
+  methods: {
+    // splitText(){
+    //   if(model.jobType == "入党纪念日提醒"){
+    //     model.isLoop = '0'
+    //     model.isToAll = '0'
+    //     model.jobName = "smart"
+    //   }
+    // },
+
+    add() {
+      this.edit(this.modelDefault)
+    },
+    edit(record) {
+      this.model = Object.assign({}, record)
+      this.visible = true
+    },
+    submitForm() {
+      const that = this
+      // 触发表单验证
+      console.log('触发表单验证！')
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          that.confirmLoading = true
+          let httpurl = ''
+          let method = ''
+          if (!this.model.id) {
+            httpurl += this.url.add
+            method = 'post'
+          } else {
+            httpurl += this.url.edit
+            method = 'put'
+          }
+          httpAction(httpurl, this.model, method)
+            .then((res) => {
+              if (res.success) {
+                that.$message.success(res.message)
+                that.$emit('ok')
+              } else {
+                that.$message.warning(res.message)
+              }
+            })
+            .finally(() => {
+              that.confirmLoading = false
+            })
+        }
+      })
+    },
+    popupCallback(value, row) {
+      this.model = Object.assign(this.model, row)
+    },
+  },
+}
 </script>
