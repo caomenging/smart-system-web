@@ -119,7 +119,7 @@ export default {
         Date.parse(deadline.replace(/-/g, "/"))
       ).getTime();
       //考试时间至少大于当前时间，并且开始时间小于结束时间
-      if ( startDate > nowDate ) {
+      if ( startDate < nowDate ) {
         //开始时间小于当前时间
         this.$elmessage({
           type:"error",
@@ -171,6 +171,7 @@ export default {
               }
             }).finally(() => {
               that.confirmLoading = false;
+              that.model = {}
             })
           }
         }
@@ -180,6 +181,7 @@ export default {
     close () {
       this.$emit('close');
       this.visible = false;
+      this.model = {}
     },
     handleOk () {
       this.submitForm();

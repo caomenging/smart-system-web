@@ -145,6 +145,7 @@
         rankGradeData:[],
         //列表数据
         anntId: '',
+        windowsDataSource:[],
         peopelDataSource: [],
         superFieldList: [],
         ipagination: {
@@ -406,7 +407,7 @@
         let l = this.queryParam.year.length
         let y = Number(this.queryParam.year.substring(1,l-1))
         console.log(curYear,y)
-        if(y==''||y=="undifine"){
+        if(y==''||y=="undefined"){
           this.$message.warning("请输入年份！")
         }
         else if(curYear < y ||  y< 2000){
@@ -445,7 +446,7 @@
       },
       searchWindows(){
         let e = this.queryParam.windowsName
-        if(e==''||e=="undifine"){
+        if(e==''||e=="undefined"){
           this.$message.warning("请输入窗口服务大厅名称！")
         }else{
           this.loadPeopleData()
@@ -595,9 +596,9 @@
         if (arg === 1) {
           this.ipagination.current = 1
         }
-        var params = this.getQueryParams() //查询条件
+        //var params = this.getQueryParams() //查询条件
         this.loading = true
-        getAction(this.url.windowsList,params)
+        getAction(this.url.windowsList)
           .then((res) => {
             if (res.success) {
               this.windowsDataSource = res.result.records || res.result

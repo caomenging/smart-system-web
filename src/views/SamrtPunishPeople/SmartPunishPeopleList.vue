@@ -325,9 +325,9 @@
     },
     created() {
     this.getSuperFieldList();
-      setTimeout(() => {
+      /*setTimeout(() => {
         this.loading = !this.loading
-      }, 1000);
+      }, 1000);*/
       this.getTotal();
 
     },

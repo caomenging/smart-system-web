@@ -5,8 +5,16 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="调查问卷名称">
+<!--            <a-form-item label="调查问卷名称">
               <a-input placeholder="请输入调查问卷名称" v-model="queryParam.examName"></a-input>
+            </a-form-item>-->
+            <a-form-item label="考试名称">
+              <j-search-select-tag
+                placeholder="请选择考试"
+                v-model="queryParam.id"
+                dict="smart_exam_information,exam_name,id,paper_type = '2'"
+                :async="true">
+              </j-search-select-tag>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -122,6 +130,10 @@
     },
     data () {
       return {
+        queryParam:{
+          id:'',
+          paperType:'2'
+        },
         description: '考试信息表管理页面',
         // 表头
         columns: [
