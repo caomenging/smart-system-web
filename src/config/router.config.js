@@ -535,6 +535,10 @@ export const constantRouterMap = [
     path: '/webview/study',
     component: () => import('@/views/courcopy/learning/wxIndex')
   },
+  {
+    path: '/webview/study/statistics',
+    component: () => import('@/views/SmartPaper/SmartExamAppList')
+  },
   // 课程列表
   {
     path: '/webview/class/list/:id',
