@@ -6,7 +6,7 @@
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="被谈话人单位">
-              <j-select-depart placeholder="请输入被谈话人单位" v-model="queryParam.intervieweeDept" customReturnField='departName'></j-select-depart>
+              <j-select-depart placeholder="请输入被谈话人单位" v-model="queryParam.intervieweeDept" customReturnField='orgCode'></j-select-depart>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -17,7 +17,7 @@
           <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="谈话人单位">
-                <j-select-depart placeholder="请输入谈话人单位" v-model="queryParam.talkerDept" customReturnField='departName'></j-select-depart>
+                <j-select-depart placeholder="请输入谈话人单位" v-model="queryParam.talkerDept" customReturnField='orgCode'></j-select-depart>
               </a-form-item>
             </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -155,7 +155,7 @@
           {
             title:'被谈话人单位',
             align:"center",
-            dataIndex: 'intervieweeDept',
+            dataIndex:'intervieweeDept_dictText',
             sorter: true
           },
           {
@@ -167,7 +167,7 @@
           {
             title:'谈话人单位',
             align:"center",
-            dataIndex: 'talkerDept',
+            dataIndex: 'talkerDept_dictText',
             sorter: true
           },
           {
@@ -236,23 +236,23 @@
         fieldList.push({type:'string',value:'caseName',text:'案件标题',dictCode:''})
         fieldList.push({type:'string',value:'caseSource',text:'案件（线索来源）',dictCode:''})
         fieldList.push({type:'string',value:'intervieweeId',text:'被谈话人',dictCode:''})
-        fieldList.push({type:'string',value:'intervieweeDept',text:'被谈话人单位',dictCode:''})
+        fieldList.push({type:'string',value:'intervieweeDept',text:'被谈话人单位',dictCode:'sys_depart,depart_name,org_code'})
         fieldList.push({type:'string',value:'intervieweeName',text:'被谈话人姓名',dictCode:''})
         fieldList.push({type:'string',value:'intervieweeSex',text:'被谈话人性别',dictCode:''})
-        fieldList.push({type:'string',value:'intervieweeEthnicity',text:'被谈话人民族',dictCode:''})
-        fieldList.push({type:'string',value:'intervieweePolsta',text:'被谈话人政治面貌',dictCode:''})
+        fieldList.push({type:'string',value:'intervieweeEthnicity',text:'被谈话人民族',dictCode:'ethnicity'})
+        fieldList.push({type:'string',value:'intervieweePolsta',text:'被谈话人政治面貌',dictCode:'political_status'})
         fieldList.push({type:'string',value:'intervieweeJpt',text:'被谈话人入党时间',dictCode:''})
-        fieldList.push({type:'string',value:'intervieweePost',text:'被谈话人职务',dictCode:''})
-        fieldList.push({type:'string',value:'intervieweePostrank',text:'被谈话人职级',dictCode:''})
+        fieldList.push({type:'string',value:'intervieweePost',text:'被谈话人职务',dictCode:'sys_position,name,code'})
+        fieldList.push({type:'string',value:'intervieweePostrank',text:'被谈话人职级',dictCode:'position_rank'})
         fieldList.push({type:'string',value:'principal',text:'是否党政正职',dictCode:'yn'})
         fieldList.push({type:'string',value:'country',text:'是否国家检查队形',dictCode:'yn'})
         fieldList.push({type:'string',value:'authority',text:'干部管理权限',dictCode:''})
         fieldList.push({type:'string',value:'supervision',text:'是否是纪检监察干部',dictCode:'yn'})
         fieldList.push({type:'string',value:'talkerId',text:'谈话人',dictCode:''})
-        fieldList.push({type:'string',value:'talkerDept',text:'谈话人单位',dictCode:''})
+        fieldList.push({type:'string',value:'talkerDept',text:'谈话人单位',dictCode:'sys_depart,depart_name,org_code'})
         fieldList.push({type:'string',value:'talkerName',text:'谈话人姓名',dictCode:''})
-        fieldList.push({type:'string',value:'talkerPost',text:'谈话人职务',dictCode:''})
-        fieldList.push({type:'string',value:'talkerPostrank',text:'谈话人职级',dictCode:''})
+        fieldList.push({type:'string',value:'talkerPost',text:'谈话人职务',dictCode:'sys_position,name,code'})
+        fieldList.push({type:'string',value:'talkerPostrank',text:'谈话人职级',dictCode:'position_rank'})
         fieldList.push({type:'string',value:'caseAbs',text:'简要案情',dictCode:''})
         fieldList.push({type:'sel_depart',value:'handlerDepart',text:'办理部门'})
         fieldList.push({type:'string',value:'verifyStatus',text:'审理状态'})

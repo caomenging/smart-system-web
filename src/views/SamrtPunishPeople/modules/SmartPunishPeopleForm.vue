@@ -16,14 +16,16 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="单位" prop="departName" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-model="model.departName" placeholder="单位"  readOnly unselectable="on"></a-input>
+            <a-form-model-item label="单位" prop="departCode" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <j-search-select-tag v-model="model.departCode" placeholder="单位"
+                dict="sys_depart,depart_name,org_code"  disabled="true" readOnly unselectable="on">
+              </j-search-select-tag>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="职务"  prop="position" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-model="model.position" placeholder="职务"  readOnly
-                       unselectable="on"></a-input>
+              <j-dict-select-tag v-model="model.position" placeholder="职务"  dictCode="sys_position,name,code"
+                                 disabled="true"></j-dict-select-tag>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -88,7 +90,7 @@
         model:{
           punishNo: '',
           punishName: '',
-          departName: '',
+          departCode: '',
           position: '',
           positionRank: '',
           phone: '',
@@ -165,9 +167,9 @@
         //console.log(this.model)
         this.model.punishId = back[0].id
         this.model.punishName = back[0].realname
-        this.model.departName = back[0].orgCodeTxt
+        this.model.departCode = back[0].orgCode
         this.model.phone = back[0].phone
-        this.model.position = back[0].post_dictText
+        this.model.position = back[0].post
         this.model.positionRank = back[0].positionRank
       }
     }

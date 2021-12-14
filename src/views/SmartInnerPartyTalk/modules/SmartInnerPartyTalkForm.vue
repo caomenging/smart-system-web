@@ -61,7 +61,7 @@
             </a-col>
           <a-col :span="24" >
             <a-form-model-item label="会议摘要" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="abs">
-              <j-editor v-model="model.abs" />
+              <a-textarea v-model="model.abs" rows="4" placeholder="请输入会议摘要" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
