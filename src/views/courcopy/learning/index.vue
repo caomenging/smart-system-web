@@ -7,9 +7,10 @@
       <a-col v-for='item in list' :key='item.id' :xs='24' :sm='24' :md='12' :lg='6' :xl='4'
              style='margin-top: 20px'>
         <a-card>
+          <!-- 2021-12-12 修改url @Author CabbSir -->
           <el-image slot='cover'
                     alt='example'
-                    :src='"http://localhost:8080/smart-system/sys/common/static/"+item.cover'
+                    :src='"/smart-system/sys/common/static/"+item.cover'
                     @click='startLearn(item.id)'
                     style='cursor: pointer;'
                     :alt='item.title'

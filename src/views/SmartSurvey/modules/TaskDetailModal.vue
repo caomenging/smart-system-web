@@ -22,7 +22,7 @@ export default {
   components: { TaskDetailList },
   data() {
     return {
-      title: '详情',
+      title: '调查详情',
       width: 800,
       visible: false,
       disableSubmit: false,

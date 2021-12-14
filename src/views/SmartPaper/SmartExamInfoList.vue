@@ -5,9 +5,18 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="考试名称">
+<!--            <a-form-item label="考试名称">
               <j-input placeholder="请输入考试名称" v-model="queryParam.examName"></j-input>
+            </a-form-item>-->
+            <a-form-item label="考试名称">
+              <j-search-select-tag
+                placeholder="请选择考试"
+                v-model="queryParam.id"
+                dict="smart_exam_information,exam_name,id,paper_type = '1'"
+                :async="true">
+              </j-search-select-tag>
             </a-form-item>
+
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
@@ -124,9 +133,6 @@
   import TaskDetailModal from './modules/TaskDetailModal.vue'
 
   export default {
-    queryParam:{
-      examName:''
-    },
     name: 'SmartExamInformationList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
@@ -134,6 +140,10 @@
     },
     data () {
       return {
+        queryParam:{
+          id:'',
+          paperType:'1'
+        },
         description: '考试信息表管理页面',
         // 表头
         columns: [
@@ -248,6 +258,7 @@
         fieldList.push({type:'string',value:'examName',text:'考试名称',dictCode:''})
         fieldList.push({type:'datetime',value:'examStarttime',text:'考试开始时间'})
         fieldList.push({type:'datetime',value:'examEndtime',text:'考试结束时间'})
+        fieldList.push({type:'string',value:'paperType',text:''})
         this.superFieldList = fieldList
       }
 

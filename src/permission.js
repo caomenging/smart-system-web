@@ -26,6 +26,8 @@ const appWhiteList = [
   '/webview/calendar', // 日历
   '/webview/sun', // 阳光评廉
   '/webview/success', // 评价成功
+  '/webview/player', // 视频播放页面
+  '/webview/class/list/:id', // 课程列表页面
 ]
 whiteList.push(OAUTH2_LOGIN_PAGE_PATH)
 

@@ -85,7 +85,7 @@ module.exports = {
 
   devServer: {
     port: 3000,
-    sockHost: '47.99.39.59',
+    sockHost: '101.43.100.98',
     proxy: {
      /* '/api': {
         target: 'https://mock.ihx.me/mock/5baf3052f7da7e07e04a5116/antd-pro', //mock API接口系统
