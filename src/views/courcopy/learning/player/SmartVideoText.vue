@@ -33,6 +33,7 @@ require('video.js/dist/video-js.css');
 require('vue-video-player/src/custom-theme.css');
 import 'videojs-flash'
 import 'videojs-contrib-hls'
+import videotext from '../../api/edu/SmartVideoText'
 import progress from "ant-design-vue/lib/progress/progress"
 
 
@@ -45,7 +46,8 @@ export default {
   data() {
     return {
       playerOptions: {
-        playbackRates: [0.7, 1.0, 1.5, 2.0], //播放速度
+        startTime:'15',
+        playbackRates: [0.7, 1.0], //播放速度
         autoplay: false, //如果true,浏览器准备好时开始回放。
         muted: false, // 默认情况下将会消除任何音频。
         loop: true, // 导致视频一结束就重新开始。

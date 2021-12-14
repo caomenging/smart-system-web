@@ -29,15 +29,20 @@
       <!-- 课程封面 TODO -->
       <!-- 课程封面-->
       <el-form-item label="专题封面">
-        <el-upload
-          class="avatar-uploader"
-          :action="BASE_API+'/eduoss/fileoss/upload'"
-          :show-file-list="false"
-          :on-success="handleAvatarSuccess"
-          :before-upload="beforeAvatarUpload">
-          <img v-if="courseInfo.cover" :src="courseInfo.cover" class="avatar1">
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
+<!--        <el-upload-->
+<!--          class="avatar-uploader"-->
+<!--          :action="BASE_API+'/eduoss/fileoss/upload'"-->
+<!--          :show-file-list="false"-->
+<!--          :on-success="handleAvatarSuccess"-->
+<!--          :before-upload="beforeAvatarUpload">-->
+<!--          <img v-if="courseInfo.cover" :src='"http://localhost:8080/smart-system/sys/common/static/" + courseInfo.cover' class="avatar1">-->
+<!--          <i v-else class="el-icon-plus avatar-uploader-icon"></i>-->
+<!--        </el-upload>-->
+        <a-col :span="40">
+          <a-form-model-item  :labelCol="labelCol" :wrapperCol="wrapperCol" prop="cover">
+            <j-image-upload isMultiple  v-model="courseInfo.cover" ></j-image-upload>
+          </a-form-model-item>
+        </a-col>
       </el-form-item>
 
 
@@ -122,7 +127,6 @@ export default {
     getInfo() {
       cour.getCourseInfoId(this.courseId)
         .then(response => {
-
           console.log(response)
           this.courseInfo = response.result
         })
@@ -135,7 +139,7 @@ export default {
         this.$message.success("添加课程成功")
         //跳转到第二步
         this.$router.push({
-          path: `/courcopy/chapter/?id=${response.data.courseId}`,
+          path: `/courcopy/chapter/`+this.courseInfo,
         })
         // Networking.doPost("/courcopy/chapter/")
         // this.$router.push({ name: 'chapter', query:{id: response.data.courseId} })
@@ -151,7 +155,7 @@ export default {
           });
           //跳转到第二步
           this.$router.push({
-            path: `/courcopy/chapter/?id=${response.data.courseId}`,
+            path: '/courcopy/chapter/' + this.courseId,
           })
 
         })
