@@ -111,21 +111,13 @@ export default {
 
     //删除通知的方法
     removeDataById(id) {
-      console.log(id)
+      //     console.log(id)
       this.$confirm({
         title: "删除主题",
         content: "此操作将永久删除该记录, 是否继续?",
         onOk() {
           course.deleteCourse(id).then(() => {
-            // this.loadData()
-            this.getList()
             this.$message.success("ok")
-            this.getList()
-            // // 删除单条
-            // const [tableData, setTableData] = useState([]);
-            // const renderShowConfirm = (id) => {
-            //   setTableData((state) => state.filter((item) => item.id !== id));
-            // }
           }).catch((response) => { // 失败
             if (response === 'cancel') {
               this.$message.success({
@@ -141,7 +133,6 @@ export default {
           })
         },
         oncancel() {
-          this.getList()
         }
       })
       this.getList()
@@ -171,3 +162,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.el-button+.el-button {
+  margin-left: 0 !important;
+}
+</style>

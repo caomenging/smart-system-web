@@ -110,16 +110,17 @@
             align:"left",
             dataIndex: 'logContent',
             scopedSlots: { customRender: 'logContent' },
+            ellipsis:true,
             sorter: true
           },
+          // {
+          //   title: '操作人ID',
+          //   dataIndex: 'userid',
+          //   align:"center",
+          //   sorter: true
+          // },
           {
-            title: '操作人ID',
-            dataIndex: 'userid',
-            align:"center",
-            sorter: true
-          },
-          {
-            title: '操作人名称',
+            title: '操作人姓名',
             dataIndex: 'username',
             align:"center",
             sorter: true
@@ -130,11 +131,28 @@
             align:"center",
             sorter: true
           },
+          // {
+          //   title: '耗时(毫秒)',
+          //   dataIndex: 'costTime',
+          //   align:"center",
+          //   sorter: true
+          // },
           {
-            title: '耗时(毫秒)',
-            dataIndex: 'costTime',
-            align:"center",
-            sorter: true
+            title: '导出文件',
+            dataIndex: 'exportFile',
+            align: 'center',
+            sorter: false,
+            ellipsis: true,
+            scopedSlots: { customRender: 'exportFile' },
+            customRender: (text) => {
+              if(text){
+                const url = window._CONFIG['staticDomainURL'] + '/' + text
+                return <a href={url}>{text.split('/')[1]}</a>
+              } else {
+                return ''
+              }
+              
+            }
           },
           {
             title: '日志类型',

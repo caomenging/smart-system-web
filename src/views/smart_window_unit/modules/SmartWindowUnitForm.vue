@@ -15,12 +15,17 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="负责人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="principal">
-              <j-select-user-by-dep v-model="model.principal" />
+              <select-user-by-dep v-model="model.principal" @info = "getHostUser"/>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="负责人姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="principalName" v-show="false">
+              <a-input v-model="model.principalName" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="联系电话" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="phone">
-              <a-input v-model="model.phone" placeholder="请输入联系电话"  ></a-input>
+              <a-input v-model="model.phone" placeholder="请输入联系电话" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -38,10 +43,12 @@
 
   import { httpAction, getAction } from '@/api/manage'
   import { validateDuplicateValue } from '@/utils/util'
+  import SelectUserByDep from "../../../components/jeecgbiz/modal/SelectUserByDep";
 
   export default {
     name: 'SmartWindowUnitForm',
     components: {
+      SelectUserByDep
     },
     props: {
       //表单禁用
@@ -54,6 +61,8 @@
     data () {
       return {
         model:{
+          principalName:'',
+          phone:'',
          },
         labelCol: {
           xs: { span: 24 },
@@ -96,6 +105,14 @@
       this.modelDefault = JSON.parse(JSON.stringify(this.model));
     },
     methods: {
+      getHostUser(back){
+        let that = this
+        console.log(back)
+        that.model.principal = back[0].id
+        that.model.principalName = back[0].realname
+        that.model.phone = back[0].phone
+      },
+
       add () {
         this.edit(this.modelDefault);
       },
@@ -135,3 +152,4 @@
     }
   }
 </script>
+

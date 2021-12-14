@@ -15,7 +15,12 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="窗口人员" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="personId">
-              <j-select-user-by-dep v-model="model.personId" />
+              <select-user-by-dep v-model="model.personId" @info = "getHostUser"/>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="窗口人员姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="personName" v-show="false">
+              <a-input v-model="model.personName" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -38,10 +43,12 @@
 
   import { httpAction, getAction } from '@/api/manage'
   import { validateDuplicateValue } from '@/utils/util'
+  import SelectUserByDep from "../../../components/jeecgbiz/modal/SelectUserByDep";
 
   export default {
     name: 'SmartWindowPeopleForm',
     components: {
+      SelectUserByDep
     },
     props: {
       //表单禁用
@@ -54,6 +61,8 @@
     data () {
       return {
         model:{
+          personName:'',
+          phone:'',
          },
         labelCol: {
           xs: { span: 24 },
@@ -97,6 +106,14 @@
       this.modelDefault = JSON.parse(JSON.stringify(this.model));
     },
     methods: {
+      getHostUser(back){
+        let that = this
+        console.log(back)
+        that.model.personId = back[0].id
+        that.model.personName = back[0].realname
+        that.model.phone = back[0].phone
+      },
+
       add () {
         this.edit(this.modelDefault);
       },
