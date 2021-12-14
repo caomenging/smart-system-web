@@ -70,7 +70,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleExam(record)">开始调查</a>
+          <a @click="handleExam(record)" :class="isDisabled(record)">开始调查</a>
         </span>
 
       </a-table>
@@ -134,11 +134,11 @@
           }
         ],
         url: {
-          list: "/SmartPaper/smartMyExam/myList",
-          delete: "/SmartPaper/smartMyExam/delete",
-          deleteBatch: "/SmartPaper/smartMyExam/deleteBatch",
-          exportXlsUrl: "/SmartPaper/smartMyExam/exportXls",
-          importExcelUrl: "SmartPaper/smartMyExam/importExcel",
+          list: "/SmartPaper/smartMySurvey/myList",
+          delete: "/SmartPaper/smartMySurvey/delete",
+          deleteBatch: "/SmartPaper/smartMySurvey/deleteBatch",
+          exportXlsUrl: "/SmartPaper/smartMySurvey/exportXls",
+          importExcelUrl: "SmartPaper/smartMySurvey/importExcel",
 
         },
         dictOptions:{},
@@ -155,7 +155,7 @@
     },
     methods: {
       isDisabled(record){
-        //判断调查问卷是否已经结束
+        //判断问卷是否已经结束
         let nowDate = new Date().getTime();
         let startTime = record.examStarttime;
         let deadline = record.examEndtime;
@@ -167,8 +167,8 @@
           Date.parse(deadline.replace(/-/g, "/"))
         ).getTime();
         if (nowDate < deadlineDate && startDate < nowDate) {
-          //激活开始调查
-          console.log('激活开始调查');
+          //激活开始考试
+          console.log('激活开始考试');
         } else {
           return "disabled";
         }
@@ -204,3 +204,12 @@
     }
   }
 </script>
+<style scoped>
+@import '~@assets/less/common.less';
+.disabled {
+  pointer-events: none;
+  filter: alpha(opacity=50); /*IE滤镜，透明度50%*/
+  -moz-opacity: 0.5; /*Firefox私有，透明度50%*/
+  opacity: 0.5; /*其他，透明度50%*/
+}
+</style>

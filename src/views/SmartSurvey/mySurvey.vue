@@ -289,7 +289,7 @@
 
         };
         console.log(request);
-        postAction('/SmartPaper/smartExam/submitTestSurvey' ,request).then(res =>{
+        postAction('/SmartPaper/smartSubmit/submitTestSurvey' ,request).then(res =>{
           if (res.success) {
             console.log(res.result);
             grade = res.result;
