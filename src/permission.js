@@ -4,7 +4,13 @@ import store from './store'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import notification from 'ant-design-vue/es/notification'
-import { ACCESS_TOKEN,INDEX_MAIN_PAGE_PATH, OAUTH2_LOGIN_PAGE_PATH } from '@/store/mutation-types'
+import {
+  ACCESS_TOKEN,
+  CHANGE_PASSWORD, CHANGE_PHONE,
+  INDEX_MAIN_PAGE_PATH,
+  OAUTH2_LOGIN_PAGE_PATH,
+  VERIFY_PHONE
+} from '@/store/mutation-types'
 import { generateIndexRouter, isOAuth2AppEnv } from '@/utils/util'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
@@ -51,6 +57,13 @@ router.beforeEach((to, from, next) => {
   }
 
   if (Vue.ls.get(ACCESS_TOKEN)) {
+    // if (Vue.ls.get(VERIFY_PHONE) || Vue.ls.get(CHANGE_PASSWORD) || Vue.ls.get(CHANGE_PHONE)) {
+    //   if (to.path === '/user/verify') {
+    //     next()
+    //   } else {
+    //     next({path: '/user/verify'})
+    //   }
+    // }
     /* has token */
     if (to.path === '/user/login' || to.path === OAUTH2_LOGIN_PAGE_PATH) {
       next({ path: INDEX_MAIN_PAGE_PATH })
