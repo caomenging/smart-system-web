@@ -1,7 +1,17 @@
 import Vue from 'vue'
-import { login, logout, phoneLogin, thirdLogin } from "@/api/login"
-import { ACCESS_TOKEN, USER_NAME,USER_INFO,USER_AUTH,SYS_BUTTON_AUTH,UI_CACHE_DB_DICT_DATA,TENANT_ID,CACHE_INCLUDED_ROUTES } from "@/store/mutation-types"
-import { welcome } from "@/utils/util"
+import { login, logout, phoneLogin, thirdLogin } from '@/api/login'
+import {
+  ACCESS_TOKEN,
+  USER_NAME,
+  USER_INFO,
+  USER_AUTH,
+  SYS_BUTTON_AUTH,
+  UI_CACHE_DB_DICT_DATA,
+  TENANT_ID,
+  CACHE_INCLUDED_ROUTES,
+  CHANGE_PASSWORD, CHANGE_PHONE, VERIFY_PHONE
+} from '@/store/mutation-types'
+import { welcome } from '@/utils/util'
 import { queryPermissionsByUser } from '@/api/api'
 import { getAction } from '@/api/manage'
 
@@ -10,15 +20,15 @@ const user = {
     token: '',
     username: '',
     realname: '',
-    tenantid:'',
+    tenantid: '',
     welcome: '',
     avatar: '',
     departid: '',
-    role:[],
+    role: [],
     permissionList: [],
     info: {},
     // 系统安全模式
-    sysSafeMode: null,
+    sysSafeMode: null
   },
 
   mutations: {
@@ -54,16 +64,16 @@ const user = {
       } else {
         state.sysSafeMode = false
       }
-    },
+    }
   },
 
   actions: {
     // CAS验证登录
     ValidateLogin({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
-        getAction("/sys/cas/client/validateLogin",userInfo).then(response => {
-          console.log("----cas 登录--------",response);
-          if(response.success){
+        getAction('/sys/cas/client/validateLogin', userInfo).then(response => {
+          console.log('----cas 登录--------', response)
+          if (response.success) {
             const result = response.result
             const userInfo = result.userInfo
             Vue.ls.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)
@@ -71,12 +81,12 @@ const user = {
             Vue.ls.set(USER_INFO, userInfo, 7 * 24 * 60 * 60 * 1000)
             commit('SET_TOKEN', result.token)
             commit('SET_INFO', userInfo)
-            commit('SET_NAME', { username: userInfo.username,realname: userInfo.realname, welcome: welcome() })
+            commit('SET_NAME', { username: userInfo.username, realname: userInfo.realname, welcome: welcome() })
             commit('SET_AVATAR', userInfo.avatar)
             commit('SET_ROLE', userInfo.roleId)
             commit('SET_DEPART', userInfo.departId)
             resolve(response)
-          }else{
+          } else {
             resolve(response)
           }
         }).catch(error => {
@@ -88,21 +98,27 @@ const user = {
     Login({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
-          if(response.code =='200'){
+          if (response.code == '200') {
             const result = response.result
             const userInfo = result.userInfo
             Vue.ls.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)
             Vue.ls.set(USER_NAME, userInfo.username, 7 * 24 * 60 * 60 * 1000)
             Vue.ls.set(USER_INFO, userInfo, 7 * 24 * 60 * 60 * 1000)
             Vue.ls.set(UI_CACHE_DB_DICT_DATA, result.sysAllDictItems, 7 * 24 * 60 * 60 * 1000)
+            if (result.verifyPhone) {
+              Vue.ls.set(VERIFY_PHONE, result.verifyPhone)
+            }
+            if (result.firstLogin) {
+              Vue.ls.set(CHANGE_PASSWORD, result.firstLogin)
+            }
             commit('SET_TOKEN', result.token)
             commit('SET_INFO', userInfo)
-            commit('SET_NAME', { username: userInfo.username,realname: userInfo.realname, welcome: welcome() })
+            commit('SET_NAME', { username: userInfo.username, realname: userInfo.realname, welcome: welcome() })
             commit('SET_AVATAR', userInfo.avatar)
             commit('SET_ROLE', userInfo.roleId)
             commit('SET_DEPART', userInfo.departId)
             resolve(response)
-          }else{
+          } else {
             reject(response)
           }
         }).catch(error => {
@@ -113,39 +129,45 @@ const user = {
     //手机号登录
     PhoneLogin({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
-          phoneLogin(userInfo).then(response => {
-          if(response.code =='200'){
-        const result = response.result
-        const userInfo = result.userInfo
-        Vue.ls.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)
-        Vue.ls.set(USER_NAME, userInfo.username, 7 * 24 * 60 * 60 * 1000)
-        Vue.ls.set(USER_INFO, userInfo, 7 * 24 * 60 * 60 * 1000)
-        Vue.ls.set(UI_CACHE_DB_DICT_DATA, result.sysAllDictItems, 7 * 24 * 60 * 60 * 1000)
-        commit('SET_TOKEN', result.token)
-        commit('SET_INFO', userInfo)
-        commit('SET_NAME', { username: userInfo.username,realname: userInfo.realname, welcome: welcome() })
-        commit('SET_AVATAR', userInfo.avatar)
+        phoneLogin(userInfo).then(response => {
+          if (response.code == '200') {
+            const result = response.result
+            const userInfo = result.userInfo
+            Vue.ls.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)
+            Vue.ls.set(USER_NAME, userInfo.username, 7 * 24 * 60 * 60 * 1000)
+            Vue.ls.set(USER_INFO, userInfo, 7 * 24 * 60 * 60 * 1000)
+            Vue.ls.set(UI_CACHE_DB_DICT_DATA, result.sysAllDictItems, 7 * 24 * 60 * 60 * 1000)
+            if (result.verifyPhone) {
+              Vue.ls.set(VERIFY_PHONE, result.verifyPhone)
+            }
+            if (result.firstLogin) {
+              Vue.ls.set(CHANGE_PASSWORD, result.firstLogin)
+            }
+            commit('SET_TOKEN', result.token)
+            commit('SET_INFO', userInfo)
+            commit('SET_NAME', { username: userInfo.username, realname: userInfo.realname, welcome: welcome() })
+            commit('SET_AVATAR', userInfo.avatar)
             commit('SET_ROLE', userInfo.roleId)
             commit('SET_DEPART', userInfo.departId)
-        resolve(response)
-      }else{
-        reject(response)
-      }
-    }).catch(error => {
-        reject(error)
+            resolve(response)
+          } else {
+            reject(response)
+          }
+        }).catch(error => {
+          reject(error)
+        })
       })
-    })
     },
     // 获取用户信息
     GetPermissionList({ commit }) {
       return new Promise((resolve, reject) => {
         queryPermissionsByUser().then(response => {
-          const menuData = response.result.menu;
-          const authData = response.result.auth;
-          const allAuthData = response.result.allAuth;
+          const menuData = response.result.menu
+          const authData = response.result.auth
+          const allAuthData = response.result.allAuth
           //Vue.ls.set(USER_AUTH,authData);
-          sessionStorage.setItem(USER_AUTH,JSON.stringify(authData));
-          sessionStorage.setItem(SYS_BUTTON_AUTH,JSON.stringify(allAuthData));
+          sessionStorage.setItem(USER_AUTH, JSON.stringify(authData))
+          sessionStorage.setItem(SYS_BUTTON_AUTH, JSON.stringify(allAuthData))
           if (menuData && menuData.length > 0) {
             // //update--begin--autor:qinfeng-----date:20200109------for：JEECG-63 一级菜单的子菜单全部是隐藏路由，则一级菜单不显示------
             // menuData.forEach((item, index) => {
@@ -176,9 +198,12 @@ const user = {
     // 登出
     Logout({ commit, state }) {
       return new Promise((resolve) => {
-        let logoutToken = state.token;
+        let logoutToken = state.token
         commit('SET_TOKEN', '')
         commit('SET_PERMISSIONLIST', [])
+        Vue.ls.remove(CHANGE_PHONE)
+        Vue.ls.remove(VERIFY_PHONE)
+        Vue.ls.remove(CHANGE_PASSWORD)
         Vue.ls.remove(ACCESS_TOKEN)
         Vue.ls.remove(USER_INFO)
         Vue.ls.remove(USER_NAME)
@@ -201,8 +226,8 @@ const user = {
     // 第三方登录
     ThirdLogin({ commit }, param) {
       return new Promise((resolve, reject) => {
-        thirdLogin(param.token,param.thirdType).then(response => {
-          if(response.code =='200'){
+        thirdLogin(param.token, param.thirdType).then(response => {
+          if (response.code == '200') {
             const result = response.result
             const userInfo = result.userInfo
             Vue.ls.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)
@@ -210,12 +235,12 @@ const user = {
             Vue.ls.set(USER_INFO, userInfo, 7 * 24 * 60 * 60 * 1000)
             commit('SET_TOKEN', result.token)
             commit('SET_INFO', userInfo)
-            commit('SET_NAME', { username: userInfo.username,realname: userInfo.realname, welcome: welcome() })
+            commit('SET_NAME', { username: userInfo.username, realname: userInfo.realname, welcome: welcome() })
             commit('SET_AVATAR', userInfo.avatar)
             commit('SET_ROLE', userInfo.roleId)
             commit('SET_DEPART', userInfo.departId)
             resolve(response)
-          }else{
+          } else {
             reject(response)
           }
         }).catch(error => {
@@ -223,7 +248,7 @@ const user = {
         })
       })
     },
-    saveTenant({ commit }, id){
+    saveTenant({ commit }, id) {
       Vue.ls.set(TENANT_ID, id, 7 * 24 * 60 * 60 * 1000)
       commit('SET_TENANT', id)
     }
