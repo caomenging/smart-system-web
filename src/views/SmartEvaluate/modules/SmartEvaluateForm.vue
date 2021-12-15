@@ -80,8 +80,7 @@
       <a-form-item
         label="评价时间"
         :labelCol="{lg: {span: 7}, sm: {span: 7}}"
-        :wrapperCol="{lg: {span: 10}, sm: {span: 17} }"
-
+        :wrapperCol="{lg: {span: 10}, sm: {span: 17} }" v-show="false"
       >
         <a-input placeholder="选择日期"  style="width: 100%"
                  v-decorator="['evaluateTime']"/>
@@ -108,6 +107,7 @@
       >
         <a-button htmlType="submit" type="primary" >提交</a-button>
         <a-button style="margin-left: 8px" href	='../../QRCode/QRcode'>取消</a-button>
+        <a-button type="primary" href="../../InsertReportingInformation/InsertReportingInformationDetail">去举报</a-button>
       </a-form-item>
     </a-form>
   </a-card>
