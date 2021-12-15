@@ -5,14 +5,22 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="试卷名称">
+<!--            <a-form-item label="试卷名称">
               <j-input placeholder="请输入试卷名称" v-model="queryParam.paperName"></j-input>
+            </a-form-item>-->
+            <a-form-item label="试卷名称">
+              <j-search-select-tag
+                placeholder="请选择试卷名称"
+                v-model="queryParam.id"
+                dict="smart_paper,paper_name,id,paper_type = '1'"
+                :async="true">
+              </j-search-select-tag>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
             </span>
           </a-col>
         </a-row>
@@ -77,7 +85,7 @@
           <!--<a @click="handleEdit(record)">编辑</a>-->
           <a @click="handleIssueExam(record)" :class="isDisabled(record)" >发布考试</a>
           <a-divider type="vertical" />
-          <a @click="editTestPaper(record.id)"  :class="isDisabled(record)">编辑</a>
+          <a @click="editTestPaper(record.id)"  :class="isDisabled(record)">修改试卷</a>
           <a-divider type="vertical" />
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
@@ -123,13 +131,14 @@
     data () {
       return {
         queryParam:{
+          id:'',
           paperType:'1'
         },
         description: '试卷表管理页面',
         // 表头
         columns: [
           {
-            title: '#',
+            title: '序号',
             dataIndex: '',
             key:'rowIndex',
             width:60,
@@ -286,6 +295,10 @@
         this.$refs.releaseTestDialog.releaseTest(paperId)
       },
       initDictConfig(){
+      },
+      searchReset(){
+        this.queryParam = { paperType:'1'}
+        this.searchQuery();
       },
       getSuperFieldList(){
         let fieldList=[];

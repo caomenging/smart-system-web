@@ -336,7 +336,7 @@
             {
               title: '活动创建时间',
               key: 'createTime',
-              type: FormTypes.input,
+              type: FormTypes.datetime,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',

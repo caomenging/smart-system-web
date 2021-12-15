@@ -119,6 +119,7 @@
       <a-table
         ref="table"
         bordered
+        :scroll="{x:true}"
         size="middle"
         rowKey="id"
         :columns="columns"

@@ -131,12 +131,12 @@
           {
             title:'负责人',
             align:"center",
-            dataIndex: 'principal_dictText'
+            dataIndex: 'principal'
           },
           {
             title:'窗口人员',
             align:"center",
-            dataIndex: 'personId_dictText'
+            dataIndex: 'personName'
           },
           {
             title:'联系方式',
@@ -188,6 +188,7 @@
         fieldList.push({type:'sel_user',value:'personId',text:'窗口人员'})
         fieldList.push({type:'string',value:'phone',text:'联系方式',dictCode:''})
         fieldList.push({type:'string',value:'qrcode',text:'二维码',dictCode:''})
+        fieldList.push({type:'string',value:'personName',text:'窗口人员姓名'})
         this.superFieldList = fieldList
       }
     }

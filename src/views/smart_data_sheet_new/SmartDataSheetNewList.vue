@@ -69,7 +69,7 @@
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
           <img v-else :src="getImgView(text)" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
         </template>
-        <template slot="fileSlot" slot-scope="text">
+        <template slot="fileSlot" slot-scope="text, record">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
           <a-button
             v-else
@@ -77,7 +77,7 @@
             type="primary"
             icon="download"
             size="small"
-            @click="downloadFile(text)">
+            @click="handleDownloadFile(text, record)">
             下载
           </a-button>
         </template>
@@ -115,6 +115,7 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SmartDataSheetNewModal from './modules/SmartDataSheetNewModal'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
+  import {putAction} from "../../api/manage";
 
   export default {
     name: 'SmartDataSheetNewList',
@@ -188,6 +189,7 @@
             scopedSlots: { customRender: 'action' }
           }
         ],
+        rootUrl: '/smart_data_sheet_new/smartDataSheetNew',
         url: {
           list: "/smart_data_sheet_new/smartDataSheetNew/list",
           delete: "/smart_data_sheet_new/smartDataSheetNew/delete",
@@ -222,6 +224,16 @@
         fieldList.push({type:'string',value:'file',text:'上传文件',dictCode:''})
         fieldList.push({type:'int',value:'times',text:'下载次数',dictCode:''})
         this.superFieldList = fieldList
+      },
+      handleDownloadFile(text, record) {
+        this.downloadFile(text)
+        const rootUrl = this.rootUrl + '/downloadCount'
+        const params = {
+          id: record.id,
+          downloadTimes: 1
+        }
+        putAction(rootUrl, params)
+
       }
     }
   }

@@ -25,8 +25,11 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="被谈话人单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="intervieweeDept">
-              <a-input v-model="model.intervieweeDept" placeholder="被谈话人单位" readOnly
-                       unselectable="on" ></a-input>
+              <j-search-select-tag v-model="model.intervieweeDept" placeholder="单位"
+                                   dict="sys_depart,depart_name,org_code"  disabled="true" readOnly unselectable="on">
+              </j-search-select-tag>
+<!--              <a-input v-model="model.intervieweeDept" placeholder="被谈话人单位" readOnly
+                       unselectable="on" ></a-input>-->
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -43,14 +46,14 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="被谈话人民族" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="intervieweeEthnicity">
-              <a-input v-model="model.intervieweeEthnicity" placeholder="被谈话人民族" readOnly
-                       unselectable="on" ></a-input>
+              <j-search-select-tag v-model="model.intervieweeEthnicity" placeholder="被谈话人民族"
+                                   dict="ethnicity"  disabled="true" unselectable="on" ></j-search-select-tag>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="被谈话人政治面貌" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="intervieweePolsta">
-              <a-input v-model="model.intervieweePolsta" placeholder="被谈话人政治面貌" readOnly
-                       unselectable="on" ></a-input>
+              <j-search-select-tag v-model="model.intervieweePolsta" placeholder="被谈话人政治面貌" disabled="true"
+                    dict="political_status" unselectable="on" ></j-search-select-tag>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -61,14 +64,18 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="被谈话人职务" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="intervieweePost">
-              <a-input v-model="model.intervieweePost" placeholder="被谈话人职务"  readOnly
-                       unselectable="on"></a-input>
+              <j-search-select-tag v-model="model.intervieweePost" placeholder="职务"  dict="sys_position,name,code"  disabled="true"
+                                   unselectable="on"></j-search-select-tag>
+<!--              <a-input v-model="model.intervieweePost" placeholder="被谈话人职务"  readOnly
+                       unselectable="on"></a-input>-->
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="被谈话人职级" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="intervieweePostrank">
-              <a-input v-model="model.intervieweePostrank" placeholder="被谈话人职级" readOnly
-                       unselectable="on" ></a-input>
+              <j-search-select-tag v-model="model.intervieweePostrank" placeholder="职级"  dict="position_rank"  disabled="true"
+                                   unselectable="on"></j-search-select-tag>
+<!--              <a-input v-model="model.intervieweePostrank" placeholder="被谈话人职级" readOnly
+                       unselectable="on" ></a-input>-->
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -98,8 +105,11 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="谈话人单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="talkerDept">
-              <a-input v-model="model.talkerDept" placeholder="谈话人单位" readOnly
-                       unselectable="on" ></a-input>
+              <j-search-select-tag v-model="model.talkerDept" placeholder="单位"
+                                   dict="sys_depart,depart_name,org_code"  disabled="true" readOnly unselectable="on">
+              </j-search-select-tag>
+<!--              <a-input v-model="model.talkerDept" placeholder="谈话人单位" readOnly
+                       unselectable="on" ></a-input>-->
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -110,14 +120,18 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="谈话人职务" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="talkerPost">
-              <a-input v-model="model.talkerPost" placeholder="谈话人职务" readOnly
-                       unselectable="on" ></a-input>
+              <j-search-select-tag v-model="model.talkerPost" placeholder="职务"  dict="sys_position,name,code"  disabled="true"
+                                   unselectable="on"></j-search-select-tag>
+<!--              <a-input v-model="model.talkerPost" placeholder="谈话人职务" readOnly
+                       unselectable="on" ></a-input>-->
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="谈话人职级" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="talkerPostrank">
-              <a-input v-model="model.talkerPostrank" placeholder="谈话人职级" readOnly
-                       unselectable="on" ></a-input>
+              <j-search-select-tag v-model="model.talkerPostrank" placeholder="职级"  dict="position_rank"  disabled="true"
+                                   unselectable="on"></j-search-select-tag>
+<!--              <a-input v-model="model.talkerPostrank" placeholder="谈话人职级" readOnly
+                       unselectable="on" ></a-input>-->
             </a-form-model-item>
           </a-col>>
           <a-col :span="24">
@@ -292,21 +306,21 @@
         //console.log(this.model)
         this.model.intervieweeId = back[0].id
         this.model.intervieweeName = back[0].realname
-        this.model.intervieweeDept = back[0].orgCodeTxt
+        this.model.intervieweeDept = back[0].orgCode
         this.model.intervieweeSex = back[0].sex
-        this.model.intervieweeEthnicity = back[0].ethnicity_dictText
-        this.model.intervieweePolsta = back[0].politicalStatus_dictText
+        this.model.intervieweeEthnicity = back[0].ethnicity
+        this.model.intervieweePolsta = back[0].politicalStatus
         this.model.intervieweeJpt = back[0].joinPartyDate
-        this.model.intervieweePost = back[0].post_dictText
-        this.model.intervieweePostrank = back[0].positionRank_dictText
+        this.model.intervieweePost = back[0].post
+        this.model.intervieweePostrank = back[0].positionRank
       },
       getTalker(back){
         console.log(back)
         this.model.talkerId = back[0].id
         this.model.talkerName = back[0].realname
-        this.model.talkerDept = back[0].orgCodeTxt
-        this.model.talkerPost = back[0].post_dictText
-        this.model.talkerPostrank = back[0].positionRank_dictText
+        this.model.talkerDept = back[0].orgCode
+        this.model.talkerPost = back[0].post
+        this.model.talkerPostrank = back[0].positionRank
 
       }
     }

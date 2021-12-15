@@ -5,13 +5,22 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-model-item label="调查问卷名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="paperName">
+<!--            <a-form-model-item label="调查问卷名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="paperName">
               <j-input placeholder="请输入调查问卷名称" v-model="queryParam.paperName"></j-input>
-            </a-form-model-item>
+            </a-form-model-item>-->
+            <a-form-item label="调查问卷名称">
+              <j-search-select-tag
+                placeholder="请选择调查问卷名称"
+                v-model="queryParam.id"
+                dict="smart_paper,paper_name,id,paper_type = '2'"
+                :async="true">
+              </j-search-select-tag>
+            </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
             </span>
           </a-col>
         </a-row>
@@ -69,11 +78,11 @@
 
         <span slot="action" slot-scope="text, record">
           <!--<a @click="handleEdit(record)">编辑</a>-->
-          <a @click="handleIssueSurvey(record)" v-show="record.paperStatus == '0'">发布</a>
+          <a @click="handleIssueSurvey(record)" :class="isDisabled(record)">发布问卷</a>
           <a-divider type="vertical" />
-          <a @click="editTestPaper(record.id)">修改</a>
+          <a @click="editTestPaper(record.id)" :class="isDisabled(record)">修改问卷</a>
           <a-divider type="vertical" />
-          <a @click="showScore(record)">查看</a>
+          <a @click="showScore(record)">查看调查结果</a>
 
         </span>
 
@@ -109,13 +118,14 @@
     data () {
       return {
         queryParam:{
+          id:'',
           paperType:'2'
         },
         description: '试卷表管理页面',
         // 表头
         columns: [
-         /* {
-            title: '#',
+          {
+            title: '序号',
             dataIndex: '',
             key:'rowIndex',
             width:60,
@@ -123,17 +133,16 @@
             customRender:function (t,r,index) {
               return parseInt(index)+1;
             }
-          },*/
+          },
          /*{
             title:'试卷类型',
             align:"center",
             dataIndex: 'paperType_dictText'
           },*/
           {
-            title:'试卷名称',
+            title:'问卷名称',
             align:"center",
             dataIndex: 'paperName',
-            width: 100,
             sorter: true
           },
           // {
@@ -142,18 +151,18 @@
           //   dataIndex: 'paperStatus_dictText',
           //   sorter: true
           // },
-          // {
-          //   title:'命卷人',
-          //   align:"center",
-          //   dataIndex: 'creatorName',
-          //   sorter: true
-          // },
-          // {
-          //   title:'命卷日期',
-          //   align:"center",
-          //   dataIndex: 'createTime',
-          //   sorter: true
-          // },
+           {
+            title:'命卷人',
+            align:"center",
+            dataIndex: 'creatorName',
+            sorter: true
+          },
+          {
+            title:'命卷日期',
+            align:"center",
+            dataIndex: 'createTime',
+            sorter: true
+          },
           // {
           //   title:'题目数量',
           //   align:"center",
@@ -211,6 +220,10 @@
       },
     },
     methods: {
+      searchReset(){
+        this.queryParam = { paperType:'2'}
+        this.searchQuery();
+      },
       showScore(record) {
         console.log(record)
         this.$refs.scoreModal.edit(record.id)
@@ -291,3 +304,12 @@
     },
   }
 </script>
+<style scoped>
+@import '~@assets/less/common.less';
+.disabled {
+  pointer-events: none;
+  filter: alpha(opacity=50); /*IE滤镜，透明度50%*/
+  -moz-opacity: 0.5; /*Firefox私有，透明度50%*/
+  opacity: 0.5; /*其他，透明度50%*/
+}
+</style>

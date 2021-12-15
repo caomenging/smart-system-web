@@ -79,7 +79,7 @@
                 <a-input v-model="model.contactNumber" placeholder="请输入联系电话"></a-input>
               </a-form-model-item>
             </a-col>
-            <a-col :span="24">
+<!--            <a-col :span="24">
               <a-form-model-item label="举报时间" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="reportingTime">
                 <j-date
                   placeholder="请选择举报时间"
@@ -89,7 +89,7 @@
                   style="width: 100%"
                 />
               </a-form-model-item>
-            </a-col>
+            </a-col>-->
           </a-row>
           <a-form-model-item :wrapperCol="{ span: 24 }" style="text-align: center">
             <a-button @click="handleSubmit" type="primary">提交</a-button>
@@ -138,7 +138,7 @@ export default {
           { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码!' },
         ],
         reportingName: [{ required: true, message: '请输入举报人姓名!' }],
-        reportingTime: [{ required: true, message: '请输入举报时间!' }],
+       /* reportingTime: [{ required: true, message: '请输入举报时间!' }],*/
       },
 
       url: {
@@ -157,7 +157,7 @@ export default {
   methods: {
     deleteImg: function (index) {
       this.imgs.splice(index, 1)
-      this.filePathList.splice(index, 1)
+      this.allImg.splice(index, 1)
     },
 
     //图片click
@@ -241,14 +241,14 @@ export default {
         }
       })
 
-      postAction('/smartReportingInformation/smartReportingInformation/sendMessage', this.model).then((res) => {
-        console.log(res)
-        if (res.success) {
-          //this.$message.success('发送成功')
-        } else {
-          //this.$message.warning('发送失败')
-        }
-      })
+        postAction('/smartReportingInformation/smartReportingInformation/sendMessage', this.model). then((res) => {
+          console.log(res)
+          if (res.success) {
+            //this.$message.success('发送成功')
+          } else {
+            //this.$message.warning('发送失败')
+          }
+        })
     },
   },
 }

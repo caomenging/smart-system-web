@@ -171,7 +171,8 @@
           <a-input placeholder="请输入座机" v-model="model.telephone" />
         </a-form-model-item>
         <a-form-model-item label="用户账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="username">
-          <a-input placeholder="请输入用户账号" v-model="model.username" :readOnly="!!model.id"/>
+          <!--<a-input placeholder="请输入用户账号" v-model="model.username" :readOnly="!!model.id"/>-->
+          <a-input placeholder="请输入用户账号" v-model="model.username"/>
         </a-form-model-item>
 
         <template v-if="!model.id">
@@ -179,9 +180,9 @@
             <a-input type="password" placeholder="请输入登录密码" v-model="model.password" />
           </a-form-model-item>
 
-          <a-form-model-item label="确认密码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="confirmpassword" >
+          <!--<a-form-model-item label="确认密码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="confirmpassword" >
             <a-input type="password" @blur="handleConfirmBlur" placeholder="请重新输入登录密码" v-model="model.confirmpassword"/>
-          </a-form-model-item>
+          </a-form-model-item>-->
         </template>
 
 <!--        <a-form-model-item label="工作流引擎" :labelCol="labelCol" :wrapperCol="wrapperCol">
@@ -226,8 +227,7 @@
         disableSubmit:false,
         dateFormat:"YYYY-MM-DD",
         validatorRules:{
-          username:[
-                    {validator: this.validateUsername,}],
+          //username:[{validator: this.validateUsername,trigger:'change'}],
           password: [{pattern:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/,message: '密码由8位数字、大小写字母和特殊符号组成!'},
                      {validator: this.validateToNextPassword,trigger: 'change'}],
           confirmpassword: [{ validator: this.compareToFirstPassword,}],
@@ -240,7 +240,7 @@
           telephone: [{ pattern: /^0\d{2,3}-[1-9]\d{6,7}$/, message: '请输入正确的座机号码' },],
           ethnicity:  [{ required: true, message: '请选择民族' }],
           politicalStatus:  [{ required: true, message: '请选择政治面貌' }],
-          birthday:[{validator:this.validateBirthday,trigger:'change'}],
+          birthday:[{ required: true, message: '请选择出生日期' },{validator:this.validateBirthday,trigger:'change'}],
           joinPartyDate:[{validator:this.validateJoinPartyDate,trigger:'change'}]
         },
         departIdShow:false,
@@ -268,6 +268,7 @@
         tenantsOptions: [],
         rolesOptions:[],
         nextDepartOptions:[],
+        isUsername:'',
       }
     },
     created () {
@@ -296,13 +297,13 @@
         })
       },
       add () {
-        this.loadNaturalTreeData();
+        //this.loadNaturalTreeData();
         this.refresh();
         this.edit({activitiSync:'1',userIdentity:1});
       },
       edit (record) {
         let that = this;
-        that.loadNaturalTreeData();
+        //that.loadNaturalTreeData();
         that.visible = true;
         //根据屏幕宽度自适应抽屉宽度
         this.resetScreenSize();
@@ -418,6 +419,7 @@
       moment,
       handleSubmit () {
         const that = this;
+        console.log("submit")
         // 触发表单验证
         this.$refs.form.validate(valid => {
           if (valid) {
@@ -429,22 +431,80 @@
             let obj;
             if(!this.model.id){
               this.model.id = this.userId;
-              obj=addUser(this.model);
-            }else{
-              obj=editUser(this.model);
-              console.log(this.model);
-            }
-            obj.then((res)=>{
-              if(res.success){
-                that.$message.success(res.message);
-                that.$emit('ok');
-              }else{
-                that.$message.warning(res.message);
+              //账号不为空，验证
+              if(this.model.username != '' && this.model.username != null && this.model.username != 'undefined'){
+                this.validateUsername(this.model.username)
+                console.log("isUsername:",that.isUsername)
+                if(that.isUsername == true){
+                  if(!this.model.password){
+                    this.$message.warning("请输入密码！")
+                    that.confirmLoading = false;
+                  }else{
+                    obj=addUser(this.model);
+                    obj.then((res)=>{
+                      if(res.success){
+                        that.$message.success(res.message);
+                        that.$emit('ok');
+                      }else{
+                        that.$message.warning(res.message);
+                      }
+                    }).finally(() => {
+                      that.confirmLoading = false;
+                      that.close();
+                    })
+                  }
+
+                }else{
+                  this.$message.warning("账号已存在！")
+                  that.confirmLoading = false;
+                }
               }
-            }).finally(() => {
-              that.confirmLoading = false;
-              that.close();
-            })
+              //账号为空，不走验证
+              else{
+                obj=addUser(this.model);
+                obj.then((res)=>{
+                  if(res.success){
+                    that.$message.success("添加成功，初始账号为手机号，初始密码为‘123456’");
+                    that.$emit('ok');
+                  }else{
+                    that.$message.warning(res.message);
+                  }
+                }).finally(() => {
+                  that.confirmLoading = false;
+                  that.close();
+                })
+              }
+
+            }
+            else{
+              console.log("edit")
+              //账号不为空，验证
+              if(this.model.username != '' && this.model.username != null && this.model.username != 'undefined'){
+                this.validateUsername(this.model.username)
+                console.log("isUsername:",that.isUsername)
+                if(that.isUsername == true){
+              obj=editUser(this.model);
+              obj.then((res)=>{
+                if(res.success){
+                  that.$message.success(res.message);
+                  that.$emit('ok');
+                }else{
+                  that.$message.warning(res.message);
+                }
+              }).finally(() => {
+                that.confirmLoading = false;
+                that.close();
+              })
+              console.log(this.model);
+            }else{
+                  this.$message.warning("账号已存在！")
+                  that.confirmLoading = false;
+                }
+              }else{
+                this.$message.warning("账号不可为空！")
+                that.confirmLoading = false;
+              }
+            }
           }else{
             return false;
           }
@@ -475,6 +535,7 @@
           callback()
         }else{
           if(new RegExp(/^1[3|4|5|7|8|9][0-9]\d{8}$/).test(value)){
+            console.log("validate")
             var params = {
               tableName: 'sys_user',
               fieldName: 'phone',
@@ -483,6 +544,7 @@
             };
             duplicateCheck(params).then((res) => {
               if (res.success) {
+                //console.log(res)
                 callback()
               } else {
                 callback("手机号已存在!")
@@ -517,7 +579,7 @@
           }
         }
       },
-      validateUsername(rule, value, callback){
+      validateUsername(value){
         var params = {
           tableName: 'sys_user',
           fieldName: 'username',
@@ -526,11 +588,67 @@
         };
         duplicateCheck(params).then((res) => {
           if (res.success) {
+            this.isUsername = true
+          } else {
+            this.isUsername = false
+          }
+        })
+      },
+      validateBirthday(rule, value, callback){
+        console.log(typeof (value))
+        if(value && typeof (value) == 'object') {
+          //判断出生日期时间
+          let nowDate = new Date().getTime();
+          let birthday = this.model.birthday._d;
+          let birthdayDate = birthday.getTime();
+          console.log(birthdayDate)
+          //出生日期大于当前时间
+          if (birthdayDate > nowDate) {
+            callback("出生日期大于当前日期，请输入正确的出生日期！")
+          } else {
+            callback()
+          }
+        }else{
           callback()
-        } else {
-          callback("用户名已存在!")
         }
-      })
+      },
+      validateJoinPartyDate(rule, value, callback){
+        console.log(typeof (value))
+        if(value && typeof (value) == 'object'){
+          //判断入党日期时间
+          let time = new Date();
+          let currentDate = new Date().getTime();
+          console.log(time,currentDate)
+          let joinParty = this.model.joinPartyDate._d;
+          console.log(typeof (value),typeof (this.model.joinPartyDate))
+          console.log(joinParty)
+          let joinPartyDate = joinParty.getTime();
+          console.log(joinPartyDate)
+          //入党日期大于当前时间
+          if ( joinPartyDate > currentDate ) {
+            callback("入党日期大于当前日期，请输入正确的入党日期！")
+          } else {
+            callback()
+          }
+        }else {
+          console.log("eee")
+          callback()
+        }
+      },
+      /*validateUsername(rule, value, callback){
+        var params = {
+          tableName: 'sys_user',
+          fieldName: 'username',
+          fieldVal: value,
+          dataId: this.userId
+        };
+          duplicateCheck(params).then((res) => {
+            if (res.success) {
+              callback()
+            } else {
+              callback("用户名已存在!")
+            }
+          })
       },
       validateBirthday(rule, value, callback){
           //判断出生日期时间
@@ -560,7 +678,7 @@
         } else {
           callback()
         }
-      },
+      },*/
 
       validateWorkNo(rule, value, callback){
         var params = {

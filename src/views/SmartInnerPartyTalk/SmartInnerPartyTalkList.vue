@@ -1,43 +1,51 @@
 <template>
   <a-card :bordered="false">
     <!-- 查询区域 -->
-    <div class="table-page-search-wrapper">
+    <div class="table-page-search-wrapper"  v-if="roleId.indexOf('1465163864583323650') == -1">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <!--<a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="单位ID">
-              <a-input placeholder="请输入单位ID" v-model="queryParam.departId"></a-input>
-            </a-form-item>
-          </a-col>-->
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="会议时间">
-              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.meetTime_begin"></j-date>
-              <!--<span class="query-group-split-cust"></span>-->
-              <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.meetTime_end"></j-date>
-              </a-col>
-            </a-form-item>
+          <a-form-item label="单位">
+            <j-select-depart
+              placeholder="请选择单位"
+              v-model="queryParam.departId"
+              customReturnField="id"
+              :multi="false"
+              :treeOpera="true"
+            ></j-select-depart>
+          </a-form-item>
           </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="会议地点">
-                <a-input placeholder="请输入会议地点" v-model="queryParam.meetLocation"></a-input>
+                <j-input placeholder="请输入会议地点" v-model="queryParam.meetLocation"></j-input>
               </a-form-item>
             </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="会议名称">
-                <a-input placeholder="请输入会议名称" v-model="queryParam.meetName"></a-input>
+                <j-input placeholder="请输入会议名称" v-model="queryParam.meetName"></j-input>
               </a-form-item>
             </a-col>
-          <template v-if="toggleSearchStatus">
-          </template>
+<!--          <template v-if="toggleSearchStatus">
+          <a-col :xl="10" :lg="11" :md="1" :sm="10" >
+            <a-form-item label="会议时间">
+&lt;!&ndash;              <a-range-picker v-model="queryParam.meetTime"></a-range-picker>&ndash;&gt;
+              <a-col :style="{marginLeft:'3px'}">
+              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间"  v-model="queryParam.meetTime_begin"></j-date>
+                <span class="query-group-split-cust"></span></a-col>
+            <a-col :style="{marginRight:'30px',marginLeft:'3px'}">
+              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间"  v-model="queryParam.meetTime_end"></j-date>
+            </a-col>
+            </a-form-item>
+          </a-col>
+         </template>-->
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a @click="handleToggleSearch" style="margin-left: 8px">
+<!--              <a @click="handleToggleSearch" style="margin-left: 8px">
                 {{ toggleSearchStatus ? '收起' : '展开' }}
                 <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>
+              </a>-->
             </span>
           </a-col>
         </a-row>
@@ -121,7 +129,7 @@
 </template>
 
 <script>
-
+  import { mapActions, mapGetters,mapState } from 'vuex'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SmartInnerPartyTalkModal from './modules/SmartInnerPartyTalkModal'
   import '@/assets/less/TableExpand.less'
@@ -136,6 +144,7 @@
     },
     data () {
       return {
+        queryParam:[],
         description: '党内谈话表管理页面',
         // 表头
         columns: [
@@ -238,9 +247,11 @@
         },
         dictOptions:{},
         superFieldList:[],
+        roleId:[]
       }
     },
     created() {
+      this.roleId = this.userInfo().roleId
       this.getSuperFieldList();
     },
     computed: {
@@ -249,6 +260,7 @@
       }
     },
     methods: {
+      ...mapGetters(["userInfo"]),
       initDictConfig(){
       },
       getSuperFieldList(){
@@ -265,7 +277,7 @@
          fieldList.push({type:'string',value:'inquirerName',text:'受诫勉谈话人姓名'})
          fieldList.push({type:'string',value:'punisherId',text:'受党纪处分人'})
          fieldList.push({type:'string',value:'punisherName',text:'受诫勉谈话人姓名'})
-         fieldList.push({type:'string',value:'abs',text:'会议摘要',dictCode:''})
+         //fieldList.push({type:'string',value:'abs',text:'会议摘要',dictCode:''})
          fieldList.push({type:'string',value:'recorderId',text:'记录人'})
          fieldList.push({type:'string',value:'recorderName',text:'记录人姓名'})
          fieldList.push({type:'string',value:'verifyStatus',text:'审核状态'})
