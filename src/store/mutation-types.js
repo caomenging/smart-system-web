@@ -20,6 +20,10 @@ export const INDEX_MAIN_PAGE_PATH = '/dashboard/analysis'
 export const OAUTH2_LOGIN_PAGE_PATH = '/oauth2-app/login'
 export const TENANT_ID = 'TENANT_ID'
 export const ONL_AUTH_FIELDS = 'ONL_AUTH_FIELDS'
+// 更改手机号码,更改密码,验证手机号码标志位
+export const CHANGE_PHONE = 'CHANGE_PHONE'
+export const CHANGE_PASSWORD = 'CHANGE_PASSWORD'
+export const VERIFY_PHONE = 'VERIFY_PHONE'
 //路由缓存问题，关闭了tab页时再打开就不刷新 #842
 export const CACHE_INCLUDED_ROUTES = 'CACHE_INCLUDED_ROUTES'
 export const CONTENT_WIDTH_TYPE = {
