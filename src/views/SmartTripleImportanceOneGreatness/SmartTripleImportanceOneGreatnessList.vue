@@ -132,7 +132,7 @@
           {
             title:'单位',
             align:"center",
-            dataIndex: 'documentid_dictText'
+            dataIndex: 'documentid'
           },
           {
             title:'名称',
