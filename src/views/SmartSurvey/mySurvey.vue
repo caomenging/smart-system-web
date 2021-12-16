@@ -10,10 +10,10 @@
           <li class="test-info">调查问卷名称: {{ testData.paperName }}</li>
 
           <!--<li class="test-info">出卷者: {{testData.creatorName}}</li>-->
+          <li class="test-info" >答题人: {{ nickname() }}</li>
           <li class="test-info">答题时间: {{ testData.time }} 分钟</li>
           <li class="test-info">题目数量: 共 {{ testData.topicNum }} 道</li>
-          <li class="test-info">总分: {{ testData.totalScore }} 分</li>
-          <li class="test-info" >答题人: {{ nickname() }}</li>
+          <li class="test-info" v-show="testData.isMark == 1">总分: {{ testData.totalScore }} 分</li>
           <li class="test-info" v-if="finishTest">得分: {{ testData.userGrade.grade + '分' }}</li>
           <li class="test-info" v-else>剩余时间: {{ remainTime }}</li>
           <li class="fr">
@@ -28,19 +28,11 @@
 
           <!--<li class="test-info">试卷Id: E{{ testData.id }}</li>-->
           <li class="test-info">调查问卷名称: {{ testData.paperName }}</li>
-          <el-select v-model="label" placeholder="请选择试卷类型">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
           <!--<li class="test-info">出卷者: {{testData.creatorName}}</li>-->
+          <li class="test-info">答题人: {{ nickname() }}</li>
           <li class="test-info">答题时间: {{ testData.time }} 分钟</li>
           <li class="test-info">题目数量: 共 {{ testData.topicNum }} 道</li>
-          <li class="test-info">总分: {{ testData.totalScore }} 分</li>
-          <li class="test-info">答题人: {{ nickname() }}</li>
+          <li class="test-info" v-show="testData.isMark == 1">总分: {{ testData.totalScore }} 分</li>
           <li class="test-info">答题时间: {{ testData.time }} 分钟</li>
           <li class="test-info" v-if="finishTest">得分: {{ testData.userGrade.grade + '分' }}</li>
           <li class="test-info" v-else>剩余时间: {{ remainTime }}</li>
@@ -64,7 +56,7 @@
                   <span class="required-symbol" v-if="t.required == 1">*</span>
                   <span class="question_nunber">{{ t.index }}、</span>
                   {{ t.question }}
-                  <span class="score">({{ t.score }}分)</span>
+                  <span class="score" v-show="testData.isMark == 1">({{ t.score }}分)</span>
                 </div>
 
                 <!-- 单选题 -->
@@ -186,7 +178,6 @@
           good_number:'0',
           pass_number:'0',
           fail_number:'0',
-
         },
 
         //按题目类型分类好的题目数据
@@ -200,9 +191,9 @@
         ],
         //试卷数据
         testData: {
+          isMark:'',
           testName:this.$route.params.examName,
           examInfo:{},
-
         },
 
         remainTime: "", //考试剩余时间
@@ -285,21 +276,31 @@
         let examId = this.$route.query.examId
         var request = {
           examId:examId,
+          isMark:this.testData.isMark,
           smartSubmitList: topic,
-
         };
         console.log(request);
         postAction('/SmartPaper/smartSubmit/submitTestSurvey' ,request).then(res =>{
           if (res.success) {
             console.log(res.result);
-            grade = res.result;
+            let title = ""
+            let describe = ""
+            if(this.testData.isMark === 1){
+              title = "成绩"
+              describe = "本次问卷成绩为"
+              grade = res.result;
+            }else {
+              title = "结果"
+              describe = "本次问卷结束，感谢您的参与！"
+              grade = ""
+            }
             this.$message.success(res.message);
             const h = this.$createElement;
             this.$msgbox({
-              title: '',
+              title: title,
               message: h('p', null, [
-                h('span', null, '本次调查结束，感谢您的配合'),
-
+                h('span', null, describe),
+                h('i', { style: 'color: teal' }, grade)
               ]),
               showCancelButton: true,
               confirmButtonText: '确定',
@@ -307,7 +308,7 @@
               beforeClose: (action, instance, done) => {
                 if (action === 'confirm') {
                   instance.confirmButtonLoading = true;
-                  instance.confirmButtonText = '执行中...';
+                  instance.confirmButtonText = 'Loading...';
                   setTimeout(() => {
                     done();
                     setTimeout(() => {
@@ -319,16 +320,15 @@
                 }
               },
             }).then(action => {
-                this.$message.success({
-                  type:"success",
-                  message: "本次调查问卷结束！",
-                });
-                close()
-                {
-                  window.location.href="about:blank";
-                  window.close();
-                  window.opener.location.reload();
-                }
+              this.$elmessage({
+                type:"success",
+                message: "本次调查结束！",
+                //onClose: close(),
+              });
+              window.location.href="about:blank";
+              window.close();
+              window.opener.location.reload();
+
             });
           }
             //location.reload()
@@ -388,7 +388,9 @@
         /* 处理试卷的题目数据 */
         testData.smartTopicVoList.forEach((item) => {
           //按换行符分割字符串
-          item.choice = item.choice.split(/[\n]/g);
+          if (item.topicType == 1 || item.topicType == 0){
+            item.choice = item.choice.split(/[\n]/g);
+          }
           // item.correct_answer = item.correct_answer.split(/[\n]/g);
           //添加用户答案
           if (item.topicType == 1 || item.topicType == 3) {
@@ -525,6 +527,7 @@
         let examId = this.$route.query.examId
         var request = {
           examId:examId,
+          isMark:this.testData.isMark,
           smartSubmitList: topic,
         };
         console.log(request);
@@ -532,13 +535,23 @@
           console.log(res)
           if (res.success) {
             console.log(res.result);
-            grade = res.result;
+            let title = ""
+            let describe = ""
+            if(this.testData.isMark === 1){
+              title = "成绩"
+              describe = "已到答题时间，自动交卷，本次问卷成绩为"
+              grade = res.result;
+            }else {
+              title = "结果"
+              describe = "本次问卷结束，感谢您的参与！"
+              grade = ""
+            }
             console.log(grade)
             const h = this.$createElement;
             this.$msgbox({
               title: '提醒',
               message: h('p', null, [
-                h('span', null, '已到答题时间，自动交卷，本次考试成绩为 '),
+                h('span', null, title),
                 h('i', { style: 'color: teal' }, grade)
               ]),
               showCancelButton: true,
@@ -561,7 +574,7 @@
             }).then(action => {
               this.$elmessage({
                 type:"success",
-                message: "考试完成！",
+                message: "本次调查完成！",
                 onClose:()=> {
                   //此处写提示关闭后需要执行的函数
                   window.location.href="about:blank";

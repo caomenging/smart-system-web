@@ -46,9 +46,6 @@ export default {
   name: 'TaskDetailList',
   //   mixins: [JeecgListMixin],
   components: {},
-  created() {
-    //   this.editAfter()
-  },
   data() {
     return {
       description: '系统通告表管理页面',
@@ -88,7 +85,6 @@ export default {
       superQueryParams: '',
       /** 高级查询拼接方式 */
       superQueryMatchType: 'and',
-      loading: false,
       anntId: '',
       // 查询条件
       queryParam: {},
@@ -110,7 +106,7 @@ export default {
           dataIndex: 'personName',
         },
         {
-          title: '分数',
+          title: '调查结果',
           align: 'center',
           dataIndex: 'examGrade',
         },
@@ -162,8 +158,10 @@ export default {
             this.dataSource = res.result.records || res.result
             let i = 0
             for(i=0;i<this.dataSource.length;i++){
-              if(this.dataSource[i].examGrade === '' || this.dataSource[i].examGrade == null || this.dataSource[i].examGrade === 'undefined' ){
+              if(this.dataSource[i].examGrade === -1 ){
                 this.dataSource[i].examGrade = '未参与调查'
+              }else if(this.dataSource[i].examGrade === 0 && this.dataSource[i].isMark === 0){
+                this.dataSource[i].examGrade = '已参与调查'
               }
             }
             if (res.result.total) {
