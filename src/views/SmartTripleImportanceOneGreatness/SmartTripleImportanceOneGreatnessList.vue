@@ -160,11 +160,6 @@
             dataIndex: 'meetingNumber'
           },
           {
-            title:'参会人员姓名',
-            align:"center",
-            dataIndex: 'meetingPeopleName'
-          },
-          {
             title:'主持人姓名',
             align:"center",
             dataIndex: 'meetingHosterName'
