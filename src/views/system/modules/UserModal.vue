@@ -30,7 +30,9 @@
         </a-form-model-item>
 
         <a-form-model-item label="职务" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-select-position placeholder="请选择职务" :multiple="false" v-model="model.post"/>
+<!--          <j-select-position placeholder="请选择职务" :multiple="false" v-model="model.post"/>-->
+          <j-search-select-tag placeholder="请选择职务"  v-model="model.post"
+                               dict="sys_position,name,code"></j-search-select-tag>
         </a-form-model-item>
 
         <a-form-model-item
@@ -45,7 +47,9 @@
             v-model="model.positionRank"
           />
         </a-form-model-item>
-        <a-form-model-item label="角色分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!roleDisabled" >
+        <template v-if="roleId.indexOf('1467143903808229378') != -1">
+        <!--纪委管理员可以分配角色，单位管理员默认添加单位非管理员-->
+        <a-form-model-item label="角色分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!roleDisabled" prop="selectedroles">
           <j-multi-select-tag
             :disabled="disableSubmit"
             v-model="model.selectedroles"
@@ -53,10 +57,9 @@
             placeholder="请选择角色">
           </j-multi-select-tag>
         </a-form-model-item>
-
         <!--部门分配-->
-        <!--<a-form-model-item label="单位分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">
-         &lt;!&ndash; <j-select-depart v-model="model.selecteddeparts" :multi="false" @back="backDepartInfo" :backDepart="true" :treeOpera="true"/>&ndash;&gt;
+        <a-form-model-item label="单位分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled" prop="selecteddeparts">
+         <!-- <j-select-depart v-model="model.selecteddeparts" :multi="false" @back="backDepartInfo" :backDepart="true" :treeOpera="true"/>-->
           <a-tree-select
             style="width:100%"
             :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
@@ -66,7 +69,7 @@
             allow-clear
             tree-default-expand-all>
           </a-tree-select>
-        </a-form-model-item>-->
+        </a-form-model-item>
 
         <!--租户分配-->
         <!--<a-form-model-item label="租户分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">
@@ -77,31 +80,32 @@
             placeholder="请选择租户">
           </j-multi-select-tag>
         </a-form-model-item>-->
+          <a-form-model-item label="身份" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-radio-group  v-model="model.userIdentity"  @change="identityChange">
+              <a-radio :value="1">非单位负责人</a-radio>
+              <a-radio :value="2">单位负责人</a-radio>
+            </a-radio-group>
+          </a-form-model-item>
+          <a-form-model-item label="负责单位" :labelCol="labelCol" :wrapperCol="wrapperCol"  v-if="departIdShow==true" prop="departIds">
+            <!--<j-select-depart v-model="model.departIds" :multi="true" @back="backDepartInfo" :backDepart="true" :treeOpera="true"></j-select-depart>-->
+            <a-tree-select
+              style="width:100%"
+              :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
+              :treeData="naturalDepartTree"
+              v-model="model.departIds"
+              placeholder="请选择单位"
+              allow-clear
+              tree-default-expand-all>
+            </a-tree-select>
+            <!--<j-multi-select-tag
+              :disabled="disableSubmit"
+              v-model="model.departIds"
+              :options="nextDepartOptions"
+              placeholder="请选择负责单位">
+            </j-multi-select-tag>-->
+          </a-form-model-item>
+        </template>
 
-        <a-form-model-item label="身份" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-radio-group  v-model="model.userIdentity"  @change="identityChange">
-            <a-radio :value="1">非单位负责人</a-radio>
-            <a-radio :value="2">单位负责人</a-radio>
-          </a-radio-group>
-        </a-form-model-item>
-        <a-form-model-item label="负责单位" :labelCol="labelCol" :wrapperCol="wrapperCol"  v-if="departIdShow==true">
-          <!--<j-select-depart v-model="model.departIds" :multi="true" @back="backDepartInfo" :backDepart="true" :treeOpera="true"></j-select-depart>-->
-          <a-tree-select
-            style="width:100%"
-            :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
-            :treeData="naturalDepartTree"
-            v-model="model.departIds"
-            placeholder="请选择单位"
-            allow-clear
-            tree-default-expand-all>
-          </a-tree-select>
-          <!--<j-multi-select-tag
-            :disabled="disableSubmit"
-            v-model="model.departIds"
-            :options="nextDepartOptions"
-            placeholder="请选择负责单位">
-          </j-multi-select-tag>-->
-        </a-form-model-item>
 
         <a-form-model-item label="头像" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <j-image-upload class="avatar-uploader" text="上传" v-model="model.avatar" ></j-image-upload>
@@ -193,11 +197,11 @@
     </a-spin>
 
 
-    <div class="drawer-bootom-button" v-show="!disableSubmit">
+    <div class="drawer-bootom-button" v-show="!disableSubmit" :style="{height:'37px',paddingBottom:'0px'}">
       <a-popconfirm title="确定放弃编辑？" @confirm="handleCancel" okText="确定" cancelText="取消">
         <a-button style="margin-right: .8rem">取消</a-button>
       </a-popconfirm>
-      <a-button @click="handleSubmit" type="primary" :loading="confirmLoading">提交</a-button>
+      <a-button @click="handleSubmit" type="primary" :loading="confirmLoading" >提交</a-button>
     </div>
   </a-drawer>
 </template>
@@ -210,12 +214,14 @@
   import { addUser,editUser,queryUserRole,queryall } from '@/api/api'
   import { disabledAuthFilter } from "@/utils/authFilter"
   import { duplicateCheck ,queryNaturalIdTree} from '@/api/api'
+  import { mapGetters } from 'vuex'
   export default {
     name: "UserModal",
     components: {
     },
     data () {
       return {
+        roleId:[],
         naturalDepartTree:[],
         departDisabled: false, //是否是我的部门调用该页面
         roleDisabled: false, //是否是角色维护调用该页面
@@ -227,13 +233,17 @@
         disableSubmit:false,
         dateFormat:"YYYY-MM-DD",
         validatorRules:{
-          //username:[{validator: this.validateUsername,trigger:'change'}],
-          password: [{pattern:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/,message: '密码由8位数字、大小写字母和特殊符号组成!'},
+          username:[{validator: this.validateUsername,trigger:'change'}],
+          password: [{pattern:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/,
+            message: '密码由8位数字、大小写字母和特殊符号组成!'},
                      {validator: this.validateToNextPassword,trigger: 'change'}],
           confirmpassword: [{ validator: this.compareToFirstPassword,}],
           realname:[{ required: true, message: '请输入姓名!' }],
           phone: [{required: true, message: '请输入手机号码!'}, {validator: this.validatePhone}],
           email: [{validator: this.validateEmail}],
+          selectedroles:[{required:true,message:'请选择角色',trigger: 'change'}],
+          selecteddeparts:[{required:true,message:'请选择部门'}],
+          departIds:[{validator:this.validateDepartIds}],
           roles:{},
           /*workNo:[ { required: true, message: '请输入工号' },
             { validator: this.validateWorkNo }],*/
@@ -268,14 +278,16 @@
         tenantsOptions: [],
         rolesOptions:[],
         nextDepartOptions:[],
-        isUsername:'',
       }
     },
     created () {
+      this.roleId=this.userInfo().roleId
+      console.log(this.roleId)
       const token = Vue.ls.get(ACCESS_TOKEN);
       this.headers = {"X-Access-Token":token}
       this.initRoleList()
       this.initTenantList()
+      this.loadNaturalTreeData();
     },
     computed:{
       uploadAction:function () {
@@ -283,6 +295,7 @@
       }
     },
     methods: {
+      ...mapGetters(["userInfo"]),
       loadNaturalTreeData(){
         var that = this;
         queryNaturalIdTree().then((result)=>{
@@ -297,7 +310,6 @@
         })
       },
       add () {
-        //this.loadNaturalTreeData();
         this.refresh();
         this.edit({activitiSync:'1',userIdentity:1});
       },
@@ -432,32 +444,25 @@
             if(!this.model.id){
               this.model.id = this.userId;
               //账号不为空，验证
-              if(this.model.username != '' && this.model.username != null && this.model.username != 'undefined'){
-                this.validateUsername(this.model.username)
-                console.log("isUsername:",that.isUsername)
-                if(that.isUsername == true){
-                  if(!this.model.password){
-                    this.$message.warning("请输入密码！")
+              if(this.model.username !== '' && this.model.username != null && this.model.username !== 'undefined'){
+                if(this.model.password !=null && this.model.password !== ''){
+                  obj=addUser(this.model);
+                  obj.then((res)=>{
+                    if(res.success){
+                      that.$message.success(res.message);
+                      that.$emit('ok');
+                    }else{
+                      that.$message.warning(res.message);
+                    }
+                  }).finally(() => {
                     that.confirmLoading = false;
-                  }else{
-                    obj=addUser(this.model);
-                    obj.then((res)=>{
-                      if(res.success){
-                        that.$message.success(res.message);
-                        that.$emit('ok');
-                      }else{
-                        that.$message.warning(res.message);
-                      }
-                    }).finally(() => {
-                      that.confirmLoading = false;
-                      that.close();
-                    })
-                  }
-
-                }else{
-                  this.$message.warning("账号已存在！")
+                    that.close();
+                  })
+                }else {
+                  that.$message.warning("密码不能为空！")
                   that.confirmLoading = false;
                 }
+
               }
               //账号为空，不走验证
               else{
@@ -476,19 +481,15 @@
               }
 
             }
-            else{
+            else {
               console.log("edit")
               //账号不为空，验证
-              if(this.model.username != '' && this.model.username != null && this.model.username != 'undefined'){
-                this.validateUsername(this.model.username)
-                console.log("isUsername:",that.isUsername)
-                if(that.isUsername == true){
-              obj=editUser(this.model);
-              obj.then((res)=>{
-                if(res.success){
+              obj = editUser(this.model);
+              obj.then((res) => {
+                if (res.success) {
                   that.$message.success(res.message);
                   that.$emit('ok');
-                }else{
+                } else {
                   that.$message.warning(res.message);
                 }
               }).finally(() => {
@@ -496,14 +497,6 @@
                 that.close();
               })
               console.log(this.model);
-            }else{
-                  this.$message.warning("账号已存在！")
-                  that.confirmLoading = false;
-                }
-              }else{
-                this.$message.warning("账号不可为空！")
-                that.confirmLoading = false;
-              }
             }
           }else{
             return false;
@@ -579,20 +572,25 @@
           }
         }
       },
-      validateUsername(value){
+      validateUsername(rule, value, callback){
         var params = {
           tableName: 'sys_user',
           fieldName: 'username',
           fieldVal: value,
           dataId: this.userId
         };
-        duplicateCheck(params).then((res) => {
-          if (res.success) {
-            this.isUsername = true
-          } else {
-            this.isUsername = false
-          }
-        })
+        if(value != null && value !== ''){
+          duplicateCheck(params).then((res) => {
+            if (res.success) {
+              callback()
+            } else {
+              callback("用户名已存在!")
+            }
+          })
+        }else {
+          callback()
+        }
+
       },
       validateBirthday(rule, value, callback){
         console.log(typeof (value))
@@ -631,7 +629,18 @@
             callback()
           }
         }else {
-          console.log("eee")
+          //console.log("eee")
+          callback()
+        }
+      },
+      validateDepartIds(rule,value,callback){
+        if(this.model.userIdentity == 2){
+          if(!value){
+            callback('请选择负责单位')
+          }else{
+            callback()
+          }
+        }else{
           callback()
         }
       },

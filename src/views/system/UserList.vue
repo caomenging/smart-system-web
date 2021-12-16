@@ -18,7 +18,7 @@
           </a-col>-->
           <!--TODO 按照单位查询 (设置返回值，默认返回ID：customReturnField='orgCode')-->
           <a-col :md="6" :sm="8">
-            <a-form-item label="单位">
+            <a-form-item label="单位" >
               <j-select-depart placeholder="请选择单位"  v-model="queryParam.orgCode" customReturnField='orgCode' :multi="true"   :treeOpera="true"></j-select-depart>
             </a-form-item>
           </a-col>
@@ -106,7 +106,7 @@
           <a-icon type="down"/>
         </a-button>
       </a-dropdown>
-      <j-super-query :fieldList="superQueryFieldList" @handleSuperQuery="handleSuperQuery"/>
+<!--      <j-super-query :fieldList="superQueryFieldList" @handleSuperQuery="handleSuperQuery"/>-->
     </div>
 
     <!-- table区域-begin -->
@@ -204,6 +204,7 @@
   import JSuperQuery from '@/components/jeecg/JSuperQuery'
   import JThirdAppButton from '@/components/jeecgbiz/thirdApp/JThirdAppButton'
   import JSelectDepartModal from '../../components/jeecgbiz/modal/JSelectDepartModal'
+  import { mapGetters } from 'vuex'
 
   export default {
     name: "UserList",
@@ -220,6 +221,7 @@
     },
     data() {
       return {
+        roleId: [],
         description: '这是用户管理页面',
         queryParam: {peopleType:'1'},//过滤村民
         recycleBinVisible: false,
@@ -371,6 +373,7 @@
       }
     },
     created(){
+      this.roleId=this.userInfo().roleId
       //console.log(this.$store.getters.user);
     },
     computed: {
@@ -379,6 +382,7 @@
       }
     },
     methods: {
+      ...mapGetters(["userInfo"]),
       getAvatarView: function (avatar) {
         return getFileAccessHttpUrl(avatar)
       },

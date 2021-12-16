@@ -14,12 +14,18 @@
             分钟
           </li>
           <li class="test-info" style="margin-top: 3px">题目数量: 共 {{ topicNavIndex_mixin(4,sortedTopics[4].topic_content.length-1) }} 道</li>
+          <li class="test-info" style="margin-top: 3px"><el-switch
+            v-model="testData.isMark" active-value="1" inactive-value="0"
+            active-text="是否评分">
+          </el-switch></li>
+          <div v-show="testData.isMark == 1">
           <li class="test-info" style="margin-top: 3px">总分: {{ totalScore }} 分</li>
           <li class="test-info">
             及格分数:
             <el-input-number v-model="testData.passMark" controls-position="right" :step="1" size="mini" :min="0" :max="totalScore" :disabled="isRead"/>
             分
           </li>
+          </div>
           <li class="fr">
             <el-button v-if="params.opt === 'addSurvey' || params.opt === 'edit'" size="mini" type="primary" @click="submit()">保存调查问卷</el-button>
           </li>
@@ -40,12 +46,18 @@
             分钟
           </li>
           <li class="test-info" style="margin-top: 3px">题目数量: 共 {{ topicNavIndex_mixin(4,sortedTopics[4].topic_content.length-1) }} 道</li>
+          <li class="test-info" style="margin-top: 3px"><el-switch
+            v-model="testData.isMark" active-value="1" inactive-value="0"
+            active-text="是否评分">
+          </el-switch></li>
+          <div v-show="testData.isMark == 1">
           <li class="test-info" style="margin-top: 3px">总分: {{ totalScore }} 分</li>
           <li class="test-info">
             及格分数:
             <el-input-number v-model="testData.passMark" controls-position="right" :step="1" size="mini" :min="0" :max="totalScore" :disabled="isRead"/>
             分
           </li>
+          </div>
           <li class="fr">
             <el-button v-if="params.opt === 'addSurvey' || params.opt === 'edit'" size="mini" type="primary" @click="submit()">保存调查问卷</el-button>
           </li>
@@ -62,7 +74,7 @@
             <div class="topicsType" v-if="s_topics.topic_content.length != 0">
               <div class="bigQuestionName">
                 <h4> {{bigQuestionName_mixin(s_topics.type,index)}} </h4><!-- 题目类型名称 -->
-                <div class="allScore">
+                <div class="allScore" v-show="testData.isMark == 1">
                   <button :class="s_topics.showAllScore? 'active':''" @click="s_topics.showAllScore = !s_topics.showAllScore" v-show="isShow">统一设置题目分数</button>
                   <el-input v-if="s_topics.showAllScore" @change="setAllScore($event,s_topics.type)" v-model="s_topics.score" placeholder="请输入分数" :disabled="isRead"></el-input>
                 </div>
@@ -150,13 +162,13 @@
                   </div>
 
                   <!-- 正确答案 -->
-                  <p class="correctAnswer">
+                  <p class="correctAnswer" v-show="testData.isMark == 1">
                     <strong>正确答案: </strong>
                     {{ t.correctAnswer}}
                   </p>
                   <div>
 
-                    <div class="topicScore">
+                    <div class="topicScore" v-show="testData.isMark == 1">
                       <strong>分值: </strong>
                       <span v-if="isEdit(s_topics.type,tIndex)">
                         <el-input-number v-model="t.score" controls-position="right" :step="1" size="mini" :min="0" :disabled="isRead"/>
@@ -237,9 +249,9 @@
           { type: 4, topic_content: [], score: 0, showAllScore: false },
         ],
 
-        // //试卷数据
+        //试卷数据
         testData: {
-
+          isMark:0,
           paperName: '', //试卷名称
           time: 30, //答题时间
           topicNum: 0, //题目数量
@@ -247,7 +259,6 @@
           totalScore:'',
           createBy:'',
           creatorName:'',
-
           smartTopicVoList:{}
 
         },
@@ -380,76 +391,81 @@
         });
 
         //处理正确答案
-        for(let item of topicData) {
-          /*if(!item.correctAnswer){
-            console.log("empty")
-            this.isCorrect = false
-            //this.$message.warning("有题目未选答案！");
-            return
-          }*/
-          //选择题答案非空
-          if(item.correctAnswer.length === 0){
-            this.isCorrect = false
-            console.log("333")
-            console.log(this.isCorrect)
-            this.$elmessage.warning("有题目答案为空！");
-            return
-          }
-          //填空，简答答案非空
-          if (item.correctAnswer instanceof Array) {
-            console.log("array")
-            let j = 0
-            let length = item.correctAnswer.length
-            console.log(item.correctAnswer)
-            if(length == 1 && item.correctAnswer[0] === ''){
+        if(this.testData.isMark == 1){
+          for(let item of topicData) {
+            /*if(!item.correctAnswer){
+              console.log("empty")
               this.isCorrect = false
-              this.$elmessage.warning("有题目答案为空！");
-              console.log("444")
+              //this.$message.warning("有题目未选答案！");
               return
-            }else{
-              for (j = 0; j < length; j++) {
-                console.log(length)
-                if ( item.correctAnswer[j] === "") {
-                  console.log("555")
-                  this.$elmessage.warning("有题目答案为空！");
-                  this.isCorrect = false
-                  return
+            }*/
+            //选择题答案非空
+            if(item.correctAnswer.length === 0){
+              this.isCorrect = false
+              console.log("333")
+              console.log(this.isCorrect)
+              this.$elmessage.warning("有题目答案为空！");
+              return
+            }
+            //填空，简答答案非空
+            if (item.correctAnswer instanceof Array) {
+              console.log("array")
+              let j = 0
+              let length = item.correctAnswer.length
+              console.log(item.correctAnswer)
+              if(length == 1 && item.correctAnswer[0] === ''){
+                this.isCorrect = false
+                this.$elmessage.warning("有题目答案为空！");
+                console.log("444")
+                return
+              }else{
+                for (j = 0; j < length; j++) {
+                  console.log(length)
+                  if ( item.correctAnswer[j] === "") {
+                    console.log("555")
+                    this.$elmessage.warning("有题目答案为空！");
+                    this.isCorrect = false
+                    return
+                  }
                 }
               }
+              console.log(this.isCorrect)
+              let correctAnswer = "";
+              item.correctAnswer.forEach((c) => {
+                correctAnswer += c + "\n";
+              });
+              item.correctAnswer = correctAnswer.slice(0, -1);
             }
-            console.log(this.isCorrect)
-            let correctAnswer = "";
-            item.correctAnswer.forEach((c) => {
-              correctAnswer += c + "\n";
-            });
-            item.correctAnswer = correctAnswer.slice(0, -1);
+          };
+        }else {
+          for (let item of topicData) {
+            item.correctAnswer = ""
           }
-        };
+        }
 
         //处理试卷信息
         this.testData.creatorName = this.getCreatorName();
         this.testData.smartTopicVoList= topicData;
         this.testData.topicNum = topicData.length;
 
-
         if(this.isEmpty === true &&this.isCorrect === true){
           console.log("isEmpty")
           this.$elmessage.warning("有题目存在空选项！");
           this.isEmpty = false
         }
-        else if(this.isCorrect === false && this.isEmpty === true){
+        else if(this.isCorrect === false && this.isEmpty === true && this.testData.isMark == '1'){
           console.log("all")
           this.$elmessage.warning("有题目答案为空！");
           this.$elmessage.warning("有题目存在空选项！");
           this.isEmpty = false
           this.isCorrect =true
         }else if(this.testData.paperName === ''){
-          this.$elmessage.warning("试卷标题为空！");
+          this.$elmessage.warning("问卷标题为空！");
         }else if(this.testData.smartTopicVoList.length === 0){
-          this.$elmessage.warning("不能创建空试卷！");
+          this.$elmessage.warning("不能创建空问卷！");
         }
         else {
-          if(this.testData.passMark>this.totalScore){
+          if(this.testData.passMark>this.totalScore && this.testData.isMark == '1'){
             console.log(this.testData.passMark,this.testData.totalScore)
             this.$elmessage({
               type: "error",
@@ -537,7 +553,10 @@
                 item.correctAnswer = item.correctAnswer.split(/[\n]/g);
               }
               //按换行符分割字符串
-              item.choice = item.choice.split(/[\n]/g);
+              if(item.topicType == 0 || item.topicType == 1) {
+                item.choice = item.choice.split(/[\n]/g);
+                //item.required = item.required === 1 ? true : false;
+              }
               //item.required = item.required === 1 ? true : false;
             });
           }
@@ -621,18 +640,33 @@
 
       //新建题目
       newTopic(type) {
-        this.sortedTopics[type].topic_content.push({
-          //u_id: this.userData.id,
-          topicType: type,
-          question: "",
-          choice: ["", "", "", ""],
-          correctAnswer: [],
-          //analysis: "",
-          //difficulty: "中等",
-          score: 5,
-          //subjectId: "1",
-          //required: true
-        });
+        if(type == 0 || type == 1){
+          this.sortedTopics[type].topic_content.push({
+            //u_id: this.userData.id,
+            topicType: type,
+            question: "",
+            choice: ["", "", "", ""],
+            correctAnswer: [],
+            //analysis: "",
+            //difficulty: "中等",
+            score: 5,
+            //subjectId: "1",
+            //required: true
+          });
+        }else {
+          this.sortedTopics[type].topic_content.push({
+            //u_id: this.userData.id,
+            topicType: type,
+            question: "",
+            //choice: [],
+            correctAnswer: [],
+            //analysis: "",
+            //difficulty: "中等",
+            score: 5,
+            //subjectId: "1",
+            //required: true
+          });
+        }
 
         let time = setTimeout(() => {
           this.topicNav(type, this.sortedTopics[type].topic_content.length - 1);
