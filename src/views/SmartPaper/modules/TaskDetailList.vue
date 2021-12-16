@@ -162,7 +162,7 @@ export default {
             this.dataSource = res.result.records || res.result
             let i = 0
             for(i=0;i<this.dataSource.length;i++){
-              if(this.dataSource[i].examGrade === '' || this.dataSource[i].examGrade == null || this.dataSource[i].examGrade === 'undefined' ){
+              if(this.dataSource[i].examGrade === -1 ){
                 this.dataSource[i].examGrade = '未考试'
               }
             }

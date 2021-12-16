@@ -163,7 +163,7 @@
           {
             title:'创建人',
             align:"center",
-            dataIndex: 'createId_dictText'
+            dataIndex: 'createId'
           },
           {
             title:'创建日期',

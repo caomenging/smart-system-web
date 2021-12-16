@@ -31,7 +31,7 @@
             <li
                 v-for="video in chapter.children"
                 :key="video.id">
-                <p>{{ video.title }}
+                <p>{{ video.title + " : " +video.wordOneName}}
                     <span class="acts">
                         <el-button type="text" @click="openEditVideo(video.id)">编辑</el-button>
                         <el-button type="text" @click="removeVideo(video.id)">删除</el-button>
@@ -68,64 +68,50 @@
         <!-- 添加小节表单 -->
     <el-dialog :visible.sync="dialogVideoFormVisible" title="添加小节">
       <el-form :model="video" label-width="120px">
-        <el-form-item label="小节标题">
+
+        <template>
+          <a-descriptions title="填表说明" bordered>
+            <a-descriptions-item label="小节类型":span="3">
+              <b>仅支持如下两种指定输入</b>
+              <a-badge status="processing" text="在线听课" />
+              <a-badge status="processing" text="学习资料" />
+            </a-descriptions-item>
+
+            <a-descriptions-item label="上传课程资料">
+              <b>如小节类型为在线听课：</b>则仅可上传单个视频资料，不可上传文档等其他资料！<br />
+              <b>如小节类型为学习资料：</b>则可上传任意类型资料，但如上传视频资料，则无法记录观看情况！<br />
+              <b>每次仅可上传一个文件！</b>
+            </a-descriptions-item>
+          </a-descriptions>
+        </template>
+
+
+        <el-form-item label="小节类型">
           <el-input v-model="video.title"/>
+<!--          <el-tooltip placement="right-end">-->
+<!--            <div slot="content">仅支持指定类型：“在线听课” 或 ”学习资料“ ！</div>-->
+<!--            <i class="el-icon-question"/>-->
+<!--          </el-tooltip>-->
         </el-form-item>
         <el-form-item label="小节排序">
           <el-input-number v-model="video.sort" :min="0" controls-position="right"/>
         </el-form-item>
-        <!-- <el-form-item label="小节内容">
-          <el-input v-model="video.videoTxt" :rows="8" type="textarea"/> -->
-          <!-- <el-radio-group v-model="video.videoTxt">
-            <el-radio :label="true">免费</el-radio>
-            <el-radio :label="false">默认</el-radio>
-          </el-radio-group> -->
-        <!-- </el-form-item> -->
-        <el-form-item label="小节内容">
-              <tinymce :height="300"  v-model="video.videoTxt" v-if="dialogVideoFormVisible" ref="content"/>
+        <el-form-item label="资料名称">
+          <el-input v-model="video.wordOneName"/>
        </el-form-item>
 
-
-        <el-form-item label="上传课程录像">
-            <el-upload
-                  :on-success="handleVodUploadSuccess"
-                  :on-remove="handleVodRemove"
-                  :before-remove="beforeVodRemove"
-                  :on-exceed="handleUploadExceed"
-                  :file-list="fileList"
-                  :action="BASE_API+'/eduvod/video/uploadAlyVideo'"
-                  :limit="1"
-                  class="upload-demo">
-            <el-button size="small" type="primary">上传视频</el-button>
-            <el-tooltip placement="right-end">
-                <div slot="content">最大支持1G，<br>
-                    支持3GP、ASF、AVI、DAT、DV、FLV、F4V、<br>
-                    GIF、M2T、M4V、MJ2、MJPEG、MKV、MOV、MP4、<br>
-                    MPE、MPG、MPEG、MTS、OGG、QT、RM、RMVB、<br>
-                    SWF、TS、VOB、WMV、WEBM 等视频格式上传</div>
-                <i class="el-icon-question"/>
-            </el-tooltip>
-            </el-upload>
+        <el-form-item label="上传课程资料">
+          <a-col :span="24">
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="wordOneUrl">
+              <j-upload v-model="video.wordOneUrl"   ></j-upload>
+<!--              <el-tooltip placement="right-end">-->
+<!--              <div slot="content">若类型为在线听课，则仅可上传视频文件，否则无法统计观看进度 </div>-->
+<!--                <i class="el-icon-question"/>-->
+<!--              </el-tooltip>-->
+            </a-form-model-item>
+          </a-col>
         </el-form-item>
 
-         <el-form-item label="上传课程文件">
-            <el-upload
-                  :on-success="handleVodUploadSuccesscopy"
-                  :on-remove="handleVodRemovecopy"
-                  :before-remove="beforeVodRemovecopy"
-                  :on-exceed="handleUploadExceedcopy"
-                  :file-list="fileListcopy"
-                  :action="BASE_API+'/eduoss/fileoss/upload'"
-                  :limit="1"
-                  class="upload-demo">
-            <el-button size="small" type="primary">上传文件</el-button>
-            <el-tooltip placement="right-end">
-                <div slot="content">最大支持1G，<br>
-                    PPT、WORD、图片等文件上传</div>
-                <i class="el-icon-question"/>
-            </el-tooltip>
-            </el-upload>
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogVideoFormVisible = false">取 消</el-button>
@@ -137,63 +123,47 @@
     <!-- 修改小节表单 -->
     <el-dialog :visible.sync="dialogVideoFormVisibleupdate" title="添加小节">
       <el-form :model="video" label-width="120px">
-        <el-form-item label="小节标题">
+        <template>
+          <a-descriptions title="填表说明" bordered>
+            <a-descriptions-item label="小节类型":span="3">
+              <b>仅支持如下两种指定输入</b>
+              <a-badge status="processing" text="在线听课" />
+              <a-badge status="processing" text="学习资料" />
+            </a-descriptions-item>
+
+            <a-descriptions-item label="上传课程资料">
+              <b>如小节类型为在线听课：</b>则仅可上传单个视频资料，不可上传文档等其他资料！<br />
+              <b>如小节类型为学习资料：</b>则可上传任意类型资料，但如上传视频资料，则无法记录观看情况！<br />
+              <b>每次仅可上传一个文件！</b>
+            </a-descriptions-item>
+          </a-descriptions>
+        </template>
+
+
+        <el-form-item label="小节类型">
           <el-input v-model="video.title"/>
+          <!--          <el-tooltip placement="right-end">-->
+          <!--            <div slot="content">仅支持指定类型：“在线听课” 或 ”学习资料“ ！</div>-->
+          <!--            <i class="el-icon-question"/>-->
+          <!--          </el-tooltip>-->
         </el-form-item>
         <el-form-item label="小节排序">
           <el-input-number v-model="video.sort" :min="0" controls-position="right"/>
         </el-form-item>
-        <!-- <el-form-item label="小节内容">
-          <el-input v-model="video.videoTxt" :rows="8" type="textarea"/> -->
-          <!-- <el-radio-group v-model="video.videoTxt">
-            <el-radio :label="true">免费</el-radio>
-            <el-radio :label="false">默认</el-radio>
-          </el-radio-group> -->
-        <!-- </el-form-item> -->
-        <el-form-item label="小节内容">
-              <tinymce :height="300"  v-model="video.videoTxt" v-if="dialogVideoFormVisibleupdate" ref="content"/>
-       </el-form-item>
-
-
-        <el-form-item label="上传课程录像">
-            <el-upload
-                  :on-success="handleVodUploadSuccess"
-                  :on-remove="handleVodRemove"
-                  :before-remove="beforeVodRemove"
-                  :on-exceed="handleUploadExceed"
-                  :file-list="fileList"
-                  :action="BASE_API+'/eduvod/video/uploadAlyVideo'"
-                  :limit="1"
-                  class="upload-demo">
-            <el-button size="small" type="primary">上传视频</el-button>
-            <el-tooltip placement="right-end">
-                <div slot="content">最大支持1G，<br>
-                    支持3GP、ASF、AVI、DAT、DV、FLV、F4V、<br>
-                    GIF、M2T、M4V、MJ2、MJPEG、MKV、MOV、MP4、<br>
-                    MPE、MPG、MPEG、MTS、OGG、QT、RM、RMVB、<br>
-                    SWF、TS、VOB、WMV、WEBM 等视频格式上传</div>
-                <i class="el-icon-question"/>
-            </el-tooltip>
-            </el-upload>
+        <el-form-item label="资料名称">
+          <el-input v-model="video.wordOneName"/>
         </el-form-item>
 
-         <el-form-item label="上传课程文件">
-            <el-upload
-                  :on-success="handleVodUploadSuccesscopy"
-                  :on-remove="handleVodRemovecopy"
-                  :before-remove="beforeVodRemovecopy"
-                  :on-exceed="handleUploadExceedcopy"
-                  :file-list="fileListcopy"
-                  :action="BASE_API+'/eduoss/fileoss/upload'"
-                  :limit="1"
-                  class="upload-demo">
-            <el-button size="small" type="primary">上传文件</el-button>
-            <el-tooltip placement="right-end">
-                <div slot="content">最大支持1G，<br>
-                    PPT、WORD、图片等文件上传</div>
-                <i class="el-icon-question"/>
-            </el-tooltip>
-            </el-upload>
+        <el-form-item label="上传课程资料">
+          <a-col :span="24">
+            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="wordOneUrl">
+              <j-upload v-model="video.wordOneUrl"   ></j-upload>
+              <!--              <el-tooltip placement="right-end">-->
+              <!--              <div slot="content">若类型为在线听课，则仅可上传视频文件，否则无法统计观看进度 </div>-->
+              <!--                <i class="el-icon-question"/>-->
+              <!--              </el-tooltip>-->
+            </a-form-model-item>
+          </a-col>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -252,7 +222,7 @@ export default {
        //根据课程id查询章节和小节
        this.getChapterVideo()
      }
-    
+
   },
 
 
@@ -524,7 +494,8 @@ export default {
     getChapterVideo(){
       chapter.getAllChapterVideo(this.courseId)
       .then(response=>{
-        this.chapterVideoList = response.result
+        console.log(response)
+        this.chapterVideoList = response.data.allChapterVideo
       })
 
     },

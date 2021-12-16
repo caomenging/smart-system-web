@@ -4,7 +4,7 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24"  v-if="roleId.indexOf('1465163864583323650') == -1">
             <a-form-item label="单位">
               <j-select-depart placeholder="请选择单位"  v-model="queryParam.departId" customReturnField='id' :multi="false" :treeOpera="true"></j-select-depart>
             </a-form-item>
@@ -110,6 +110,7 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SmartEvaluateMeetingModal from './modules/SmartEvaluateMeetingModal'
   import '@/assets/less/TableExpand.less'
+  import { mapActions, mapGetters,mapState } from 'vuex'
 
   export default {
     name: "SmartEvaluateMeetingList",
@@ -210,6 +211,7 @@
       }
     },
     created() {
+      this.roleId = this.userInfo().roleId
       this.getSuperFieldList();
     },
     computed: {
@@ -218,6 +220,7 @@
       }
     },
     methods: {
+      ...mapGetters(["userInfo"]),
       initDictConfig(){
       },
       getSuperFieldList(){

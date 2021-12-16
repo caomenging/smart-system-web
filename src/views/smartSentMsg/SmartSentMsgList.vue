@@ -4,21 +4,6 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="单位ID">
-              <a-input placeholder="请输入单位ID" v-model="queryParam.departmentid"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a @click="handleToggleSearch" style="margin-left: 8px">
-                {{ toggleSearchStatus ? '收起' : '展开' }}
-                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>
-            </span>
-          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -27,7 +12,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('窗口单位')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('已发送的短信')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -83,27 +68,28 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-<!--          <a @click="handleEdit(record)">编辑</a>-->
-          <a @click="handleDetail(record)">详情</a>
-          <a-divider type="vertical" />
-<!--          <a-menu slot="overlay">-->
-<!--            <a-menu-item>-->
-              <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                <a>删除</a>
-              </a-popconfirm>
-<!--            </a-menu-item>-->
-<!--          </a-menu>-->
-          
-<!--          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
+          <a @click="handleEdit(record)">编辑</a>
 
-          </a-dropdown>-->
+          <a-divider type="vertical" />
+          <a-dropdown>
+            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
+            <a-menu slot="overlay">
+              <a-menu-item>
+                <a @click="handleDetail(record)">详情</a>
+              </a-menu-item>
+              <a-menu-item>
+                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+                  <a>删除</a>
+                </a-popconfirm>
+              </a-menu-item>
+            </a-menu>
+          </a-dropdown>
         </span>
 
       </a-table>
     </div>
 
-    <smart-window-unit-modal ref="modalForm" @ok="modalFormOk"></smart-window-unit-modal>
+    <smart-sent-msg-modal ref="modalForm" @ok="modalFormOk"></smart-sent-msg-modal>
   </a-card>
 </template>
 
@@ -112,17 +98,17 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartWindowUnitModal from './modules/SmartWindowUnitModal'
+  import SmartSentMsgModal from './modules/SmartSentMsgModal'
 
   export default {
-    name: 'SmartWindowUnitList',
+    name: 'SmartSentMsgList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartWindowUnitModal
+      SmartSentMsgModal
     },
     data () {
       return {
-        description: '窗口单位管理页面',
+        description: '已发送的短信管理页面',
         // 表头
         columns: [
           {
@@ -136,30 +122,42 @@
             }
           },
           {
-            title:'单位名称',
+            title:'发送人',
             align:"center",
-            dataIndex: 'name'
+            dataIndex: 'sendFrom'
           },
           {
-            title:'主管单位',
+            title:'接收人',
             align:"center",
-            dataIndex: 'pid_dictText'
+            dataIndex: 'receiver'
           },
           {
-            title:'负责人',
+            title:'接收人电话号码',
             align:"center",
-            dataIndex: 'principalName'
+            dataIndex: 'receiverPhone'
           },
           {
-            title:'联系电话',
+            title:'内容',
             align:"center",
-            dataIndex: 'phone'
+            dataIndex: 'content'
           },
           {
-            title:'二维码',
+            title:'发送时间',
             align:"center",
-            dataIndex: 'qrcode',
-            scopedSlots: {customRender: 'imgSlot'}
+            dataIndex: 'sendTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
+          },
+          {
+            title:'发送类型',
+            align:"center",
+            dataIndex: 'sendType'
+          },
+          {
+            title:'标题',
+            align:"center",
+            dataIndex: 'tittle'
           },
           {
             title: '操作',
@@ -171,11 +169,11 @@
           }
         ],
         url: {
-          list: "/smart_window_unit/smartWindowUnit/list",
-          delete: "/smart_window_unit/smartWindowUnit/delete",
-          deleteBatch: "/smart_window_unit/smartWindowUnit/deleteBatch",
-          exportXlsUrl: "/smart_window_unit/smartWindowUnit/exportXls",
-          importExcelUrl: "smart_window_unit/smartWindowUnit/importExcel",
+          list: "/smartSentMsg/smartSentMsg/list",
+          delete: "/smartSentMsg/smartSentMsg/delete",
+          deleteBatch: "/smartSentMsg/smartSentMsg/deleteBatch",
+          exportXlsUrl: "/smartSentMsg/smartSentMsg/exportXls",
+          importExcelUrl: "smartSentMsg/smartSentMsg/importExcel",
           
         },
         dictOptions:{},
@@ -195,13 +193,13 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-        fieldList.push({type:'string',value:'departmentid',text:'单位ID',dictCode:''})
-        fieldList.push({type:'string',value:'name',text:'单位名称',dictCode:''})
-        fieldList.push({type:'sel_depart',value:'pid',text:'主管单位'})
-        fieldList.push({type:'sel_user',value:'principal',text:'负责人ID'})
-        fieldList.push({type:'string',value:'phone',text:'联系电话',dictCode:''})
-        fieldList.push({type:'string',value:'qrcode',text:'二维码',dictCode:''})
-        fieldList.push({type:'string',value:'principal_name',text:'负责人姓名'})
+        fieldList.push({type:'string',value:'sendFrom',text:'发送人',dictCode:''})
+        fieldList.push({type:'string',value:'receiver',text:'接收人',dictCode:''})
+        fieldList.push({type:'string',value:'receiverPhone',text:'接收人电话号码',dictCode:''})
+        fieldList.push({type:'string',value:'content',text:'内容',dictCode:''})
+        fieldList.push({type:'date',value:'sendTime',text:'发送时间'})
+        fieldList.push({type:'string',value:'sendType',text:'发送类型',dictCode:''})
+        fieldList.push({type:'string',value:'tittle',text:'标题',dictCode:''})
         this.superFieldList = fieldList
       }
     }

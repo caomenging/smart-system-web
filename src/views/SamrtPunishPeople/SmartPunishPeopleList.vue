@@ -11,7 +11,7 @@
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="单位">
-              <j-select-depart placeholder="请输入单位" v-model="queryParam.departName" customReturnField='departName'></j-select-depart>
+              <j-select-depart placeholder="请输入单位" v-model="queryParam.departCode" customReturnField='orgCode'></j-select-depart>
             </a-form-item>
           </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -230,13 +230,13 @@
           {
             title:'单位',
             align:"center",
-            dataIndex: 'departName',
+            dataIndex: 'departCode_dictText',
             sorter: true
           },
           {
             title:'职务',
             align:"center",
-            dataIndex: 'position',
+            dataIndex: 'position_dictText',
             sorter: true
           },
           {
@@ -344,8 +344,8 @@
         fieldList.push({type:'string',value:'punishId',text:'处分人'})
         fieldList.push({type:'string',value:'punishName',text:'处分人姓名',dictCode:''})
         fieldList.push({type:'string',value:'departId',text:'单位ID',dictCode:''})
-        fieldList.push({type:'string',value:'departName',text:'单位',dictCode:''})
-        fieldList.push({type:'string',value:'position',text:'职务',dictCode:''})
+        fieldList.push({type:'string',value:'departCode',text:'单位',dicCode : 'sys_depart,depart_name,org_code'})
+        fieldList.push({type:'string',value:'position',text:'职务',dictCode:'sys_position,name,code'})
         fieldList.push({type:'string',value:'positionRank',text:'职级',dictCode:'position_rank'})
         fieldList.push({type:'string',value:'phone',text:'手机号',dictCode:''})
         fieldList.push({type:'string',value:'punishType',text:'处分类型',dictCode:'punish_type'})
