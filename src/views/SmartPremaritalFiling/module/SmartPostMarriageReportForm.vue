@@ -10,11 +10,11 @@
               <select-user-by-dep v-model="model.personId" @info="getPerson" />
             </a-form-model-item>
           </a-col>
-          <a-col :span="12">
+          <!-- <a-col :span="12">
             <a-form-model-item label="姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
               <a-input v-model="model.name" placeholder="请输入姓名"></a-input>
             </a-form-model-item>
-          </a-col>
+          </a-col> -->
           <a-col :span="12">
             <a-form-model-item label="性别" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="sex">
               <j-dict-select-tag
@@ -34,38 +34,38 @@
           </a-col>
           <a-col :span="12">
             <a-form-model-item label="政治面貌" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="politicsStatus">
-              <a-input
+              <j-dict-select-tag
                 type="list"
                 v-model="model.politicsStatus"
                 dictCode="political_status"
                 placeholder="请选择政治面貌"
                 readOnly
                 unselectable="on"
-              ></a-input>
+              />
             </a-form-model-item>
           </a-col>
           <a-col :span="12">
             <a-form-model-item label="职务" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="job">
-              <a-input
+              <j-dict-select-tag
                 type="list"
                 v-model="model.job"
                 dictCode="sys_position,name,code"
                 placeholder="请选择职务"
                 readOnly
                 unselectable="on"
-              ></a-input>
+              />
             </a-form-model-item>
           </a-col>
           <a-col :span="12">
             <a-form-model-item label="职级" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="jobLevel">
-              <a-input
+              <j-dict-select-tag
                 type="list"
                 v-model="model.jobLevel"
                 dictCode="position_rank"
                 placeholder="请选择职级"
                 readOnly
                 unselectable="on"
-              ></a-input>
+              />
             </a-form-model-item>
           </a-col>
           <a-col :span="12">
@@ -248,15 +248,15 @@ export default {
       addDefaultRowNum: 1,
       validatorRules: {
         workNo: [{ required: true, message: '请输入人员工号!' }],
-        name: [{ required: true, message: '请输入姓名!' }],
-        sex: [{ required: true, message: '请输入性别!' }],
+        // name: [{ required: true, message: '请输入姓名!' }],
+        // sex: [{ required: true, message: '请输入性别!' }],
         age: [
-          { required: true, message: '请输入年龄!' },
+          // { required: true, message: '请输入年龄!' },
           { pattern: /^-?\d+\.?\d*$/, message: '请输入数字!' },
         ],
-        politicsStatus: [{ required: true, message: '请输入政治面貌!' }],
-        job: [{ required: true, message: '请输入职务!' }],
-        jobLevel: [{ required: true, message: '请输入职级!' }],
+        // politicsStatus: [{ required: true, message: '请输入政治面貌!' }],
+        // job: [{ required: true, message: '请输入职务!' }],
+        // jobLevel: [{ required: true, message: '请输入职级!' }],
         weddingVenue: [{ required: true, message: '请输入婚宴场所名!' }],
         weddingVenueAddr: [{ required: true, message: '请输入婚宴场所地址!' }],
         guestsNumber: [
