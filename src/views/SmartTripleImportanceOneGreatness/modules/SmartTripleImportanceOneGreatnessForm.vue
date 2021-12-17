@@ -185,7 +185,7 @@
           columns: [
             {
               title: '参会人员',
-              key: 'pacpaName',
+              key: 'meetingPeopleName',
               type: FormTypes.sel_user,
               width:"200px",
               placeholder: '请输入${title}',

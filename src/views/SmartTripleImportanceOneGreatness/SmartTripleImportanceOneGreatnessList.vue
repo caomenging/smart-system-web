@@ -132,7 +132,7 @@
           {
             title:'单位',
             align:"center",
-            dataIndex: 'documentid_dictText'
+            dataIndex: 'documentid'
           },
           {
             title:'名称',
@@ -158,11 +158,6 @@
             title:'参会人数',
             align:"center",
             dataIndex: 'meetingNumber'
-          },
-          {
-            title:'参会人员姓名',
-            align:"center",
-            dataIndex: 'meetingPeopleName'
           },
           {
             title:'主持人姓名',
