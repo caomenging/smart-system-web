@@ -97,7 +97,7 @@ module.exports = {
       },*/
       '/smart-system': {
         target: 'http://localhost:8080', //请求本地 需要jeecg-boot后台项目
-        ws: false,
+        ws: true,
         changeOrigin: true
       },
     }
