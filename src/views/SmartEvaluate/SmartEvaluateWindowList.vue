@@ -10,8 +10,8 @@
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="政务服务大厅名称">
-              <a-input placeholder="请输入政务服务大厅名称" v-model="queryParam.windowsName"></a-input>
+            <a-form-item label="窗口服务大厅名称">
+              <a-input placeholder="请输入窗口服务大厅名称" v-model="queryParam.windowsName"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
