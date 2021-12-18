@@ -167,9 +167,10 @@
             {
               title: '参会人员',
               key: 'papcId',
-              type: FormTypes.sel_user,
+              //type: FormTypes.sel_user,
+              type: FormTypes.input,
               width:"200px",
-              placeholder: '请选择${title}',
+              placeholder: '请输入${title}',
               defaultValue:'',
             },
           ]
