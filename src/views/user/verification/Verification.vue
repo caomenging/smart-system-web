@@ -47,7 +47,6 @@ import Step1 from './Step1'
       init() {
         this.steps = []
         // 修改密码前必须验证手机号码
-        Vue.ls.set(CHANGE_PASSWORD, true)
         if (Vue.ls.get(VERIFY_PHONE) || (Vue.ls.get(CHANGE_PASSWORD))) {
           this.steps.push({
             title: '手机验证'
