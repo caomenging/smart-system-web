@@ -45,7 +45,6 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-
         class="j-table-force-nowrap"
         @change="handleTableChange">
 
@@ -99,7 +98,7 @@
         description: '考试信息表管理页面',
         // 表头
         columns: [
-          /*{
+          {
             title: '#',
             dataIndex: '',
             key:'rowIndex',
@@ -108,7 +107,7 @@
             customRender:function (t,r,index) {
               return parseInt(index)+1;
             }
-          },*/
+          },
           {
             title:'调查问卷名称',
             align:"center",
