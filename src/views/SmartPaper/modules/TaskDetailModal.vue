@@ -5,6 +5,7 @@
     :visible="visible"
     :maskClosable="false"
     switchFullscreen
+    :fullscreen = "true"
     @ok="handleOk"
     :okButtonProps="{ class: { 'jee-hidden': disableSubmit } }"
     @cancel="handleCancel"
@@ -22,12 +23,15 @@ export default {
   components: { TaskDetailList },
   data() {
     return {
-      title: '成绩单',
+      title: '',
       width: 800,
       visible: false,
       disableSubmit: false,
       anntId: ''
     }
+  },
+  created() {
+
   },
   methods: {
     add() {
@@ -36,21 +40,25 @@ export default {
         this.$refs.realForm.add()
       })
     },
-    edit(examId) {
+    edit(examId,examName) {
       this.visible = true
       console.log(examId)
+      this.title = examName+'成绩单'
       // this.title = "【" + record.titile + "】"
       // this.anntId = record.id
       this.$nextTick(() => {
-        this.$refs.realList.edit(examId)
+        this.$refs.realList.edit(examId,examName)
       })
     },
     close() {
       this.$emit('close')
       this.visible = false
     },
+    /*    handleOk() {
+          this.$refs.realForm.handleOk()
+        },*/
     handleOk() {
-      this.$refs.realForm.handleOk()
+        this.close()
     },
     submitCallback() {
       this.$emit('ok')

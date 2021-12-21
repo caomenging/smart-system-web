@@ -1,5 +1,13 @@
 <template>
   <a-card :bordered="false">
+    <!-- 操作按钮区域 -->
+    <div class="table-operator">
+      <!--<a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
+      <a-button type="primary" icon="download" @click="handleExportXls('成绩单')">导出</a-button>
+<!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
+        <a-button type="primary" icon="import">导入</a-button>
+      </a-upload>-->
+    </div>
     
     <!-- table区域-begin -->
     <!-- <div>
@@ -38,9 +46,10 @@ import FileSaver from 'file-saver'
 import { filterObj } from '@/utils/util'
 import SysAnnouncementModal from '@/views/system/modules/SysAnnouncementModal'
 import { doReleaseData, doReovkeData } from '@/api/api'
-import { getAction } from '@/api/manage'
+import { getAction,downFile,getFileAccessHttpUrl} from '@/api/manage'
 // import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-import { ACCESS_TOKEN } from '@/store/mutation-types'
+import { ACCESS_TOKEN,TENANT_ID } from '@/store/mutation-types'
+import Vue from 'vue'
 
 export default {
   name: 'TaskDetailList',
@@ -51,6 +60,8 @@ export default {
   },
   data() {
     return {
+      title:'',
+      examId:'',
       description: '成绩单',
       upurl: window._CONFIG['domianURL'] + '/sys/common/static/',
       fileList: [],
@@ -88,7 +99,6 @@ export default {
       superQueryParams: '',
       /** 高级查询拼接方式 */
       superQueryMatchType: 'and',
-      loading: false,
       anntId: '',
       // 查询条件
       queryParam: {},
@@ -103,6 +113,11 @@ export default {
           customRender: function (t, r, index) {
             return parseInt(index) + 1
           },
+        },
+        {
+          title: '单位',
+          align: 'center',
+          dataIndex: 'deptName',
         },
         {
           title: '答题人',
@@ -122,22 +137,30 @@ export default {
         deleteBatch: '/sys/annountCement/deleteBatch',
         releaseDataUrl: '/sys/annountCement/doReleaseData',
         reovkeDataUrl: 'sys/annountCement/doReovkeData',
-        exportXlsUrl: 'sys/annountCement/exportXls',
-        importExcelUrl: 'sys/annountCement/importExcel',
+        //exportXlsUrl: 'sys/annountCement/exportXls',
+        exportXlsUrl: '/SmartPaper/smartPeople/exportExamGradeXls',
       },
     }
-  },
-  created() {
-    this.getSuperFieldList()
   },
   computed: {
     importExcelUrl: function () {
       return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`
     },
+    //token header
+    tokenHeader(){
+      let head = {'X-Access-Token': Vue.ls.get(ACCESS_TOKEN)}
+      let tenantid = Vue.ls.get(TENANT_ID)
+      if(tenantid){
+        head['tenant-id'] = tenantid
+      }
+      return head;
+    }
   },
   methods: {
-    edit(examId) {
+    edit(examId,examName) {
       console.log(examId)
+      this.examId = examId
+      this.title =  examName+'成绩单'
       this.$nextTick(() => {
         // this.anntId = record.id
         // console.log(this.anntId)
@@ -162,7 +185,7 @@ export default {
             this.dataSource = res.result.records || res.result
             let i = 0
             for(i=0;i<this.dataSource.length;i++){
-              if(this.dataSource[i].examGrade === -1 ){
+              if(this.dataSource[i].examGrade === "-1" ){
                 this.dataSource[i].examGrade = '未考试'
               }
             }
@@ -274,6 +297,57 @@ export default {
         dictCode: 'sys_depart,depart_name,org_code',
       })
       this.superFieldList = fieldList
+    },
+    /* 导出 */
+    handleExportXls2(){
+      let paramsStr = encodeURI(JSON.stringify(this.getQueryParams()));
+      let url = `${window._CONFIG['domianURL']}/${this.url.exportXlsUrl}?paramsStr=${paramsStr}`;
+      window.location.href = url;
+    },
+    handleExportXls(fileName){
+      if(!fileName || typeof fileName != "string"){
+        fileName = "导出文件"
+      }else{
+        fileName = this.title
+      }
+      let param = this.getQueryParams();
+      if(this.selectedRowKeys && this.selectedRowKeys.length>0){
+        param['selections'] = this.selectedRowKeys.join(",")
+      }
+      Object.assign(param,{title:this.title},{examId:this.examId})
+      console.log("导出参数",param)
+      downFile(this.url.exportXlsUrl,param).then((data)=>{
+        if (!data) {
+          this.$message.warning("文件下载失败")
+          return
+        }
+        if (typeof window.navigator.msSaveBlob !== 'undefined') {
+          window.navigator.msSaveBlob(new Blob([data],{type: 'application/vnd.ms-excel'}), fileName+'.xls')
+        }else{
+          let url = window.URL.createObjectURL(new Blob([data],{type: 'application/vnd.ms-excel'}))
+          let link = document.createElement('a')
+          link.style.display = 'none'
+          link.href = url
+          link.setAttribute('download', fileName+'.xls')
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link); //下载完成移除元素
+          window.URL.revokeObjectURL(url); //释放掉blob对象
+        }
+      })
+    },
+    /* 文件下载 */
+    // update--autor:lvdandan-----date:20200630------for：修改下载文件方法名uploadFile改为downloadFile------
+    downloadFile(text){
+      if(!text){
+        this.$message.warning("未知的文件")
+        return;
+      }
+      if(text.indexOf(",")>0){
+        text = text.substring(0,text.indexOf(","))
+      }
+      let url = getFileAccessHttpUrl(text)
+      window.open(url);
     },
   },
 }
