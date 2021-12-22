@@ -34,21 +34,21 @@
     <!-- 查询区域-END -->
 
     <!-- 操作按钮区域 -->
-    <div class="table-operator">
-      <!--<a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
+<!--    <div class="table-operator">
+      &lt;!&ndash;<a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>&ndash;&gt;
       <a-button type="primary" icon="download" @click="handleExportXls('考试信息表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
-      <!-- 高级查询区域 -->
-      <!--<j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
+      &lt;!&ndash; 高级查询区域 &ndash;&gt;
+      &lt;!&ndash;<j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>&ndash;&gt;
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
         </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
-    </div>
+    </div>-->
 
     <!-- table区域-begin -->
     <div>
@@ -219,7 +219,7 @@
       },
       showScore(record) {
         console.log(record)
-        this.$refs.scoreModal.edit(record.paperId)
+        this.$refs.scoreModal.edit(record.paperId,record.examName)
       },
       handleDeleteExam(record){
         console.log(record)

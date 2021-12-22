@@ -1,5 +1,49 @@
 <template>
-  <a-card :bordered="false">
+  <div>
+  <a-card :bordered="true" :style="{marginBottom:'5px'}">
+  <div class="page-header-index-wide">
+    <a-row :gutter="24">
+      <a-col :sm="12" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+        <a-card>
+          <a-statistic title="处分人员总数量" :value="cardCount.total" :style="{fontSize:'14px'}" :width="80" height="30"/>
+        </a-card>
+        <!--          <chart-card :loading="loading" title="处分人员总数量" :total="cardCount.total | NumberFormat"/>-->
+      </a-col>
+      <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+        <a-card>
+          <a-statistic title="本月即将解除处分人员数量" :value="cardCount.countByMonth" :style="{fontSize:'14px'}" :width="80" height="30"/>
+        </a-card>
+        <!--          <chart-card :loading="loading" title="本月即将解除处分人员数量" :total="cardCount.countByMonth | NumberFormat"/>-->
+      </a-col>
+      <!-- <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+         <chart-card :loading="loading" title="用户受理量" :total="cardCount.isll | NumberFormat">
+           <a-tooltip title="指标说明" slot="action">
+             <a-icon type="info-circle-o" />
+           </a-tooltip>
+           <div>
+             <mini-bar :datasource="chartData.isll" :height="50"/>
+           </div>
+           <template slot="footer">用户今日受理量：<span>{{ todayISll }}</span></template>
+         </chart-card>
+       </a-col>
+       <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+         <chart-card :loading="loading" title="用户办结量" :total="cardCount.ibjl | NumberFormat">
+           <a-tooltip title="指标说明" slot="action">
+             <a-icon type="info-circle-o" />
+           </a-tooltip>
+           <div>
+             <mini-bar :datasource="chartData.ibjl" :height="50"/>
+           </div>
+           <template slot="footer">用户今日办结量：<span>{{ todayIBjl }}</span></template>
+         </chart-card>
+       </a-col>-->
+    </a-row>
+    <a-row :gutter="24">
+      <pie class="statistic" title="不同处分类型人数统计" :dataSource="countSource" :height="450"/>
+    </a-row>
+  </div>
+  </a-card>
+  <a-card :bordered="true">
     <!-- 查询区域 -->
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
@@ -48,7 +92,7 @@
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
       <!-- 高级查询区域 -->
-      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
+<!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
@@ -118,47 +162,10 @@
 
       </a-table>
     </div>
-    <div class="page-header-index-wide">
-      <a-row :gutter="24">
-        <pie class="statistic" title="不同处分类型人数统计" :dataSource="countSource" :height="450"/>
-      </a-row>
-      <a-row :gutter="24">
-        <a-col :sm="12" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-          <chart-card :loading="loading" title="处分人员总数量" :total="cardCount.total | NumberFormat">
-          </chart-card>
-        </a-col>
-        <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-          <chart-card :loading="loading" title="本月即将解除处分人员数量" :total="cardCount.countByMonth | NumberFormat">
-          </chart-card>
-        </a-col>
-        <!-- <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-           <chart-card :loading="loading" title="用户受理量" :total="cardCount.isll | NumberFormat">
-             <a-tooltip title="指标说明" slot="action">
-               <a-icon type="info-circle-o" />
-             </a-tooltip>
-             <div>
-               <mini-bar :datasource="chartData.isll" :height="50"/>
-             </div>
-             <template slot="footer">用户今日受理量：<span>{{ todayISll }}</span></template>
-           </chart-card>
-         </a-col>
-         <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-           <chart-card :loading="loading" title="用户办结量" :total="cardCount.ibjl | NumberFormat">
-             <a-tooltip title="指标说明" slot="action">
-               <a-icon type="info-circle-o" />
-             </a-tooltip>
-             <div>
-               <mini-bar :datasource="chartData.ibjl" :height="50"/>
-             </div>
-             <template slot="footer">用户今日办结量：<span>{{ todayIBjl }}</span></template>
-           </chart-card>
-         </a-col>-->
-      </a-row>
-    </div>
-
 
     <smart-punish-people-modal ref="modalForm" @ok="modalFormOk"></smart-punish-people-modal>
   </a-card>
+  </div>
 </template>
 
 <script>

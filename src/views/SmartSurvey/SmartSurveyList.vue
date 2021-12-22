@@ -226,7 +226,7 @@
       },
       showScore(record) {
         console.log(record)
-        this.$refs.scoreModal.edit(record.id)
+        this.$refs.scoreModal.edit(record.id,record.paperName)
       },
       isDisabled(record){
         if ( record.paperStatus === "0") {
