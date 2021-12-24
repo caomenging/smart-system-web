@@ -148,7 +148,8 @@
 
       handlePreview(video) {
         let url = window._CONFIG['staticDomainURL'] + "/" + video.wordOneUrl
-        let previewURL = 'http://127.0.0.1:8012/onlinePreview?url='
+        let previewURL = window._CONFIG['filePreViewURL']
+        console.log('这里'+previewURL)
         window.location.href = previewURL + encodeURIComponent(Base64.encode(url))
       },
       videoPlay(video) {

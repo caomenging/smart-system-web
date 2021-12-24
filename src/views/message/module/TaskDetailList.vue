@@ -160,7 +160,7 @@ export default {
           dataIndex: 'submitFile',
           customRender: (text) => {
             if (text) {
-              const url = 'http://127.0.0.1:8080/smart-system/sys/common/static/' + text
+              const url = window._CONFIG['staticDomainURL'] + '/' + text
               const type = text.split('.').pop()
               const name = text.split('/').pop().split('_')[0]
               const fileName = name + '.' + type

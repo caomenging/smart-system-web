@@ -224,7 +224,7 @@ export default {
   methods: {
     handlePreview(record) {
       let url = window._CONFIG['staticDomainURL'] + "/" + record.file
-      let previewURL = 'http://127.0.0.1:8012/onlinePreview?url='
+      let previewURL = window._CONFIG['filePreViewURL']
       window.location.href = previewURL + encodeURIComponent(Base64.encode(url))
     },
     initDictConfig() {

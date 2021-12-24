@@ -1,6 +1,13 @@
 <template>
   <a-card :bordered="false">
-    
+    <!-- 操作按钮区域 -->
+    <div class="table-operator">
+      <!--<a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
+      <a-button type="primary" icon="download" @click="handleExportXls('调查结果')">导出</a-button>
+      <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
+              <a-button type="primary" icon="import">导入</a-button>
+            </a-upload>-->
+    </div>
     <!-- table区域-begin -->
     <!-- <div>
     <div class="ant-alert ant-alert-info" style="margin-bottom: 16px">
@@ -38,9 +45,10 @@ import FileSaver from 'file-saver'
 import { filterObj } from '@/utils/util'
 import SysAnnouncementModal from '@/views/system/modules/SysAnnouncementModal'
 import { doReleaseData, doReovkeData } from '@/api/api'
-import { getAction } from '@/api/manage'
+import { getAction,downFile,getFileAccessHttpUrl } from '@/api/manage'
 // import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-import { ACCESS_TOKEN } from '@/store/mutation-types'
+import { ACCESS_TOKEN,TENANT_ID } from '@/store/mutation-types'
+import Vue from 'vue'
 
 export default {
   name: 'TaskDetailList',
@@ -48,7 +56,9 @@ export default {
   components: {},
   data() {
     return {
-      description: '系统通告表管理页面',
+      title:'',
+      examId:'',
+      description: '调查结果',
       upurl: window._CONFIG['domianURL'] + '/sys/common/static/',
       fileList: [],
       dataSource: [],
@@ -101,6 +111,11 @@ export default {
           },
         },
         {
+          title: '单位',
+          align: 'center',
+          dataIndex: 'deptName',
+        },
+        {
           title: '答题人',
           align: 'center',
           dataIndex: 'personName',
@@ -118,22 +133,34 @@ export default {
         deleteBatch: '/sys/annountCement/deleteBatch',
         releaseDataUrl: '/sys/annountCement/doReleaseData',
         reovkeDataUrl: 'sys/annountCement/doReovkeData',
-        exportXlsUrl: 'sys/annountCement/exportXls',
+        //exportXlsUrl: 'sys/annountCement/exportXls',
         importExcelUrl: 'sys/annountCement/importExcel',
+        exportXlsUrl: '/SmartPaper/smartPeople/exportExamGradeXls',
       },
     }
   },
   created() {
-    this.getSuperFieldList()
+    //this.getSuperFieldList()
   },
   computed: {
     importExcelUrl: function () {
       return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`
     },
+    //token header
+    tokenHeader(){
+      let head = {'X-Access-Token': Vue.ls.get(ACCESS_TOKEN)}
+      let tenantid = Vue.ls.get(TENANT_ID)
+      if(tenantid){
+        head['tenant-id'] = tenantid
+      }
+      return head;
+    }
   },
   methods: {
-    edit(examId) {
+    edit(examId,paperName) {
       console.log(examId)
+      this.examId = examId
+      this.title =  paperName+'调查结果'
       this.$nextTick(() => {
         // this.anntId = record.id
         // console.log(this.anntId)
@@ -158,9 +185,9 @@ export default {
             this.dataSource = res.result.records || res.result
             let i = 0
             for(i=0;i<this.dataSource.length;i++){
-              if(this.dataSource[i].examGrade === -1 ){
+              if(this.dataSource[i].examGrade === "-1" ){
                 this.dataSource[i].examGrade = '未参与调查'
-              }else if(this.dataSource[i].examGrade === 0 && this.dataSource[i].isMark === 0){
+              }else if(this.dataSource[i].examGrade === "0" && this.dataSource[i].isMark === 0){
                 this.dataSource[i].examGrade = '已参与调查'
               }
             }
@@ -272,6 +299,57 @@ export default {
         dictCode: 'sys_depart,depart_name,org_code',
       })
       this.superFieldList = fieldList
+    },
+    /* 导出 */
+    handleExportXls2(){
+      let paramsStr = encodeURI(JSON.stringify(this.getQueryParams()));
+      let url = `${window._CONFIG['domianURL']}/${this.url.exportXlsUrl}?paramsStr=${paramsStr}`;
+      window.location.href = url;
+    },
+    handleExportXls(fileName){
+      if(!fileName || typeof fileName != "string"){
+        fileName = "导出文件"
+      }else{
+        fileName = this.title
+      }
+      let param = this.getQueryParams();
+      if(this.selectedRowKeys && this.selectedRowKeys.length>0){
+        param['selections'] = this.selectedRowKeys.join(",")
+      }
+      Object.assign(param,{title:this.title},{examId:this.examId})
+      console.log("导出参数",param)
+      downFile(this.url.exportXlsUrl,param).then((data)=>{
+        if (!data) {
+          this.$message.warning("文件下载失败")
+          return
+        }
+        if (typeof window.navigator.msSaveBlob !== 'undefined') {
+          window.navigator.msSaveBlob(new Blob([data],{type: 'application/vnd.ms-excel'}), fileName+'.xls')
+        }else{
+          let url = window.URL.createObjectURL(new Blob([data],{type: 'application/vnd.ms-excel'}))
+          let link = document.createElement('a')
+          link.style.display = 'none'
+          link.href = url
+          link.setAttribute('download', fileName+'.xls')
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link); //下载完成移除元素
+          window.URL.revokeObjectURL(url); //释放掉blob对象
+        }
+      })
+    },
+    /* 文件下载 */
+    // update--autor:lvdandan-----date:20200630------for：修改下载文件方法名uploadFile改为downloadFile------
+    downloadFile(text){
+      if(!text){
+        this.$message.warning("未知的文件")
+        return;
+      }
+      if(text.indexOf(",")>0){
+        text = text.substring(0,text.indexOf(","))
+      }
+      let url = getFileAccessHttpUrl(text)
+      window.open(url);
     },
   },
 }
