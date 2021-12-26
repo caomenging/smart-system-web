@@ -385,6 +385,9 @@
 
                               <a-menu slot="overlay">
                                 <a-menu-item v-if="col.allowDownload!==false" @click="handleClickDownloadFile(id)">
+                                  <span><a-icon type="download"/>&nbsp;预览</span>
+                                </a-menu-item>
+                                <a-menu-item v-if="col.allowDownload!==false" @click="handleClickDownloadFile(id)">
                                   <span><a-icon type="download"/>&nbsp;下载</span>
                                 </a-menu-item>
                                 <a-menu-item v-if="col.allowRemove!==false" @click="handleClickDelFile(id)">
@@ -472,6 +475,9 @@
                               </a-tooltip>
 
                               <a-menu slot="overlay">
+                                <a-menu-item v-if="col.allowDownload!==false" @click="handlePreview(id)">
+                                  <span><a-icon type="download"/>&nbsp;预览</span>
+                                </a-menu-item>
                                 <a-menu-item v-if="col.allowDownload!==false" @click="handleClickDownFileByUrl(id)">
                                   <span><a-icon type="download"/>&nbsp;下载</span>
                                 </a-menu-item>
@@ -749,6 +755,7 @@
   import JFilePop from '@/components/jeecg/minipop/JFilePop'
   import { getNoAuthCols } from '@/utils/authFilter'
   import { putAction } from '@/api/manage'
+  import { Base64 } from 'js-base64';
 
   // 行高，需要在实例加载完成前用到
   let rowHeight = 61
@@ -1110,6 +1117,20 @@
           this.el[id] = document.getElementById((noCaseId ? '' : this.caseId) + id)
         }
         return this.el[id]
+      },
+
+      handlePreview(id){
+        let { url,path } = this.uploadValues[id] || {}
+        if (!url || url.length===0) {
+          if(path && path.length>0){
+            url = getFileAccessHttpUrl(path.split(',')[0])
+            // console.log(url)
+          }
+        }
+
+        console.log(url)
+        console.log(encodeURIComponent(Base64.encode(url)))
+        window.open(window._CONFIG['filePreViewURL'] + encodeURIComponent(Base64.encode(url)))
       },
 
       getElementPromise(id, noCaseId = false) {

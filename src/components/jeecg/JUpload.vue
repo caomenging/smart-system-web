@@ -21,9 +21,11 @@
       @change="handleChange"
       :disabled="disabled"
       :returnUrl="returnUrl"
-      :listType="complistType"
+      listType="picture"
+      :previewFile="handlePreview"
       @preview="handlePreview"
-      :class="{'uploadty-disabled':disabled}">
+      @download="handleDownload"
+    >
       <template>
         <div v-if="isImageComp">
           <a-icon type="plus" />
@@ -45,6 +47,7 @@
   import Vue from 'vue'
   import { ACCESS_TOKEN } from "@/store/mutation-types"
   import { getFileAccessHttpUrl } from '@/api/manage';
+  import { Base64 } from 'js-base64';
 
   const FILE_TYPE_ALL = "all"
   const FILE_TYPE_IMG = "image"
@@ -69,6 +72,7 @@
         newFileList: [],
         uploadGoOn:true,
         previewVisible: false,
+        showUploadList: {showPreviewIcon: true, showRemoveIcon: true },
         //---------------------------- begin 图片左右换位置 -------------------------------------
         previewImage: '',
         containerId:'',
@@ -161,12 +165,12 @@
       }
     },
     computed:{
-      isImageComp(){
-        return this.fileType === FILE_TYPE_IMG
-      },
-      complistType(){
-        return this.fileType === FILE_TYPE_IMG?'picture-card':'text'
-      }
+      // isImageComp(){
+      //   return this.fileType === FILE_TYPE_IMG
+      // },
+      // complistType(){
+      //   return this.fileType === FILE_TYPE_IMG?'picture-card':'text'
+      // }
     },
     created(){
       const token = Vue.ls.get(ACCESS_TOKEN);
@@ -317,12 +321,17 @@
         console.log(file)
       },
       handlePreview(file){
-        if(this.fileType === FILE_TYPE_IMG){
-          this.previewImage = file.url || file.thumbUrl;
-          this.previewVisible = true;
-        }else{
-          location.href=file.url
-        }
+        console.log(file.url)
+        window.open(window._CONFIG['filePreViewURL'] + encodeURIComponent(Base64.encode(file.url)))
+        // if(this.fileType === FILE_TYPE_IMG){
+        //   this.previewImage = file.url || file.thumbUrl;
+        //   this.previewVisible = true;
+        // }else{
+        //   location.href=file.url
+        // }
+      },
+      handleDownload(file) {
+        location.href=file.url
       },
       handleCancel(){
         this.previewVisible = false;
