@@ -85,7 +85,7 @@ module.exports = {
 
   devServer: {
     port: 3000,
-    sockHost: '101.43.100.98',
+    sockHost: 'localhost',
 
     proxy: {
      /* '/api': {
