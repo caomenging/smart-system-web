@@ -459,6 +459,31 @@ export const constantRouterMap = [
     }
   },
 
+  {
+    path: '/createTriPrePlusSurvey/:opt',
+    name: 'createTriPrePlusSurvey',
+    component: () => import( '@/views/SmartTriPrePlusSurvey/createTriPrePlusSurvey.vue'),
+    meta:{
+      title:'新建三员+调查问卷'
+    },
+  },
+  {
+    path: '/createTriPrePlusSurvey/:opt/:id',
+    name: 'editTriPrePlusSurvey',
+    component: () => import( '@/views/SmartTriPrePlusSurvey/createTriPrePlusSurvey.vue'),
+    meta: {
+      title: '修改三员+调查问卷'
+    }
+  },
+  {
+    path: '/myTriPrePlusSurvey',
+    name: 'myTriPrePlusSurvey',
+    component: () => import( '@/views/SmartTriPrePlusSurvey/myTriPrePlusSurvey.vue'),
+    meta: {
+      title: '三员+调查问卷页面'
+    }
+  },
+
   //纠治四风扫描二维码之前以及扫码后页面
   {
     path:'/InsertReportingInformation/InsertReportingInformationDetail',

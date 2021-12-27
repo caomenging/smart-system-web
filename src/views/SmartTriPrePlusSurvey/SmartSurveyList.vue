@@ -1,21 +1,18 @@
 <template>
   <a-card :bordered="false">
-<!--    普通调查问卷-->
+    <!-- 三员+调查问卷-->
     <div>
-<!--      <span class="ant-card-head"> <a-icon type="line"/> 普通调查问卷 <a-icon type="line" /></span>-->
+<!--      <span class="ant-card-head"> <a-icon type="line"/> 三员+调查问卷 <a-icon type="line" /></span>-->
       <!-- 查询区域 -->
       <div class="table-page-search-wrapper">
         <a-form layout="inline" @keyup.enter.native="searchQuery">
           <a-row :gutter="24">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <!--            <a-form-model-item label="调查问卷名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="paperName">
-                            <j-input placeholder="请输入调查问卷名称" v-model="queryParam.paperName"></j-input>
-                          </a-form-model-item>-->
               <a-form-item label="调查问卷名称">
                 <j-search-select-tag
                   placeholder="请选择调查问卷名称"
                   v-model="queryParam.id"
-                  dict="smart_paper,paper_name,id,paper_type = '2'"
+                  dict="smart_paper,paper_name,id,paper_type = '3'"
                   :async="true">
                 </j-search-select-tag>
               </a-form-item>
@@ -34,7 +31,7 @@
       <!-- 操作按钮区域 -->
       <div class="table-operator">
         <!--<a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
-        <a-button @click="createTestPaper"  type="primary" icon="plus">创建调查问卷</a-button>
+        <a-button @click="createTestPaper"  type="primary" icon="plus">创建三员+调查问卷</a-button>
 
       </div>
 
@@ -81,22 +78,22 @@
 
           <span slot="action" slot-scope="text, record">
           <!--<a @click="handleEdit(record)">编辑</a>-->
-          <a @click="handleIssueSurvey(record)" :class="isDisabled(record)">发布问卷</a>
-          <a-divider type="vertical" />
-          <a @click="editTestPaper(record.id)" :class="isDisabled(record)">修改问卷</a>
+<!--          <a @click="handleIssueSurvey(record)" :class="isDisabled(record)">发布问卷</a>-->
+<!--          <a-divider type="vertical" />-->
+<!--          <a @click="editTestPaper(record.id)" :class="isDisabled(record)">修改问卷</a>-->
+            <a @click="showPeopleList(record)">查看被访人</a>
           <a-divider type="vertical" />
           <a @click="showScore(record)">查看调查结果</a>
         </span>
 
         </a-table>
 
-
-
       </div>
     </div>
 
     <smart-paper-modal ref="modalForm" @ok="modalFormOk"></smart-paper-modal>
     <task-detail-modal ref="scoreModal" @ok="modalFormOk"></task-detail-modal>
+    <selected-people-modal ref="selectedPeopleModel" @ok="modalFormOk"/>
     <!-- 发布调查问卷弹框 -->
     <ReleaseTest ref="releaseTestDialog" @ok="modalFormOk"/>
   </a-card>
@@ -112,11 +109,13 @@
   import { httpAction,putAction, postAction,getAction } from '@/api/manage'
   import ReleaseTest from './modules/ReleaseTest'
   import TaskDetailModal from './modules/TaskDetailModal.vue'
+  import SelectedPeopleModal from './modules/SelectedPeopleModal'
 
   export default {
     name: 'SmartSurveyList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
+      SelectedPeopleModal,
       SmartPaperModal,
       ReleaseTest,
       TaskDetailModal
@@ -125,12 +124,12 @@
       return {
         queryParam:{
           id:'',
-          paperType:'2'
+          paperType:'3'
         },
         description: '试卷表管理页面',
         // 表头
         columns: [
-          {
+          /*{
             title: '序号',
             dataIndex: '',
             key:'rowIndex',
@@ -139,7 +138,7 @@
             customRender:function (t,r,index) {
               return parseInt(index)+1;
             }
-          },
+          },*/
          /*{
             title:'试卷类型',
             align:"center",
@@ -149,15 +148,22 @@
             title:'问卷名称',
             align:"center",
             dataIndex: 'paperName',
-            sorter: true
+            //sorter: true
           },
+          {
+            title:'被调查村名',
+            align:"center",
+            dataIndex: 'departId_dictText',
+            //sorter: true
+          },
+
           // {
           //   title:'试卷状态',
           //   align:"center",
           //   dataIndex: 'paperStatus_dictText',
           //   sorter: true
           // },
-           {
+           /*{
             title:'命卷人',
             align:"center",
             dataIndex: 'creatorName',
@@ -168,7 +174,7 @@
             align:"center",
             dataIndex: 'createTime',
             sorter: true
-          },
+          },*/
           // {
           //   title:'题目数量',
           //   align:"center",
@@ -201,7 +207,7 @@
           }
         ],
         url: {
-          list: "/SmartPaper/smartPaper/list",
+          list: "/SmartPaper/smartPaper/triPeoList",
           delete: "/SmartPaper/smartPaper/delete",
           deleteBatch: "/SmartPaper/smartPaper/deleteBatch",
           exportXlsUrl: "/SmartPaper/smartPaper/exportXls",
@@ -227,12 +233,15 @@
     },
     methods: {
       searchReset(){
-        this.queryParam = { paperType:'2'}
+        this.queryParam = {}
         this.searchQuery();
+      },
+      showPeopleList(record){
+        this.$refs.selectedPeopleModel.edit(record.paperId,record.departId)
       },
       showScore(record) {
         console.log(record)
-        this.$refs.scoreModal.edit(record.id,record.paperName)
+        this.$refs.scoreModal.edit(record.paperId,record.paperName,record.departId,record.departName)
       },
       isDisabled(record){
         if ( record.paperStatus === "0") {
@@ -246,7 +255,7 @@
       //去创建新试卷
       createTestPaper() {
         const { href } = this.$router.resolve({
-          name: "createSurvey",
+          name: "createTriPrePlusSurvey",
           params: { opt: 'addSurvey'}
         });
         const win  = window.open(href, "_blank");
@@ -261,7 +270,7 @@
       editTestPaper(id) {
         console.log(id);
         const { href } = this.$router.resolve({
-          name: "editSurvey",
+          name: "editTriPrePlusSurvey",
           params: { opt: 'edit', id}
         });
         const win = window.open(href, "_blank");
@@ -275,7 +284,7 @@
       detailPage(id){
         console.log(id);
         const { href } = this.$router.resolve({
-          name: "editSurvey",
+          name: "editTriPrePlusSurvey",
           params: { opt: 'detail', id}
         });
         const win = window.open(href, "_blank");
@@ -296,15 +305,9 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-        fieldList.push({type:'string',value:'paperType',text:'试卷类型',dictCode:'paper_type'})
+        fieldList.push({type:'string',value:'paperId',text:'试卷ID',dictCode:''})
         fieldList.push({type:'string',value:'paperName',text:'试卷名称',dictCode:''})
-        fieldList.push({type:'string',value:'paperStatus',text:'试卷状态',dictCode:'paper_status'})
-        fieldList.push({type:'string',value:'creatorName',text:'命卷人',dictCode:''})
-        fieldList.push({type:'datetime',value:'createTime',text:'命卷日期'})
-        fieldList.push({type:'string',value:'topicNum',text:'题目数量',dictCode:''})
-        fieldList.push({type:'string',value:'totalScore',text:'总分',dictCode:''})
-        fieldList.push({type:'string',value:'passMark',text:'及格线',dictCode:''})
-        fieldList.push({type:'int',value:'time',text:'答题时间',dictCode:''})
+        fieldList.push({type:'string',value:'departId',text:'被调查村名',dictCode:'sys_depart,depart_name,id'})
         this.superFieldList = fieldList
       }
     },
@@ -317,17 +320,5 @@
   filter: alpha(opacity=50); /*IE滤镜，透明度50%*/
   -moz-opacity: 0.5; /*Firefox私有，透明度50%*/
   opacity: 0.5; /*其他，透明度50%*/
-}
-.ant-card-head{
-  min-height: 48px;
-  margin-bottom: -1px;
-  padding: 0 24px;
-  color: rgba(0, 0, 0, 0.85);
-  font-weight: 500;
-  font-size: 24px;
-  background: transparent;
-  border-bottom: 1px  #e8e8e8;
-  border-radius: 2px 2px 0 0;
-  zoom: 1;
 }
 </style>
