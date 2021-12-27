@@ -14,7 +14,13 @@
         <a-row style="width: 100%">
           <a-col :span="24 / 2">
             <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="sendType" label="发送类型">
-              <a-select placeholder="请选择发送类型" :disabled="disableSubmit" @change="changeSendtype">
+              <a-select 
+                v-model="sendType"
+                placeholder="请选择发送类型" 
+                :disabled="disableSubmit" 
+                @change="changeSendtype"
+                :getPopupContainer="(target) => target.parentNode"
+              >
                 <a-select-option value="1">系统消息</a-select-option>
                 <!-- <a-select-option value="2">系统消息</a-select-option> -->
                 <a-select-option value="2">短信</a-select-option>
@@ -245,7 +251,7 @@ export default {
       visible: false,
       disableSubmit: false,
       model: {},
-      sendType: '',
+      sendType: undefined,
       template: '',
       templates: [],
       smsMsg: {},
@@ -368,11 +374,12 @@ export default {
         tmp.departIds = this.departIds
         Object.assign(this.smsMsg, tmp)
         console.log(this.smsMsg)
-        this.$message.success("短信发送成功")
-        this.$emit('ok')
-        this.resetUser()
-        this.confirmLoading = false
-        this.close()
+        that.$message.success("短信发送成功")
+        that.visible = false
+        that.$emit('ok')
+        that.resetUser()
+        // this.confirmLoading = false
+        // this.close()
         // getAction('/sys/annountCement/sendSmsMsg', this.smsMsg).then((res) => {
         //   if(res.success) {
         //     this.$message.success(res.message)
@@ -431,8 +438,9 @@ export default {
       this.departIds = ''
       this.selectedUser = []
       this.disabled = false
-      this.sendType = ''
-      this.$refs.UserListModal.edit(null, null)
+      this.sendType = undefined
+      this.smsMsg = {}
+      // this.$refs.UserListModal.edit(null, null)
     },
     selectUserIds() {
       this.$refs.UserListModal.add(this.selectedUser, this.userIds)
