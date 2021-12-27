@@ -16,7 +16,7 @@
       </a-card-meta>
       <a-divider />
       <span v-html="record.msgContent" class="article-content"></span>
-      <div v-if="fieldList !== {}">
+      <div v-if="Object.keys(fileList).length !== 0">
         <a-divider />
         <div>附件</div>
         <a-upload :fileList="fileList"></a-upload>
@@ -58,29 +58,26 @@ export default {
       },
     }
   },
-  beforeCreate() {
-    console.log(this.record)
-  },
+  beforeCreate() {},
   created() {
-    console.log(this.record)
-    this.displayFile();
+    this.displayFile()
   },
-  mounted() {
-    
-  },
+  mounted() {},
   methods: {
     detail(record) {
       this.visible = true
       this.record = record
       console.log(record)
-      const fileList = record.fileList.split(',').map((item,index) => {
-        return item = {
-          uid: index,
-          name:item.split('/').slice(-1)[0],
-          url: this.upurl + item
-        }
-      })
-      this.fileList = fileList
+      if (record.fileList) {
+        const fileList = record.fileList.split(',').map((item, index) => {
+          return (item = {
+            uid: index,
+            name: item.split('/').slice(-1)[0],
+            url: this.upurl + item,
+          })
+        })
+        this.fileList = fileList
+      }
     },
     handleCancel() {
       this.visible = false
@@ -105,9 +102,10 @@ export default {
       }
     },
     displayFile() {
-      fileList = this.record.fileList.split(',')
-      console.log(fileList)
-    }
+      if(this.record.fileList){
+        fileList = this.record.fileList.split(',')
+      }
+    },
   },
 }
 </script>

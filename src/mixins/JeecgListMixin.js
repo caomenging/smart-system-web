@@ -255,7 +255,6 @@ export const JeecgListMixin = {
       return fields.split(',')[0]
     },
     modalFormOk() {
-      console.log('aaa')
       // 新增/修改 成功时，重载列表
       this.loadData();
       //清空列表选中
