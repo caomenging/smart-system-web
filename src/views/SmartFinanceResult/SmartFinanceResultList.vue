@@ -166,7 +166,7 @@
           {
             title:'创建人',
             align:"center",
-            dataIndex: 'createBy'
+            dataIndex: 'creator'
           },
           {
             title:'审核状态',
@@ -223,7 +223,7 @@
          fieldList.push({type:'string',value:'financeType',text:'收支类型',dictCode:''})
          fieldList.push({type:'datetime',value:'financeTime',text:'收支时间'})
          fieldList.push({type:'datetime',value:'createTime',text:'创建时间'})
-         fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
+         fieldList.push({type:'string',value:'creator',text:'创建人',dictCode:''})
          fieldList.push({type:'int',value:'verifyStatus',text:'审核状态',dictCode:''})
         this.superFieldList = fieldList
       }

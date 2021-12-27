@@ -26,7 +26,7 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="主持人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="hostId">
-              <select-user-by-dep v-model="model.hostId" @info="getHostUser"></select-user-by-dep>
+              <select-user-by-dep v-model="model.hostId" @info="getHostUser" :multi="false"></select-user-by-dep>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -36,7 +36,7 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="会议记录人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="recorderId">
-              <select-user-by-dep v-model="model.recorderId" @info="getRecorderUser"></select-user-by-dep>
+              <select-user-by-dep v-model="model.recorderId" @info="getRecorderUser" :multi="false"></select-user-by-dep>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -144,6 +144,9 @@
               title: '参会人员',
               key: 'pacpaName',
               type: FormTypes.sel_user,
+              store: 'realname',
+              text: 'realname',
+              multi: false,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
