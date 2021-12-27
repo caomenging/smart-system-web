@@ -154,7 +154,7 @@
               validateRules: [{ required: true, message: '${title}不能为空' }],
             },
             {
-              title: '附件文件路径',
+              title: '附件',
               key: 'annexPath',
               type: FormTypes.file,
               token:true,

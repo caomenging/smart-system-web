@@ -4,14 +4,26 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :xl="6" :lg="7" :md="8" :sm="24"  v-if="roleId.indexOf('1465163864583323650') == -1">
-            <a-form-item label="单位">
-              <j-select-depart placeholder="请选择单位"  v-model="queryParam.departId" customReturnField='id' :multi="false" :treeOpera="true"></j-select-depart>
-            </a-form-item>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+<!--            <a-form-item label="所属乡镇">-->
+<!--              <a-input placeholder="请输入所属乡镇" v-model="queryParam.departId"></a-input>-->
+<!--            </a-form-item>-->
+            <a-form-model-item label="所在乡镇、村" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departId">
+              <!-- <j-select-depart v-model="model.selecteddeparts" :multi="false" @back="backDepartInfo" :backDepart="true" :treeOpera="true"/>-->
+              <a-tree-select
+                style="width:100%"
+                :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
+                :treeData="departTree"
+                v-model="queryParam.departId"
+                placeholder="请选择乡镇、村"
+                allow-clear
+                tree-default-expand-all>
+              </a-tree-select>
+            </a-form-model-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="会议名称">
-              <j-input placeholder="请输入会议名称" v-model="queryParam.meetingName"></j-input>
+            <a-form-item label="户主姓">
+              <a-input placeholder="请输入户主姓" v-model="queryParam.homeSurname"></a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -28,11 +40,11 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('述责述廉表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('乡镇户口表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -56,15 +68,15 @@
       <a-table
         ref="table"
         size="middle"
+        :scroll="{x:true}"
         bordered
         rowKey="id"
-        class="j-table-force-nowrap"
-        :scroll="{x:true}"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        class="j-table-force-nowrap"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -88,39 +100,48 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a v-show="record.verifyStatus == '3'" @click="handleEdit(record)">编辑</a>
+          <a @click="handleEdit(record)">编辑</a>
 
           <a-divider type="vertical" />
-          <a @click="handleDetail(record)">详情</a>
-          <a-divider type="vertical" />
-          <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-            <a v-show="record.verifyStatus == '3'">删除</a>
-          </a-popconfirm>
+          <a-dropdown>
+            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
+            <a-menu slot="overlay">
+              <a-menu-item>
+                <a @click="handleDetail(record)">详情</a>
+              </a-menu-item>
+              <a-menu-item>
+                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+                  <a>删除</a>
+                </a-popconfirm>
+              </a-menu-item>
+            </a-menu>
+          </a-dropdown>
         </span>
 
       </a-table>
     </div>
 
-    <smart-evaluate-meeting-modal ref="modalForm" @ok="modalFormOk"/>
+    <village-home-modal ref="modalForm" @ok="modalFormOk"></village-home-modal>
   </a-card>
 </template>
 
 <script>
 
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartEvaluateMeetingModal from './modules/SmartEvaluateMeetingModal'
   import '@/assets/less/TableExpand.less'
-  import { mapActions, mapGetters,mapState } from 'vuex'
+  import { mixinDevice } from '@/utils/mixin'
+  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import villageHomeModal from './modules/villageHomeModal'
+  import { queryVillageIdTree} from '@/api/api'
 
   export default {
-    name: "SmartEvaluateMeetingList",
-    mixins:[JeecgListMixin],
+    name: 'villageHomeList',
+    mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartEvaluateMeetingModal
+      villageHomeModal
     },
     data () {
       return {
-        description: '述责述廉表管理页面',
+        description: '乡镇户口表管理页面',
         // 表头
         columns: [
           {
@@ -134,60 +155,19 @@
             }
           },
           {
-            title:'单位',
+            title:'户籍编号',
             align:"center",
-            dataIndex: 'departId'
+            dataIndex: 'homeCode'
           },
           {
-            title:'会议名称',
+            title:'户主姓',
             align:"center",
-            dataIndex: 'meetingName'
+            dataIndex: 'homeSurname'
           },
           {
-            title:'会议地点',
+            title:'家庭地址',
             align:"center",
-            dataIndex: 'meetingPlace'
-          },
-          {
-            title:'检查时间',
-            align:"center",
-            dataIndex: 'checkTime',
-          },
-          {
-            title:'对象类型',
-            align:"center",
-            dataIndex: 'peopleType'
-          },
-          {
-            title:'备注',
-            align:"center",
-            dataIndex: 'meetingRemarks'
-          },
-          {
-            title:'创建人',
-            align:"center",
-            dataIndex: 'createBy'
-          },
-          {
-            title:'创建日期',
-            align:"center",
-            dataIndex: 'createTime'
-          },
-          {
-            title: '审核状态',
-            align: 'center',
-            dataIndex: 'verifyStatus',
-            customRender: function (text) {
-              if (text == '0') {
-                return '不通过'
-              } else if (text == '1') {
-                return '通过'
-              } else if (text == '2') {
-                return '待审核'
-              } else if (text == '3') {
-                return '免审'
-              }
-            },
+            dataIndex: 'address'
           },
           {
             title: '操作',
@@ -195,46 +175,56 @@
             align:"center",
             fixed:"right",
             width:147,
-            scopedSlots: { customRender: 'action' },
+            scopedSlots: { customRender: 'action' }
           }
         ],
-        roleId: [],
         url: {
-          list: "/smartEvaluateMeeting/smartEvaluateMeeting/list",
-          delete: "/smartEvaluateMeeting/smartEvaluateMeeting/delete",
-          deleteBatch: "/smartEvaluateMeeting/smartEvaluateMeeting/deleteBatch",
-          exportXlsUrl: "/smartEvaluateMeeting/smartEvaluateMeeting/exportXls",
-          importExcelUrl: "smartEvaluateMeeting/smartEvaluateMeeting/importExcel",
+          list: "/villageHome/villageHome/list",
+          delete: "/villageHome/villageHome/delete",
+          deleteBatch: "/villageHome/villageHome/deleteBatch",
+          exportXlsUrl: "/villageHome/villageHome/exportXls",
+          importExcelUrl: "villageHome/villageHome/importExcel",
           
         },
         dictOptions:{},
         superFieldList:[],
+        departTree:[],
       }
     },
     created() {
-      this.roleId = this.userInfo().roleId
-      this.getSuperFieldList();
+    this.getSuperFieldList();
+      this.loadVillageTreeData();
     },
     computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      }
+      },
     },
     methods: {
-      ...mapGetters(["userInfo"]),
       initDictConfig(){
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'departId',text:'单位',dictCode:''})
-         fieldList.push({type:'string',value:'meetingName',text:'会议名称',dictCode:''})
-         fieldList.push({type:'string',value:'meetingPlace',text:'会议地点',dictCode:''})
-         fieldList.push({type:'datetime',value:'checkTime',text:'检查时间'})
-         fieldList.push({type:'string',value:'peopleType',text:'对象类型',dictCode:''})
-         fieldList.push({type:'Text',value:'meetingRemarks',text:'备注',dictCode:''})
-         fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
-         fieldList.push({type:'datetime',value:'createTime',text:'创建日期'})
+        fieldList.push({type:'string',value:'departId',text:'所属乡镇',dictCode:''})
+        fieldList.push({type:'string',value:'homeCode',text:'户籍编号',dictCode:''})
+        fieldList.push({type:'string',value:'homeSurname',text:'户主姓',dictCode:''})
+        fieldList.push({type:'string',value:'hostId',text:'户主',dictCode:''})
+        fieldList.push({type:'string',value:'address',text:'家庭地址',dictCode:''})
         this.superFieldList = fieldList
+      },
+      loadVillageTreeData(){
+        var that = this;
+        this.departTee = []
+        queryVillageIdTree().then((res)=>{
+          if(res.success){
+            that.departTree = [];
+            for (let j = 0; j < res.result.length; j++) {
+              let temp = res.result[j];
+              that.departTree.push(temp);
+            }
+          }
+
+        })
       }
     }
   }

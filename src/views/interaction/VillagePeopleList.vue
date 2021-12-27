@@ -6,13 +6,13 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
 
-          <a-col :md="6" :sm="12">
-            <a-form-item label="账号">
-              <!--<a-input placeholder="请输入账号查询" v-model="queryParam.username"></a-input>-->
-              <!--模糊查询:j-input-->
-              <j-input placeholder="输入账号" v-model="queryParam.username"></j-input>
-            </a-form-item>
-          </a-col>
+<!--          <a-col :md="6" :sm="12">-->
+<!--            <a-form-item label="账号">-->
+<!--              &lt;!&ndash;<a-input placeholder="请输入账号查询" v-model="queryParam.username"></a-input>&ndash;&gt;-->
+<!--              &lt;!&ndash;模糊查询:j-input&ndash;&gt;-->
+<!--              <j-input placeholder="输入账号" v-model="queryParam.username"></j-input>-->
+<!--            </a-form-item>-->
+<!--          </a-col>-->
 
 
 
@@ -40,7 +40,7 @@
 
           <!--TODO 按照单位查询 (设置返回值，默认返回ID：customReturnField='orgCode')-->
           <a-col :md="6" :sm="8">
-            <a-form-item label="单位" prop="orgCode" hasFeedback>
+            <a-form-item label="所在乡镇、村"  hasFeedback>
 <!--              <j-select-fuze-depart placeholder="请选择单位"  v-model="queryParam.orgCode" customReturnField='orgCode' :multi="false"   :treeOpera="true"></j-select-fuze-depart>-->
 <!--              <a-form-model-item label="单位分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">-->
                 <!-- <j-select-depart v-model="model.selecteddeparts" :multi="false" @back="backDepartInfo" :backDepart="true" :treeOpera="true"/>-->
@@ -50,7 +50,7 @@
                   :treeData="departTree"
                   :multi="true"
                   v-model="queryParam.departId"
-                  placeholder="请选择部门"
+                  placeholder="请选择乡镇、村"
                   allow-clear
                   tree-default-expand-all>
                 </a-tree-select>
@@ -96,8 +96,8 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator" style="border-top: 5px">
-      <a-button @click="handleAdd" type="primary" icon="plus" >添加用户</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('用户信息')">导出</a-button>
+      <a-button @click="handleAdd" type="primary" icon="plus" >添加村民</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('村民信息')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -240,7 +240,7 @@
         departTree:[],
         villageDepartTree:[],
         fuzeDepartTree:[],
-        description: '这是用户管理页面',
+        description: '这是村民管理页面',
         queryParam: {peopleType:2},
         recycleBinVisible: false,
         columns: [
@@ -301,17 +301,17 @@
          //    dataIndex: 'orgCode'
          //  },
           {
-            title: '单位',
+            title: '所在乡镇、村',
             align: "center",
             width: 180,
             dataIndex: 'orgCodeTxt'
           },
-          {
-            title: '负责单位',
-            align: "center",
-            width: 180,
-            dataIndex: 'departIds_dictText'
-          },
+          // {
+          //   title: '负责单位',
+          //   align: "center",
+          //   width: 180,
+          //   dataIndex: 'departIds_dictText'
+          // },
           // {  title: '职务',
           //   width: 180,
           //   align: 'center',
@@ -339,7 +339,7 @@
 
         ],
         superQueryFieldList: [
-          { type: 'input', value: 'username', text: '用户账号', },
+          // { type: 'input', value: 'username', text: '用户账号', },
           { type: 'input', value: 'realname', text: '用户姓名', },
           //{ type: 'select', value: 'sex', dbType: 'int', text: '性别', dictCode: 'sex' },
           { type: 'input', value: 'phone',  text: '手机号'},
@@ -394,14 +394,7 @@
         })
       },
       selectDepartTree(){
-        if(store.getters.departid == "5d25a41d462242f3a8ee139ac87942e6" ){
           this.loadVillageTreeData()
-          // this.departTree = this.villageDepartTree === "5d25a41d462242f3a8ee139ac87942e6"
-        }
-        else{
-          this.loadFuzeTreeData()
-          // this.departTree = this.fuzeDepartTree
-        }
       },
       batchFrozen: function (status) {
         if (this.selectedRowKeys.length <= 0) {
