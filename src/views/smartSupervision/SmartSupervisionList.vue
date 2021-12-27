@@ -1,7 +1,7 @@
 <template>
   <a-card :bordered="false">
     <!-- 查询区域 -->
-    <div class="table-page-search-wrapper">
+    <div v-if="roleId.indexOf('1465163864583323650') == -1" class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -14,9 +14,6 @@
                 :treeOpera="true"
               ></j-select-depart>
             </a-form-item>
-            <!-- <a-form-item label="所属部门">
-              <a-input placeholder="请输入所属部门" v-model="queryParam.sysOrgCode"></a-input>
-            </a-form-item> -->
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left; overflow: hidden" class="table-page-search-submitButtons">
@@ -125,6 +122,7 @@
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import SmartSupervisionModal from './modules/SmartSupervisionModal'
 import '@/assets/less/TableExpand.less'
+import { mapActions, mapGetters,mapState } from 'vuex'
 
 export default {
   name: 'SmartSupervisionList',
@@ -135,6 +133,7 @@ export default {
   data() {
     return {
       description: '八项规定监督检查表管理页面',
+      roleId: [],
       // 表头
       columns: [
         {
@@ -217,6 +216,7 @@ export default {
     }
   },
   created() {
+    this.roleId = this.userInfo().roleId
     this.getSuperFieldList()
   },
   computed: {
@@ -225,8 +225,9 @@ export default {
     },
   },
   methods: {
+    ...mapGetters(["userInfo"]),
     initDictConfig() {},
-    getSuperFieldList() {
+     getSuperFieldList() {
       let fieldList = []
       fieldList.push({ type: 'string', value: 'createBy', text: '创建人', dictCode: '' })
       fieldList.push({ type: 'datetime', value: 'createTime', text: '创建日期' })
