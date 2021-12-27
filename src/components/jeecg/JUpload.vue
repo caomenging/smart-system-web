@@ -22,9 +22,9 @@
       :disabled="disabled"
       :returnUrl="returnUrl"
       listType="picture"
-      :previewFile="handlePreview"
       @preview="handlePreview"
       @download="handleDownload"
+      :showUploadList=showUploadList
     >
       <template>
         <div v-if="isImageComp">
@@ -72,7 +72,7 @@
         newFileList: [],
         uploadGoOn:true,
         previewVisible: false,
-        showUploadList: {showPreviewIcon: true, showRemoveIcon: true },
+        showUploadList: {showPreviewIcon: true, showRemoveIcon: true, showDownloadIcon: true },
         //---------------------------- begin 图片左右换位置 -------------------------------------
         previewImage: '',
         containerId:'',
@@ -165,12 +165,12 @@
       }
     },
     computed:{
-      // isImageComp(){
-      //   return this.fileType === FILE_TYPE_IMG
-      // },
-      // complistType(){
-      //   return this.fileType === FILE_TYPE_IMG?'picture-card':'text'
-      // }
+      isImageComp(){
+        return this.fileType === FILE_TYPE_IMG
+      },
+      complistType(){
+        return this.fileType === FILE_TYPE_IMG?'picture-card':'picture'
+      }
     },
     created(){
       const token = Vue.ls.get(ACCESS_TOKEN);
