@@ -39,7 +39,9 @@
           :disabled="formDisabled"
           :rowNumber="true"
           :rowSelection="true"
-          :actionButton="true"/>
+          :actionButton="true"
+          :rootUrl=rootUrl
+        />
       </a-tab-pane>
     </a-tabs>
   </a-spin>
@@ -59,6 +61,7 @@
     },
     data() {
       return {
+        rootUrl: "/smartSupervision/smartSupervision",
         labelCol: {
           xs: { span: 24 },
           sm: { span: 6 },
