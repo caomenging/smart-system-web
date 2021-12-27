@@ -29,19 +29,6 @@
               <a-input-number v-model="model.meetingNumber" placeholder="请输入参会人数" style="width: 100%" />
             </a-form-model-item>
           </a-col>
-
-<!--          <a-col :span="24" >
-            <a-form-model-item label="参会人员" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingPeople">
-              <select-user-by-dep v-model="model.meetingPeople" @info="getMeetingPeople"/>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" >
-            <a-form-model-item label="参会人员姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingPeopleName" v-show="false">
-              <a-input v-model="model.meetingPeopleName"/>
-            </a-form-model-item>
-          </a-col>-->
-
-
           <a-col :span="24">
             <a-form-model-item label="主持人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="meetingHoster">
               <select-user-by-dep v-model="model.meetingHoster" @info="getMeetingHoster "/>
@@ -187,10 +174,12 @@
               title: '参会人员',
               key: 'meetingPeopleName',
               type: FormTypes.sel_user,
+              store:'realname',
+              text:'realname',
+              multi:false,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
             },
           ]
         },
