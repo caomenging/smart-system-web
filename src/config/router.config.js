@@ -483,6 +483,14 @@ export const constantRouterMap = [
       title: '三员+调查问卷页面'
     }
   },
+  {
+    path: '/myTriPrePlusAppSurvey',
+    name: 'myTriPrePlusAppSurvey',
+    component: () => import( '@/views/SmartTriPrePlusSurvey/myTriPrePlusAppSurvey.vue'),
+    meta: {
+      title: '三员+调查问卷页面'
+    }
+  },
 
   //纠治四风扫描二维码之前以及扫码后页面
   {
@@ -526,7 +534,7 @@ export const constantRouterMap = [
   },
   {
     path: '/webview/survey',
-    component: () => import('@/views/SmartSurvey/SmartMySurveyAppList')
+    component: () => import('@/views/SmartTriPrePlusSurvey/SmartSurveyAppList')
   },
   // 阳光评廉
   {
