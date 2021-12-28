@@ -211,9 +211,8 @@ export default {
 };
 </script>
 
-<style type="text/css" lang="scss" rel="stylesheet/scss">
+<style>
 .vjs-progress-control{
   pointer-events: none !important;
 }
-
 </style>
