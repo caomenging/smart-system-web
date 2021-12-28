@@ -10,6 +10,27 @@
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="所属单位">
+              <j-select-depart placeholder="请选择所属单位" v-model="queryParam.location"/>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="发布单位门">
+              <j-select-depart placeholder="请选择发布单位" v-model="queryParam.sysOrgCode" :trigger-change="true" customReturnField="orgCode" :multi="true">
+              </j-select-depart>
+              <!-- <a-input placeholder="请输入填报部门" v-model="queryParam.sysOrgCode"></a-input> -->
+            </a-form-item>
+          </a-col>
+          <template v-if="toggleSearchStatus">
+            <a-col :xl="10" :lg="11" :md="12" :sm="24">
+              <a-form-item label="上传时间">
+                <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.createTime_begin"></j-date>
+                <span class="query-group-split-cust"></span>
+                <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.createTime_end"></j-date>
+              </a-form-item>
+            </a-col>
+          </template>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>

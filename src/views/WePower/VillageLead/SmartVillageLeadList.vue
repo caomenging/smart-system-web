@@ -11,7 +11,9 @@
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="填报部门">
-              <a-input placeholder="请输入填报部门" v-model="queryParam.sysOrgCode"></a-input>
+              <j-select-depart placeholder="请选择填报部门" v-model="queryParam.sysOrgCode" :trigger-change="true" customReturnField="orgCode" :multi="true">
+              </j-select-depart>
+              <!-- <a-input placeholder="请输入填报部门" v-model="queryParam.sysOrgCode"></a-input> -->
             </a-form-item>
           </a-col>
           <template v-if="toggleSearchStatus">
