@@ -43,11 +43,11 @@
                               <div v-if="video.title==='在线听课'">
                                 <!--                                              <a :href="'/courcopy/learning/player/SmartVideoText?url='+video.wordOneUrl"  target="_blank">-->
                                 <!-- 2021-12-12 @Author CabbSir 更改视频播放页面，只保留视频控件，更改控件顺序-->
-                                <a :href="'/player?url='+video.wordOneUrl">
+                                <a :href="'/courcopy/learning/player/SmartVideoText?url='+video.wordOneUrl">
                                   <!--                                              <a @click="handlePreview(video)"  target="_blank">-->
                                   {{ video.wordOneName}}
                                   <span class="fr">
-                                    <i class="free-icon vam mr10">学习</i>
+                                    <i class="free-icon vam mr10">视频学习</i>
                                   </span>
 
                                 </a>
@@ -57,7 +57,7 @@
                                 <a @click="handlePreview(video)">
                                   {{ video.wordOneName}}
                                   <span class="fr">
-                                    <i class="free-icon vam mr10">学习</i>
+                                    <i class="free-icon vam mr10">浏览学习</i>
                                   </span>
                                 </a>
                               </div>

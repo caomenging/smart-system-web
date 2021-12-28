@@ -33,7 +33,6 @@ require('video.js/dist/video-js.css');
 require('vue-video-player/src/custom-theme.css');
 import 'videojs-flash'
 import 'videojs-contrib-hls'
-import videotext from '../../api/edu/SmartVideoText'
 import progress from "ant-design-vue/lib/progress/progress"
 
 
@@ -46,7 +45,6 @@ export default {
   data() {
     return {
       playerOptions: {
-        startTime:'15',
         playbackRates: [0.7, 1.0], //播放速度
         autoplay: false, //如果true,浏览器准备好时开始回放。
         muted: false, // 默认情况下将会消除任何音频。
@@ -67,18 +65,18 @@ export default {
           timeDivider: true,
           durationDisplay: true,
           remainingTimeDisplay: false,
-          fullscreenToggle: true,  //全屏按钮
+          fullscreenToggle: true  //全屏按钮
         }
       }
     }
   },
   created() {
     //获取视频的url
-     this.get_num()
-     //this.url = require("D:/soft_ware/Idea_Project/[HYSUB]Ganbare Douki-chan[10][BIG5_MP4][1920X1080].mp4");
+    this.get_num()
+    //this.url = require("D:/soft_ware/Idea_Project/[HYSUB]Ganbare Douki-chan[10][BIG5_MP4][1920X1080].mp4");
     // this.url = require("D:\\doc\\study\\Code\\Java\\smart-system-server\\upload_file"+this.getUrlKey("url"));
     this.playerOptions['sources'][0]['src'] = this.url;
-    this.onPlayerPlay
+    this.onPlayerPlay()
   },
 
   // mounted() {
@@ -94,72 +92,54 @@ export default {
       console.log(path)
       this.num = path
       console.log(this.num)
-      // if (this.num === '521') {
-      //   this.url = 'http://img.ksbbs.com/asset/Mon_1703/05cacb4e02f9d9e.mp4'
-      // } else {
-      //   // 这里有问题
-      //   axios.get('${this.$settings.HOST}/planes/repair/${this.num}',
-      //   )
-      //     .then(response => {
-      // **最关键的地方**
-      // *加粗样式#响应成功的数据中提取url赋值给变量url
-      // 2021-12-12 修改url地址，去掉ip @Author CabbSir
-      this.url = "/smart-system/sys/common/static/" + this.num;
-      // this.url = "D:/doc/study/Code/Java/smart-system-server/upload_file" + this.num;
-      //         #将url赋值给src
+      this.url = window._CONFIG['staticDomainURL'] +"/" + this.num;
       this.playerOptions['sources'][0]['src'] = this.url;
-
       console.log(this.url)
-      //   }).catch(error => {
-      //     console.log(error);
-      //     console.log('‘对不起维修信息获取失败‘')
-      //   })
-      // }
       return this.num;
     },
 
 
 
-/*    videoPlayer(){
-      const that = this;
-      let resetTime = 0;//拖动后重置播放时间
-      let curTime = 0;//当前播放时间
-      const vd = document.getElementById("video");//获取video对象
-      const getCurTime = localStorage.getItem("remTime");//获取本地存储
-      console.log(getCurTime)
-      if(getCurTime >0.1){
-        curTime = getCurTime;
-        resetTime = getCurTime;
-        vd.addEventListener("paly",function () {
-          setTimeout(function (){
-            vd.currentTime = get_Component;
+    /*    videoPlayer(){
+          const that = this;
+          let resetTime = 0;//拖动后重置播放时间
+          let curTime = 0;//当前播放时间
+          const vd = document.getElementById("video");//获取video对象
+          const getCurTime = localStorage.getItem("remTime");//获取本地存储
+          console.log(getCurTime)
+          if(getCurTime >0.1){
+            curTime = getCurTime;
+            resetTime = getCurTime;
+            vd.addEventListener("paly",function () {
+              setTimeout(function (){
+                vd.currentTime = get_Component;
+                setInterval(timer,100);
+                },2000);
+              })
+          }else{
+            vd.play();
             setInterval(timer,100);
-            },2000);
-          })
-      }else{
-        vd.play();
-        setInterval(timer,100);
-      }//定时器
+          }//定时器
 
-      function timer() {
-        curTime = vd.currentTime;
-        var apartTime = curTime - resetTime;
-        if(apartTime > 2){
-          vd.currentTime = resetTime;
-        }else{
-          resetTime = curTime;
-        }
-        that.currentTime = curTime;
-      }
-      vd.addEventListener("pause",function (){
-        localStorage.setItem("remTime",that.curTime);
-      });
-    },
-    gogo(){
-      this.$router.push("/Request");
-    },
+          function timer() {
+            curTime = vd.currentTime;
+            var apartTime = curTime - resetTime;
+            if(apartTime > 2){
+              vd.currentTime = resetTime;
+            }else{
+              resetTime = curTime;
+            }
+            that.currentTime = curTime;
+          }
+          vd.addEventListener("pause",function (){
+            localStorage.setItem("remTime",that.curTime);
+          });
+        },
+        gogo(){
+          this.$router.push("/Request");
+        },
 
- */
+     */
     //监听播放
     onPlayerPlay(player) {
       console.log(player);
@@ -208,7 +188,7 @@ export default {
           player.cache_.currentTime = originTime
         }
         player.cache_.originTime = currentTime
-      }, 100)
+      }, 10000000)
     },
 
     //媒体的readyState为HAVE_FUTURE_DATA或更高
@@ -230,3 +210,10 @@ export default {
   }
 };
 </script>
+
+<style type="text/css" lang="scss" rel="stylesheet/scss">
+.vjs-progress-control{
+  pointer-events: none !important;
+}
+
+</style>
