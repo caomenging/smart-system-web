@@ -14,7 +14,7 @@
                 >{{item.createBy.slice(0,3)}}</a-avatar
               >
             </a-col>
-            <a-col :pull='4'>
+            <a-col>
               <h3>{{item.title}}</h3>
               <!-- <p>这是内容简介，这是内容简介，这是内容简介，这是内容简介</p> -->
               <a-row type="flex" style="font-size: 0.5rem; color: gray">

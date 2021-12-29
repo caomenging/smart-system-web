@@ -35,7 +35,8 @@
     <a-dropdown>
       <span class="action action-full ant-dropdown-link user-dropdown-menu">
         <a-avatar class="avatar" size="small" :src="getAvatar()"/>
-        <span v-if="isDesktop()">欢迎您，{{ nickname() }}</span>
+        <!-- @TODO 暂时换成username  -->
+        <span v-if="isDesktop()">欢迎您，{{ this.userInfo().username }}</span>
       </span>
       <a-menu slot="overlay" class="user-dropdown-menu-wrapper">
         <a-menu-item key="0">
@@ -171,7 +172,7 @@
       },
       /* update_end author:zhaoxin date:20191129 for: 做头部菜单栏导航*/
       ...mapActions(["Logout"]),
-      ...mapGetters(["nickname", "avatar","userInfo"]),
+      ...mapGetters(["username", "nickname", "avatar","userInfo"]),
       getAvatar(){
         return getFileAccessHttpUrl(this.avatar())
       },

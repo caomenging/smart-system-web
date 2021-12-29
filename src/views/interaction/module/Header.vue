@@ -2,7 +2,7 @@
   <div style="padding: 1rem 0">
     <a-row type="flex" justify="space-between">
       <h1 class="title">村情互动</h1>
-      <a-button type="primary" icon="plus" :size="size" @click="createQuestion"> 发表问题 </a-button>
+      <a-button type="primary" icon="plus" :size="size" @click="createQuestion"> 发布信息 </a-button>
     </a-row>
     <create-modal ref="createModal" />
   </div>

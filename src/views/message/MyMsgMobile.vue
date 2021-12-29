@@ -14,7 +14,7 @@
                 >{{item.sender.slice(0,3)}}</a-avatar
               >
             </a-col>
-            <a-col :pull='4' style="padding:0 5px">
+            <a-col style="padding:0 5px">
               <div style="font-size: 0.9rem; font-weight:bold" >{{item.titile}}</div>
               <!-- <p>这是内容简介，这是内容简介，这是内容简介，这是内容简介</p> -->
               <a-row type="flex" style="font-size: 0.5rem; color: gray">

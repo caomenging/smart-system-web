@@ -12,7 +12,7 @@
             </a-col>
             <a-col :span="24">
               <a-form-model-item label="正文" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="content">
-                <j-editor v-model="model.content" />
+                <a-textarea v-model="model.content" placeholder="请输入正文" :rows="4" />
               </a-form-model-item>
             </a-col>
           </a-row>

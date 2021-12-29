@@ -91,8 +91,8 @@
           </a-button>
         </template>
 
-        <span slot="action" slot-scope="text, record">
-          <a @click="handlePreview(record)">预览</a>
+        <span slot="name" slot-scope="text, record">
+          <a @click="handlePreview(record)">{{record.name}}</a>
         </span>
 
       </a-table>
@@ -122,20 +122,21 @@ export default {
       description: '资料库管理页面',
       // 表头
       columns: [
-        {
-          title: '#',
-          dataIndex: '',
-          key: 'rowIndex',
-          width: 60,
-          align: "center",
-          customRender: function (t, r, index) {
-            return parseInt(index) + 1;
-          }
-        },
+        // {
+        //   title: '#',
+        //   dataIndex: '',
+        //   key: 'rowIndex',
+        //   width: 60,
+        //   align: "center",
+        //   customRender: function (t, r, index) {
+        //     return parseInt(index) + 1;
+        // //   }
+        // },
         {
           title: '文件主题',
-          align: "center",
-          dataIndex: 'name'
+          align: "left",
+          dataIndex: 'name',
+          scopedSlots: {customRender: 'name'}
         },
         // {
         //   title: '文件类型',
@@ -174,14 +175,14 @@ export default {
         //   align: "center",
         //   dataIndex: 'times'
         // },
-        {
-          title: '操作',
-          dataIndex: 'action',
-          align: "center",
-          fixed: "right",
-          width: 147,
-          scopedSlots: {customRender: 'action'}
-        }
+        // {
+        //   title: '操作',
+        //   dataIndex: 'action',
+        //   align: "center",
+        //   fixed: "right",
+        //   width: 60,
+        //   scopedSlots: {customRender: 'action'}
+        // }
       ],
       url: {
         list: "/smart_data_sheet_new/smartDataSheetNewP/list",
