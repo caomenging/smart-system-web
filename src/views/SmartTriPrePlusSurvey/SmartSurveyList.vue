@@ -153,7 +153,8 @@
           {
             title:'被调查村名',
             align:"center",
-            dataIndex: 'departId_dictText',
+            dataIndex: 'departName',
+            //dataIndex: 'departId_dictText',
             //sorter: true
           },
 

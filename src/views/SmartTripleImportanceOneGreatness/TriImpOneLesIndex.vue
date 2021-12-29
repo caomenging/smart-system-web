@@ -1,5 +1,6 @@
 <template>
-  <a-card :bordered="false">
+  <div>
+<!--  <a-card :bordered="false">
     <a-row :gutter="24">
     <a-col :xl="6" :lg="7" :md="8" :sm="24" >
       <a-card>
@@ -23,18 +24,18 @@
       </a-col>
     </a-row>
     <a-tabs defaultActiveKey="1" @change="callback">
-      <!-- 多列柱状图 -->
+      &lt;!&ndash; 多列柱状图 &ndash;&gt;
       <a-tab-pane tab="审核状况统计" key="1">
-<!--        <a-col :span="10">
+&lt;!&ndash;        <a-col :span="10">
           <a-radio-group :value="pieType" @change="statisticst">
             <a-radio-button value="year">按年统计</a-radio-button>
             <a-radio-button value="month">按月统计</a-radio-button>
             <a-radio-button value="category">按类别统计</a-radio-button>
           </a-radio-group>
-        </a-col>-->
+        </a-col>&ndash;&gt;
         <bar-multid title="审核状况统计" class="statistic" :height="400" :dataSource="barDataSource" :fields="barFields"/>
       </a-tab-pane>
-<!--      <a-tab-pane tab="审核状况统计" key="2">
+&lt;!&ndash;      <a-tab-pane tab="审核状况统计" key="2">
         <a-row>
           <a-col :span="10">
             <a-radio-group :value="barType" @change="statisticst">
@@ -60,17 +61,17 @@
           </a-col>
           <bar class="statistic" title="档案统计" :dataSource="countSource" :height="400"/>
         </a-row>
-      </a-tab-pane>-->
+      </a-tab-pane>&ndash;&gt;
       <a-tab-pane tab="开展状况" key="3">
         <a-row :gutter="24">
-<!--          <a-col :span="10">
+&lt;!&ndash;          <a-col :span="10">
             <a-radio-group :value="pieType" @change="statisticst">
               <a-radio-button value="year">按年统计</a-radio-button>
               <a-radio-button value="month">按月统计</a-radio-button>
               <a-radio-button value="category">按类别统计</a-radio-button>
               <a-radio-button value="cabinet">按柜号统计</a-radio-button>
             </a-radio-group>
-          </a-col>-->
+          </a-col>&ndash;&gt;
           <a-col :span="14">
             <a-form v-if="pieType === 'month' && false" layout="inline" style="margin-top: -4px">
               <a-row :gutter="24">
@@ -92,10 +93,19 @@
       </a-tab-pane>
     </a-tabs>
 
-  </a-card>
+  </a-card>-->
+  <div>
+  <h2>三重一大任务列表</h2>
+  <szyd-tasks-list />
+  <h2>三重一大审核未通过列表</h2>
+  <szyd-not-pass-list />
+  </div>
+  </div>
 </template>
 
 <script>
+import SzydNotPassList from './modules/szydNotPassList.vue'
+import SzydTasksList from './modules/szydTasksList.vue'
 import Bar from '@/components/chart/Bar'
 import Pie from '@/components/chart/Pie'
 import ACol from 'ant-design-vue/es/grid/Col'
@@ -107,7 +117,8 @@ export default {
   components: {
     ACol,
     Bar,
-    Pie,BarMultid
+    Pie,BarMultid,
+    SzydNotPassList, SzydTasksList
   },
   data() {
     return {
