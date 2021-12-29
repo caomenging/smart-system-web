@@ -133,7 +133,7 @@ export default {
         // //   }
         // },
         {
-          title: '文件主题',
+         // title: '文件主题',
           align: "left",
           dataIndex: 'name',
           scopedSlots: {customRender: 'name'}
