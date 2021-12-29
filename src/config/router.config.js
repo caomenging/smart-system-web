@@ -617,7 +617,7 @@ export const constantRouterMap = [
     component: () => import('@/views/courcopy/learning/player/SmartVideoText')
   },
   {
-    path: 'webview/edu/upload',
+    path: '/webview/edu/upload',
     component: () => import('@/views/SmartPublicityEducation/AddSmartPublicityEducation')
   },
 ]
