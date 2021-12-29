@@ -34,6 +34,7 @@ const appWhiteList = [
   '/webview/success', // 评价成功
   '/webview/player', // 视频播放页面
   '/webview/class/list/:id', // 课程列表页面
+  '/webview/edu/upload', // 教育上传
 ]
 whiteList.push(OAUTH2_LOGIN_PAGE_PATH)
 
