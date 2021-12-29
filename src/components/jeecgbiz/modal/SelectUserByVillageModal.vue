@@ -150,7 +150,7 @@
               } else if (text == '1463112478345588738') {
                 return '村民'
               } else {
-                return text
+                return '非村民'
               }
             }
           },

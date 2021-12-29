@@ -205,7 +205,7 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-        fieldList.push({type:'string',value:'departId',text:'所属乡镇',dictCode:''})
+        fieldList.push({type:'string',value:'departId',text:'村庄',dictCode:''})
         fieldList.push({type:'string',value:'homeCode',text:'户籍编号',dictCode:''})
         fieldList.push({type:'string',value:'homeSurname',text:'户主姓',dictCode:''})
         fieldList.push({type:'string',value:'hostId',text:'户主',dictCode:''})
