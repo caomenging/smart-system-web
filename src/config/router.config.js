@@ -460,6 +460,22 @@ export const constantRouterMap = [
   },
 
   {
+    path: '/SmartTriSurveyList',
+    name: 'SmartTriSurveyList',
+    component: () => import( '@/views/SmartTriPrePlusSurvey/SmartSurveyList.vue'),
+    meta: {
+      title: '三员+调查问卷list'
+    },
+  },
+  {
+    path: '/SmartTriSurveyAppList',
+    name: 'SmartTriSurveyAppList',
+    component: () => import( '@/views/SmartTriPrePlusSurvey/SmartSurveyAppList.vue'),
+    meta: {
+      title: '三员+调查问卷list'
+    },
+  },
+  {
     path: '/createTriPrePlusSurvey/:opt',
     name: 'createTriPrePlusSurvey',
     component: () => import( '@/views/SmartTriPrePlusSurvey/createTriPrePlusSurvey.vue'),
@@ -480,7 +496,7 @@ export const constantRouterMap = [
     name: 'myTriPrePlusSurvey',
     component: () => import( '@/views/SmartTriPrePlusSurvey/myTriPrePlusSurvey.vue'),
     meta: {
-      title: '三员+调查问卷页面'
+      title: '三员+调查问卷PC页面'
     }
   },
   {

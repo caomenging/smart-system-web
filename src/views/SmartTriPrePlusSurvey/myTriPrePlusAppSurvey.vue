@@ -9,7 +9,7 @@
           <li class="test-info">调查问卷名称: {{ testData.paperName }}</li>
 
           <!--<li class="test-info">出卷者: {{testData.creatorName}}</li>-->
-          <li class="test-info" >调查人: {{ nickname() }}</li>
+          <li class="test-info" >调查人: {{ dcName }}</li>
           <li class="test-info">户主：{{userName}}</li>
           <li class="test-info">被访人：{{userName}}</li>
 <!--          <li class="test-info">答题时间: {{ testData.time }} 分钟</li>-->
@@ -30,7 +30,7 @@
           <!--<li class="test-info">试卷Id: E{{ testData.id }}</li>-->
           <li class="test-info">调查问卷名称: {{ testData.paperName }}</li>
           <!--<li class="test-info">出卷者: {{testData.creatorName}}</li>-->
-          <li class="test-info">调查人: {{ nickname() }}</li>
+          <li class="test-info">调查人: {{ dcName }}</li>
           <li class="test-info">户主： {{hostText}}</li>
           <li class="test-info">被访人：{{userName}}</li>
 <!--          <li class="test-info">答题时间: {{ testData.time }} 分钟</li>-->
@@ -179,6 +179,7 @@
         callback();
       };
       return {
+        dcName:'',
         dialogFormVisible: false,
         form:{
           satisfaction:'',
@@ -249,6 +250,7 @@
     created() {
       console.log(this.$route.query)
       this.userName = this.$route.query.userName
+      this.dcName = this.$route.query.dcName
       this.getTestPaperData();
     },
     watch:{

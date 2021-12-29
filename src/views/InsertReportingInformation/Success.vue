@@ -24,6 +24,7 @@
     mixins: [mixinDevice],
     data () {
       return {
+        fromRoute:'',
         count:"",//倒计时
         title: '提交成功',
         description: '感谢您的填写！' ,
@@ -31,6 +32,8 @@
       }
     },
     created (){
+      this.fromRoute = this.$route.query.fromRoute
+      console.log(this.fromRoute)
       this.goGrdoupRecor()
     },
     methods: {
@@ -48,9 +51,24 @@
               clearInterval(this.timer);
               this.timer = null;
               //跳转的页面写在此处
-              this.$router.push({
-                path: '../InsertReportingInformation/InsertReportingInformationDetail'
-              });
+              let r = this.fromRoute
+              console.log(r)
+              if(r === '/myTriPrePlusSurvey'){
+                this.$router.push({
+                  path: '/SmartTriSurveyList'
+                });
+              }
+              else if( r === '/myTriPrePlusAppSurvey'){
+                this.$router.push({
+                  path: '/SmartTriSurveyAppList'
+                });
+              }
+              else {
+                this.$router.push({
+                  path: '../InsertReportingInformation/InsertReportingInformationDetail'
+                });
+              }
+
             }
           },1000)
         }

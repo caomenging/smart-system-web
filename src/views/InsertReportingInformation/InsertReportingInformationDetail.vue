@@ -111,6 +111,7 @@ export default {
   components: { AFormItem, JUpload, JImageUpload },
   data() {
     return {
+      fromRoute:'',
       savePath: 'report',
       filePath: '',
       filePathList: [],
@@ -153,7 +154,17 @@ export default {
   /* beforeDestroy () {
       this.clear()
     },*/
-
+  beforeRouteEnter(to, from, next) {
+    console.log("****************Enter**************");
+    console.log('to', to);
+    console.log('from', from);
+    console.log('next', next);
+    next(vm => {
+      // beforeRouteEnter不能通过this访问组件实例，但是可以通过 vm 访问组件实例
+      vm.fromRoute = from.path
+      console.log(vm.fromRoute)   //vm.demodata即this.demodata
+    })
+  },
   methods: {
     deleteImg: function (index) {
       this.imgs.splice(index, 1)
@@ -235,7 +246,9 @@ export default {
         if (res.success) {
           this.$message.success(res.message)
           //that.$emit('ok');
-          this.$router.push({ path: '/InsertReportingInformation/Success' })
+          let fromRoute  = this.fromRoute
+          this.$router.push({ path: '/InsertReportingInformation/Success' ,
+            query: {fromRoute}})
         } else {
           this.$message.warning('请输入信息')
         }

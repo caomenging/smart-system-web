@@ -55,6 +55,7 @@ export default {
   components: {},
   data() {
     return {
+      dcName:'',
       title:'',
       paperId:'',
       description: '选择结果',
@@ -187,9 +188,10 @@ export default {
         let userName = record.realname
         let userId = record.userId
         let hostText = record.hostId_dictText
+        let dcName = this.dcName
       this.$router.push({
         name: "myTriPrePlusAppSurvey",
-        query: {paperId,userName,userId,hostText}
+        query: {paperId,userName,userId,hostText,dcName}
       });
         // const { href } = this.$router.resolve({
         //   name: "myTriPrePlusSurvey",
@@ -217,6 +219,8 @@ export default {
       getAction(this.url.list, {paperId:paperId,departId:departId})
         .then((res) => {
           if (res.success) {
+            console.log(res.message)
+            this.dcName = res.message
             this.dataSource = res.result.records || res.result
             let i = 0
             for(i=0;i<this.dataSource.length;i++){
