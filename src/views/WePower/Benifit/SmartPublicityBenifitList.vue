@@ -156,12 +156,14 @@
           {
             title:'名称',
             align:"center",
-            dataIndex: 'title'
+            dataIndex: 'title',
+            width: 250
           },
           {
             title:'应用范围',
             align:"center",
-            dataIndex: 'location_dictText'
+            dataIndex: 'location_dictText',
+            ellipsis: true,
           },
           {
             title:'上传部门',
