@@ -547,7 +547,7 @@ export const constantRouterMap = [
   },
   {
     path: '/webview/sun/statistics',
-    component: () => import('@/views/SmartEvaluate/SmartPeopleAvgList')
+    component: () => import('@/views/SmartEvaluate/EvaluateAvg')
   },
   {
     path: '/webview/sun/report',
