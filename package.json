@@ -68,6 +68,7 @@
     "vuex": "^3.1.0",
     "vxe-table": "2.9.13",
     "vxe-table-plugin-antd": "1.8.10",
+    "webpack-bundle-analyzer": "^4.5.0",
     "xe-utils": "2.4.8"
   },
   "devDependencies": {
