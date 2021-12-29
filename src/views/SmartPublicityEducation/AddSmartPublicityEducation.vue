@@ -37,7 +37,7 @@ export default {
       this.$refs.realForm.handleOk()
     },
     submitCallback() {
-      this.$router.push({ path: '/SmartPublicityEducation/SmartPublicityEducationList' })
+      window.location.reload()
     }
   }
 }
