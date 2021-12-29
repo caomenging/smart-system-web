@@ -1,18 +1,18 @@
 <template>
   <div class="page-header-index-wide">
-  <a-card  :bordered="false" :body-style="{padding: '0'}" :loading="cardLoading">
+<!--  <a-card  :bordered="false" :body-style="{padding: '0'}" :loading="cardLoading">
     <div class="salesCard">
       <a-tabs default-active-key="1" size="large" :tab-bar-style="{marginBottom: '24px', paddingLeft: '16px'}">
-        <!--查询区域-->
+        &lt;!&ndash;查询区域&ndash;&gt;
         <div class="extra-wrapper" slot="tabBarExtraContent">
-         <!-- <a-range-picker :style="{width: '256px'}" />-->
+         &lt;!&ndash; <a-range-picker :style="{width: '256px'}" />&ndash;&gt;
           <div class="extra-item">
           <j-input placeholder="请输入年份" v-model="queryParam.year" width="60%" />
           </div>
          <a-button type="primary" @click="search" icon="search">查询</a-button>
           <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
         </div>
-        <!--统计展示-->
+        &lt;!&ndash;统计展示&ndash;&gt;
         <a-tab-pane  :tab="title" key="1" >
           <a-row>
             <a-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
@@ -38,16 +38,43 @@
         </a-tab-pane>
       </a-tabs>
     </div>
-  </a-card>
-
+  </a-card>-->
   <a-row :gutter="12">
     <a-card :class="{ 'anty-list-cust':true }" :bordered="false" :style="{marginTop:'30px',marginLeft:'3px'}">
-
+      <!-- 查询区域 -->
+      <div class="table-page-search-wrapper">
+        <a-form layout="inline" @keyup.enter.native="searchQuery">
+          <a-row :gutter="24">
+            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+              <a-form-item label="窗口服务大厅名称">
+                <!--            <j-input placeholder="请输入窗口服务大厅名称" v-model="queryParam.windowsName"></j-input>-->
+                <j-search-select-tag
+                  placeholder="请选择"
+                  v-model="queryParam.windowsName"
+                  dict="smart_window_unit,name,name,del_flag = 0"
+                  :async="true" :style="{width:'140px'}">
+                </j-search-select-tag>
+              </a-form-item>
+            </a-col>
+            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchWindows" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchWindowsReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <!--<a @click="handleToggleSearch" style="margin-left: 8px">
+                {{ toggleSearchStatus ? '收起' : '展开' }}
+                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
+              </a>-->
+            </span>
+            </a-col>
+          </a-row>
+        </a-form>
+      </div>
+      <h3>评分标准：10分制</h3>
       <a-tabs v-model="indexBottomTab" size="large" :tab-bar-style="{marginBottom: '24px', paddingLeft: '16px'}">
-        <div class="extra-wrapper" slot="tabBarExtraContent">
-          <!-- <a-range-picker :style="{width: '256px'}" />-->
+<!--        <div class="extra-wrapper" slot="tabBarExtraContent">
+          &lt;!&ndash; <a-range-picker :style="{width: '256px'}" />&ndash;&gt;
           <div class="extra-item">
-<!--            <j-input placeholder="请输入窗口服务大厅名称" v-model="queryParam.windowsName" width="60%" />-->
+&lt;!&ndash;            <j-input placeholder="请输入窗口服务大厅名称" v-model="queryParam.windowsName" width="60%" />&ndash;&gt;
             <j-search-select-tag
               placeholder="请选择窗口服务大厅名称"
               v-model="queryParam.windowsName"
@@ -57,9 +84,9 @@
           </div>
           <a-button type="primary" @click="searchWindows" icon="search">查询</a-button>
           <a-button type="primary" @click="searchWindowsReset" icon="reload" style="margin-left: 8px">重置</a-button>
-        </div>
+        </div>-->
 
-        <a-tab-pane loading="true" tab="窗口服务大厅满意度" key="1">
+        <a-tab-pane loading="true" tab="窗口服务大厅评分" key="1">
           <a-table ref="table"
                    size="middle"
                    :scroll="{x:true}"
@@ -72,7 +99,7 @@
                    @change="handleWindowsTableChange">
           </a-table>
         </a-tab-pane>
-        <a-tab-pane loading="true" tab="窗口工作人员服务满意度" key="2">
+        <a-tab-pane loading="true" tab="窗口人员评分" key="2">
           <a-table ref="table"
                    size="middle"
                    :scroll="{x:true}"
@@ -188,7 +215,7 @@
         superQueryMatchType: 'and',
         // 表头
         peopleColumns: [
-                   {
+            /*       {
             title: '#',
             dataIndex: '',
             key:'rowIndex',
@@ -197,7 +224,7 @@
             customRender:function (t,r,index) {
               return parseInt(index)+1;
             }
-          },
+          },*/
 
           {
             title: '人员名称',
@@ -211,12 +238,12 @@
             dataIndex: 'exeDept',
             sorter: true
           },*/
-          {
+         /* {
             title:'所属窗口服务大厅',
             align:"center",
             dataIndex: 'windowsName',
             //sorter: true
-          },
+          },*/
           {
             title: '评分',
             align: "center",
@@ -265,7 +292,7 @@
           }*/
         ],
         windowsColumns:[
-          {
+/*          {
             title: '#',
             dataIndex: '',
             key:'rowIndex',
@@ -274,14 +301,14 @@
             customRender:function (t,r,index) {
               return parseInt(index)+1;
             }
-          },
+          },*/
 
-          {
+         /* {
             title:'主管单位',
             align:"center",
             dataIndex: 'exeDept',
             //sorter: true
-          },
+          },*/
           {
             title:'窗口服务大厅名称',
             align:"center",

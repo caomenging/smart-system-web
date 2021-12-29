@@ -112,7 +112,8 @@ export default {
         {
           title: '户主',
           align: 'center',
-          dataIndex: 'hostId_dictText',
+          //dataIndex: 'hostId_dictText',
+          dataIndex: 'hostName',
         },
         {
           title: '被访人',

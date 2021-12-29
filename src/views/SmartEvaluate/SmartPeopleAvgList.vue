@@ -20,7 +20,13 @@
           </a-col>-->
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
           <a-form-item label="窗口服务大厅名称">
-            <j-input placeholder="请输入窗口服务大厅名称" v-model="queryParam.windowsName"></j-input>
+<!--            <j-input placeholder="请输入窗口服务大厅名称" v-model="queryParam.windowsName"></j-input>-->
+            <j-search-select-tag
+              placeholder="请选择"
+              v-model="queryParam.windowsName"
+              dict="smart_window_unit,name,name,del_flag = 0"
+              :async="true" :style="{width:'140px'}">
+            </j-search-select-tag>
           </a-form-item>
         </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -61,11 +67,11 @@
         <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
       </div>-->
-
+    <h3>{{ tableTitle }}</h3>
       <a-table
         ref="table"
         size="middle"
-        :scroll="{x:true}"
+        :scroll="{ x: true }"
         bordered
         :columns="columns"
         :dataSource="dataSource"
@@ -157,26 +163,27 @@
             align:"center",
             dataIndex: 'exeDept',
             sorter: true
-          },
+          },*/
           {
             title:'窗口服务大厅名称',
             align:"center",
             dataIndex: 'windowsName',
-            sorter: true
-          },*/
+            width: 40
+            //sorter: true
+          },
           {
             title: '人员名称',
             align: "center",
             dataIndex: 'personName',
             //sorter: true,
-            width: 60
+            width: 40
           },
           {
             title: '评分',
             align: "center",
             dataIndex: 'avgGrade',
-            sorter: true,
-            width: 60
+            //sorter: true,
+            width: 30
 
           },
 
@@ -239,6 +246,13 @@
     computed: {
       importExcelUrl: function() {
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
+      },
+      tableTitle: function () {
+        if(this.queryParam.windowsName == null || this.queryParam.windowsName === ''){
+         return  "全区窗口人员排名"
+        }else {
+         return  this.queryParam.windowsName+"人员排名"
+        }
       },
     },
     methods: {
