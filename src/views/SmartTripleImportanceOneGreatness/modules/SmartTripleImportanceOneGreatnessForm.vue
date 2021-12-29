@@ -176,7 +176,6 @@
               type: FormTypes.sel_user,
               store:'realname',
               text:'realname',
-              multi:false,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',

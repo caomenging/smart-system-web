@@ -19,7 +19,7 @@
     //props: ['sex','name'],
     data () {
       return {
-        url: 'https://zhcw.itachi.top/smart-system/qrCode/generate/v3?content=https://zhcw.itachi.top/InsertReportingInformation/InsertReportingInformationDetail',
+        url: 'https://www.ningxitong.cn/smart-system/qrCode/generate/v3?content=https://www.ningxitong.cn/InsertReportingInformation/InsertReportingInformationDetail',
         name: '纠治四风',
         formLayout: 'horizontal',
         model: {},
