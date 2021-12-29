@@ -189,7 +189,7 @@
   import Vue from 'vue'
   import { ACCESS_TOKEN } from "@/store/mutation-types"
   import { getAction } from '@/api/manage'
-  import { addPeople,editVillageUser,queryUserRole,queryall} from '@/api/api'
+  import { addPeople,editPeople,queryUserRole,queryall} from '@/api/api'
   import { disabledAuthFilter } from "@/utils/authFilter"
   import { duplicateCheck ,queryFuzeIdTree,queryNaturalIdTree} from '@/api/api'
   import store from '@/store'
@@ -430,10 +430,10 @@
             let obj;
             if(!this.model.id){
               this.model.id = this.userId;
-              this.model.peopleType = 2;
+              this.model.peopleType = 1;
               obj=addPeople(this.model);
             }else{
-              obj=editVillageUser(this.model);
+              obj=editPeople(this.model);
               console.log(this.model);
             }
             obj.then((res)=>{

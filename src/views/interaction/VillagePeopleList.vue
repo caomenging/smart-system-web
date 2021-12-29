@@ -301,7 +301,7 @@
          //    dataIndex: 'orgCode'
          //  },
           {
-            title: '所在乡镇、村',
+            title: '村庄',
             align: "center",
             width: 180,
             dataIndex: 'orgCodeTxt'
