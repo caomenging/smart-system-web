@@ -51,6 +51,7 @@
 <script>
 import course from './api/edu/courcopy'
 import cour from "./api/edu/courcopy";
+import {MessageBox} from "element-ui";
 
 export default {
 
