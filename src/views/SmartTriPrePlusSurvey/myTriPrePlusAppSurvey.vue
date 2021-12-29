@@ -162,7 +162,7 @@
   import {postAction, httpAction, getAction ,putAction} from '@/api/manage'
 
   export default {
-    name: "MyTripreSurvey",
+    name: "MyTripreAppSurvey",
     mixins: [testPaperMixin],
     data() {
       // 满意度必填

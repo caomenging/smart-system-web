@@ -9,7 +9,8 @@ const getters = {
   role: state => state.user.role,
   departid: state => state.user.departid,
   username: state => state.user.username,
-  nickname: state => {state.user.realname = Vue.ls.get(USER_INFO).realname; return state.user.realname},
+  // @TODO 暂时注释让小程序能看，后面需要详细讨论
+  // nickname: state => {state.user.realname = Vue.ls.get(USER_INFO).realname; return state.user.realname},
   welcome: state => state.user.welcome,
   permissionList: state => state.user.permissionList,
   userInfo: state => {state.user.info = Vue.ls.get(USER_INFO); return state.user.info},

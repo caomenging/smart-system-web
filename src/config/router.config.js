@@ -488,7 +488,7 @@ export const constantRouterMap = [
     name: 'myTriPrePlusAppSurvey',
     component: () => import( '@/views/SmartTriPrePlusSurvey/myTriPrePlusAppSurvey.vue'),
     meta: {
-      title: '三员+调查问卷页面'
+      title: '三员+调查问卷小程序页面'
     }
   },
 
