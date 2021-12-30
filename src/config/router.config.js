@@ -460,13 +460,25 @@ export const constantRouterMap = [
   },
 
   {
+    path: '/SmartTriPrePlusSurvey',
+    component: BlankLayout,
+    redirect: '/SmartTriPrePlusSurvey/SmartTriSurveyList',
+    children: [
+      {
+        path: '/SmartTriSurveyList',
+        name: 'SmartTriSurveyList',
+        component: () => import( '@/views/SmartTriPrePlusSurvey/SmartSurveyList.vue'),
+      }
+    ]
+  },
+/*  {
     path: '/SmartTriSurveyList',
     name: 'SmartTriSurveyList',
     component: () => import( '@/views/SmartTriPrePlusSurvey/SmartSurveyList.vue'),
     meta: {
       title: '三员+调查问卷list'
     },
-  },
+  },*/
   {
     path: '/SmartTriSurveyAppList',
     name: 'SmartTriSurveyAppList',
@@ -617,7 +629,7 @@ export const constantRouterMap = [
     component: () => import('@/views/courcopy/learning/player/SmartVideoText')
   },
   {
-    path: '/webview/edu/upload',
+    path: 'webview/edu/upload',
     component: () => import('@/views/SmartPublicityEducation/AddSmartPublicityEducation')
   },
 ]

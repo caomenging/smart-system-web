@@ -189,21 +189,21 @@ export default {
         let userName = record.realname
         let userId = record.userId
         let dcName = this.dcName
-      this.$router.push({
+      /*this.$router.push({
         name: "myTriPrePlusSurvey",
         query: {paperId,userName,userId,dcName}
-      });
-        // const { href } = this.$router.resolve({
-        //   name: "myTriPrePlusSurvey",
-        //   query: {paperId,userName,userId}
-        // });
-        // const win = window.open(href, "_blank");
-        // const loop = setInterval(item => {
-        //   if (win.closed) {
-        //     clearInterval(loop);
-        //     this.$ref.table.reload();
-        //   }
-        // }, 1000);
+      });*/
+        const { href } = this.$router.resolve({
+          name: "myTriPrePlusSurvey",
+          query: {paperId,userName,userId,dcName}
+        });
+        const win = window.open(href, "_blank");
+        const loop = setInterval(item => {
+          if (win.closed) {
+            clearInterval(loop);
+            this.$ref.table.reload();
+          }
+        }, 1000);
       },
     loadData(arg, paperId,departId) {
       if (!this.url.list) {

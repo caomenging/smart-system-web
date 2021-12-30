@@ -54,9 +54,9 @@
               let r = this.fromRoute
               console.log(r)
               if(r === '/myTriPrePlusSurvey'){
-                this.$router.push({
-                  path: '/SmartTriSurveyList'
-                });
+               window.location.href="about:blank";
+               window.close();
+               window.opener.location.reload();
               }
               else if( r === '/myTriPrePlusAppSurvey'){
                 this.$router.push({

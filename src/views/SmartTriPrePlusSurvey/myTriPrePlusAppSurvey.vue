@@ -364,7 +364,7 @@
               grade = res.result;
             }else {
               title = "结果"
-              describe = "本次问卷结束，感谢您的参与！"
+              describe = "本次调查结束！"
               grade = ""
             }
             this.$message.success(res.message);
@@ -375,9 +375,10 @@
                 h('span', null, describe),
                 h('i', { style: 'color: teal' }, grade)
               ]),
-              showCancelButton: true,
+              //showCancelButton: true,
               confirmButtonText: '确定',
-              cancelButtonText: '取消',
+              //cancelButtonText: '取消',
+              customClass:'customWidth',
               beforeClose: (action, instance, done) => {
                 if (action === 'confirm') {
                   instance.confirmButtonLoading = true;
@@ -405,9 +406,12 @@
                   name: "InsertReportingInformation",
                 });
               }else{
-                window.location.href="about:blank";
+                this.$router.push({
+                  name: "SmartTriSurveyAppList",
+                });
+               /* window.location.href="about:blank";
                 window.close();
-                window.opener.location.reload();
+                window.opener.location.reload();*/
               }
             });
           }
@@ -636,7 +640,7 @@
               ]),
               showCancelButton: true,
               confirmButtonText: '确定',
-              cancelButtonText: '取消',
+              //cancelButtonText: '取消',
               beforeClose: (action, instance, done) => {
                 if (action === 'confirm') {
                   instance.confirmButtonLoading = true
@@ -831,7 +835,6 @@
   .customWidth{
         width:80%;
   }
-
 
 </style>
 

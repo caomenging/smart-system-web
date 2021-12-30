@@ -120,7 +120,8 @@ export default {
         {
           title: '户主',
           align: 'center',
-          dataIndex: 'hostId_dictText',
+          //dataIndex: 'hostId_dictText',
+          dataIndex:'hostName'
         },
         {
           title: '被访人',
@@ -132,11 +133,11 @@ export default {
           align: 'center',
           dataIndex: 'isFinish_dictText',
         },
-        {
+        /*{
           title: '满意度',
           align: 'center',
           dataIndex: 'satisfaction_dictText',
-        },
+        },*/
         {
           title: '是否举报',
           align: 'center',

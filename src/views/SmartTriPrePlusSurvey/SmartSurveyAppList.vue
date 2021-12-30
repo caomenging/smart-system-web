@@ -221,6 +221,19 @@
     created() {
     this.getSuperFieldList();
     },
+    beforeRouteEnter(to, from, next) {
+      console.log("****************Enter**************");
+      console.log('to', to);
+      console.log('from', from);
+      console.log('next', next);
+      next(vm => {
+        // beforeRouteEnter不能通过this访问组件实例，但是可以通过 vm 访问组件实例
+        console.log(from.path)   //vm.demodata即this.demodata
+      })
+      if(from.path ==='/InsertReportingInformation/Success' || from.path==='/myTriPrePlusAppSurvey'){
+        next({ path: '/SmartTriSurveyAppList' })
+      }
+    },
     computed: {
       flag(){
         console.log(this.$route.query.flag);

@@ -162,10 +162,10 @@
     <!-- 选择满意度及线索-->
     <el-dialog customClass="customWidth" title="补充调查" :visible.sync="dialogFormVisible"  @closed="handleClose">
       <el-form :model="form" ref="form" :rules="rules">
-        <el-form-item label="1、本次调查满意度" prop="satisfaction">
+<!--        <el-form-item label="1、本次调查满意度" prop="satisfaction">
           <el-rate :style="{fontSize:'30px'}" v-model="form.satisfaction" show-text :texts="['不满意', '基本满意', '满意', '非常满意', '完全满意']"></el-rate>
-        </el-form-item>
-        <el-form-item label="2、是否发现线索" prop="isReport">
+        </el-form-item>-->
+        <el-form-item label="是否发现线索" prop="isReport">
           <el-radio-group v-model="form.isReport" >
             <el-radio :label="1">是</el-radio>
             <el-radio :label="0">否</el-radio>
@@ -393,7 +393,7 @@
               grade = res.result;
             }else {
               title = "结果"
-              describe = "本次问卷结束，感谢您的参与！"
+              describe = "本次调查结束！"
               grade = ""
             }
             this.$message.success(res.message);
@@ -404,9 +404,10 @@
                 h('span', null, describe),
                 h('i', { style: 'color: teal' }, grade)
               ]),
-              showCancelButton: true,
+              //showCancelButton: true,
               confirmButtonText: '确定',
-              cancelButtonText: '取消',
+              //cancelButtonText: '取消',
+              customClass:'msgClass',
               beforeClose: (action, instance, done) => {
                 if (action === 'confirm') {
                   instance.confirmButtonLoading = true;
@@ -434,6 +435,9 @@
                   name: "InsertReportingInformation",
                 });
               }else{
+                /*this.$router.push({
+                  path: "/SmartTriPrePlusSurvey/SmartSurveyList",
+                });*/
                 window.location.href="about:blank";
                 window.close();
                 window.opener.location.reload();
@@ -652,7 +656,7 @@
               grade = res.result;
             }else {
               title = "结果"
-              describe = "本次问卷结束，感谢您的参与！"
+              describe = "本次问卷结束！"
               grade = ""
             }
             console.log(grade)
@@ -660,12 +664,12 @@
             this.$msgbox({
               title: '提醒',
               message: h('p', null, [
-                h('span', null, title),
+                h('span', null, describe),
                 h('i', { style: 'color: teal' }, grade)
               ]),
               showCancelButton: true,
               confirmButtonText: '确定',
-              cancelButtonText: '取消',
+              //cancelButtonText: '取消',
               beforeClose: (action, instance, done) => {
                 if (action === 'confirm') {
                   instance.confirmButtonLoading = true
@@ -849,6 +853,8 @@
   .customWidth{
         width:80%;
     }
-
+  .msgClass{
+    width: 30%;
+  }
 </style>
 
