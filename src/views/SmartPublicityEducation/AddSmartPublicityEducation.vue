@@ -37,7 +37,7 @@ export default {
       this.$refs.realForm.handleOk()
     },
     submitCallback() {
-      window.location.reload()
+      this.$refs.realForm.add()
     }
   }
 }
