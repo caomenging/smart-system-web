@@ -1,333 +1,708 @@
 <template>
-  <a-card :bordered="false">
-    <a-tabs defaultActiveKey="1" @change="callback">
-      <a-tab-pane tab="录入信息统计" key="1">
-        <a-row>
-<!--          <a-col :span="10">-->
-<!--            <a-radio-group :value="barType" @change="statisticst">-->
-<!--              <a-radio-button value="year">按年统计</a-radio-button>-->
-<!--              <a-radio-button value="month">按月统计</a-radio-button>-->
-<!--              <a-radio-button value="category">按类别统计</a-radio-button>-->
-<!--              <a-radio-button value="cabinet">按柜号统计</a-radio-button>-->
-<!--            </a-radio-group>-->
-<!--          </a-col>-->
-<!--          <a-col :span="14">-->
-<!--            <a-form v-if="barType === 'month' && false" layout="inline" style="margin-top: -4px">-->
-<!--              <a-form-item label="月份区间">-->
-<!--                <a-range-picker-->
-<!--                  :placeholder="['开始月份', '结束月份']"-->
-<!--                  format="YYYY-MM"-->
-<!--                  :value="barValue"-->
-<!--                  :mode="barDate"-->
-<!--                  @panelChange="handleBarDate"/>-->
-<!--              </a-form-item>-->
-<!--              <a-button style="margin-top: 2px" type="primary" icon="search" @click="queryDatebar">查询</a-button>-->
-<!--              <a-button style="margin-top: 2px;margin-left: 8px" type="primary" icon="reload" @click="searchReset">重置</a-button>-->
-<!--            </a-form>-->
-<!--          </a-col>-->
+  <div class="page-header-index-wide">
+    <a-card  :bordered="false" :body-style="{padding: '0'}" :loading="cardLoading">
+      <div class="salesCard">
+        <a-tabs default-active-key="1" size="large" :tab-bar-style="{marginBottom: '24px', paddingLeft: '16px'}">
+          <!--查询区域-->
+          <div class="extra-wrapper" slot="tabBarExtraContent">
+            <!-- <a-range-picker :style="{width: '256px'}" />-->
+            <div class="extra-item">
+              <j-input placeholder="请输入年份" v-model="queryParam.year" width="60%" />
+            </div>
+            <a-button type="primary" @click="search" icon="search">查询</a-button>
+            <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+          </div>
+          <!--统计展示-->
+          <a-tab-pane  :tab="title" key="1" >
+<!--            <a-row>-->
+<!--              <a-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">-->
+                <line-chart-multid   :dataSource="lineData" :fields ="lineField" :aliases="aliases" :height="height"/>
+<!--              </a-col>-->
+<!--              <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">-->
+<!--                <rank-list :title="rankCountTitle" :list="rankCountData" />-->
+<!--              </a-col>-->
+<!--            </a-row>-->
+          </a-tab-pane>
+          <a-tab-pane :tab="pieTitle" key="2">
+<!--            <a-row >-->
+<!--              <span :style="{marginLeft: '120px',marginTop: '-50px',paddingTop:'-50px'}">评价标准：完全满意-10、非常满意-8、基本满意-6、不满意-4、非常不满意-2</span>-->
+<!--            </a-row>-->
+<!--            <a-row>-->
+<!--              <a-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">-->
+                <pie title="八项规定任务比例图" :height="height" :dataSource="pieData" />
+<!--              </a-col>-->
+<!--              <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">-->
+<!--                <rank-list :title="rankGradeTitle" :list="rankGradeData" />-->
+<!--              </a-col>-->
+<!--            </a-row>-->
+          </a-tab-pane>
+        </a-tabs>
+      </div>
+    </a-card>
 
-            <a-col :xl="12" :lg="12" :md="12" :sm="24" :xs="24">
-              <pie class="statistic" title="" :height="400" :dataSource="countSource" />
-            </a-col>
-            <a-col :xl="12" :lg="12" :md="12" :sm="24" :xs="24">
-<!--              <rank-list :title="录入信息统计" :list="rankGradeData" />-->
-            </a-col>
+    <a-row :gutter="12">
+      <a-card :class="{ 'anty-list-cust':true }" :bordered="false" :style="{marginTop:'30px',marginLeft:'3px'}">
 
-<!--          <bar class="statistic" title="" :dataSource="countSource" :height="400"/>-->
-        </a-row>
-        <a-row v-if=''>
+        <a-tabs v-model="indexBottomTab" size="large" :tab-bar-style="{marginBottom: '24px', paddingLeft: '16px'}">
+<!--          <div class="extra-wrapper" slot="tabBarExtraContent">-->
+            <!-- <a-range-picker :style="{width: '256px'}" />-->
+<!--            <div class="extra-item">-->
+<!--              <j-input placeholder="请输入窗口服务大厅名称" v-model="queryParam.windowsName" width="60%" />-->
+<!--            </div>-->
+<!--            <a-button type="primary" @click="searchWindows" icon="search">查询</a-button>-->
+<!--            <a-button type="primary" @click="searchWindowsReset" icon="reload" style="margin-left: 8px">重置</a-button>-->
+<!--          </div>-->
 
-        </a-row>
-      </a-tab-pane>
+          <a-tab-pane loading="true" tab="八项规定任务列表" key="1">
+            <eight-tasks-list />
+          </a-tab-pane>
+          <a-tab-pane loading="true" tab="八项规定审核未通过列表" key="2">
+            <eight-not-pass-list />
+          </a-tab-pane>
+        </a-tabs>
 
-      <a-tab-pane tab="审核情况统计" key="2">
-        <a-row>
-<!--          <a-col :span="10">-->
-<!--            <a-radio-group :value="pieType" @change="statisticst">-->
-<!--              <a-radio-button value="year">按比例分析</a-radio-button>-->
-<!--              <a-radio-button value="month">按月统计</a-radio-button>-->
-<!--              <a-radio-button value="category">按类别统计</a-radio-button>-->
-<!--              <a-radio-button value="cabinet">按柜号统计</a-radio-button>-->
-<!--            </a-radio-group>-->
-<!--          </a-col>-->
-<!--          <a-col :span="14">-->
-<!--            <a-form v-if="pieType === 'month' && false" layout="inline" style="margin-top: -4px">-->
-<!--              <a-row :gutter="24">-->
-<!--                <a-form-item label="月份区间">-->
-<!--                  <a-range-picker-->
-<!--                    :placeholder="['开始月份', '结束月份']"-->
-<!--                    format="YYYY-MM"-->
-<!--                    :value="pieValue"-->
-<!--                    :mode="pieDate"-->
-<!--                    @panelChange="handlePieDate"/>-->
-<!--                </a-form-item>-->
-<!--                <a-button style="margin-top: 2px" type="primary" icon="search" @click="queryDatepie">查询</a-button>-->
-<!--                <a-button style="margin-top: 2px;margin-left: 8px" type="primary" icon="reload" @click="searchReset">重置</a-button>-->
-<!--              </a-row>-->
-<!--            </a-form>-->
-<!--          </a-col>-->
 
-          <a-col :xl="12" :lg="12" :md="12" :sm="24" :xs="24">
-            <pie class="statistic" title="" :height="400" :dataSource="countSource" />
-          </a-col>
-          <a-col :xl="12" :lg="12" :md="12" :sm="24" :xs="24">
-            <!--              <rank-list :title="录入信息统计" :list="rankGradeData" />-->
-          </a-col>
-<!--          <pie class="statistic" title="" :dataSource="countSource" :height="400"/>-->
-        </a-row>
-      </a-tab-pane>
-    </a-tabs>
-  </a-card>
+      </a-card>
+    </a-row>
+  </div>
 </template>
 
 <script>
-  import Bar from '@/components/chart/Bar'
-  import Pie from '@/components/chart/Pie'
-  import ACol from 'ant-design-vue/es/grid/Col'
-  import { getAction } from '@/api/manage'
+import eightNotPassList from './modules/eightNotPassList.vue'
+import eightTasksList from './modules/eightTasksList.vue'
+import AreaChartTy from '@/components/chart/AreaChartTy'
+import Bar from '@/components/chart/Bar'
+import BarMultid from '@/components/chart/BarMultid'
+import DashChartDemo from '@/components/chart/DashChartDemo'
+import LineChartMultid from '@/components/chart/LineChartMultid'
+import Liquid from '@/components/chart/Liquid'
+import MiniBar from '@/components/chart/MiniBar'
+import MiniArea from '@/components/chart/MiniArea'
+import MiniProgress from '@/components/chart/MiniProgress'
+import Pie from '@/components/chart/Pie'
+import Radar from '@/components/chart/Radar'
+import RankList from '@/components/chart/RankList'
+import TransferBar from '@/components/chart/TransferBar'
+import Trend from '@/components/chart/Trend'
+import BarAndLine from '@/components/chart/BarAndLine'
+import { httpAction,putAction, postAction,getAction } from '@/api/manage'
+import {JeecgListMixin} from '@/mixins/JeecgListMixin'
 
-  export default {
-    name: 'eightRulesAnalysis',
-    components: {
-      ACol,
-      Bar,
-      Pie
-    },
-    data() {
-      return {
-        description: '',
-        // 查询条件
-        queryParam: {},
-        // 数据集
-        countSource: [],
-        // 柱状图
-        // barType: 'year',
-        // barDate: ['month', 'month'],
-        // barValue: [],
-        // 饼状图
-        pieType: 'category',
-        pieDate: ['month', 'month'],
-        pieValue: [],
-        // 统计图类型
-        tabStatus:"pie",
-        url: {
-          getYearCountInfo: "/mock/api/report/getYearCountInfo",
-          getMonthCountInfo:"/mock/api/report/getMonthCountInfo",
-          getCntrNoCountInfo:"/mock/api/report/getCntrNoCountInfo",
-          getCabinetCountInfo:"/mock/api/report/getCabinetCountInfo",
+import '@/assets/less/TableExpand.less'
+import ChartCard from '@/components/ChartCard'
+import ACol from "ant-design-vue/es/grid/Col"
+import { mixinDevice } from '@/utils/mixin'
+import { filterObj } from '@/utils/util'
+import { ACCESS_TOKEN, TENANT_ID } from "@/store/mutation-types"
+
+
+export default {
+  name: 'eightRulesAnalysis',
+  mixins: [mixinDevice],
+  components: {
+    Bar, MiniBar, BarMultid, AreaChartTy, LineChartMultid,
+    Pie, Radar, DashChartDemo, MiniProgress, RankList,
+    TransferBar, Trend, Liquid, MiniArea, BarAndLine,
+    ACol, ChartCard,eightTasksList, eightNotPassList
+  },
+  data() {
+    return {
+      cardLoading:true,
+      queryParam: { year: '' ,windowsName:''},
+      title: '',
+      pieTitle:'',
+      // rankCountTitle:'',
+      // rankGradeTitle:'',
+      height: 420,
+      rankList: [],
+      barData: [],
+      areaData: [],
+      //折线图
+      lineData: [],
+      lineField: ['count','countNot'],
+      aliases: [{ field: 'count', alias: '任务总数' },{ field: 'countNot', alias: '审核未通过数' }],
+      //饼图
+      pieData: [],
+      //排行榜
+      // rankCountData:[],
+      // rankGradeData:[],
+      //列表数据
+      anntId: '',
+      // windowsDataSource:[],
+      // peopelDataSource: [],
+      superFieldList: [],
+      ipagination: {
+        current: 1,
+        pageSize: 10,
+        pageSizeOptions: ['10', '20', '30'],
+        showTotal: (total, range) => {
+          return range[0] + '-' + range[1] + ' 共' + total + '条'
         },
+        showQuickJumper: true,
+        showSizeChanger: true,
+        total: 0,
+      },
+      /* 排序参数 */
+      isorter: {
+        column: 'avgGrade',
+        order: 'desc',
+      },
+      /* 筛选参数 */
+      filters: {},
+      /* table加载状态 */
+      loading: false,
+      /* table选中keys*/
+      selectedRowKeys: [],
+      /* table选中records*/
+      selectionRows: [],
+      /* 查询折叠 */
+      toggleSearchStatus: false,
+      /* 高级查询条件生效状态 */
+      superQueryFlag: false,
+      /* 高级查询条件 */
+      superQueryParams: '',
+      /** 高级查询拼接方式 */
+      superQueryMatchType: 'and',
+      // 表头
+      // peopleColumns: [
+      //   {
+      //     title: '#',
+      //     dataIndex: '',
+      //     key:'rowIndex',
+      //     width:60,
+      //     align:"center",
+      //     customRender:function (t,r,index) {
+      //       return parseInt(index)+1;
+      //     }
+      //   },
+      //
+      //   {
+      //     title: '人员名称',
+      //     align: "center",
+      //     dataIndex: 'personName',
+      //     //sorter: true,
+      //   },
+      //   /*          {
+      //     title:'主管单位',
+      //     align:"center",
+      //     dataIndex: 'exeDept',
+      //     sorter: true
+      //   },*/
+      //   {
+      //     title:'所属窗口服务大厅',
+      //     align:"center",
+      //     dataIndex: 'windowsName',
+      //     //sorter: true
+      //   },
+      //   {
+      //     title: '评分',
+      //     align: "center",
+      //     dataIndex: 'avgGrade',
+      //     //sorter: true,
+      //
+      //   },
+      //
+      //   /*          {
+      //     title:'评价人',
+      //     align:"center",
+      //     dataIndex: 'evaluateName',
+      //     sorter: true
+      //   },
+      //   {
+      //     title:'评价人手机号',
+      //     align:"center",
+      //     dataIndex: 'evaluatePhone',
+      //     sorter: true
+      //   },
+      //   {
+      //     title:'评价时间',
+      //     align:"center",
+      //     dataIndex: 'evaluateTime',
+      //     sorter: true
+      //   },
+      //   {
+      //     title:'评价结果',
+      //     align:"center",
+      //     dataIndex: 'evaluateResult_dictText',
+      //     sorter: true
+      //   },
+      //   {
+      //     title:'意见',
+      //     align:"center",
+      //     dataIndex: 'evaluateOpinion',
+      //     sorter: true
+      //   },*/
+      //   /*          {
+      //     title: '操作',
+      //     dataIndex: 'action',
+      //     align: "center",
+      //     fixed: "right",
+      //     width: 147,
+      //     scopedSlots: { customRender: 'action' }
+      //   }*/
+      // ],
+      // windowsColumns:[
+      //   {
+      //     title: '#',
+      //     dataIndex: '',
+      //     key:'rowIndex',
+      //     width:60,
+      //     align:"center",
+      //     customRender:function (t,r,index) {
+      //       return parseInt(index)+1;
+      //     }
+      //   },
+      //
+      //   {
+      //     title:'主管单位',
+      //     align:"center",
+      //     dataIndex: 'exeDept',
+      //     //sorter: true
+      //   },
+      //   {
+      //     title:'窗口服务大厅名称',
+      //     align:"center",
+      //     dataIndex: 'windowsName',
+      //     //sorter: true
+      //   },
+      //   /*{
+      //     title: '人员名称',
+      //     align: "center",
+      //     dataIndex: 'personName',
+      //     sorter: true,
+      //     width: 60
+      //   },*/
+      //   {
+      //     title: '评分',
+      //     align: "center",
+      //     dataIndex: 'avgGrade',
+      //     //sorter: true,
+      //
+      //   },
+      //
+      // ],
+      dictOptions: {},
+      url: {
+        peopleList: "/smartEvaluateList/chart/avgByPeople",
+        windowsList: "/smartEvaluateList/chart/windowsByGrade",
+      },
+
+      indexBottomTab:"1",
+
+    }
+  },
+  created() {
+    this.cardLoading = true
+    this.lineData = []
+    this.pieData = []
+    // this.rankCountData = []
+    // this.rankGradeData = []
+    this.getTitle()
+    this.loadLineData()
+    this.loadPieData()
+    // this.loadRankCountData();
+    // this.loadRankGradeData();
+    // this.loadPeopleData(1);
+    // this.loadWindowsData(1);
+    setTimeout(() => {
+      this.cardLoading = !this.cardLoading
+    }, 1000)
+  },
+  methods: {
+    //token header
+    tokenHeader(){
+      let head = {'X-Access-Token': Vue.ls.get(ACCESS_TOKEN)}
+      let tenantid = Vue.ls.get(TENANT_ID)
+      if(tenantid){
+        head['tenant-id'] = tenantid
+      }
+      return head;
+    },
+    getTitle(){
+      if(this.queryParam.year ===''){
+        let currentYear = new Date().getFullYear();
+        this.title = currentYear+"年八项规定任务审核情况"
+        this.pieTitle = currentYear +"年八项规定任务数量统计"
+        // this.rankCountTitle = currentYear + "年道里区窗口服务大厅评价参与度排行榜"
+        // this.rankGradeTitle = currentYear + "年道里区窗口服务大厅评分排行榜"
+      }else {
+        let len =(this.queryParam.year).length
+        this.title = this.queryParam.year.substr(1,len-2)+"年八项规定任务审核情况"
+        this.pieTitle = this.queryParam.year.substr(1,len-2) +"年八项规定任务数量统计"
+        // this.rankCountTitle = this.queryParam.year.substr(1,len-2) + "年道里区窗口服务大厅评价参与度排行榜"
+        // this.rankGradeTitle = this.queryParam.year.substr(1,len-2) + "年道里区窗口服务大厅评分排行榜"
       }
     },
-    created() {
-      let url = this.url.getYearCountInfo;
-      this.loadDate(url,'year',{});
-    },
-    methods: {
-      loadDate(url,type,param) {
-        getAction(url,param,'get').then((res) => {
-          if (res.success) {
-            this.countSource = [];
-            if(type === 'year'){
-              this.getYearCountSource(res.result);
-            }
-            if(type === 'month'){
-              this.getMonthCountSource(res.result);
-            }
-            if(type === 'category'){
-              this.getCategoryCountSource(res.result);
-            }
-            if(type === 'cabinet'){
-              this.getCabinetCountSource(res.result);
+    //加载折线图数据
+    loadLineData(){
+      let year = this.queryParam.year
+      let url =  "/smartEvaluateList/chart/countEight"+"?year="+year;
+      //console.log(url)
+      getAction(url).then((res)=>{
+        if(res.success){
+          let result = res.result
+          let l = result.length
+          let i=1;
+          let monthArray= ['1','2','3','4','5','6','7','8','9','10','11','12'];
+          //console.log(result.length,result)
+          if(result.length != 0){
+            for(i=0;i<12;i++){
+              if(result[i].month != monthArray[i] ){
+                //console.log(i,monthArray[i],result[i].month)
+                let item ={month:monthArray[i],count:0,countNot:0}
+                result.splice(i,0,item)
+              }else {
+                //console.log(result.length,i+l)
+                let item ={month:monthArray[i+1],count:0,countNot:0}
+                if(result.length< 12 ){
+                  result.splice(i+1,0,item)
+                }else if(result.length !=12){
+                  result.push(item)
+                }
+              }
             }
           }else{
-            var that=this;
-            that.$message.warning(res.message);
+            for(i=0;i<12;i++){
+              console.log(monthArray[i])
+              this.lineData = []
+              let item ={month:monthArray[i],count:0,countNot:0}
+              result.splice(i,0,item)
+            }
+          }
+          //console.log(result)
+          result.forEach((c)=>{
+            let monthData = c.month+'月'
+            //console.log(this.lineData)
+            this.lineData.push({type:monthData,count:c.count,countNot:c.countNot})
+          })
+          console.log(this.lineData)
+
+        }
+        else{
+          this.$message.warning("系统错误!")
+        }
+      })
+
+    },
+    //搜索
+    search(){
+      let curYear = Number(new Date().getFullYear());
+      let l = this.queryParam.year.length
+      let y = Number(this.queryParam.year.substring(1,l-1))
+      console.log(curYear,y)
+      if(y==''||y=="undefined"){
+        this.$message.warning("请输入年份！")
+      }
+      else if(curYear < y ||  y< 2000){
+        this.$message.warning("请输入正确的年份！")
+      }else {
+        this.cardLoading = true
+        this.lineData = []
+        this.pieData = []
+        // this.rankCountData = []
+        // this.rankGradeData = []
+        this.getTitle()
+        this.loadLineData();
+        this.loadPieData();
+        // this.loadRankCountData();
+        // this.loadRankGradeData();
+        setTimeout(() => {
+          this.cardLoading = !this.cardLoading
+        }, 1000)
+      }
+    },
+    searchReset(){
+      this.queryParam.year = ''
+      this.cardLoading = true
+      this.lineData = []
+      this.pieData = []
+      this.rankCountData = []
+      this.rankGradeData = []
+      this.getTitle()
+      this.loadLineData();
+      this.loadPieData();
+      this.loadRankCountData();
+      this.loadRankGradeData();
+      setTimeout(() => {
+        this.cardLoading = !this.cardLoading
+      }, 1000)
+    },
+    searchWindows(){
+      let e = this.queryParam.windowsName
+      if(e==''||e=="undefined"){
+        this.$message.warning("请输入窗口服务大厅名称！")
+      }else{
+        this.loadPeopleData()
+        this.loadWindowsData()
+      }
+    },
+    searchWindowsReset(){
+      this.queryParam.windowsName=''
+      this.loadPeopleData()
+      this.loadWindowsData()
+    },
+    //饼图
+    loadPieData(){
+      let year = this.queryParam.year
+      let url =  "/smartEvaluateList/chart/countByType"+"?year="+year;
+      getAction(url).then((res)=>{
+        if(res.success){
+          let data = res.result
+          console.log(data)
+          if(data.length != 0){
+            for (let i = 0; i < data.length; i++) {
+              this.pieData.push({
+                item: data[i].keyName,
+                count:data[i].value
+              })
+            }
+          }else{
+            this.pieData.push({
+              item: '',
+              count:"无数据！"
+            })
+            this.$message.warning("无数据!")
+          }
+
+        } else{
+          this.$message.warning("系统错误!")
+        }
+      })
+    },
+
+    //评价次数排行榜，展示前十名（可设置）
+    loadRankCountData(){
+      let year = this.queryParam.year
+      let url =  "/smartEvaluateList/chart/windowsRankByCount"+"?year="+year;
+      getAction(url).then((res)=>{
+        if(res.success){
+          let data = res.result
+          console.log(data)
+          let len = data.length
+          if(len >10){
+            len = 10
+          }
+          if(len>0){
+            for (let i = 0; i < len; i++) {
+              this.rankCountData.push({
+                name: data[i].keyName,
+                total:data[i].value
+              })
+            }
+          }else{
+            this.rankCountData.push({
+              name: "",
+              total:"无数据"
+            })
+            this.$message.warning("无数据!")
+          }
+
+        } else{
+          this.$message.warning("系统错误!")
+        }
+      })
+    },
+    //满意度排行榜，展示前十名（可设置）
+    loadRankGradeData(){
+      let year = this.queryParam.year
+      let url =  "/smartEvaluateList/chart/windowsRankByGrade"+"?year="+year;
+      getAction(url).then((res)=>{
+        if(res.success){
+          let data = res.result
+          console.log(data)
+          let len = data.length
+          if(len >10){
+            len = 10
+          }
+          if(len>0){
+            for (let i = 0; i < len; i++) {
+              this.rankGradeData.push({
+                name: data[i].keyName,
+                total:data[i].value
+              })
+            }
+          }else{
+            this.rankCountData.push({
+              name: "",
+              total:"无数据"
+            })
+            this.$message.warning("无数据!")
+          }
+        } else{
+          this.$message.warning("系统错误!")
+        }
+      })
+    },
+
+    //列表-人员
+    loadPeopleData(arg) {
+      if (!this.url.peopleList) {
+        this.$message.error('请设置url.list属性!')
+        return
+      }
+      //加载数据 若传入参数1则加载第一页的内容
+      if (arg === 1) {
+        this.ipagination.current = 1
+      }
+      var params = this.getQueryParams() //查询条件
+      this.loading = true
+      getAction(this.url.peopleList,params)
+        .then((res) => {
+          if (res.success) {
+            this.peopelDataSource = res.result.records || res.result
+            let i = 0
+            for(i=0;i<this.peopelDataSource.length;i++){
+              if(this.peopelDataSource[i].avgGrade === '' || this.peopelDataSource[i].avgGrade == null || this.peopelDataSource[i].avgGrade === 'undefined' ){
+                this.peopelDataSource[i].avgGrade = '暂无评分'
+              }
+            }
+            if (res.result.total) {
+              this.ipagination.total = res.result.total
+            } else {
+              this.ipagination.total = 0
+            }
+          } else {
+            this.$message.warning(res.message)
           }
         })
-      },
-      getYearCountSource(data){
-        for (let i = 0; i < data.length; i++) {
-          if(this.tabStatus === "bar"){
-            this.countSource.push({
-              x: `${data[i].year}年`,
-              y: data[i].yearcount
-            })
-          }else{
-            this.countSource.push({
-              item: `${data[i].year}年`,
-              count:data[i].yearcount
-            })
+        .finally(() => {
+          this.loading = false
+        })
+    },
+    //列表-窗口
+    loadWindowsData(arg) {
+      if (!this.url.windowsList) {
+        this.$message.error('请设置url.list属性!')
+        return
+      }
+      //加载数据 若传入参数1则加载第一页的内容
+      if (arg === 1) {
+        this.ipagination.current = 1
+      }
+      //var params = this.getQueryParams() //查询条件
+      this.loading = true
+      getAction(this.url.windowsList)
+        .then((res) => {
+          if (res.success) {
+            this.windowsDataSource = res.result.records || res.result
+            let i = 0
+            for(i=0;i<this.windowsDataSource.length;i++){
+              if(this.windowsDataSource[i].avgGrade === '' || this.windowsDataSource[i].avgGrade == null || this.windowsDataSource[i].avgGrade === 'undefined' ){
+                this.windowsDataSource[i].avgGrade = '暂无评分'
+              }
+            }
+            if (res.result.total) {
+              this.ipagination.total = res.result.total
+            } else {
+              this.ipagination.total = 0
+            }
+          } else {
+            this.$message.warning(res.message)
           }
-        }
-      },
-      getMonthCountSource(data){
-        for (let i = 0; i < data.length; i++) {
-          if(this.tabStatus === "bar"){
-            this.countSource.push({
-              x: data[i].month,
-              y: data[i].monthcount
-            })
-          }else{
-            this.countSource.push({
-              item: data[i].month,
-              count:data[i].monthcount
-            })
-          }
-        }
-      },
-      getCategoryCountSource(data){
-        for (let i = 0; i < data.length; i++) {
-          if(this.tabStatus ==="bar"){
-            this.countSource.push({
-              x: data[i].classifyname,
-              y: data[i].cntrnocount
-            })
-          }else{
-            this.countSource.push({
-              item: data[i].classifyname,
-              count:data[i].cntrnocount
-            })
-          }
-        }
-      },
-      getCabinetCountSource(data){
-        for (let i = 0; i < data.length; i++) {
-          if(this.tabStatus === "bar"){
-            this.countSource.push({
-              x: data[i].cabinetname,
-              y: data[i].cabinetcocunt
-            })
-          }else{
-            this.countSource.push({
-              item: data[i].cabinetname,
-              count:data[i].cabinetcocunt
-            })
-          }
-        }
-      },
-      // 选择统计图类别
-      callback(key) {
-        if(key === "1"){
-          this.tabStatus = "pie";
-          this.queryDatePie();
-        }else{
-          this.tabStatus = "pie";
-          this.queryDatepie();
-        }
-      },
-      // 选择统计类别
-      statisticst(e) {
-        if(this.tabStatus === "pie"){
-          this.pieType = e.target.value;
-          this.queryDatepie();
-        }else{
-          this.barType = e.target.value;
-          this.queryDatebar();
-        }
-      },
-      // 按月份查询
-      // queryDatebar(){
-      //   if(this.barValue.length>0){
-      //     this.getUrl(this.barType,{startTime:this.barValue[0]._d,endTime:this.barValue[1]._d});
-      //   }else{
-      //     this.getUrl(this.barType,{});
-      //   }
-      // },
-      queryDatepie(){
-        if(this.pieValue.length>0){
-          this.getUrl(this.pieType,{startTime:this.pieValue[0]._d,endTime:this.pieValue[1]._d});
-        }else{
-          this.getUrl(this.pieType,{});
-        }
-      },
-      searchReset(){
-        console.log(this.tabStatus);
-        if(this.tabStatus === "pie"){
-          this.pieValue = [];
-        }else{
-          this.barValue = [];
-        }
-        this.getUrl(this.barType,{});
-      },
-      // 选择请求url
-      getUrl(type,param){
-        let url = "";
-        if(type === 'year'){
-          url = this.url.getYearCountInfo;
-        }
-        if(type === 'month'){
-          url = this.url.getMonthCountInfo;
-        }
-        if(type === 'category'){
-          url = this.url.getCntrNoCountInfo;
-        }
-        if(type === 'cabinet'){
-          url = this.url.getCabinetCountInfo;
-        }
-        this.loadDate(url,type,param);
-      },
-      // 选择月份日期
-      handleBarDate(value, mode) {
-        this.barValue = value
-        this.barDate = [
-          mode[0] === 'date' ? 'month' : mode[0],
-          mode[1] === 'date' ? 'month' : mode[1]
-        ]
-      },
-      handlePieDate(value, mode) {
-        this.pieValue = value
-        this.pieDate = [
-          mode[0] === 'date' ? 'month' : mode[0],
-          mode[1] === 'date' ? 'month' : mode[1]
-        ]
-      },
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
+    handleTableChange(pagination, filters, sorter) {
+      //分页、排序、筛选变化时触发
+      //TODO 筛选
+      console.log(pagination)
+      if (Object.keys(sorter).length > 0) {
+        this.isorter.column = sorter.field
+        this.isorter.order = 'ascend' == sorter.order ? 'asc' : 'desc'
+      }
+      this.ipagination = pagination
+      this.loadPeopleData()
+    },
+    handleWindowsTableChange(pagination, filters, sorter) {
+      //分页、排序、筛选变化时触发
+      //TODO 筛选
+      console.log(pagination)
+      if (Object.keys(sorter).length > 0) {
+        this.isorter.column = sorter.field
+        this.isorter.order = 'ascend' == sorter.order ? 'asc' : 'desc'
+      }
+      this.ipagination = pagination
+      this.loadWindowsData()
+    },
+    getQueryParams() {
+      //获取查询条件
+      let sqp = {}
+      if (this.superQueryParams) {
+        sqp['superQueryParams'] = encodeURI(this.superQueryParams)
+        sqp['superQueryMatchType'] = this.superQueryMatchType
+      }
+      var param = Object.assign(sqp, this.queryParam, this.isorter, this.filters)
+      console.log(param)
+      param.anntId = this.anntId
+      //   param.field = this.getQueryField()
+      param.pageNo = this.ipagination.current
+      param.pageSize = this.ipagination.pageSize
+      return filterObj(param)
+    },
+  }
+}
+</script>
+
+
+
+<style  scoped>
+@import '~@assets/less/common.less';
+</style>
+<style lang="less" scoped>
+.circle-cust{
+  position: relative;
+  top: 28px;
+  left: -100%;
+}
+.extra-wrapper {
+  line-height: 55px;
+  padding-right: 24px;
+
+  .extra-item {
+    display: inline-block;
+    margin-right: 40px;
+
+    a {
+      margin-left: 24px;
     }
   }
-</script>
-<style scoped>
-  .ant-card-body .table-operator {
-    margin-bottom: 18px;
+}
+
+/* 首页访问量统计 */
+.head-info {
+  position: relative;
+  text-align: left;
+  padding: 0 32px 0 0;
+  min-width: 125px;
+
+  &.center {
+    text-align: center;
+    padding: 0 32px;
   }
 
-  .ant-table-tbody .ant-table-row td {
-    padding-top: 15px;
-    padding-bottom: 15px;
+  span {
+    color: rgba(0, 0, 0, .45);
+    display: inline-block;
+    font-size: .95rem;
+    line-height: 42px;
+    margin-bottom: 4px;
   }
+  p {
+    line-height: 42px;
+    margin: 0;
+    a {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+  }
+}
 
-  .anty-row-operator button {
-    margin: 0 5px
-  }
-
-  .ant-btn-danger {
-    background-color: #ffffff
-  }
-
-  .ant-modal-cust-warp {
-    height: 100%
-  }
-
-  .ant-modal-cust-warp .ant-modal-body {
-    height: calc(100% - 110px) !important;
-    overflow-y: auto
-  }
-
-  .ant-modal-cust-warp .ant-modal-content {
-    height: 90% !important;
-    overflow-y: hidden
-  }
-
-  .statistic {
-    padding: 0px !important;
-    margin-top: 50px;
-  }
-
-  .statistic h4 {
-    margin-bottom: 20px;
-    text-align: center !important;
-    font-size: 24px !important;;
-  }
-
-  .statistic #canvas_1 {
-    width: 100% !important;
-  }
+.anty-list-cust {
+  .ant-list-item-meta{flex: 0.3 !important;}
+}
+.anty-list-cust {
+  .ant-list-item-content{flex:1 !important; justify-content:flex-start !important;margin-left: 20px;}
+}
 </style>
