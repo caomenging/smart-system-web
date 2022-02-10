@@ -40,7 +40,8 @@
     </div>
   </a-card>-->
   <a-row :gutter="12">
-    <a-card :class="{ 'anty-list-cust':true }" :bordered="false" :style="{marginTop:'30px',marginLeft:'3px'}">
+    <a-card :class="{ 'anty-list-cust':true }" :bordered="false" :style="{marginTop:'3px',marginLeft:'3px'}">
+      <h3 :style="{marginBottom:'20px'}">窗口人员评分排名（评分标准：10分制）</h3>
       <!-- 查询区域 -->
       <div class="table-page-search-wrapper">
         <a-form layout="inline" @keyup.enter.native="searchQuery">
@@ -69,24 +70,23 @@
           </a-row>
         </a-form>
       </div>
-      <h3>评分标准：10分制</h3>
-      <a-tabs v-model="indexBottomTab" size="large" :tab-bar-style="{marginBottom: '24px', paddingLeft: '16px'}">
-<!--        <div class="extra-wrapper" slot="tabBarExtraContent">
-          &lt;!&ndash; <a-range-picker :style="{width: '256px'}" />&ndash;&gt;
-          <div class="extra-item">
-&lt;!&ndash;            <j-input placeholder="请输入窗口服务大厅名称" v-model="queryParam.windowsName" width="60%" />&ndash;&gt;
-            <j-search-select-tag
-              placeholder="请选择窗口服务大厅名称"
-              v-model="queryParam.windowsName"
-              dict="smart_window_unit,name,name,del_flag = 0"
-              :async="true" :style="{width:'200px'}">
-            </j-search-select-tag>
-          </div>
-          <a-button type="primary" @click="searchWindows" icon="search">查询</a-button>
-          <a-button type="primary" @click="searchWindowsReset" icon="reload" style="margin-left: 8px">重置</a-button>
-        </div>-->
 
-        <a-tab-pane loading="true" tab="窗口服务大厅评分" key="1">
+          <a-table ref="table"
+               size="middle"
+               :scroll="{x:true}"
+               bordered
+               :columns="peopleColumns"
+               :dataSource="peopelDataSource"
+               :pagination="ipagination"
+               :loading="loading"
+               class="j-table-force-nowrap"
+               @change="handleTableChange">
+      </a-table>
+</a-card>
+</a-row>
+    <a-row :gutter="12">
+      <a-card :class="{ 'anty-list-cust':true }" :bordered="false" :style="{marginTop:'20px',marginLeft:'3px'}">
+        <h3 :style="{marginBottom:'20px'}">窗口单位评分排名（评分标准：10分制）</h3>
           <a-table ref="table"
                    size="middle"
                    :scroll="{x:true}"
@@ -98,23 +98,6 @@
                    class="j-table-force-nowrap"
                    @change="handleWindowsTableChange">
           </a-table>
-        </a-tab-pane>
-        <a-tab-pane loading="true" tab="窗口人员评分" key="2">
-          <a-table ref="table"
-                   size="middle"
-                   :scroll="{x:true}"
-                   bordered
-                   :columns="peopleColumns"
-                   :dataSource="peopelDataSource"
-                   :pagination="ipagination"
-                   :loading="loading"
-                   class="j-table-force-nowrap"
-                   @change="handleTableChange">
-          </a-table>
-        </a-tab-pane>
-      </a-tabs>
-
-
     </a-card>
   </a-row>
   </div>
@@ -158,7 +141,7 @@
     data() {
       return {
         cardLoading:true,
-        queryParam: { year: '' ,windowsName:''},
+        queryParam: { windowsName:''},
         title: '',
         pieTitle:'',
         rankCountTitle:'',
@@ -167,15 +150,6 @@
         rankList: [],
         barData: [],
         areaData: [],
-        //折线图
-        lineData: [],
-        lineField: ['count'],
-        aliases: [{ field: 'count', alias: '评价次数' }],
-        //饼图
-        pieData: [],
-        //排行榜
-        rankCountData:[],
-        rankGradeData:[],
         //列表数据
         anntId: '',
         windowsDataSource:[],
@@ -343,15 +317,6 @@
     },
     created() {
       this.cardLoading = true
-      this.lineData = []
-      this.pieData = []
-      this.rankCountData = []
-      this.rankGradeData = []
-      this.getTitle()
-      this.loadLineData()
-      this.loadPieData()
-      this.loadRankCountData();
-      this.loadRankGradeData();
       this.loadPeopleData(1);
       this.loadWindowsData(1);
       setTimeout(() => {
@@ -368,221 +333,20 @@
         }
         return head;
       },
-      getTitle(){
-        if(this.queryParam.year ===''){
-          let currentYear = new Date().getFullYear();
-          this.title = currentYear+"年道里区窗口评价参与度"
-          this.pieTitle = currentYear +"年道里区窗口服务满意度"
-          this.rankCountTitle = currentYear + "年道里区窗口服务大厅评价参与度排行榜"
-          this.rankGradeTitle = currentYear + "年道里区窗口服务大厅评分排行榜"
-        }else {
-          let len =(this.queryParam.year).length
-          this.title = this.queryParam.year.substr(1,len-2)+"年道里区窗口评价参与度"
-          this.pieTitle = this.queryParam.year.substr(1,len-2) +"道里区窗口服务满意度"
-          this.rankCountTitle = this.queryParam.year.substr(1,len-2) + "年道里区窗口服务大厅评价参与度排行榜"
-          this.rankGradeTitle = this.queryParam.year.substr(1,len-2) + "年道里区窗口服务大厅评分排行榜"
-        }
-      },
-      //加载折线图数据
-      loadLineData(){
-        let year = this.queryParam.year
-        let url =  "/smartEvaluateList/chart/countByMonth"+"?year="+year;
-        //console.log(url)
-        getAction(url).then((res)=>{
-            if(res.success){
-              let result = res.result
-              let l = result.length
-                let i=1;
-                let monthArray= ['1','2','3','4','5','6','7','8','9','10','11','12'];
-                //console.log(result.length,result)
-              if(result.length != 0){
-                for(i=0;i<12;i++){
-                  if(result[i].month != monthArray[i] ){
-                    //console.log(i,monthArray[i],result[i].month)
-                    let item ={month:monthArray[i],count:0}
-                    result.splice(i,0,item)
-                  }else {
-                    //console.log(result.length,i+l)
-                    let item ={month:monthArray[i+1],count:0}
-                    if(result.length< 12 ){
-                      result.splice(i+1,0,item)
-                    }else if(result.length !=12){
-                      result.push(item)
-                    }
-                  }
-                }
-              }else{
-                for(i=0;i<12;i++){
-                    console.log(monthArray[i])
-                    this.lineData = []
-                    let item ={month:monthArray[i],count:0}
-                    result.splice(i,0,item)
-                }
-              }
-              //console.log(result)
-              result.forEach((c)=>{
-                let monthData = c.month+'月'
-                //console.log(this.lineData)
-                this.lineData.push({type:monthData,count:c.count})
-              })
-              console.log(this.lineData)
-
-            }
-            else{
-              this.$message.warning("系统错误!")
-            }
-          })
-
-      },
-      //搜索
-      search(){
-        let curYear = Number(new Date().getFullYear());
-        let l = this.queryParam.year.length
-        let y = Number(this.queryParam.year.substring(1,l-1))
-        console.log(curYear,y)
-        if(y==''||y=="undefined"){
-          this.$message.warning("请输入年份！")
-        }
-        else if(curYear < y ||  y< 2000){
-          this.$message.warning("请输入正确的年份！")
-        }else {
-          this.cardLoading = true
-          this.lineData = []
-          this.pieData = []
-          this.rankCountData = []
-          this.rankGradeData = []
-          this.getTitle()
-          this.loadLineData();
-          this.loadPieData();
-          this.loadRankCountData();
-          this.loadRankGradeData();
-          setTimeout(() => {
-            this.cardLoading = !this.cardLoading
-          }, 1000)
-        }
-      },
-      searchReset(){
-        this.queryParam.year = ''
-        this.cardLoading = true
-        this.lineData = []
-        this.pieData = []
-        this.rankCountData = []
-        this.rankGradeData = []
-        this.getTitle()
-        this.loadLineData();
-        this.loadPieData();
-        this.loadRankCountData();
-        this.loadRankGradeData();
-        setTimeout(() => {
-          this.cardLoading = !this.cardLoading
-        }, 1000)
-      },
       searchWindows(){
         let e = this.queryParam.windowsName
         if(e===''||e==="undefined"){
           this.$message.warning("请选择窗口服务大厅名称！")
         }else{
           this.loadPeopleData()
-          this.loadWindowsData()
+          //this.loadWindowsData()
         }
       },
       searchWindowsReset(){
         console.log(this.queryParam.windowsName)
         this.queryParam={}
         this.loadPeopleData()
-        this.loadWindowsData()
-      },
-      //饼图
-      loadPieData(){
-        let year = this.queryParam.year
-        let url =  "/smartEvaluateList/chart/countByGrade"+"?year="+year;
-        getAction(url).then((res)=>{
-          if(res.success){
-            let data = res.result
-            console.log(data)
-            if(data.length != 0){
-              for (let i = 0; i < data.length; i++) {
-                this.pieData.push({
-                  item: data[i].keyName,
-                  count:data[i].value
-                })
-              }
-            }else{
-              this.pieData.push({
-                item: '',
-                count:"无数据！"
-              })
-              this.$message.warning("无数据!")
-            }
-
-          } else{
-            this.$message.warning("系统错误!")
-          }
-        })
-      },
-
-      //评价次数排行榜，展示前十名（可设置）
-      loadRankCountData(){
-        let year = this.queryParam.year
-        let url =  "/smartEvaluateList/chart/windowsRankByCount"+"?year="+year;
-        getAction(url).then((res)=>{
-          if(res.success){
-            let data = res.result
-            console.log(data)
-            let len = data.length
-            if(len >10){
-              len = 10
-            }
-            if(len>0){
-              for (let i = 0; i < len; i++) {
-                this.rankCountData.push({
-                  name: data[i].keyName,
-                  total:data[i].value
-                })
-              }
-            }else{
-              this.rankCountData.push({
-                name: "",
-                total:"无数据"
-              })
-              this.$message.warning("无数据!")
-            }
-
-          } else{
-            this.$message.warning("系统错误!")
-          }
-        })
-      },
-    //满意度排行榜，展示前十名（可设置）
-      loadRankGradeData(){
-        let year = this.queryParam.year
-        let url =  "/smartEvaluateList/chart/windowsRankByGrade"+"?year="+year;
-        getAction(url).then((res)=>{
-          if(res.success){
-            let data = res.result
-            console.log(data)
-            let len = data.length
-            if(len >10){
-              len = 10
-            }
-            if(len>0){
-              for (let i = 0; i < len; i++) {
-                this.rankGradeData.push({
-                  name: data[i].keyName,
-                  total:data[i].value
-                })
-              }
-            }else{
-              this.rankCountData.push({
-                name: "",
-                total:"无数据"
-              })
-              this.$message.warning("无数据!")
-            }
-          } else{
-            this.$message.warning("系统错误!")
-          }
-        })
+        //this.loadWindowsData()
       },
 
       //列表-人员

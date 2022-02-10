@@ -1,7 +1,7 @@
 <template>
   <div>
-<!--  <a-card :bordered="false">
-    <a-row :gutter="24">
+  <a-card :bordered="false">
+<!--    <a-row :gutter="24">
     <a-col :xl="6" :lg="7" :md="8" :sm="24" >
       <a-card>
       <a-statistic title="今日待审核" :value="value1" :style="{fontSize:'14px'}" :width="80" height="30"/>
@@ -22,20 +22,42 @@
           <a-statistic title="今日已通过" :value="value4" :style="{fontSize:'14px'}" :width="80" height="30"/>
         </a-card>
       </a-col>
-    </a-row>
+    </a-row>-->
     <a-tabs defaultActiveKey="1" @change="callback">
-      &lt;!&ndash; 多列柱状图 &ndash;&gt;
-      <a-tab-pane tab="审核状况统计" key="1">
-&lt;!&ndash;        <a-col :span="10">
+      <!-- 多列柱状图 -->
+      <a-tab-pane  tab="审核状况统计" key="1">
+        <h3>{{barTitle}}</h3>
+<!--        <a-col :span="10">
           <a-radio-group :value="pieType" @change="statisticst">
             <a-radio-button value="year">按年统计</a-radio-button>
             <a-radio-button value="month">按月统计</a-radio-button>
             <a-radio-button value="category">按类别统计</a-radio-button>
           </a-radio-group>
-        </a-col>&ndash;&gt;
-        <bar-multid title="审核状况统计" class="statistic" :height="400" :dataSource="barDataSource" :fields="barFields"/>
+        </a-col>-->
+        <a-row :gutter="24">
+        <a-col :span="20">
+          <a-form layout="inline" :style="{marginTop: '-40px',marginLeft:'150px'}" >
+            <a-row :gutter="24">
+              <a-form-item label="月份">
+                <a-date-picker
+                  format="YYYY-MM"
+                  v-model="queryParam.barDate"
+                  mode="month"
+                  :open="barOpen"
+                  @openChange="openBarChange"
+                  @panelChange="panelBarChange"
+                  @change="handleBarChange"
+                />
+              </a-form-item>
+              <a-button style="margin-top: 2px" type="primary" icon="search" @click="queryDatebar">查询</a-button>
+              <a-button style="margin-top: 2px;margin-left: 8px" type="primary" icon="reload" @click="searchBarReset">重置</a-button>
+            </a-row>
+          </a-form>
+        </a-col>
+        <bar-multid  class="statistic" :height="400" :dataSource="barDataSource" :fields="barFields"/>
+        </a-row>
       </a-tab-pane>
-&lt;!&ndash;      <a-tab-pane tab="审核状况统计" key="2">
+<!--      <a-tab-pane tab="审核状况统计" key="2">
         <a-row>
           <a-col :span="10">
             <a-radio-group :value="barType" @change="statisticst">
@@ -61,41 +83,45 @@
           </a-col>
           <bar class="statistic" title="档案统计" :dataSource="countSource" :height="400"/>
         </a-row>
-      </a-tab-pane>&ndash;&gt;
-      <a-tab-pane tab="开展状况" key="3">
+      </a-tab-pane>-->
+      <a-tab-pane tab="开展状况" key="2">
+        <h3>{{pieTitle}}</h3>
         <a-row :gutter="24">
-&lt;!&ndash;          <a-col :span="10">
+<!--          <a-col :span="10">
             <a-radio-group :value="pieType" @change="statisticst">
               <a-radio-button value="year">按年统计</a-radio-button>
               <a-radio-button value="month">按月统计</a-radio-button>
               <a-radio-button value="category">按类别统计</a-radio-button>
               <a-radio-button value="cabinet">按柜号统计</a-radio-button>
             </a-radio-group>
-          </a-col>&ndash;&gt;
-          <a-col :span="14">
-            <a-form v-if="pieType === 'month' && false" layout="inline" style="margin-top: -4px">
+          </a-col>-->
+          <a-col :span="20">
+            <a-form layout="inline" :style="{marginTop: '-40px',marginLeft:'150px'}" >
               <a-row :gutter="24">
-                <a-form-item label="月份区间">
-                  <a-range-picker
-                    :placeholder="['开始月份', '结束月份']"
+                <a-form-item label="月份">
+                  <a-date-picker
                     format="YYYY-MM"
-                    :value="pieValue"
-                    :mode="pieDate"
-                    @panelChange="handlePieDate"/>
+                    v-model="queryParam.barDate"
+                    mode="month"
+                    :open="pieOpen"
+                    @openChange="openPieChange"
+                    @panelChange="panelPieChange"
+                    @change="handlePieChange"
+                  />
                 </a-form-item>
                 <a-button style="margin-top: 2px" type="primary" icon="search" @click="queryDatepie">查询</a-button>
                 <a-button style="margin-top: 2px;margin-left: 8px" type="primary" icon="reload" @click="searchReset">重置</a-button>
               </a-row>
             </a-form>
           </a-col>
-          <pie class="statistic" title="开展状况" :dataSource="countSource" :height="450"/>
+          <pie class="statistic" :title="pieTitle" :dataSource="pieData" :height="450"/>
         </a-row>
       </a-tab-pane>
     </a-tabs>
 
-  </a-card>-->
+  </a-card>
   <div>
-  <h2>三重一大任务列表</h2>
+  <h2>三重一大已通过任务列表</h2>
   <szyd-tasks-list />
   <h2>三重一大审核未通过列表</h2>
   <szyd-not-pass-list />
@@ -124,209 +150,272 @@ export default {
     return {
       description: '三重一大统计页面',
       // 查询条件
-      queryParam: {},
+      queryParam: {pieDate: '',barDate:''},
+      pieTitle:'',
+      barTitle:'',
       // 数据集
       countSource: [],
-      barDataSource: [
-          /*{ type: '未审核', '重大事项决策': 18.9, '重要干部任免': 28.8, '重要项目安排': 39.3, '大额资金使用': 81.4, '5月': 47, '6月': 20.3, '7月': 24, '8月': 35.6 },*/
-          { type: '未通过', '重大事项决策': 12.4, '重要干部任免': 23.2, '重要项目安排': 34.5, '大额资金使用': 99.7 },
-          /*{ type: '已审核', '重大事项决策': 18.9, '重要干部任免': 28.8, '重要项目安排': 39.3, '大额资金使用': 81.4, '5月': 47, '6月': 20.3, '7月': 24, '8月': 35.6 },*/
-          { type: '已通过', '重大事项决策': 12.4, '重要干部任免': 23.2, '重要项目安排': 34.5, '大额资金使用': 99.7 }
-        ],
-      //barFields: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月','9月','10月','11月','12月'],
-      barFields:['重大事项决策','重要干部任免','重要项目安排','大额资金使用'],
+      barDataSource: [],
+      //barFields:['重大事项决策','重要干部任免','重要项目安排','大额资金使用'],
+      barFields:[],
       // 柱状图
       barType: 'year',
-      barDate: ['month', 'month'],
       barValue: [],
       // 饼状图
       pieType: 'year',
-      pieDate: ['month', 'month'],
+      pieOpen: false,
+      barOpen:false,
+      pieData:[],
       pieValue: [],
       // 统计图类型
       tabStatus:"bar",
-      url: {
-        getCurrentVerifyCount:"/smartTriImpOneGre/chart/countByVerifyStatus",
-        getYearCountInfo: "/mock/api/report/getYearCountInfo",
-        getMonthCountInfo:"/mock/api/report/getMonthCountInfo",
-        getCntrNoCountInfo:"/mock/api/report/getCntrNoCountInfo",
-        getCabinetCountInfo:"/mock/api/report/getCabinetCountInfo",
-      },
     }
   },
   created() {
-    let url = this.url.getCntrNoCountInfo;
-    this.loadDate(url,'category',{});
+    this.getPieTitle();
+    this.getBarTitle()
+    //let url = this.url.getCntrNoCountInfo;
+    //this.loadDate(url,'category',{});
+    this.loadBarData();
+    this.loadPieData();
   },
   methods: {
-    loadVerifyCount(){
-      let url  = this.url.getCurrentVerifyCount
+    getPieTitle(){
+      var year = '';
+      var month = '';
+      if(this.queryParam.pieDate !== ''){
+        let selectTime = this.queryParam.pieDate.format("YYYY-MM")
+        year = selectTime.substr(0,4)
+        month = selectTime.substr(5,7)
+      }else{
+        var date = new Date ();
+        year = date.getFullYear ();
+        month = date .getMonth()+1; //获取当前月份(0-11,0代表1月)
+      }
+      console.log(year,month)
+      this.pieTitle = year+"年"+month+"月"
+    },
+    getBarTitle(){
+      var baryear = '';
+      var barmonth = '';
+      if(this.queryParam.barDate !== ''){
+        let selectTime = this.queryParam.barDate.format("YYYY-MM")
+        baryear = selectTime.substr(0,4)
+        barmonth = selectTime.substr(5,7)
+      }else{
+        var date = new Date ();
+        baryear = date.getFullYear ();
+        barmonth = date .getMonth()+1; //获取当前月份(0-11,0代表1月)
+      }
+      console.log(baryear,barmonth)
+      this.barTitle = baryear+"年"+barmonth+"月"
+    },
+    loadBarData(){
+      //获取当前时间
+      var date = new Date();
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      if (month < 10) {
+        month = "0" + month;
+      }
+      var nowDate = year + "-" + month ;
+      console.log(nowDate)
+      let url =  "/smartTriImpOneGre/chart/countByVerifyStatus"+"?time="+nowDate;
       getAction(url).then((res)=>{
         if(res.success){
+          console.log(res.result)
+          let list = res.result
+          let l = list.length
+          this.barDataSource = [{type:'未通过'},{type:'已通过'}]
+          let key =''
+          let n =''
+          console.log(l)
+          for(var i =0;i<l;i++){
+            this.barFields.push(key=list[i].keyName)
+          }
+          let field = this.barFields
+          //'重大事项决策','重要干部任免','重要项目安排','大额资金使用'
+          for(var i =0;i<l;i++){
 
+            if(list[i].statu === '0'){
+              key=list[i].keyName
+              n=list[i].value
+              for(var j=0;j<field.length;j++){
+                if(key === field[j]){
+                  this.$set(this.barDataSource[0],key,n)
+                }
+              }
+            }else if(list[i].statu === '1'){
+              key=list[i].keyName
+              n=list[i].value
+              for(var j=0;j<field.length;j++){
+                if(key === field[j]){
+                  this.$set(this.barDataSource[1],key,n)
+                }
+              }
+
+            }
+          }
+          console.log(this.barDataSource)
         }else{
-        this.$message.warning("error")
+          this.$message.warning("error")
         }
       })
     },
-    loadDate(url,type,param) {
-      getAction(url,param,'get').then((res) => {
-        if (res.success) {
-          this.countSource = [];
-          if(type === 'year'){
-            this.getYearCountSource(res.result);
+    //饼图
+    loadPieData(){
+      //获取当前时间
+      var date = new Date();
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      if (month < 10) {
+        month = "0" + month;
+      }
+      var nowDate = year + "-" + month ;
+      console.log(nowDate)
+      let url =  "/smartTriImpOneGre/chart/countByType"+"?time="+nowDate;
+      getAction(url).then((res)=>{
+        if(res.success){
+          let data = res.result
+          console.log(data)
+          if(data.length != 0){
+            for (let i = 0; i < data.length; i++) {
+              this.pieData.push({
+                item: data[i].keyName,
+                count:data[i].value
+              })
+            }
+          }else{
+            this.pieData.push({
+              item: '',
+              count:"无数据！"
+            })
+            this.$message.warning("无数据!")
           }
-          if(type === 'month'){
-            this.getMonthCountSource(res.result);
-          }
-          if(type === 'category'){
-            this.getCategoryCountSource(res.result);
-          }
-          if(type === 'cabinet'){
-            this.getCabinetCountSource(res.result);
-          }
-        }else{
-          var that=this;
-          that.$message.warning(res.message);
+
+        } else{
+          this.$message.warning("系统错误!")
         }
       })
-    },
-    getYearCountSource(data){
-      for (let i = 0; i < data.length; i++) {
-        if(this.tabStatus === "bar"){
-          this.countSource.push({
-            x: `${data[i].year}年`,
-            y: data[i].yearcount
-          })
-        }else{
-          this.countSource.push({
-            item: `${data[i].year}年`,
-            count:data[i].yearcount
-          })
-        }
-      }
-    },
-    getMonthCountSource(data){
-      for (let i = 0; i < data.length; i++) {
-        if(this.tabStatus === "bar"){
-          this.countSource.push({
-            x: data[i].month,
-            y: data[i].monthcount
-          })
-        }else{
-          this.countSource.push({
-            item: data[i].month,
-            count:data[i].monthcount
-          })
-        }
-      }
-    },
-    getCategoryCountSource(data){
-      for (let i = 0; i < data.length; i++) {
-        if(this.tabStatus ==="bar"){
-          this.countSource.push({
-            x: data[i].classifyname,
-            y: data[i].cntrnocount
-          })
-        }else{
-          this.countSource.push({
-            item: data[i].classifyname,
-            count:data[i].cntrnocount
-          })
-        }
-      }
-    },
-    getCabinetCountSource(data){
-      for (let i = 0; i < data.length; i++) {
-        if(this.tabStatus === "bar"){
-          this.countSource.push({
-            x: data[i].cabinetname,
-            y: data[i].cabinetcocunt
-          })
-        }else{
-          this.countSource.push({
-            item: data[i].cabinetname,
-            count:data[i].cabinetcocunt
-          })
-        }
-      }
-    },
-    // 选择统计图类别
-    callback(key) {
-      if(key === "1"){
-        this.tabStatus = "bar";
-        this.queryDatebar();
-      }else{
-        this.tabStatus = "pie";
-        this.queryDatepie();
-      }
-    },
-    // 选择统计类别
-    statisticst(e) {
-      if(this.tabStatus === "pie"){
-        this.pieType = e.target.value;
-        this.queryDatepie();
-      }else{
-        this.barType = e.target.value;
-        this.queryDatebar();
-      }
     },
     // 按月份查询
     queryDatebar(){
-      if(this.barValue.length>0){
-        this.getUrl(this.barType,{startTime:this.barValue[0]._d,endTime:this.barValue[1]._d});
-      }else{
-        this.getUrl(this.barType,{});
-      }
+      this.getBarTitle()
+      let time = this.queryParam.barDate.format("YYYY-MM")
+      console.log(time)
+      let url =  "/smartTriImpOneGre/chart/countByVerifyStatus"+"?time="+time;
+      getAction(url).then((res)=>{
+        if(res.success){
+          console.log(res.result)
+          let list = res.result
+          let l = list.length
+          this.barDataSource = [{type:'未通过'},{type:'已通过'}]
+          let key =''
+          let n =''
+          console.log(l)
+          for(var i =0;i<l;i++){
+            this.barFields.push(key=list[i].keyName)
+          }
+          let field = this.barFields
+          //'重大事项决策','重要干部任免','重要项目安排','大额资金使用'
+          for(var i =0;i<l;i++){
+
+            if(list[i].statu === '0'){
+              key=list[i].keyName
+              n=list[i].value
+              for(var j=0;j<field.length;j++){
+                if(key === field[j]){
+                  this.$set(this.barDataSource[0],key,n)
+                }
+              }
+            }else if(list[i].statu === '1'){
+              key=list[i].keyName
+              n=list[i].value
+              for(var j=0;j<field.length;j++){
+                if(key === field[j]){
+                  this.$set(this.barDataSource[1],key,n)
+                }
+              }
+
+            }
+          }
+          console.log(this.barDataSource)
+        }else{
+          this.$message.warning("error")
+        }
+      })
+    },
+    searchBarReset(){
+      this.queryParam.barDate =''
+      this.getBarTitle()
+      this.loadBarData();
     },
     queryDatepie(){
-      if(this.pieValue.length>0){
-        this.getUrl(this.pieType,{startTime:this.pieValue[0]._d,endTime:this.pieValue[1]._d});
-      }else{
-        this.getUrl(this.pieType,{});
-      }
+      this.getPieTitle();
+      let time = this.queryParam.pieDate.format("YYYY-MM")
+      //console.log(time)
+      let url =  "/smartTriImpOneGre/chart/countByType"+"?time="+time;
+      getAction(url).then((res)=>{
+        if(res.success){
+          let data = res.result
+          console.log(data)
+          if(data.length != 0){
+            for (let i = 0; i < data.length; i++) {
+              this.pieData.push({
+                item: data[i].keyName,
+                count:data[i].value
+              })
+            }
+          }else{
+            this.pieData.push({
+              item: '',
+              count:"无数据！"
+            })
+            this.$message.warning("无数据!")
+          }
+
+        } else{
+          this.$message.warning("系统错误!")
+        }
+      })
     },
     searchReset(){
-      console.log(this.tabStatus);
-      if(this.tabStatus === "pie"){
-        this.pieValue = [];
-      }else{
-        this.barValue = [];
-      }
-      this.getUrl(this.barType,{});
+      this.queryParam.pieDate =''
+      this.getPieTitle()
+      this.loadPieData();
     },
-    // 选择请求url
-    getUrl(type,param){
-      let url = "";
-      if(type === 'year'){
-        url = this.url.getYearCountInfo;
+
+    openPieChange(status) {
+      if (status) {
+        this.pieOpen = true;
+      } else {
+        this.pieOpen = false;
       }
-      if(type === 'month'){
-        url = this.url.getMonthCountInfo;
-      }
-      if(type === 'category'){
-        url = this.url.getCntrNoCountInfo;
-      }
-      if(type === 'cabinet'){
-        url = this.url.getCabinetCountInfo;
-      }
-      this.loadDate(url,type,param);
     },
-    // 选择月份日期
-    handleBarDate(value, mode) {
-      this.barValue = value
-      this.barDate = [
-        mode[0] === 'date' ? 'month' : mode[0],
-        mode[1] === 'date' ? 'month' : mode[1]
-      ]
+    panelPieChange(value) {
+      // 获取到的时间赋值给widgetVal
+      this.queryParam.pieDate =value
+      this.pieOpen = false;
     },
-    handlePieDate(value, mode) {
-      this.pieValue = value
-      this.pieDate = [
-        mode[0] === 'date' ? 'month' : mode[0],
-        mode[1] === 'date' ? 'month' : mode[1]
-      ]
+    handlePieChange(value) {
+      this.queryParam.pieDate =value
     },
+    openBarChange(status) {
+      if (status) {
+        this.barOpen = true;
+      } else {
+        this.barOpen = false;
+      }
+    },
+    panelBarChange(value) {
+      // 获取到的时间赋值给widgetVal
+      this.queryParam.barDate =value
+      this.barOpen = false;
+    },
+    handleBarChange(value) {
+      this.queryParam.barDate =value
+    },
+
   }
 }
 </script>

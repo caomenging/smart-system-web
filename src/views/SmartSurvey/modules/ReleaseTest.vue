@@ -90,9 +90,11 @@ export default {
       validatorRules: {
         examStarttime: [
           { required: true, message: '请输入开始时间!' },
+          {validator: this.validateStartTime, trigger: 'change'}
         ],
         examEndtime: [
           { required: true, message: '请输入结束时间!' },
+          {validator: this.validateEndTime, trigger: 'change'}
         ],
         users: [
           { required: true, message: '请选择考试人员!' },
@@ -102,7 +104,42 @@ export default {
     };
   },
   methods: {
-    time(){
+    validateStartTime(rule, value, callback){
+      let nowDate = new Date().getTime() - 60000;
+      let startTime = this.model.examStarttime;
+      let startDate = new Date(
+        Date.parse(startTime.replace(/-/g, "/"))
+      ).getTime();
+      console.log(new Date())
+      console.log( new Date(
+        Date.parse(startTime.replace(/-/g, "/"))
+      ))
+      console.log(nowDate,startDate)
+      if ( startDate < nowDate ) {
+
+          callback("开始时间小于当前时间!")
+      }else {
+        callback()
+      }
+    },
+    validateEndTime(rule, value, callback){
+      let startTime = this.model.examStarttime;
+      let deadline = this.model.examEndtime;
+      let deadlineDate = new Date(
+        Date.parse(deadline.replace(/-/g, "/"))
+      ).getTime();
+
+      let startDate = new Date(
+        Date.parse(startTime.replace(/-/g, "/"))
+      ).getTime();
+      if (startDate > deadlineDate ) {
+
+        callback("开始时间大于结束时间!")
+      }else {
+        callback()
+      }
+    },
+   /* time(){
       //判断调查问卷时间
       let nowDate = new Date().getTime();
       let startTime = this.model.examStarttime;
@@ -115,6 +152,8 @@ export default {
       console.log( new Date(
         Date.parse(startTime.replace(/-/g, "/"))
       ))
+      console.log(startDate,nowDate)
+      console.log(startDate-nowDate)
       let deadlineDate = new Date(
         Date.parse(deadline.replace(/-/g, "/"))
       ).getTime();
@@ -136,7 +175,7 @@ export default {
       }else {
         return true
       }
-    },
+    },*/
     releaseTest(paperId){
       this.visible = true;
       this.paperId= paperId
@@ -146,10 +185,7 @@ export default {
       // 触发表单验证
       console.log(that.paperId);
       this.$refs.form.validate(valid => {
-        let time = that.time()
-        console.log(time)
         if (valid) {
-          if (time) {
             that.confirmLoading = true;
             let paperId = that.paperId;
             let url = "/SmartExam/smartRelease/releaseSurvey/" + paperId;
@@ -174,8 +210,6 @@ export default {
               that.model = {}
             })
           }
-        }
-
       })
     },
     close () {

@@ -6,7 +6,13 @@
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="考试名称">
-              <j-input placeholder="请输入考试名称" v-model="queryParam.examName"></j-input>
+<!--              <j-input placeholder="请输入考试名称" v-model="queryParam.examName"></j-input>-->
+              <j-search-select-tag
+                placeholder="请选择考试"
+                v-model="queryParam.id"
+                dict="smart_exam_information,exam_name,id,paper_type = '1'"
+                :async="true">
+              </j-search-select-tag>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -81,9 +87,6 @@
   import TaskDetailModal from './modules/TaskDetailModal.vue'
 
   export default {
-    queryParam: {
-      examName: ''
-    },
     name: 'SmartExamInformationList',
     mixins: [JeecgListMixin, mixinDevice],
     components: {
@@ -92,6 +95,10 @@
     },
     data() {
       return {
+        queryParam: {
+          id:'',
+          paperType:'1'
+        },
         description: '考试信息表管理页面',
         // 表头
         columns: [{
