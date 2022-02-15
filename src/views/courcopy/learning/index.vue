@@ -24,7 +24,7 @@
               <a-icon type='play-circle' />
               开始学习</a>
           </template>
-          <a-card-meta description='This is the description'>
+          <a-card-meta>
             <template slot='title'>
               <a :href="'/courcopy/learning/_id/'+item.id" :title='item.title'>
                 {{ item.title }}</a>

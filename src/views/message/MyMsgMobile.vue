@@ -18,7 +18,7 @@
               <div style="font-size: 0.9rem; font-weight:bold" >{{item.titile}}</div>
               <!-- <p>这是内容简介，这是内容简介，这是内容简介，这是内容简介</p> -->
               <a-row type="flex" style="font-size: 0.5rem; color: gray">
-                <div>{{ item.sender }} </div>
+                <div>{{ item.sender }} </div>ff
                 <span style="padding:0 10px">•</span>
                 <div> {{ item.sendTime }} </div>
               </a-row>
