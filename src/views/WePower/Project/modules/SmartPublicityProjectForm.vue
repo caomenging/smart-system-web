@@ -10,18 +10,28 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
+            <a-form-model-item label="项目分类" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="type">
+              <j-category-select v-model="model.type" pcode="B03" placeholder="请选择项目分类"  />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
             <a-form-model-item label="建设单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="location">
               <j-select-depart v-model="model.location" multi />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="合同内容" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="projectContent">
-              <j-editor v-model="model.projectContent" />
+            <a-form-model-item label="施工单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="constructDep">
+              <a-input v-model="model.constructDep" placeholder="请输入施工单位" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="简要说明" :labelCol="labelCol2" :wrapperCol="wrapperCol2" prop="projectContent">
+              <a-textarea v-model="model.projectContent" rows="4" placeholder="请输入简要说明" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="金额" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="money">
-              <a-input v-model="model.money" placeholder="请输入金额" ></a-input>
+            <a-form-model-item label="合同金额" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="money">
+              <a-input v-model="model.money" placeholder="请输入合同金额" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
@@ -35,13 +45,28 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="签订日期" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="signTime">
-              <j-date placeholder="请选择签订日期" v-model="model.signTime" style="width: 100%" />
+            <a-form-model-item label="合同签订日期" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="signTime">
+              <j-date placeholder="请选择合同签订日期" v-model="model.signTime" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24" >
-            <a-form-model-item label="附件" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="file">
-              <j-upload v-model="model.file"  ></j-upload>
+            <a-form-model-item label="四议两公开内容" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="file1">
+              <j-upload v-model="model.file1"  ></j-upload>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="村集体经济组织相关材料" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="file2">
+              <j-upload v-model="model.file2"  ></j-upload>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="合同" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="file3">
+              <j-upload v-model="model.file3"  ></j-upload>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="验收材料" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="file4">
+              <j-upload v-model="model.file4"  ></j-upload>
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -215,6 +240,9 @@
       validateError(msg){
         this.$message.error(msg)
       },
+     handleCategoryChange(value,backObj){
+      this.model = Object.assign(this.model, backObj);
+      }
 
     }
   }

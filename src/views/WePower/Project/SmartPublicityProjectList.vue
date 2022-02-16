@@ -128,6 +128,7 @@
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SmartPublicityProjectModal from './modules/SmartPublicityProjectModal'
+  import { loadCategoryData } from '@/api/api'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import '@/assets/less/TableExpand.less'
 
@@ -156,6 +157,12 @@
             title:'项目名称',
             align:"center",
             dataIndex: 'title'
+          },
+          {
+            title:'项目分类',
+            align:"center",
+            dataIndex: 'type',
+            customRender: (text) => (text ? filterMultiDictText(this.dictOptions['type'], text) : '')
           },
           {
             title:'建设单位',
@@ -208,20 +215,30 @@
     },
     methods: {
       initDictConfig(){
+        loadCategoryData({code:"B03"}).then((res) => {
+          if (res.success) {
+            this.$set(this.dictOptions, 'type', res.result)
+          }
+        })
       },
       getSuperFieldList(){
         let fieldList=[];
          fieldList.push({type:'string',value:'title',text:'项目名称',dictCode:''})
+         fieldList.push({type:'string',value:'type',text:'项目分类'})
          fieldList.push({type:'sel_depart',value:'location',text:'建设单位'})
-         fieldList.push({type:'Text',value:'projectContent',text:'合同内容',dictCode:''})
-         fieldList.push({type:'string',value:'money',text:'金额',dictCode:''})
+         fieldList.push({type:'string',value:'constructDep',text:'施工单位',dictCode:''})
+         fieldList.push({type:'Text',value:'projectContent',text:'简要说明',dictCode:''})
+         fieldList.push({type:'string',value:'money',text:'合同金额',dictCode:''})
          fieldList.push({type:'string',value:'period',text:'服务年限',dictCode:''})
          fieldList.push({type:'date',value:'endTime',text:'完成时限'})
-         fieldList.push({type:'date',value:'signTime',text:'签订日期'})
+         fieldList.push({type:'date',value:'signTime',text:'合同签订日期'})
          fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
          fieldList.push({type:'datetime',value:'createTime',text:'创建日期'})
          fieldList.push({type:'string',value:'sysOrgCode',text:'创建部门',dictCode:'sys_depart,depart_name,org_code'})
-         fieldList.push({type:'Text',value:'file',text:'附件',dictCode:''})
+         fieldList.push({type:'Text',value:'file1',text:'四议两公开内容',dictCode:''})
+         fieldList.push({type:'Text',value:'file2',text:'村集体经济组织相关材料',dictCode:''})
+         fieldList.push({type:'Text',value:'file3',text:'合同',dictCode:''})
+         fieldList.push({type:'Text',value:'file4',text:'验收材料',dictCode:''})
         this.superFieldList = fieldList
       }
     }
