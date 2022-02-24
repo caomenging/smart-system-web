@@ -295,20 +295,50 @@ export default {
           dataIndex: 'marrySpoUnitPos',
         },
         {
-          title: '结婚人配偶父母姓名',
-          align: 'center',
-          dataIndex: 'marrySpoParName',
-        },
-        {
-          title: '结婚人配偶父母单位',
-          align: 'center',
-          dataIndex: 'marrySpoParUnit',
-        },
-        {
-          title: '结婚人配偶父母单位职务',
-          align: 'center',
-          dataIndex: 'marrySpoParUnitPos',
-        },
+            title:'结婚人配偶父亲姓名',
+            align:"center",
+            dataIndex: 'marrySpoMaleName'
+          },
+          {
+            title:'结婚人配偶母亲姓名',
+            align:"center",
+            dataIndex: 'marrySpoFemaleName'
+          },
+          {
+            title:'结婚人配偶父亲单位',
+            align:"center",
+            dataIndex: 'marrySpoMaleUnit'
+          },
+          {
+            title:'结婚人配偶母亲单位',
+            align:"center",
+            dataIndex: 'marrySpoFemaleUnit'
+          },
+          {
+            title:'结婚人配偶父亲职务',
+            align:"center",
+            dataIndex: 'marrySpoMaleUnitPos'
+          },
+          {
+            title:'结婚人配偶母亲职务',
+            align:"center",
+            dataIndex: 'marrySpoFemaleUnitPos'
+          },
+        // {
+        //   title: '结婚人配偶父母姓名',
+        //   align: 'center',
+        //   dataIndex: 'marrySpoParName',
+        // },
+        // {
+        //   title: '结婚人配偶父母单位',
+        //   align: 'center',
+        //   dataIndex: 'marrySpoParUnit',
+        // },
+        // {
+        //   title: '结婚人配偶父母单位职务',
+        //   align: 'center',
+        //   dataIndex: 'marrySpoParUnitPos',
+        // },
         {
           title: '其他需要说明的事情',
           align: 'center',

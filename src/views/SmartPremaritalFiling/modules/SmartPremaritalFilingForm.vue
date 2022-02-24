@@ -135,7 +135,7 @@
               <a-input v-model="model.marrySpoUnitPos" placeholder="请输入结婚人配偶单位职务" />
             </a-form-model-item>
           </a-col>
-          <a-col :span="12" >
+          <!-- <a-col :span="12" >
             <a-form-model-item label="结婚人配偶父母姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="marrySpoParName">
               <a-input v-model="model.marrySpoParName" placeholder="请输入结婚人配偶父母姓名" />
             </a-form-model-item>
@@ -148,6 +148,36 @@
           <a-col :span="12" >
             <a-form-model-item label="结婚人配偶父母单位职务" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="marrySpoParUnitPos">
               <a-input v-model="model.marrySpoParUnitPos" placeholder="请输入结婚人配偶父母单位职务" ></a-input>
+            </a-form-model-item>
+          </a-col> -->
+          <a-col :span="12" >
+            <a-form-model-item label="结婚人配偶父亲姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="marrySpoMaleName">
+              <a-input v-model="model.marrySpoMaleName" placeholder="请输入结婚人配偶父亲姓名" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12" >
+            <a-form-model-item label="结婚人配偶母亲姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="marrySpoFemaleName">
+              <a-input v-model="model.marrySpoFemaleName" placeholder="请输入结婚人配偶母亲姓名" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12" >
+            <a-form-model-item label="结婚人配偶父亲单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="marrySpoMaleUnit">
+              <a-input v-model="model.marrySpoMaleUnit" placeholder="请输入结婚人配偶父亲单位" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12" >
+            <a-form-model-item label="结婚人配偶母亲单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="marrySpoFemaleUnit">
+              <a-input v-model="model.marrySpoFemaleUnit" placeholder="请输入结婚人配偶母亲单位" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12" >
+            <a-form-model-item label="结婚人配偶父亲职务" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="marrySpoMaleUnitPos">
+              <a-input v-model="model.marrySpoMaleUnitPos" placeholder="请输入结婚人配偶父亲职务" ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12" >
+            <a-form-model-item label="结婚人配偶母亲职务" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="marrySpoFemaleUnitPos">
+              <a-input v-model="model.marrySpoFemaleUnitPos" placeholder="请输入结婚人配偶母亲职务" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="12" >
