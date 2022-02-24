@@ -25,7 +25,7 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="简要说明" :labelCol="labelCol2" :wrapperCol="wrapperCol2" prop="projectContent">
+            <a-form-model-item label="简要说明" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="projectContent">
               <a-textarea v-model="model.projectContent" rows="4" placeholder="请输入简要说明" />
             </a-form-model-item>
           </a-col>
