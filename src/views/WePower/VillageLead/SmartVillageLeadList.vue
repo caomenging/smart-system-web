@@ -154,6 +154,17 @@
             }
           },
           {
+            title:'职务',
+            align:"center",
+            dataIndex: 'job'
+          },
+          {
+            title:'照片',
+            align:"center",
+            dataIndex: 'picture',
+            scopedSlots: {customRender: 'imgSlot'}
+          },
+          {
             title:'上传人',
             align:"center",
             dataIndex: 'createBy'
@@ -212,6 +223,9 @@
       },
       getSuperFieldList(){
         let fieldList=[];
+        fieldList.push({type:'string',value:'people',text:'人员选择',dictCode:'smart_village_home,home_surname,idnumber'})
+        fieldList.push({type:'string',value:'job',text:'职务',dictCode:''})
+        fieldList.push({type:'string',value:'picture',text:'照片',dictCode:''})
         fieldList.push({type:'string',value:'createBy',text:'上传人',dictCode:''})
         fieldList.push({type:'string',value:'title',text:'标题',dictCode:''})
         fieldList.push({type:'sel_depart',value:'location',text:'所属村'})

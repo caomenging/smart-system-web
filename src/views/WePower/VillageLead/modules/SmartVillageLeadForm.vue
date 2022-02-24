@@ -4,6 +4,21 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24">
+            <a-form-model-item label="人员选择" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="people">
+              <j-dict-select-tag type="list" v-model="model.people" dictCode="smart_village_home,home_surname,idnumber" placeholder="请选择人员选择" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="职务" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="job">
+              <a-input v-model="model.job" placeholder="请输入职务"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="照片" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="picture">
+              <j-image-upload isMultiple  v-model="model.picture" ></j-image-upload>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
             <a-form-model-item label="标题" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="title">
               <a-input v-model="model.title" placeholder="请输入标题"  ></a-input>
             </a-form-model-item>
@@ -55,6 +70,9 @@
         },
         confirmLoading: false,
         validatorRules: {
+           people: [
+              { required: true, message: '请输入人员选择!'},
+           ],
         },
         url: {
           add: "/smartVillageLead/smartVillageLead/add",
