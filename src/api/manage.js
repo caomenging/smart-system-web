@@ -213,3 +213,19 @@ export function getFileAccessHttpUrl(avatar,subStr) {
    return;
   }
 }
+
+//
+export function myDownload(url, parameter) {
+  return axios({
+    method: 'GET',
+    url: url,
+    params: {
+      ids: parameter
+    },
+    headers: {
+      // 定义请求头类型为流的类型
+      'Content-Type': 'application/json;application/octet-stream'
+    },
+    responseType: 'blob'
+  })
+}

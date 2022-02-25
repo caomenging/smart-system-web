@@ -45,7 +45,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <!-- <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button> -->
-      <a-button type="primary" icon="download" @click="handleExportXls('8项规定婚后报备表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('8项规定婚后报备表')">导出Excel</a-button>
       <a-upload
         name="file"
         :showUploadList="false"
@@ -68,6 +68,9 @@
         </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
+
+      <!-- 导出word -->
+      <a-button @click="saveFiles" type="primary" icon="download">导出word</a-button>
     </div>
 
     <!-- table区域-begin -->
@@ -121,7 +124,7 @@
           <a @click="handleDetail(record)">详情</a>
 
           <a-divider type="vertical" />
-          
+
           <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
             <a v-show="record.verifyStatus == '3'">删除</a>
           </a-popconfirm>
@@ -138,8 +141,11 @@ import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import SmartPostMarriageReportModal from './modules/SmartPostMarriageReportModal'
 import { filterMultiDictText } from '@/components/dict/JDictSelectUtil'
 import '@/assets/less/TableExpand.less'
-import { mapActions, mapGetters,mapState } from 'vuex'
-// import func from 'vue-editor-bridge'
+import { mapActions, mapGetters, mapState } from 'vuex'
+
+import { myDownload } from '@/api/manage'
+
+// import { downloadFile } from '../../api/manage'
 
 export default {
   name: 'SmartPostMarriageReportList',
@@ -311,7 +317,7 @@ export default {
     },
   },
   methods: {
-    ...mapGetters(["userInfo"]),
+    ...mapGetters(['userInfo']),
     initDictConfig() {},
     getSuperFieldList() {
       let fieldList = []
@@ -337,6 +343,41 @@ export default {
       fieldList.push({ type: 'date', value: 'reportTime', text: '报告时间' })
       fieldList.push({ type: 'string', value: 'phoneNumber', text: '联系电话', dictCode: '' })
       this.superFieldList = fieldList
+    },
+    saveFiles() {
+      //记录id
+      console.log(this.selectedRowKeys)
+      let ids = this.selectedRowKeys.join(",")
+
+      if(ids.length == 0){
+        this.$message.error('请选择要导出的数据！')
+        return
+      }
+
+      //下载zip文件
+      myDownload('/smartPostMarriage/smartPostMarriageReport/exportWord', ids).then((res) => {
+        if (!res) {
+          return
+        }
+        // 创建文件临时存储地址
+        const url = window.URL.createObjectURL(new Blob([res], { type: 'application/zip' }))
+        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          try {
+            window.navigator.msSaveOrOpenBlob(res, '附件.zip')
+          } catch (e) {
+            this.$message.error('下载附件失败')
+          }
+        } else {
+          const link = document.createElement('a')
+          link.style.display = 'none'
+          link.href = url
+          link.download = '附件.zip'
+          document.body.appendChild(link)
+          link.click()
+          URL.revokeObjectURL(link.href)
+          document.body.removeChild(link)
+        }
+      })
     },
   },
 }
