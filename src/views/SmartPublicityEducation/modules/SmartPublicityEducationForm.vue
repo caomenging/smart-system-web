@@ -27,6 +27,7 @@
           <a-col :span="24" >
             <a-form-model-item label="附件" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="files">
               <a-button icon="camera" v-on:click="imgClick()">手机拍照</a-button>
+              <a-button icon="camera" @click="eloamScan">高拍仪拍照</a-button>
               <input
                 style="float: left; display: none"
                 type="file"
@@ -56,6 +57,7 @@
           :actionButton="true"/>
       </a-tab-pane>
     </a-tabs>
+    <eloam-modal ref="modalForm" @ok='scanOk'></eloam-modal>
   </a-spin>
 </template>
 
@@ -65,11 +67,13 @@ import { getAction, postAction, uploadFile } from '@/api/manage'
   import { FormTypes,getRefPromise,VALIDATE_NO_PASSED } from '@/utils/JEditableTableUtil'
   import { JEditableTableModelMixin } from '@/mixins/JEditableTableModelMixin'
   import { validateDuplicateValue } from '@/utils/util'
+import EloamModal from '@views/eloam/modules/EloamModal'
 
   export default {
     name: 'SmartPublicityEducationForm',
     mixins: [JEditableTableModelMixin],
     components: {
+      EloamModal
     },
     data() {
       return {
@@ -152,6 +156,21 @@ import { getAction, postAction, uploadFile } from '@/api/manage'
     created () {
     },
     methods: {
+      eloamScan() {
+        this.$refs.modalForm.open()
+      },
+      scanOk(url) {
+        let image = url
+        if (image) {
+          let arr = []
+          if (this.model.files) {
+            arr.push(this.model.files)
+          }
+          arr.push(image)
+          // 更新表单中文件url字段, files 为字段名称
+          this.$set(this.model, 'files', arr.join())
+        }
+      },
       addBefore(){
         this.smartPublicityEducationPeopleTable.dataSource=[]
       },

@@ -8,7 +8,7 @@
     :okButtonProps="{ class:{'jee-hidden': disableSubmit} }"
     @cancel="handleCancel"
     cancelText="关闭">
-    <camera ref="realCamera" @ok="submitCallback" :disabled="disableSubmit"></camera>
+    <camera ref="realForm" @ok="submitCallback" @close="close" :disabled="disableSubmit" :biz-path="bizPath"></camera>
   </j-modal>
 </template>
 
@@ -28,6 +28,14 @@ export default {
       disableSubmit: false
     }
   },
+  props:{
+    /*这个属性用于控制文件上传的业务路径*/
+    bizPath:{
+      type:String,
+      required:false,
+      default:"temp"
+    },
+  },
   methods: {
     open() {
       this.visible = true
@@ -39,9 +47,9 @@ export default {
     handleOk() {
       this.$refs.realForm.submitForm();
     },
-    submitCallback(info) {
-      this.$emit('ok', info);
-      this.visible = false;
+    submitCallback(url) {
+      this.$emit('ok', url);
+      // this.visible = false;
     },
     handleCancel() {
       this.close()

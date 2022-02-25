@@ -1,12 +1,12 @@
 <template>
   <div>
     <a-row>
-      <a-button style='margin-right: 20px' @click='getBarCode'>条码识别</a-button>
-      <!--      <a-button style='margin-right: 20px' @click='getStatus'>获取设备状态</a-button>-->
-      <!--      <a-button style='margin-right: 20px' @click='isConnect'>判断设备是否连接</a-button>-->
+      <!--      <a-button style='margin-right: 20px' @click='getBarCode'>条码识别</a-button>-->
+      <!--            <a-button style='margin-right: 20px' @click='getStatus'>获取设备状态</a-button>-->
+      <!--            <a-button style='margin-right: 20px' @click='isConnect'>判断设备是否连接</a-button>-->
     </a-row>
     <a-row style='margin-top: 20px'>
-      <a-col :span="12">
+      <a-col :span='12'>
         <a-card title='主摄像头' hoverable style='width: 300px'>
           <a-empty
             v-if="camera0 === ''"
@@ -16,13 +16,21 @@
           }"
           >
           </a-empty>
-          <img
-            v-else
-            slot='cover'
-            alt='example'
-            id='view1'
-            :src='camera0'
-          />
+          <el-image v-else
+                    slot='cover'
+                    alt='example'
+                    id='view1'
+                    :src='camera0'
+                    :preview-src-list='[camera0]'
+                    fit='contain'
+          >
+            <div slot='error' class='image-slot'>
+              <i class='el-icon-picture-outline'></i>
+            </div>
+            <div slot='placeholder' class='image-slot'>
+              <i class='el-icon-loading'></i>
+            </div>
+          </el-image>
           <template slot='actions' class='ant-card-actions'>
             <a-icon type='plus' @click='open("0")' />
             <a-icon type='camera' @click='takePhoto("0")' />
@@ -30,60 +38,72 @@
           </template>
         </a-card>
       </a-col>
-      <a-col :span="12">
-        <a-card title='副摄像头' hoverable style='width: 300px'>
-          <a-empty
-            v-if="camera1 === ''"
-            image='https://gw.alipayobjects.com/mdn/miniapp_social/afts/img/A*pevERLJC9v0AAAAAAAAAAABjAQAAAQ/original'
-            :image-style="{
-              height: '60px',
-            }"
-          >
-          </a-empty>
-          <img
-            v-else
-            slot='cover'
-            alt='example'
-            id='view2'
-            :src='camera1'
-          />
-          <template slot='actions' class='ant-card-actions'>
-            <a-icon type='plus' @click='open("1")' />
-            <a-icon type='camera' @click='takePhoto("1")' />
-            <a-icon type='close' @click='close("1")' />
-          </template>
-        </a-card>
+      <a-col :span='12'>
+        <a-row :gutter='20'>
+          <a-col v-for='(item, index) in images' :span='6'>
+            <a-card hoverable>
+              <el-image
+                slot='cover'
+                :src='item'
+                :preview-src-list='images'
+                fit='contain'
+              >
+                <div slot='error' class='image-slot'>
+                  <i class='el-icon-picture-outline'></i>
+                </div>
+                <div slot='placeholder' class='image-slot'>
+                  <i class='el-icon-loading'></i>
+                </div>
+              </el-image>
+              <template slot='actions'>
+                <a-icon type='close' @click='deleteImage(index)' />
+              </template>
+            </a-card>
+          </a-col>
+        </a-row>
       </a-col>
     </a-row>
-    <a-row>
+    <a-row v-show='false'>
       <a-carousel arrows dots-class='slick-dots slick-thumb'>
         <a slot='customPaging' slot-scope='props'>
           <img :src='getImgUrl(props.i)' />
         </a>
         <div v-for='item in images'>
-          <img :src='item' />
+          <el-image
+            :src='item'
+            :preview-src-list='images'
+            fit='contain'
+          >
+            <div slot='error' class='image-slot'>
+              <i class='el-icon-picture-outline'></i>
+            </div>
+            <div slot='placeholder' class='image-slot'>
+              <i class='el-icon-loading'></i>
+            </div>
+          </el-image>
         </div>
       </a-carousel>
     </a-row>
-    <a-row style='margin-top: 20px'>
+    <a-row style='margin-top: 20px;display: none'>
       <a-card title='日志' hoverable>
-          <a-empty
-            v-if='messages.length === 0'
-            image='https://gw.alipayobjects.com/mdn/miniapp_social/afts/img/A*pevERLJC9v0AAAAAAAAAAABjAQAAAQ/original'
-            :image-style="{
+        <a-empty
+          v-if='messages.length === 0'
+          image='https://gw.alipayobjects.com/mdn/miniapp_social/afts/img/A*pevERLJC9v0AAAAAAAAAAABjAQAAAQ/original'
+          :image-style="{
               height: '60px',
             }"
-          >
-          </a-empty>
-          <p v-else v-for='item in messages'>{{ item }}</p>
-        </a-card>
+        >
+        </a-empty>
+        <p v-else v-for='item in messages'>{{ item }}</p>
+      </a-card>
     </a-row>
   </div>
 </template>
 
 <script>
 
-import { getStatus, isConnect, closeCamera, takePhoto, scanBarcode, openCamera, baseURL} from '@/utils/eloam'
+import { getStatus, isConnect, closeCamera, takePhoto, scanBarcode, openCamera, baseURL } from '@/utils/eloam'
+import { uploadFile } from '@api/manage'
 
 export default {
   name: 'camera',
@@ -93,6 +113,7 @@ export default {
       camera0: '',
       camera1: '',
       images: [],
+      uploadImages: [],
       model: {
         mainImages: [],
         subImages: []
@@ -100,29 +121,40 @@ export default {
       messages: []
     }
   },
+  props:{
+    /*这个属性用于控制文件上传的业务路径*/
+    bizPath:{
+      type:String,
+      required:false,
+      default:"temp"
+    },
+  },
   mounted() {
     isConnect().then(result => {
-      console.log('---------高拍仪连接状态----------')
+      console.log('---------高拍仪驱动连接状态----------')
       console.log(result)
-    }).catch(()=> {
-      this.$message.warning('高拍仪未连接');
+    }).catch(() => {
+      this.$message.warning('高拍仪驱动未启动')
     })
 
     getStatus().then(result => {
-      console.log('---------高拍仪拍照状态----------')
+      console.log('---------高拍仪摄像头状态----------')
       console.log(result)
-    }).catch(()=> {
-      this.$message.warning('高拍仪驱动未启动');
+    }).catch(() => {
+      this.$message.warning('高拍仪驱动未启动')
     })
 
     this.baseURL = baseURL
   },
   methods: {
+    deleteImage(index) {
+      this.images.splice(index, 1)
+    },
     getImgUrl(i) {
       return this.images[i]
     },
     open(index) {
-      openCamera({index})
+      openCamera({ index })
       if (index === '0') {
         this.camera0 = this.baseURL + '/video=stream&camidx=0'
       } else if (index === '1') {
@@ -152,14 +184,19 @@ export default {
       takePhoto(JSON.stringify(params)).then((result) => {
         console.log('---------高拍仪拍照----------')
         console.log(result)
-        let base64 = result.data.photoBase64
-        let start = 'data:image/jpg;base64,'
-        let image = start + base64
-        that.images.push(image)
-        if (index === '0') {
-          that.model.mainImages.push(image);
+        if (result.data.code === '0') {
+          let base64 = result.data.photoBase64
+          let start = 'data:image/jpg;base64,'
+          let image = start + base64
+          that.images.push(image)
+          that.uploadImages.push(this.dataURLtoFileFun(image, '111.jpg'))
+          if (index === '0') {
+            that.model.mainImages.push(image)
+          } else {
+            that.model.subImages.push(image)
+          }
         } else {
-          that.model.subImages.push(image);
+          this.$message.warning('拍摄失败，请检查高拍仪是否打开')
         }
       })
     },
@@ -184,8 +221,53 @@ export default {
         }
       })
     },
-    submit() {
-      this.$emit('ok', this.model)
+    dataURLtoFileFun(dataurl, filename) {
+      // 将base64转换为文件，dataurl为base64字符串，filename为文件名（必须带后缀名，如.jpg,.png）
+      const arr = dataurl.split(',')
+      const mime = arr[0].match(/:(.*?);/)[1]
+      const bstr = atob(arr[1])
+      let n = bstr.length
+      const u8arr = new Uint8Array(n)
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n)
+      }
+      return new File([u8arr], filename, { type: mime })
+    },
+    getBase64(file) {
+      return new Promise(function(resolve, reject) {
+        let reader = new FileReader()
+        let imgResult = ''
+        reader.readAsDataURL(file)
+        reader.onload = function() {
+          imgResult = reader.result
+        }
+        reader.onerror = function(error) {
+          reject(error)
+        }
+        reader.onloadend = function() {
+          resolve(imgResult)
+        }
+      })
+    },
+    uploadOne(res, filename) {
+      let that = this
+      let formData = new FormData()
+      formData.append('biz', this.bizPath)
+      formData.append('file', this.dataURLtoFileFun(res, filename))
+      uploadFile(formData).then((res) => {
+        console.log(res)
+        if (res.success) {
+          this.$emit('ok', res.message)
+        }
+      })
+    },
+    submitForm() {
+      for (let i = 0; i < this.images.length; i++) {
+        let base64 = this.images[i]
+        let filename = 'eloam.jpg'
+        this.uploadOne(base64, filename)
+      }
+      this.$emit('close')
     }
   }
 }
