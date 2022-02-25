@@ -19,11 +19,18 @@
               <a-textarea v-model="model.mainSolution" rows="4" placeholder="请输入主要措施" />
             </a-form-model-item>
           </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="附件" :labelCol="labelCol2" :wrapperCol="wrapperCol2">
+              <j-upload v-model="model.file"></j-upload>
+              <a-button icon="camera" @click="eloamScan">高拍仪拍照</a-button>
+            </a-form-model-item>
+          </a-col>
         </a-row>
       </a-form-model>
+      <eloam-modal ref="modalForm" @ok="scanOk" biz-path="advise"></eloam-modal>
     </j-form-container>
-      <!-- 子表单区域 -->
-    <a-tabs v-model="activeKey" @change="handleChangeTabs">
+    <!-- 子表单区域 -->
+    <!-- <a-tabs v-model="activeKey" @change="handleChangeTabs">
       <a-tab-pane tab="制发建议附件表" :key="refKeys[0]" :forceRender="true">
         <j-editable-table
           :ref="refKeys[0]"
@@ -38,180 +45,143 @@
           :rootUrl=rootUrl
         />
       </a-tab-pane>
-    </a-tabs>
+    </a-tabs> -->
   </a-spin>
 </template>
 
 <script>
+import { httpAction, getAction } from '@/api/manage'
+import { validateDuplicateValue } from '@/utils/util'
+import EloamModal from '@views/eloam/modules/EloamModal'
 
-  import { getAction } from '@/api/manage'
-  import { FormTypes,getRefPromise,VALIDATE_NO_PASSED } from '@/utils/JEditableTableUtil'
-  import { JEditableTableModelMixin } from '@/mixins/JEditableTableModelMixin'
-  import { validateDuplicateValue } from '@/utils/util'
-
-  export default {
-    name: 'SmartCreateAdviceForm',
-    mixins: [JEditableTableModelMixin],
-    components: {
-    },
-    data() {
-      return {
-        rootUrl: "/smartCreateAdvice/smartCreateAdvice/",
-        labelCol: {
-          xs: { span: 24 },
-          sm: { span: 6 },
-        },
-        wrapperCol: {
-          xs: { span: 24 },
-          sm: { span: 16 },
-        },
-        labelCol2: {
-          xs: { span: 24 },
-          sm: { span: 3 },
-        },
-        wrapperCol2: {
-          xs: { span: 24 },
-          sm: { span: 20 },
-        },
-        model:{
-        },
-        // 新增时子表默认添加几行空数据
-        addDefaultRowNum: 1,
-        validatorRules: {
-           basicDesc: [
-              { required: true, message: '请输入基本情况!'},
-           ],
-           problem: [
-              { required: true, message: '请输入存在问题!'},
-           ],
-           mainSolution: [
-              { required: true, message: '请输入主要措施!'},
-           ],
-        },
-        refKeys: ['smartCreateAdviceAnnex', ],
-        tableKeys:['smartCreateAdviceAnnex', ],
-        activeKey: 'smartCreateAdviceAnnex',
-        // 制发建议附件表
-        smartCreateAdviceAnnexTable: {
-          loading: false,
-          dataSource: [],
-          columns: [
-            {
-              title: '上传时间',
-              key: 'createTime',
-              type: FormTypes.datetime,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-            },
-            {
-              title: '附件说明',
-              key: 'annexDesc',
-              type: FormTypes.input,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-            },
-            {
-              title: '附件路径',
-              key: 'annexPath',
-              type: FormTypes.file,
-              token:true,
-              responseName:"message",
-              width:"200px",
-              placeholder: '请选择文件',
-              defaultValue:'',
-            },
-            {
-              title: '下载次数',
-              key: 'downCount',
-              type: FormTypes.inputNumber,
-              disabled:true,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-            },
-          ]
-        },
-        url: {
-          add: "/smartCreateAdvice/smartCreateAdvice/add",
-          edit: "/smartCreateAdvice/smartCreateAdvice/edit",
-          queryById: "/smartCreateAdvice/smartCreateAdvice/queryById",
-          smartCreateAdviceAnnex: {
-            list: '/smartCreateAdvice/smartCreateAdvice/querySmartCreateAdviceAnnexByMainId'
-          },
-        }
-      }
-    },
-    props: {
-      //表单禁用
-      disabled: {
-        type: Boolean,
-        default: false,
-        required: false
-      }
-    },
-    computed: {
-      formDisabled(){
-        return this.disabled
+export default {
+  name: 'SmartCreateAdviceForm',
+  // mixins: [JEditableTableModelMixin],
+  components: {
+    EloamModal,
+  },
+  data() {
+    return {
+      rootUrl: '/smartCreateAdvice/smartCreateAdvice/',
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 6 },
       },
-    },
-    created () {
-    },
-    methods: {
-      addBefore(){
-        this.smartCreateAdviceAnnexTable.dataSource=[]
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 },
       },
-      getAllTable() {
-        let values = this.tableKeys.map(key => getRefPromise(this, key))
-        return Promise.all(values)
+      labelCol2: {
+        xs: { span: 24 },
+        sm: { span: 3 },
       },
-      /** 调用完edit()方法之后会自动调用此方法 */
-      editAfter() {
-        this.$nextTick(() => {
-        })
-        // 加载子表数据
-        if (this.model.id) {
-          let params = { id: this.model.id }
-          this.requestSubTableData(this.url.smartCreateAdviceAnnex.list, params, this.smartCreateAdviceAnnexTable)
-          getAction(this.url.queryById,params).then(res => {
-              if(res.success){
-                this.model = res.result
-                // console.log(model)
-              }
-            })
-        }
+      wrapperCol2: {
+        xs: { span: 24 },
+        sm: { span: 20 },
       },
-      //校验所有一对一子表表单
-      validateSubForm(allValues){
-          return new Promise((resolve,reject)=>{
-            Promise.all([
-            ]).then(() => {
-              resolve(allValues)
-            }).catch(e => {
-              if (e.error === VALIDATE_NO_PASSED) {
-                // 如果有未通过表单验证的子表，就自动跳转到它所在的tab
-                this.activeKey = e.index == null ? this.activeKey : this.refKeys[e.index]
-              } else {
-                console.error(e)
-              }
-            })
-          })
+      model: {},
+      confirmLoading: false,
+      // 新增时子表默认添加几行空数据
+      addDefaultRowNum: 1,
+      validatorRules: {
+        basicDesc: [{ required: true, message: '请输入基本情况!' }],
+        problem: [{ required: true, message: '请输入存在问题!' }],
+        mainSolution: [{ required: true, message: '请输入主要措施!' }],
       },
-      /** 整理成formData */
-      classifyIntoFormData(allValues) {
-        let main = Object.assign(this.model, allValues.formValue)
-        return {
-          ...main, // 展开
-          smartCreateAdviceAnnexList: allValues.tablesValue[0].values,
-        }
+      refKeys: ['smartCreateAdviceAnnex'],
+      tableKeys: ['smartCreateAdviceAnnex'],
+      activeKey: 'smartCreateAdviceAnnex',
+      url: {
+        add: '/smartCreateAdvice/smartCreateAdvice/add',
+        edit: '/smartCreateAdvice/smartCreateAdvice/edit',
+        queryById: '/smartCreateAdvice/smartCreateAdvice/queryById',
       },
-      validateError(msg){
-        this.$message.error(msg)
-      },
-
     }
-  }
+  },
+  props: {
+    //表单禁用
+    disabled: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+  },
+  computed: {
+    formDisabled() {
+      return this.disabled
+    },
+  },
+  created() {
+    //备份model原始值
+    this.modelDefault = JSON.parse(JSON.stringify(this.model))
+  },
+  methods: {
+    add() {
+      this.edit(this.modelDefault)
+    },
+    edit(record) {
+      this.model = Object.assign({}, record)
+      this.visible = true
+    },
+    submitForm() {
+      const that = this
+      // 触发表单验证
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          that.confirmLoading = true
+          let httpurl = ''
+          let method = ''
+          if (!this.model.id) {
+            httpurl += this.url.add
+            method = 'post'
+          } else {
+            httpurl += this.url.edit
+            method = 'put'
+          }
+          httpAction(httpurl, this.model, method)
+            .then((res) => {
+              if (res.success) {
+                that.$message.success(res.message)
+                that.$emit('ok')
+              } else {
+                that.$message.warning(res.message)
+              }
+            })
+            .finally(() => {
+              that.confirmLoading = false
+            })
+        }
+      })
+    },
+    /** 整理成formData */
+    classifyIntoFormData(allValues) {
+      let main = Object.assign(this.model, allValues.formValue)
+      return {
+        ...main, // 展开
+        smartCreateAdviceAnnexList: allValues.tablesValue[0].values,
+      }
+    },
+    validateError(msg) {
+      this.$message.error(msg)
+    },
+    eloamScan() {
+      this.$refs.modalForm.open()
+    },
+    scanOk(url) {
+      let image = url
+      if (image) {
+        let arr = []
+        // 考虑如果存在已经上传的文件，则拼接起来，没有则直接添加
+        if (this.model.files) {
+          arr.push(this.model.files)
+        }
+        arr.push(image)
+        // 更新表单中文件url字段, file 为字段名称
+        this.$set(this.model, 'file', arr.join())
+      }
+    },
+  },
+}
 </script>
 
 <style scoped>
