@@ -672,6 +672,7 @@
 
                     <div v-else-if="col.type === formTypes.slot" :key="i">
                       <a-tooltip v-bind="buildTooltipProps(row, col, id)">
+                        <!--  update：sunjianlei date：2022-1-17 for：buildProps新增参数 -->
                         <slot
                           :name="(col.slot || col.slotName) || col.key"
                           :index="rowIndex"
@@ -685,6 +686,7 @@
                           :target="getVM()"
                           :handleChange="(v)=>handleChangeSlotCommon(v,id,row,col)"
                           :isNotPass="notPassedIds.includes(col.key+row.id)"
+                          :buildProps="()=>buildProps(row,col)"
                         />
                       </a-tooltip>
                     </div>
@@ -1118,7 +1120,6 @@
         }
         return this.el[id]
       },
-
       handlePreview(id){
         let { url,path } = this.uploadValues[id] || {}
         if (!url || url.length===0) {
@@ -1132,7 +1133,6 @@
         console.log(encodeURIComponent(Base64.encode(url)))
         window.open(window._CONFIG['filePreViewURL'] + encodeURIComponent(Base64.encode(url)))
       },
-
       getElementPromise(id, noCaseId = false) {
         return new Promise((resolve) => {
           let timer = setInterval(() => {
@@ -1249,7 +1249,6 @@
        *
        */
       _pushByDataSource(dataSource, insertIndexes = null, update = true, rows = null, setDefaultValue = false) {
-        // console.log(dataSource)
         if (!(rows instanceof Array)) {
           rows = [...this.rows] || []
         }
@@ -1883,7 +1882,9 @@
                     }
                   }
                   if (edited) {
-                    this.elemValueChange(column.type, {[newValueKey]: newValue}, column, newValue)
+                    // update-begin-author:sunjianlei date:20211222 for: 修复 setValues 触发的 valueChange 事件没有id的问题
+                    this.elemValueChange(column.type, {id: rowKey}, column, newValue)
+                    // update-end-author:sunjianlei date:20211222 for: 修复 setValues 触发的 valueChange 事件没有id的问题
                   }
                 }
               }
@@ -2046,7 +2047,7 @@
                 { title: '网址', value: 'url', pattern: /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/ },
                 { title: '电子邮件', value: 'e', pattern: /^([\w]+\.*)([\w]+)@[\w]+\.\w{3}(\.\w{2}|)$/ },
                 { title: '手机号码', value: 'm', pattern: /^1[3456789]\d{9}$/ },
-                { title: '邮政编码', value: 'p', pattern: /^[1-9]\d{5}$/ },
+                { title: '邮政编码', value: 'p', pattern: /^[0-9]{6}$/ },
                 { title: '字母', value: 's', pattern: /^[A-Z|a-z]+$/ },
                 { title: '数字', value: 'n', pattern: /^-?\d+(\.?\d+|\d?)$/ },
                 { title: '整数', value: 'z', pattern: /^-?\d+$/ },
@@ -2624,7 +2625,6 @@
         this.uploadValues[id] = null
       },
       handleClickDownloadFile(id) {
-        console.log(id)
         let { path } = this.uploadValues[id] || {}
         if (path) {
           let url = getFileAccessHttpUrl(path)
@@ -2645,7 +2645,6 @@
         if (!url || url.length===0) {
           if(path && path.length>0){
             url = getFileAccessHttpUrl(path.split(',')[0])
-            // console.log(url)
           }
         }
         if(url){

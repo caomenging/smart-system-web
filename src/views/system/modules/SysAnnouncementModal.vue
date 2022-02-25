@@ -11,232 +11,154 @@
   >
     <a-spin :spinning="confirmLoading">
       <a-form-model ref="form" :model="model" :rules="validatorRules">
-        <a-row style="width: 100%">
-          <a-col :span="24 / 2">
-            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="sendType" label="发送类型">
-              <a-select 
-                v-model="sendType"
-                placeholder="请选择发送类型" 
-                :disabled="disableSubmit" 
-                @change="changeSendtype"
-                :getPopupContainer="(target) => target.parentNode"
-              >
-                <a-select-option value="1">系统消息</a-select-option>
-                <!-- <a-select-option value="2">系统消息</a-select-option> -->
-                <a-select-option value="2">短信</a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-          <!-- <a-col :span="24 / 2">
-            <a-form-model-item
-              v-if="model.msgCategory == '1'"
-              :labelCol="labelCol"
-              :wrapperCol="wrapperCol"
-              prop="msgCategory"
-              label="模板选择"
-            >
-              <a-select placeholder="请选择消息模板" :disabled="disableSubmit" @change="useTemplate">
-                <a-select-option v-for="template in templates" :key="template.id">
-                  {{ template.templateName }}
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col> -->
-        </a-row>
-        <a-row style="width: 100%">
-          <a-col :span="24 / 2">
-            <a-form-model-item
-              :labelCol="labelCol"
-              :wrapperCol="wrapperCol"
-              prop="msgCategory"
-              label="消息类型"
-              v-if="sendType !== '2'"
-            >
-              <a-select
-                v-model="model.msgCategory"
-                placeholder="请选择消息类型"
-                :disabled="disableSubmit"
-                :getPopupContainer="(target) => target.parentNode"
-              >
-                <a-select-option value="1">通知公告</a-select-option>
-                <!-- <a-select-option value="2">系统消息</a-select-option> -->
-                <a-select-option value="2">廉政提醒</a-select-option>
-                <a-select-option value="3">任务下发</a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24 / 2">
-            <a-form-model-item
-              v-if="model.msgCategory == '1'"
-              :labelCol="labelCol"
-              :wrapperCol="wrapperCol"
-              prop="msgCategory"
-              label="模板选择"
-            >
-              <a-select placeholder="请选择消息模板" :disabled="disableSubmit" @change="useTemplate">
-                <a-select-option v-for="template in templates" :key="template.id">
-                  {{ template.templateName }}
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-        </a-row>
-        <a-row style="width: 100%">
-          <a-col :span="24 / 2">
-            <a-form-model-item
-              :labelCol="labelCol"
-              :wrapperCol="wrapperCol"
-              prop="titile"
-              label="标题"
-              v-if="sendType !== '2'"
-            >
-              <a-input placeholder="请输入标题" v-model="model.titile" :readOnly="disableSubmit" />
-            </a-form-model-item>
-          </a-col>
-        </a-row>
-        <a-row style="width: 100%">
-          <a-col :span="24 / 2">
-            <a-form-model-item
-              :labelCol="labelCol"
-              :wrapperCol="wrapperCol"
-              prop="startTime"
-              label="开始时间:"
-              v-if="sendType !== '2'"
-            >
-              <j-date
-                style="width: 100%"
-                :getCalendarContainer="(node) => node.parentNode"
-                v-model="model.startTime"
-                placeholder="请选择开始时间"
-                showTime
-                dateFormat="YYYY-MM-DD HH:mm:ss"
-              ></j-date>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24 / 2">
-            <a-form-model-item
-              :labelCol="labelCol"
-              :wrapperCol="wrapperCol"
-              prop="endTime"
-              label="结束时间"
-              class="endTime"
-              v-if="sendType !== '2'"
-            >
-              <j-date
-                style="width: 100%"
-                :getCalendarContainer="(node) => node.parentNode"
-                v-model="model.endTime"
-                placeholder="请选择结束时间"
-                showTime
-                dateFormat="YYYY-MM-DD HH:mm:ss"
-              ></j-date>
-            </a-form-model-item>
-          </a-col>
-        </a-row>
-        <a-row style="width: 100%">
-          <a-col :span="24 / 2">
-            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="msgType" label="发送对象">
-              <a-select
-                v-model="model.msgType"
-                placeholder="请选择发送对象"
-                :disabled="disableSubmit"
-                @change="chooseMsgType"
-                :getPopupContainer="(target) => target.parentNode"
-              >
-                <a-select-option value="TYPE">指定用户类别</a-select-option>
-                <a-select-option value="DEPART">指定部门</a-select-option>
-                <a-select-option value="USER">指定用户</a-select-option>
-                <a-select-option value="ALL">全体用户</a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24 / 2">
-            <a-form-model-item
-              :labelCol="labelCol"
-              :wrapperCol="wrapperCol"
-              label="选择用户"
-              prop="userIds"
-              v-if="userType == 'USER'"
-            >
-              <j-select-user-by-dep v-model="type" :multi="true"></j-select-user-by-dep>
-            </a-form-model-item>
-            <a-form-model-item
-              :labelCol="labelCol"
-              :wrapperCol="wrapperCol"
-              label="选择用户类别"
-              prop="type"
-              v-if="userType == 'TYPE'"
-            >
-              <a-textarea placeholder="请输入摘要" v-model="type" />
-            </a-form-model-item>
-            <a-form-model-item
-              label="选择部门"
-              :labelCol="labelCol"
-              :wrapperCol="wrapperCol"
-              prop="departId"
-              v-if="userType == 'DEPART'"
-            >
-              <j-select-depart v-model="departIds" :multi="true"></j-select-depart>
-            </a-form-model-item>
-          </a-col>
-        </a-row>
-        <a-row style="width: 100%">
-          <a-col :span="24 / 2">
-            <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="优先级" v-if="sendType !== '2'">
-              <a-select
-                v-model="model.priority"
-                placeholder="请选择优先级"
-                :disabled="disableSubmit"
-                :getPopupContainer="(target) => target.parentNode"
-              >
-                <a-select-option value="L">低</a-select-option>
-                <a-select-option value="M">中</a-select-option>
-                <a-select-option value="H">高</a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-        </a-row>
-        <a-row style="width: 100%">
-          <a-col :span="24 / 2">
-            <a-form-model-item
-              :labelCol="labelCol"
-              :wrapperCol="wrapperCol"
-              prop="msgAbstract"
-              label="摘要"
-              v-if="sendType !== '2'"
-            >
-              <a-textarea placeholder="请输入摘要" v-model="model.msgAbstract" />
-            </a-form-model-item>
-          </a-col>
-        </a-row>
-        <a-row style="width: 100%">
-          <a-col :span="24">
-            <a-form-model-item
-              :labelCol="labelColX1"
-              :wrapperCol="wrapperColX1"
-              label="内容"
-              class="j-field-content"
-              v-if="sendType !== '2'"
-            >
-              <j-editor v-model="model.msgContent"></j-editor>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24">
-            <a-form-model-item :labelCol="labelColX1" :wrapperCol="wrapperColX1" label="内容" v-if="sendType !== '1'">
-              <a-textarea v-model="smsMsg.content" placeholder="请输入短信内容" :rows="4" />
-            </a-form-model-item>
-          </a-col>
-        </a-row>
+        <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="sendType" label="发送类型">
+          <a-radio-group v-model="sendType" placeholder="请选择发送类型" :disabled="disableSubmit">
+            <a-radio value="1">系统消息</a-radio>
+            <!-- <a-select-option value="2">系统消息</a-select-option> -->
+            <a-radio value="2">短信</a-radio>
+          </a-radio-group>
+        </a-form-model-item>
+        <a-form-model-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          prop="msgCategory"
+          label="消息类型"
+          v-if="sendType !== '2'"
+        >
+          <a-radio-group v-model="model.msgCategory" placeholder="请选择消息类型" :disabled="disableSubmit">
+            <a-radio value="1">通知公告</a-radio>
+            <a-radio value="2">廉政提醒</a-radio>
+            <a-radio value="3">任务下发</a-radio>
+          </a-radio-group>
+        </a-form-model-item>
+        <a-form-model-item
+          v-if="model.msgCategory == '1'"
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          prop="msgCategory"
+          label="模板选择"
+        >
+          <a-select placeholder="请选择消息模板" :disabled="disableSubmit" @change="useTemplate">
+            <a-select-option v-for="template in templates" :key="template.id">
+              {{ template.templateName }}
+            </a-select-option>
+          </a-select>
+        </a-form-model-item>
+        <a-form-model-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          prop="titile"
+          label="标题"
+          v-if="sendType !== '2'"
+        >
+          <a-input placeholder="请输入标题" v-model="model.titile" :readOnly="disableSubmit" />
+        </a-form-model-item>
+        <a-form-model-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          prop="msgAbstract"
+          label="摘要"
+          v-if="sendType !== '2'"
+        >
+          <a-textarea placeholder="请输入摘要" v-model="model.msgAbstract" />
+        </a-form-model-item>
+        <!-- <a-form-model-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          prop="startTime"
+          label="开始时间:"
+          v-if="sendType !== '2'"
+        >
+          <j-date
+            style="width: 100%"
+            :getCalendarContainer="(node) => node.parentNode"
+            v-model="model.startTime"
+            placeholder="请选择开始时间"
+            showTime
+            dateFormat="YYYY-MM-DD HH:mm:ss"
+          ></j-date>
+        </a-form-model-item> -->
+        <a-form-model-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          prop="endTime"
+          label="结束时间"
+          class="endTime"
+          v-if="sendType !== '2'"
+        >
+          <j-date
+            style="width: 100%"
+            :getCalendarContainer="(node) => node.parentNode"
+            v-model="model.endTime"
+            placeholder="请选择结束时间"
+            showTime
+            dateFormat="YYYY-MM-DD HH:mm:ss"
+          ></j-date>
+        </a-form-model-item>
+        <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" prop="msgType" label="接收用户">
+          <a-radio-group
+            v-model="model.msgType"
+            placeholder="请选择接收用户"
+            :disabled="disableSubmit"
+            @change="chooseMsgType"
+          >
+            <a-radio value="TYPE">指定用户类别</a-radio>
+            <a-radio value="DEPART">指定部门</a-radio>
+            <a-radio value="USER">指定用户</a-radio>
+            <a-radio value="ALL">全体用户</a-radio>
+          </a-radio-group>
+        </a-form-model-item>
+        <a-form-model-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="选择用户"
+          prop="userIds"
+          v-if="userType == 'USER'"
+        >
+          <j-select-user-by-dep v-model="userIds" :multi="true"></j-select-user-by-dep>
+        </a-form-model-item>
+        <a-form-model-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="选择用户类别"
+          v-if="userType == 'TYPE'"
+        >
+          <a-textarea placeholder="请输入摘要" v-model="type" />
+        </a-form-model-item>
+        <a-form-model-item
+          label="选择部门"
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          prop="departId"
+          v-if="userType == 'DEPART'"
+        >
+          <j-select-depart v-model="departIds" :multi="true"></j-select-depart>
+        </a-form-model-item>
+        <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="优先级" v-if="sendType !== '2'">
+          <a-radio-group v-model="model.priority" placeholder="请选择优先级" :disabled="disableSubmit">
+            <a-radio value="L">低</a-radio>
+            <a-radio value="M">中</a-radio>
+            <a-radio value="H">高</a-radio>
+          </a-radio-group>
+        </a-form-model-item>
+        <a-form-model-item
+          :labelCol="labelColX1"
+          :wrapperCol="wrapperColX1"
+          label="内容"
+          class="j-field-content"
+          v-if="sendType !== '2'"
+        >
+          <j-editor v-model="model.msgContent"></j-editor>
+        </a-form-model-item>
+        <a-form-model-item :labelCol="labelColX1" :wrapperCol="wrapperColX1" label="内容" v-if="sendType !== '1'">
+          <a-textarea v-model="smsMsg.content" placeholder="请输入短信内容" :rows="4" />
+        </a-form-model-item>
       </a-form-model>
 
       <!-- 加入消息附件功能 -->
-      <a-row type="flex" style="width: 100%">
-        <a-col :span="12">
-          <a-form-model-item label="文件上传" :labelCol="labelCol" :wrapperCol="wrapperCol" v-if="sendType !== '2'">
-            <j-upload v-model="model.fileList"></j-upload>
-          </a-form-model-item>
-        </a-col>
-      </a-row>
+      <a-form-model-item label="文件上传" :labelCol="labelCol" :wrapperCol="wrapperCol" v-if="sendType !== '2'">
+        <j-upload v-model="model.fileList"></j-upload>
+      </a-form-model-item>
     </a-spin>
     <!-- <select-user-list-modal ref="UserListModal" @choseUser="choseUser"></select-user-list-modal> -->
   </a-modal>
@@ -261,14 +183,14 @@ export default {
       visible: false,
       disableSubmit: false,
       model: {},
-      sendType: undefined,
+      sendType: '1',
       type: '',
       template: '',
       templates: [],
       smsMsg: {},
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 6 },
+        sm: { span: 4 },
       },
       wrapperCol: {
         xs: { span: 24 },
@@ -276,11 +198,11 @@ export default {
       },
       labelColX1: {
         xs: { span: 24 },
-        sm: { span: 3 },
+        sm: { span: 4 },
       },
       wrapperColX1: {
         xs: { span: 24 },
-        sm: { span: 21 },
+        sm: { span: 18 },
       },
       confirmLoading: false,
       validatorRules: {
@@ -303,6 +225,7 @@ export default {
       disabled: false,
       msgContent: '',
       userList: [],
+      returnKeys: ['id', 'id'], //用户选择返回字段
     }
   },
   created() {
@@ -385,7 +308,7 @@ export default {
         tmp.departIds = this.departIds
         Object.assign(this.smsMsg, tmp)
         console.log(this.smsMsg)
-        that.$message.success("短信发送成功")
+        that.$message.success('短信发送成功')
         that.visible = false
         that.$emit('ok')
         that.resetUser()
@@ -420,7 +343,7 @@ export default {
             httpAction(httpurl, this.model, method)
               .then((res) => {
                 if (res.success) {
-                  that.$message.success("消息创建成功，请选择发布或撤销")
+                  that.$message.success('消息创建成功，请选择发布或撤销')
                   that.$emit('ok')
                   that.resetUser()
                 } else {
@@ -456,17 +379,17 @@ export default {
     selectUserIds() {
       this.$refs.UserListModal.add(this.selectedUser, this.userIds)
     },
-    chooseMsgType(value) {
-      console.log(value)
-      if ('USER' == value) {
+    chooseMsgType(e) {
+      console.log(e)
+      if ('USER' == e.target.value) {
         console.log('1')
         this.userType = 'USER'
-      } else if ('DEPART' == value) {
+      } else if ('DEPART' == e.target.value) {
         console.log('2')
         this.userType = 'DEPART'
-      } else if ('TYPE' == value) {
+      } else if ('TYPE' == e.target.value) {
         console.log('3')
-        this.userType = 'DEPART'
+        this.userType = 'TYPE'
       } else {
         console.log('4')
         this.userType = 'ALL'

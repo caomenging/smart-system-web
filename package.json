@@ -13,11 +13,12 @@
     "@antv/data-set": "^0.11.4",
     "@fullcalendar/core": "^5.10.1",
     "@fullcalendar/daygrid": "^5.10.1",
+    
     "@fullcalendar/interaction": "^5.10.1",
     "@fullcalendar/list": "^5.10.1",
     "@fullcalendar/timegrid": "^5.10.1",
     "@fullcalendar/vue": "^5.10.1",
-    "@jeecg/antd-online-mini": "3.0.0-beta",
+    "@jeecg/antd-online-mini": "3.1.0-beta",
     "@npkg/tinymce-plugins": "^0.0.7",
     "@tinymce/tinymce-vue": "2.1.0",
     "@toast-ui/editor": "^2.1.2",
