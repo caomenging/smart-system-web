@@ -27,7 +27,7 @@
               </a-select>
             </a-form-model-item>
           </a-col>
-          <a-col :span="24 / 2">
+          <!-- <a-col :span="24 / 2">
             <a-form-model-item
               v-if="model.msgCategory == '1'"
               :labelCol="labelCol"
@@ -41,7 +41,7 @@
                 </a-select-option>
               </a-select>
             </a-form-model-item>
-          </a-col>
+          </a-col> -->
         </a-row>
         <a-row style="width: 100%">
           <a-col :span="24 / 2">
@@ -143,6 +143,7 @@
                 @change="chooseMsgType"
                 :getPopupContainer="(target) => target.parentNode"
               >
+                <a-select-option value="TYPE">指定用户类别</a-select-option>
                 <a-select-option value="DEPART">指定部门</a-select-option>
                 <a-select-option value="USER">指定用户</a-select-option>
                 <a-select-option value="ALL">全体用户</a-select-option>
@@ -157,7 +158,16 @@
               prop="userIds"
               v-if="userType == 'USER'"
             >
-              <j-select-user-by-dep v-model="userIds" :multi="true"></j-select-user-by-dep>
+              <j-select-user-by-dep v-model="type" :multi="true"></j-select-user-by-dep>
+            </a-form-model-item>
+            <a-form-model-item
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+              label="选择用户类别"
+              prop="type"
+              v-if="userType == 'TYPE'"
+            >
+              <a-textarea placeholder="请输入摘要" v-model="type" />
             </a-form-model-item>
             <a-form-model-item
               label="选择部门"
@@ -252,6 +262,7 @@ export default {
       disableSubmit: false,
       model: {},
       sendType: undefined,
+      type: '',
       template: '',
       templates: [],
       smsMsg: {},
@@ -453,8 +464,11 @@ export default {
       } else if ('DEPART' == value) {
         console.log('2')
         this.userType = 'DEPART'
-      } else {
+      } else if ('TYPE' == value) {
         console.log('3')
+        this.userType = 'DEPART'
+      } else {
+        console.log('4')
         this.userType = 'ALL'
       }
       this.departIds = ''
