@@ -17,9 +17,9 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="单位" prop="departCode" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-search-select-tag v-model="model.departCode" placeholder="单位"
-                dict="sys_depart,depart_name,org_code"  disabled="true" readOnly unselectable="on">
-              </j-search-select-tag>
+              <j-dict-select-tag v-model="model.departCode" placeholder="单位"
+                dictCode="sys_depart,depart_name,org_code"  disabled="true" >
+              </j-dict-select-tag>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">

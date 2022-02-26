@@ -18,10 +18,10 @@
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-<!--              <a @click="handleToggleSearch" style="margin-left: 8px">
-                {{ toggleSearchStatus ? '收起' : '展开' }}
-                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>-->
+<!--              <a @click="handleToggleSearch" style="margin-left: 8px">-->
+<!--                {{ toggleSearchStatus ? '收起' : '展开' }}-->
+<!--                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>-->
+<!--              </a>-->
             </span>
           </a-col>
         </a-row>
@@ -33,17 +33,17 @@
     <div class="table-operator">
       <!--<a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
       <a-button type="primary" icon="download" @click="handleExportXls('阳光评廉表')">导出</a-button>
-<!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>-->
+<!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
+<!--        <a-button type="primary" icon="import">导入</a-button>-->
+<!--      </a-upload>-->
       <!-- 高级查询区域 -->
-<!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
+<!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
         </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
-      </a-dropdown>-->
+      </a-dropdown>
     </div>
 
     <!-- table区域-begin -->
@@ -90,7 +90,10 @@
         <span slot="action" slot-scope="text, record">
          <!-- <a @click="handleEdit(record)">编辑</a>-->
         <a @click="handleDetail(record)">详情</a>
-          <!--<a-divider type="vertical" />-->
+          <a-divider type="vertical" />
+          <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+                  <a>删除</a>
+                </a-popconfirm>
           <!--<a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
@@ -108,10 +111,6 @@
 
       </a-table>
     </div>
-    <div v-if="roleId.indexOf('1467031291382349825') != -1">
-      <h2>不满意评价</h2>
-      <smart-poor-eva-list/>
-    </div>
 
     <smart-evaluate-window-modal ref="modalForm" @ok="modalFormOk"></smart-evaluate-window-modal>
   </a-card>
@@ -124,18 +123,17 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SmartEvaluateWindowModal from './modules/SmartEvaluateWindowModal'
   import SmartEvaluateForm from './modules/SmartEvaluateForm'
-  import SmartPoorEvaList from './SmartPoorEvaList'
-  import { mapGetters } from 'vuex'
 
   export default {
     name: 'SmartEvaluateWindowList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartEvaluateWindowModal,SmartEvaluateForm,SmartPoorEvaList
+      SmartEvaluateWindowModal,SmartEvaluateForm
     },
     data () {
       return {
         description: '阳光评廉表管理页面',
+        queryParam:{evaluateResult:'2'},
         // 表头
         columns: [
           {
@@ -215,11 +213,9 @@
         },
         dictOptions:{},
         superFieldList:[],
-        roleId:[]
       }
     },
     created() {
-      this.roleId = this.userInfo().roleId
     this.getSuperFieldList();
     },
     computed: {
@@ -228,7 +224,6 @@
       },
     },
     methods: {
-      ...mapGetters(["userInfo"]),
       initDictConfig(){
       },
       getSuperFieldList(){

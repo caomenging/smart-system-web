@@ -74,10 +74,10 @@
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a @click="handleToggleSearch" style="margin-left: 8px">
+<!--              <a @click="handleToggleSearch" style="margin-left: 8px">
                 {{ toggleSearchStatus ? '收起' : '展开' }}
                 <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>
+              </a>-->
             </span>
           </a-col>
         </a-row>
@@ -282,6 +282,26 @@
               return !text?"":(text.length>10?text.substr(0,10):text)
             }
           },
+          {
+            title:'创建人',
+            align:"center",
+            dataIndex: 'createBy_dictText'
+          },
+          {
+            title:'创建日期',
+            align:"center",
+            dataIndex: 'createTime'
+          },
+          {
+            title:'修改人',
+            align:"center",
+            dataIndex: 'updateBy_dictText'
+          },
+          {
+            title:'修改日期',
+            align:"center",
+            dataIndex: 'updateTime'
+          },
           /*{
             title:'处分状态',
             align:"center",
@@ -351,7 +371,7 @@
         fieldList.push({type:'string',value:'punishId',text:'处分人'})
         fieldList.push({type:'string',value:'punishName',text:'处分人姓名',dictCode:''})
         fieldList.push({type:'string',value:'departId',text:'单位ID',dictCode:''})
-        fieldList.push({type:'string',value:'departCode',text:'单位',dicCode : 'sys_depart,depart_name,org_code'})
+        fieldList.push({type:'string',value:'departCode',text:'单位',dictCode : 'sys_depart,depart_name,org_code'})
         fieldList.push({type:'string',value:'position',text:'职务',dictCode:'sys_position,name,code'})
         fieldList.push({type:'string',value:'positionRank',text:'职级',dictCode:'position_rank'})
         fieldList.push({type:'string',value:'phone',text:'手机号',dictCode:''})
@@ -359,6 +379,10 @@
         fieldList.push({type:'date',value:'beginTime',text:'处分开始时间'})
         fieldList.push({type:'date',value:'removeTime',text:'解除处分时间'})
         fieldList.push({type:'string',value:'statu',text:'处分状态',dictCode:'punish_statu'})
+        fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:'sys_user,realname,username'})
+        fieldList.push({type:'datetime',value:'createTime',text:'创建日期'})
+        fieldList.push({type:'string',value:'updateBy',text:'修改人',dictCode:'sys_user,realname,username'})
+        fieldList.push({type:'datetime',value:'updateTime',text:'修改日期'})
         this.superFieldList = fieldList
       },
     getTotal(){

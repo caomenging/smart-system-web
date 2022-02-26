@@ -74,6 +74,12 @@
                 <a-input v-model="model.recorderName" />
               </a-form-model-item>
             </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="附件" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="files">
+              <a-button icon="camera" @click="eloamScan">高拍仪拍照</a-button>
+              <j-upload v-model="model.files" ></j-upload>
+            </a-form-model-item>
+          </a-col>
         </a-row>
       </a-form-model>
     </j-form-container>
@@ -91,7 +97,7 @@
           :rowSelection="true"
           :actionButton="true"/>
       </a-tab-pane>
-      <a-tab-pane tab="党内谈话附件表" :key="refKeys[1]" :forceRender="true">
+<!--      <a-tab-pane tab="党内谈话附件表" :key="refKeys[1]" :forceRender="true">
         <j-editable-table
           :ref="refKeys[1]"
           :loading="smartInnerPartyAnnexTable.loading"
@@ -103,8 +109,9 @@
           :rowSelection="true"
           :actionButton="true"
           :rootUrl="rootUrl"/>
-      </a-tab-pane>
+      </a-tab-pane>-->
     </a-tabs>
+    <eloam-modal ref="modalForm" @ok='scanOk'></eloam-modal>
   </a-spin>
 </template>
 
@@ -115,11 +122,12 @@
   import { JEditableTableModelMixin } from '@/mixins/JEditableTableModelMixin'
   import { validateDuplicateValue } from '@/utils/util'
   import SelectUserByDep from '@/components/jeecgbiz/modal/SelectUserByDep'
+  import EloamModal from '@views/eloam/modules/EloamModal'
 
   export default {
     name: 'SmartInnerPartyTalkForm',
     mixins: [JEditableTableModelMixin],
-    components: {SelectUserByDep},
+    components: {SelectUserByDep,EloamModal},
     data() {
       return {
         model:{
@@ -168,7 +176,7 @@
               title: '参会人员',
               key: 'papcId',
               //type: FormTypes.sel_user,
-              type: FormTypes.input,
+              type: FormTypes.sel_user,
               width:"200px",
               placeholder: '请输入${title}',
               defaultValue:'',
@@ -207,7 +215,7 @@
               placeholder: '请选择文件',
               defaultValue:'',
             },
-            {
+            /*{
               title: '下载次数',
               key: 'downloadCount',
               type: FormTypes.inputNumber,
@@ -215,7 +223,7 @@
               width:"200px",
               placeholder: '${title}',
               defaultValue:'',
-            },
+            },*/
           ]
         },
         url: {
@@ -247,6 +255,21 @@
     created () {
     },
     methods: {
+      eloamScan() {
+        this.$refs.modalForm.open()
+      },
+      scanOk(url) {
+        let image = url
+        if (image) {
+          let arr = []
+          if (this.model.files) {
+            arr.push(this.model.files)
+          }
+          arr.push(image)
+          // 更新表单中文件url字段, files 为字段名称
+          this.$set(this.model, 'files', arr.join())
+        }
+      },
       addBefore(){
         this.smartInnerPartyPacpaTable.dataSource=[]
         this.smartInnerPartyAnnexTable.dataSource=[]

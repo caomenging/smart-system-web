@@ -24,10 +24,43 @@
         <a-form-model-item label="姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="realname">
           <a-input placeholder="请输入姓名" v-model="model.realname" />
         </a-form-model-item>
-
-        <a-form-model-item label="工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="workNo">
-          <a-input placeholder="请输入工号" v-model="model.workNo" />
+        <a-form-model-item label="出生日期" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="birthday">
+          <j-date
+            style="width: 100%"
+            placeholder="请选择出生日期"
+            v-model="model.birthday"
+            :format="dateFormat"
+            :getCalendarContainer="node => node.parentNode"/>
         </a-form-model-item>
+
+        <a-form-model-item label="性别" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-select  v-model="model.sex"  placeholder="请选择性别" :getPopupContainer= "(target) => target.parentNode">
+            <a-select-option :value="1">男</a-select-option>
+            <a-select-option :value="2">女</a-select-option>
+          </a-select>
+        </a-form-model-item>
+
+        <a-form-model-item label="身份证号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="idnumber">
+          <a-input placeholder="请输入身份证号" v-model="model.idnumber"/>
+        </a-form-model-item>
+
+        <a-form-model-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          prop="officeType"
+          label="人员类别"
+        >
+          <j-dict-select-tag
+            placeholder="请选择人员类别"
+            dictCode="office_type"
+            v-model="model.officeType"
+          />
+        </a-form-model-item>
+
+
+<!--        <a-form-model-item label="工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="workNo">
+          <a-input placeholder="请输入工号" v-model="model.workNo" />
+        </a-form-model-item>-->
 
         <a-form-model-item label="职务" :labelCol="labelCol" :wrapperCol="wrapperCol">
 <!--          <j-select-position placeholder="请选择职务" :multiple="false" v-model="model.post"/>-->
@@ -107,25 +140,10 @@
         </template>
 
 
-        <a-form-model-item label="头像" :labelCol="labelCol" :wrapperCol="wrapperCol">
+<!--        <a-form-model-item label="头像" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <j-image-upload class="avatar-uploader" text="上传" v-model="model.avatar" ></j-image-upload>
-        </a-form-model-item>
+        </a-form-model-item>-->
 
-        <a-form-model-item label="出生日期" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="birthday">
-          <a-date-picker
-            style="width: 100%"
-            placeholder="请选择出生日期"
-            v-model="model.birthday"
-            :format="dateFormat"
-            :getCalendarContainer="node => node.parentNode"/>
-        </a-form-model-item>
-     
-        <a-form-model-item label="性别" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-select  v-model="model.sex"  placeholder="请选择性别" :getPopupContainer= "(target) => target.parentNode">
-            <a-select-option :value="1">男</a-select-option>
-            <a-select-option :value="2">女</a-select-option>
-          </a-select>
-        </a-form-model-item>
 
         <a-form-model-item
         :labelCol="labelCol"
@@ -142,7 +160,7 @@
         </a-form-model-item>
 
         <a-form-model-item label="入党日期" :labelCol="labelCol" :wrapperCol="wrapperCol"  prop="joinPartyDate">
-          <a-date-picker
+          <j-date
             style="width: 100%"
             placeholder="请选择入党日期"
             v-model="model.joinPartyDate"
@@ -163,17 +181,17 @@
           />
         </a-form-model-item>
 
-        <a-form-model-item label="邮箱" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="email">
+<!--        <a-form-model-item label="邮箱" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="email">
           <a-input placeholder="请输入邮箱" v-model="model.email" />
-        </a-form-model-item>
+        </a-form-model-item>-->
 
         <a-form-model-item label="手机号码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="phone">
           <a-input placeholder="请输入手机号码" v-model="model.phone" />
         </a-form-model-item>
 
-        <a-form-model-item label="座机" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="telephone">
+<!--        <a-form-model-item label="座机" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="telephone">
           <a-input placeholder="请输入座机" v-model="model.telephone" />
-        </a-form-model-item>
+        </a-form-model-item>-->
         <a-form-model-item label="用户账号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="username">
           <!--<a-input placeholder="请输入用户账号" v-model="model.username" :readOnly="!!model.id"/>-->
           <a-input placeholder="请输入用户账号" v-model="model.username"/>
@@ -234,12 +252,13 @@
         dateFormat:"YYYY-MM-DD",
         validatorRules:{
           username:[{validator: this.validateUsername,trigger:'change'}],
-          password: [{pattern:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/,
-            message: '密码由8位数字、大小写字母和特殊符号组成!'},
-                     {validator: this.validateToNextPassword,trigger: 'change'}],
+          // password: [{pattern:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/,
+          //   message: '密码由8位数字、大小写字母和特殊符号组成!'},
+          //   {validator: this.validateToNextPassword,trigger: 'change'}],
           confirmpassword: [{ validator: this.compareToFirstPassword,}],
           realname:[{ required: true, message: '请输入姓名!' }],
           phone: [{required: true, message: '请输入手机号码!'}, {validator: this.validatePhone}],
+          idnumber: [{required: true, message: '请输入身份证号!'}, {validator: this.validateIdnumber}],
           email: [{validator: this.validateEmail}],
           selectedroles:[{required:true,message:'请选择角色',trigger: 'change'}],
           selecteddeparts:[{required:true,message:'请选择部门'}],
@@ -247,9 +266,10 @@
           roles:{},
           /*workNo:[ { required: true, message: '请输入工号' },
             { validator: this.validateWorkNo }],*/
-          telephone: [{ pattern: /^0\d{2,3}-[1-9]\d{6,7}$/, message: '请输入正确的座机号码' },],
+          /*telephone: [{ pattern: /^0\d{2,3}-[1-9]\d{6,7}$/, message: '请输入正确的座机号码' },],*/
           ethnicity:  [{ required: true, message: '请选择民族' }],
           politicalStatus:  [{ required: true, message: '请选择政治面貌' }],
+          officeType:  [{ required: true, message: '请选择人员类别' }],
           birthday:[{ required: true, message: '请选择出生日期' },{validator:this.validateBirthday,trigger:'change'}],
           joinPartyDate:[{validator:this.validateJoinPartyDate,trigger:'change'}]
         },
@@ -545,6 +565,82 @@
             })
           }else{
             callback("请输入正确格式的手机号码!");
+          }
+        }
+      },
+
+      validateIdnumber(rule, value, callback){
+        if(!value){
+          callback()
+        }else{
+          var checkCode = function (value) {
+            var p = /^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
+            var factor = [ 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 ];
+            var parity = [ 1, 0, 'X', 9, 8, 7, 6, 5, 4, 3, 2 ];
+            var code = value.substring(17);
+            if(p.test(value)) {
+              var sum = 0;
+              for(var i=0;i<17;i++) {
+                sum += value[i]*factor[i];
+              }
+              if(parity[sum % 11] == code.toUpperCase()) {
+                return true;
+              }
+            }
+            return false;
+          }
+          var checkDate = function (value) {
+            var pattern = /^(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)$/;
+            if(pattern.test(value)) {
+              var year = value.substring(0, 4);
+              var month = value.substring(4, 6);
+              var date = value.substring(6, 8);
+              var date2 = new Date(year+"-"+month+"-"+date);
+              if(date2 && date2.getMonth() == (parseInt(month) - 1)) {
+                return true;
+              }
+            }
+            return false;
+          }
+          var checkProv = function (value) {
+            var pattern = /^[1-9][0-9]/;
+            var provs = {11:"北京",12:"天津",13:"河北",14:"山西",15:"内蒙古",21:"辽宁",22:"吉林",23:"黑龙江 ",31:"上海",32:"江苏",33:"浙江",34:"安徽",35:"福建",36:"江西",37:"山东",41:"河南",42:"湖北 ",43:"湖南",44:"广东",45:"广西",46:"海南",50:"重庆",51:"四川",52:"贵州",53:"云南",54:"西藏 ",61:"陕西",62:"甘肃",63:"青海",64:"宁夏",65:"新疆",71:"台湾",81:"香港",82:"澳门"};
+            if(pattern.test(value)) {
+              if(provs[value]) {
+                return true;
+              }
+            }
+            return false;
+          }
+          var checkID = function (value) {
+            if(checkCode(value)) {
+              var date = value.substring(6,14);
+              if(checkDate(date)) {
+                if(checkProv(value.substring(0,2))) {
+                  return true;
+                }
+              }
+            }
+            return false;
+          }
+          if(checkID(value)){
+            console.log("validate")
+            var params = {
+              tableName: 'sys_user',
+              fieldName: 'idnumber',
+              fieldVal: value,
+              dataId: this.userId
+            };
+            duplicateCheck(params).then((res) => {
+              if (res.success) {
+                //console.log(res)
+                callback()
+              } else {
+                callback("身份证号已存在!")
+              }
+            })
+          }else{
+            callback("请输入正确的身份证号!");
           }
         }
       },

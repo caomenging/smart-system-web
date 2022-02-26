@@ -93,7 +93,7 @@ module.exports = {
   devServer: {
     port: 3000,
     sockHost: 'localhost',
-
+    //sockHost: '192.168.3.11',
     proxy: {
       /* '/api': {
          target: 'https://mock.ihx.me/mock/5baf3052f7da7e07e04a5116/antd-pro', //mock API接口系统
@@ -104,7 +104,8 @@ module.exports = {
          }
        },*/
       '/smart-system': {
-        target: 'http://localhost:8080', //请求本地 需要jeecg-boot后台项目
+        target: 'http://localhost:8080',
+        //target: 'http://192.168.3.11:8080', //请求本地 需要jeecg-boot后台项目
         ws: true,
         changeOrigin: true
       },

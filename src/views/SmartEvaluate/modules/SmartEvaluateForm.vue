@@ -37,6 +37,18 @@
                 ]" />
           </a-form-item>-->
       <a-form-item
+        label="主管单位ID"
+        :labelCol="{lg: {span: 7}, sm: {span: 7}}"
+        :wrapperCol="{lg: {span: 10}, sm: {span: 17} }" v-show="false">
+        <a-input v-decorator="['exeDeptId']" />
+      </a-form-item>
+      <a-form-item
+        label="窗口服务大厅ID"
+        :labelCol="{lg: {span: 7}, sm: {span: 7}}"
+        :wrapperCol="{lg: {span: 10}, sm: {span: 17} }" v-show="false">
+        <a-input v-decorator="['windowsId']" />
+      </a-form-item>
+      <a-form-item
         label="窗口服务大厅名称"
         :labelCol="{lg: {span: 7}, sm: {span: 7}}"
         :wrapperCol="{lg: {span: 10}, sm: {span: 17} }">
@@ -48,17 +60,18 @@
           ]" />
       </a-form-item>
       <a-form-item
+        label="人员ID"
+        :labelCol="{lg: {span: 7}, sm: {span: 7}}"
+        :wrapperCol="{lg: {span: 10}, sm: {span: 17} }" v-show="false">
+        <a-input v-decorator="['personId']" />
+      </a-form-item>
+      <a-form-item
         label="被评价人姓名"
         :labelCol="{lg: {span: 7}, sm: {span: 7}}"
         :wrapperCol="{lg: {span: 10}, sm: {span: 17} }"
-
-
       >
         <a-input
-          v-decorator="[
-        'personName',
-        {rules: [{ required: true, message: '被评价人姓名' }]}
-        ]" placeholder="被评价人姓名" />
+          v-decorator="['personName']" placeholder="被评价人姓名" />
       </a-form-item>
       <a-form-item
         label="评价人姓名"
@@ -106,7 +119,7 @@
         style="text-align: center"
       >
         <a-button htmlType="submit" type="primary" >提交</a-button>
-        <a-button style="margin-left: 8px" href	='../../QRCode/QRcode'>取消</a-button>
+<!--        <a-button style="margin-left: 8px" href	='../../QRCode/QRcode'>取消</a-button>-->
         <a-button type="primary" href="../../InsertReportingInformation/InsertReportingInformationDetail">去举报</a-button>
       </a-form-item>
     </a-form>
@@ -125,11 +138,14 @@ export default {
     return {
       //value: 1,
       exeDept:'',//主管单位
+      exeDeptId:'',
+      windowsId:'',
       windowsName:'',//窗口服务大厅名称
+      personId:'',
       personName:'',//被评价人姓名
 
       evaluateTime:'',
-      evaluateResult: 3,
+      evaluateResult: 0,
       desc: ['不满意', '基本满意', '满意', '非常满意', '完全满意'],
       // form
       form: this.$form.createForm(this),
@@ -159,8 +175,11 @@ export default {
       *内部直接获取刷新，可在次之外添加判断personName是否为空，目前尝试后发现或许暂时只能这样获取：personName:this.getUrlKey("personName,//被评价人姓名})
       */
       this.form.setFieldsValue({
+        windowsId:this.getUrlKey("windowsId"),
+        exeDeptId:this.getUrlKey("exeDeptId"),
         exeDept:this.getUrlKey("exeDept"),//主管单位
         windowsName:this.getUrlKey("windowsName"),//窗口服务大厅名称
+        personId:this.getUrlKey("personId"),
         personName:this.getUrlKey("personName"),//被评价人姓名
       })
     })
@@ -208,20 +227,20 @@ export default {
       let that = this
       if(evaluateResult == 1){
         that.form.setFieldsValue({
-          evaluateResult:'2'
+          evaluateResult:2
         })
       }else if(evaluateResult == 2){
         that.form.setFieldsValue({
-          evaluateResult:'4'})
+          evaluateResult:4})
       }else if(evaluateResult == 3){
         that.form.setFieldsValue({
-          evaluateResult:'6'})
+          evaluateResult:6})
       }else if(evaluateResult == 4){
         that.form.setFieldsValue({
-          evaluateResult:'8'})
+          evaluateResult:8})
       }else if(evaluateResult == 5){
         that.form.setFieldsValue({
-          evaluateResult:'10'})
+          evaluateResult:10})
       }
     },
 
@@ -230,7 +249,9 @@ export default {
     handleSubmit (e) {
       let that = this
       console.log(that.form.getFieldValue('evaluateResult'))
-      that.getGrade(that.form.getFieldValue('evaluateResult'))
+      that.$nextTick(()=>{
+          that.getGrade(that.form.getFieldValue('evaluateResult'))
+        })
       console.log(that.form.getFieldValue('evaluateResult'))
       e.preventDefault()
       that.form.validateFields((err, values) => {
@@ -251,6 +272,12 @@ export default {
             }
           })
         }
+      })
+
+      this.$nextTick(() => {
+        that.form.setFieldsValue({
+          evaluateResult:0
+        })
       })
     }
   }
