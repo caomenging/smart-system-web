@@ -54,6 +54,18 @@
               <a-textarea v-model="model.record" rows="4" placeholder="请输入会议记录" />
             </a-form-model-item>
           </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="附件说明" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="explanation">
+              <a-textarea v-model="model.explanation" rows="4" placeholder="请输入附件说明" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" >
+            <a-form-model-item label="附件" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="files">
+              <a-button icon="camera" @click="eloamScan">高拍仪拍照</a-button>
+              <eloam-modal ref="modalForm" @ok='scanOk'></eloam-modal>
+              <j-upload v-model="model.path" ></j-upload>
+            </a-form-model-item>
+          </a-col>
         </a-row>
       </a-form-model>
     </j-form-container>
@@ -71,19 +83,7 @@
           :rowSelection="true"
           :actionButton="true"/>
       </a-tab-pane>
-      <a-tab-pane tab="民主生活会附件表" :key="refKeys[1]" :forceRender="true">
-        <j-editable-table
-          :ref="refKeys[1]"
-          :loading="smartDemocraticLifeEnclosureTable.loading"
-          :columns="smartDemocraticLifeEnclosureTable.columns"
-          :dataSource="smartDemocraticLifeEnclosureTable.dataSource"
-          :maxHeight="300"
-          :disabled="formDisabled"
-          :rowNumber="true"
-          :rowSelection="true"
-          :actionButton="true"
-          :rootUrl="rootUrl"/>
-      </a-tab-pane>
+
     </a-tabs>
   </a-spin>
 </template>
@@ -95,11 +95,13 @@
   import { JEditableTableModelMixin } from '@/mixins/JEditableTableModelMixin'
   import { validateDuplicateValue } from '@/utils/util'
   import SelectUserByDep from '@/components/jeecgbiz/modal/SelectUserByDep'
+  import EloamModal from "../../eloam/modules/EloamModal";
 
   export default {
     name: 'SmartDemocraticLifeMeetingForm',
     mixins: [JEditableTableModelMixin],
     components: {
+      EloamModal,
       SelectUserByDep
     },
     data() {
@@ -150,8 +152,8 @@
               { required: true, message: '请输入会议记录!'},
            ],
         },
-        refKeys: ['smartDemocraticLifePeople', 'smartDemocraticLifeEnclosure', ],
-        tableKeys:['smartDemocraticLifePeople', 'smartDemocraticLifeEnclosure', ],
+        refKeys: ['smartDemocraticLifePeople'],
+        tableKeys:['smartDemocraticLifePeople'],
         activeKey: 'smartDemocraticLifePeople',
         // 民主生活参会人员表
         smartDemocraticLifePeopleTable: {
@@ -169,51 +171,12 @@
             },
           ]
         },
-        // 民主生活会附件表
-        smartDemocraticLifeEnclosureTable: {
-          loading: false,
-          dataSource: [],
-          columns: [
-            {
-              title: '序号',
-              key: 'number',
-              type: FormTypes.input,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
-            },
-            {
-              title: '附件说明',
-              key: 'explanation',
-              type: FormTypes.input,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue:'',
-            },
-            {
-              title: '附件文件',
-              key: 'path',
-              type: FormTypes.file,
-              token:true,
-              responseName:"message",
-              width:"200px",
-              placeholder: '请选择文件',
-              defaultValue:'',
-              validateRules: [{ required: true, message: '${title}不能为空' }],
-            },
-          ]
-        },
-        rootUrl: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/",
         url: {
           add: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/add",
           edit: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/edit",
           queryById: "/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/queryById",
           smartDemocraticLifePeople: {
             list: '/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/querySmartDemocraticLifePeopleByMainId'
-          },
-          smartDemocraticLifeEnclosure: {
-            list: '/smartDemocraticLifeMeeting/smartDemocraticLifeMeeting/querySmartDemocraticLifeEnclosureByMainId'
           },
         }
       }
@@ -234,9 +197,24 @@
     created () {
     },
     methods: {
+      eloamScan() {
+        this.$refs.modalForm.open()
+      },
+      scanOk(url) {
+        let image = url
+        if (image) {
+          let arr = []
+          // 考虑如果存在已经上传的文件，则拼接起来，没有则直接添加
+          if (this.model.path) {
+            arr.push(this.model.path)
+          }
+          arr.push(image)
+          // 更新表单中文件url字段, files 为字段名称
+          this.$set(this.model, 'path', arr.join())
+        }
+      },
       addBefore(){
         this.smartDemocraticLifePeopleTable.dataSource=[]
-        this.smartDemocraticLifeEnclosureTable.dataSource=[]
       },
       getAllTable() {
         let values = this.tableKeys.map(key => getRefPromise(this, key))
@@ -255,7 +233,6 @@
             }
           })
           this.requestSubTableData(this.url.smartDemocraticLifePeople.list, params, this.smartDemocraticLifePeopleTable)
-          this.requestSubTableData(this.url.smartDemocraticLifeEnclosure.list, params, this.smartDemocraticLifeEnclosureTable)
         }
       },
       getHostUser(back) {
@@ -288,7 +265,6 @@
         return {
           ...main, // 展开
           smartDemocraticLifePeopleList: allValues.tablesValue[0].values,
-          smartDemocraticLifeEnclosureList: allValues.tablesValue[1].values,
         }
       },
       validateError(msg){
