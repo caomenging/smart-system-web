@@ -4,14 +4,29 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24">
-          <a-form-model-item label="所在乡镇、村" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departId">
+            <a-form-model-item label="所在镇" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="zhenId" disabled='ture'>
+              <!-- <j-select-depart v-model="model.selecteddeparts" :multi="false" @back="backDepartInfo" :backDepart="true" :treeOpera="true"/>-->
+              <a-tree-select
+                style="width:100%"
+                :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
+                :treeData="departTree2"
+                v-model="model.zhenId"
+                placeholder="请选择镇"
+                allow-clear
+                tree-default-expand-all>
+              </a-tree-select>
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="24">
+          <a-form-model-item label="所在村" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departId" disabled='true'>
             <!-- <j-select-depart v-model="model.selecteddeparts" :multi="false" @back="backDepartInfo" :backDepart="true" :treeOpera="true"/>-->
             <a-tree-select
               style="width:100%"
               :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
               :treeData="departTree"
               v-model="model.departId"
-              placeholder="请选择乡镇、村"
+              placeholder="请选择村"
               allow-clear
               tree-default-expand-all>
             </a-tree-select>
@@ -28,18 +43,18 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="户口本编号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="homeCode">
-              <a-input v-model="model.homeCode" placeholder="请输入户口本编号"  ></a-input>
+            <a-form-model-item label="户口本编号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="homeCode" >
+              <a-input v-model="model.homeCode" placeholder="请输入户口本编号"></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="户主姓" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="homeSurname">
+            <a-form-model-item label="户主姓" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="homeSurname" >
               <a-input v-model="model.homeSurname" placeholder="请输入户主姓"  ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="户主" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="hostId">
-              <select-user-by-village v-model="model.hostId" @info = "getHostUser"/>
+            <a-form-model-item label="户主" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="idnumber">
+              <select-user-by-village v-model="model.idnumber" @info = "getHostUser" store='idnumber'/>
             </a-form-model-item>
           </a-col>
 <!--          <a-col :span="24">-->
@@ -77,7 +92,7 @@
 <!--              </a-form-model-item>-->
 <!--            </a-col>-->
             <a-col :span="24">
-              <a-form-model-item label="姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="id" disabled='disabled'>
+              <a-form-model-item label="姓名" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="id" >
                 <a @click='getUserIndex(i)'><select-user-by-village v-model="user.id"  @info = "getUser" /></a>
               </a-form-model-item>
             </a-col>
@@ -86,6 +101,19 @@
                 <a-input v-model="user.phone" placeholder="请输入手机号" disabled='true' ></a-input>
               </a-form-model-item>
             </a-col>
+            <a-form-model-item
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+              prop="relation"
+              label="家庭关系"
+              required
+            >
+              <j-search-select-tag
+                placeholder="请选择与户主的关系"
+                dict="home_relation"
+                v-model="user.relation"
+              />
+            </a-form-model-item>
             <a-col :span="24">
               <a-form-model-item label="角色" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="role" >
                 <a-radio-group v-model="user.role" disabled='true'>
@@ -132,13 +160,14 @@ import SelectUserByVillage from "../../../components/jeecgbiz/modal/SelectUserBy
         model:{
           role:'',
           phone:'',
-          hostId:'',
+          idnumber:'',
           userList:[]
          },
         editDefault:{},
         memberList:[],
         userIndex:'',
         departTree:[],
+        departTree2:[],
         homeUsers:[],
         labelCol: {
           xs: { span: 24 },
@@ -153,8 +182,11 @@ import SelectUserByVillage from "../../../components/jeecgbiz/modal/SelectUserBy
            homeSurname: [
               { required: true, message: '请输入户主姓!'},
            ],
+          zhenId: [
+            { required: true, message: '请选择镇!'},
+          ],
           departId: [
-            { required: true, message: '请选择乡镇、村!'},
+            { required: true, message: '请选择村!'},
           ],
            address: [
               { required: true, message: '请输入家庭地址!'},
@@ -162,7 +194,7 @@ import SelectUserByVillage from "../../../components/jeecgbiz/modal/SelectUserBy
           homeCode: [
             { required: true, message: '请输入户口本编号!'},
           ],
-          hostId: [
+          idnumber: [
             { required: true, message: '请选择户主!'},
           ]
         },
@@ -251,12 +283,15 @@ import SelectUserByVillage from "../../../components/jeecgbiz/modal/SelectUserBy
       loadVillageTreeData(){
         var that = this;
         this.departTee = []
+        this.departTree2 = []
         queryVillageIdTree().then((res)=>{
           if(res.success){
             that.departTree = [];
+            that.departTree2 = [];
             for (let j = 0; j < res.result.length; j++) {
               let temp = res.result[j];
               that.departTree.push(temp);
+              that.departTree2.push(temp);
             }
           }
 
@@ -264,7 +299,7 @@ import SelectUserByVillage from "../../../components/jeecgbiz/modal/SelectUserBy
       },
       getHostUser(back){
         let that = this
-        that.model.hostId = back[0].id
+        that.model.idnumber = back[0].idnumber
         // that.model.realname= back[0].realname
         that.model.phone = back[0].phone
         that.model.role = back[0].role
@@ -292,7 +327,8 @@ import SelectUserByVillage from "../../../components/jeecgbiz/modal/SelectUserBy
         this.model.userList.push({
           id: "",
           phone:"",
-          role:""
+          role:"",
+          relation:""
         });
       },
       deleteUser(record,i){

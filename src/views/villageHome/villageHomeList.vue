@@ -8,14 +8,26 @@
 <!--            <a-form-item label="所属乡镇">-->
 <!--              <a-input placeholder="请输入所属乡镇" v-model="queryParam.departId"></a-input>-->
 <!--            </a-form-item>-->
-            <a-form-model-item label="所在乡镇、村" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departId">
+            <a-form-model-item label="所在镇" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="zhenId">
+              <!-- <j-select-depart v-model="model.selecteddeparts" :multi="false" @back="backDepartInfo" :backDepart="true" :treeOpera="true"/>-->
+              <a-tree-select
+                style="width:100%"
+                :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
+                :treeData="departTree"
+                v-model="queryParam.zhenId"
+                placeholder="请选择镇"
+                allow-clear
+                tree-default-expand-all>
+              </a-tree-select>
+            </a-form-model-item>
+            <a-form-model-item label="所在村" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departId">
               <!-- <j-select-depart v-model="model.selecteddeparts" :multi="false" @back="backDepartInfo" :backDepart="true" :treeOpera="true"/>-->
               <a-tree-select
                 style="width:100%"
                 :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
                 :treeData="departTree"
                 v-model="queryParam.departId"
-                placeholder="请选择乡镇、村"
+                placeholder="请选择村"
                 allow-clear
                 tree-default-expand-all>
               </a-tree-select>
@@ -159,13 +171,23 @@
             align:"center",
             dataIndex: 'homeCode'
           },
+          // {
+          //   title:'所在镇',
+          //   align:"center",
+          //   dataIndex: 'zhenId'
+          // },
+          // {
+          //   title:'所在村',
+          //   align:"center",
+          //   dataIndex: 'departId'
+          // },
           {
             title:'户主姓',
             align:"center",
             dataIndex: 'homeSurname'
           },
           {
-            title:'家庭地址',
+            title:'家庭住址',
             align:"center",
             dataIndex: 'address'
           },
@@ -205,10 +227,11 @@
       },
       getSuperFieldList(){
         let fieldList=[];
-        fieldList.push({type:'string',value:'departId',text:'村庄',dictCode:''})
+        fieldList.push({type:'string',value:'zhenId',text:'所在镇',dictCode:''})
+        fieldList.push({type:'string',value:'departId',text:'所在村',dictCode:''})
         fieldList.push({type:'string',value:'homeCode',text:'户籍编号',dictCode:''})
         fieldList.push({type:'string',value:'homeSurname',text:'户主姓',dictCode:''})
-        fieldList.push({type:'string',value:'hostId',text:'户主',dictCode:''})
+        fieldList.push({type:'string',value:' idnumber',text:'户主',dictCode:''})
         fieldList.push({type:'string',value:'address',text:'家庭地址',dictCode:''})
         this.superFieldList = fieldList
       },
