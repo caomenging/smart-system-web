@@ -195,6 +195,21 @@
               <a-input v-model="model.contactNumber" placeholder="请输入联系电话" readOnly unselectable = "on"  ></a-input>
             </a-form-model-item>
           </a-col>
+          <a-col :span="12" >
+            <a-form-model-item label="附件" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="files">
+              <!-- <a-button icon="camera" v-on:click="imgClick()">手机拍照</a-button> -->
+              <a-button icon="camera" @click="eloamScan">高拍仪拍照</a-button>
+              <!-- <input
+                style="float: left; display: none"
+                type="file"
+                id="uploadFile"
+                accept="image/*"
+                capture="camera"
+                v-on:change="readLocalFile()"
+              />
+              <j-upload v-model="model.files" :biz-path="bizPath"  ></j-upload> -->
+            </a-form-model-item>
+          </a-col>
         </a-row>
       </a-form-model>
     </j-form-container>
@@ -213,6 +228,7 @@
           :actionButton="true"/>
       </a-tab-pane>
     </a-tabs>
+    <eloam-modal ref="modalForm" @ok='scanOk' biz-path='eloam-marriedbefore'></eloam-modal>
   </a-spin>
 </template>
 
@@ -223,11 +239,12 @@ import { JEditableTableModelMixin } from '@/mixins/JEditableTableModelMixin'
 import { validateDuplicateValue } from '@/utils/util'
 import JSelectUserByDep from '../../../components/jeecgbiz/JSelectUserByDep.vue'
 import SelectUserByDep from '../../../components/jeecgbiz/modal/SelectUserByDep'
+import EloamModal from '@views/eloam/modules/EloamModal'
 
 export default {
   name: 'SmartPremaritalFilingForm',
   mixins: [JEditableTableModelMixin],
-  components: {SelectUserByDep},
+  components: {SelectUserByDep,EloamModal},
   data() {
     return {
       model:{
@@ -359,6 +376,22 @@ export default {
   },
   created() {},
   methods: {
+    //高拍仪
+    eloamScan() {
+        this.$refs.modalForm.open()
+      },
+      scanOk(url) {
+        let image = url
+        if (image) {
+          let arr = []
+          if (this.model.files) {
+            arr.push(this.model.files)
+          }
+          arr.push(image)
+          // 更新表单中文件url字段, files 为字段名称
+          this.$set(this.model, 'files', arr.join())
+        }
+      },
     //人员注释
     getUser(back){
        let that = this
