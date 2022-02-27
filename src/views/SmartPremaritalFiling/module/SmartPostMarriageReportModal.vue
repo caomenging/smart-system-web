@@ -58,7 +58,7 @@ export default {
       this.visible = false
     },
     handleOk() {
-      this.$refs.realForm.handleOk()
+      this.$refs.realForm.submitForm()
     },
     submitCallback() {
       this.$emit('ok')
