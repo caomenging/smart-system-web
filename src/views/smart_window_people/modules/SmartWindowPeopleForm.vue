@@ -4,18 +4,18 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24">
-            <a-form-model-item label="所属窗口单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departmentId">
+            <a-form-model-item label="所属单位" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="departmentId">
               <j-search-select-tag v-model="model.departmentId" dict="smart_window_unit,name,id"  />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="负责人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="principal">
-              <j-select-user-by-dep v-model="model.principal" />
+            <a-form-model-item label="负责人" :labelCol="labelCol" :wrapperCol="wrapperCol"  prop="principal">
+              <j-select-user-by-dep :multi="false" v-model="model.principal" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="窗口人员" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="personId">
-              <select-user-by-dep v-model="model.personId" @info = "getHostUser"/>
+              <select-user-by-dep :multi="false" v-model="model.personId" @info = "getHostUser"/>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -75,7 +75,7 @@
         confirmLoading: false,
         validatorRules: {
            departmentId: [
-              { required: true, message: '请输入所属窗口单位!'},
+              { required: true, message: '请输入所属单位!'},
            ],
            principal: [
               { required: true, message: '请输入负责人!'},

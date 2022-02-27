@@ -155,12 +155,12 @@
             align:"center",
             dataIndex: 'phone'
           },
-          {
-            title:'二维码',
-            align:"center",
-            dataIndex: 'qrcode',
-            scopedSlots: {customRender: 'imgSlot'}
-          },
+          // {
+          //   title:'二维码',
+          //   align:"center",
+          //   dataIndex: 'qrcode',
+          //   scopedSlots: {customRender: 'imgSlot'}
+          // },
           {
             title: '操作',
             dataIndex: 'action',

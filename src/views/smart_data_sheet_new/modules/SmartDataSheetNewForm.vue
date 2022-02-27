@@ -13,11 +13,11 @@
               <j-dict-select-tag type="list" v-model="model.type" dictCode="type_data" placeholder="请选择文件类型" />
             </a-form-model-item>
           </a-col>
-          <a-col :span="24">
-            <a-form-model-item label="发布人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="publisher">
-              <j-select-user-by-dep v-model="model.publisher" />
-            </a-form-model-item>
-          </a-col>
+<!--          <a-col :span="24">-->
+<!--            <a-form-model-item label="发布人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="publisher">-->
+<!--              <j-select-user-by-dep v-model="model.publisher" @info="realname" />-->
+<!--            </a-form-model-item>-->
+<!--          </a-col>-->
           <a-col :span="24">
             <a-form-model-item label="文件描述" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="describe1">
               <j-editor v-model="model.describeA" />
@@ -30,8 +30,12 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="上传文件" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="file">
+              <eloam-modal ref="modalForm" @ok='scanOk' biz-path='eloam'></eloam-modal>
               <j-upload v-model="model.file"   ></j-upload>
+              <a-button icon="camera" @click="eloamScan">高拍仪拍照</a-button>
             </a-form-model-item>
+
+
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="下载次数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="times">
@@ -48,10 +52,13 @@
 
   import { httpAction, getAction } from '@/api/manage'
   import { validateDuplicateValue } from '@/utils/util'
+  import EloamModal from "../../eloam/modules/EloamModal";
+  import store from "@/store"
 
   export default {
     name: 'SmartDataSheetNewForm',
     components: {
+      EloamModal
     },
     props: {
       //表单禁用
@@ -65,6 +72,7 @@
       return {
         rootUrl:" /smart_data_sheet_new/smartDataSheetNew",
         model:{
+          publisher:''
          },
         labelCol: {
           xs: { span: 24 },
@@ -82,9 +90,9 @@
            type: [
               { required: true, message: '请输入文件类型!'},
            ],
-           publisher: [
-              { required: true, message: '请输入发布人!'},
-           ],
+           // publisher: [
+           //    { required: true, message: '请输入发布人!'},
+           // ],
            createTime: [
               { required: true, message: '请输入创建日期!'},
            ],
@@ -107,6 +115,23 @@
     created () {
        //备份model原始值
       this.modelDefault = JSON.parse(JSON.stringify(this.model));
+
+    },
+    eloamScan() {
+      this.$refs.modalForm.open()
+    },
+    scanOk(url) {
+      let image = url
+      if (image) {
+        let arr = []
+        // 考虑如果存在已经上传的文件，则拼接起来，没有则直接添加
+        if (this.model.files) {
+          arr.push(this.model.files)
+        }
+        arr.push(image)
+        // 更新表单中文件url字段, files 为字段名称
+        this.$set(this.model, 'files', arr.join())
+      }
     },
     methods: {
       add () {

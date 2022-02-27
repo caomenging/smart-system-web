@@ -15,7 +15,7 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="负责人" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="principal">
-              <select-user-by-dep v-model="model.principal" @info = "getHostUser"/>
+              <select-user-by-dep :multi="false" v-model="model.principal" @info = "getHostUser"/>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">

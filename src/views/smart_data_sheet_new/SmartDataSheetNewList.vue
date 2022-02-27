@@ -156,7 +156,7 @@
           {
             title:'发布人',
             align:"center",
-            dataIndex: 'publisher'
+            dataIndex: 'createBy_dictText'
           },
           {
             title:'文件描述',

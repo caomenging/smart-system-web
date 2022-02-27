@@ -28,10 +28,10 @@
 
     <!-- table区域-begin -->
     <div>
-      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
-        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
-        <a style="margin-left: 24px" @click="onClearSelected">清空</a>
-      </div>
+<!--      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">-->
+<!--        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项-->
+<!--        <a style="margin-left: 24px" @click="onClearSelected">清空</a>-->
+<!--      </div>-->
 
       <a-table
         ref="table"
@@ -124,7 +124,7 @@
             }
           },
           {
-            title:'所属窗口单位',
+            title:'所属单位',
             align:"center",
             dataIndex: 'departmentId_dictText'
           },
@@ -143,12 +143,12 @@
             align:"center",
             dataIndex: 'phone'
           },
-          {
-            title:'二维码',
-            align:"center",
-            dataIndex: 'qrcode',
-            scopedSlots: {customRender: 'imgSlot'}
-          },
+          // {
+          //   title:'二维码',
+          //   align:"center",
+          //   dataIndex: 'qrcode',
+          //   scopedSlots: {customRender: 'imgSlot'}
+          // },
           {
             title: '操作',
             dataIndex: 'action',
