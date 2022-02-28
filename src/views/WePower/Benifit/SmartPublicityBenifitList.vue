@@ -160,6 +160,12 @@
             width: 250
           },
           {
+            title:'类别',
+            align:"center",
+            dataIndex: 'type',
+            ellipsis: true,
+          },
+          {
             title:'应用范围',
             align:"center",
             dataIndex: 'location_dictText',

@@ -179,11 +179,11 @@
             align:"center",
             dataIndex: 'location_dictText'
           },
-          {
-            title:'填报部门',
-            align:"center",
-            dataIndex: 'sysOrgCode_dictText'
-          },
+          // {
+          //   title:'填报部门',
+          //   align:"center",
+          //   dataIndex: 'sysOrgCode_dictText'
+          // },
           {
             title:'上传时间',
             align:"center",
