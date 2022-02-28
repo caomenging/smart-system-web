@@ -77,7 +77,7 @@
           <a-col :span="24" >
             <a-form-model-item label="附件" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="files">
               <a-button icon="camera" @click="eloamScan">高拍仪拍照</a-button>
-              <j-upload v-model="model.files" ></j-upload>
+<!--              <j-upload v-model="model.files" ></j-upload>-->
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -260,14 +260,16 @@
       },
       scanOk(url) {
         let image = url
+        // 请根据自己表单中的字段名称修改 field 变量的值
+        let field = 'files'
         if (image) {
           let arr = []
-          if (this.model.files) {
-            arr.push(this.model.files)
+          // 考虑如果存在已经上传的文件，则拼接起来，没有则直接添加
+          if (this.model[field]) {
+            arr.push(this.model[field])
           }
           arr.push(image)
-          // 更新表单中文件url字段, files 为字段名称
-          this.$set(this.model, 'files', arr.join())
+          this.$set(this.model, field, arr.join())
         }
       },
       addBefore(){
