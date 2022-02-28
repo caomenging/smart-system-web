@@ -32,7 +32,7 @@
           </a-radio-group>
         </a-form-model-item>
         <a-form-model-item
-          v-if="model.msgCategory == '1'"
+          v-if="model.msgCategory == '1' && sendType == '1'"
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
           prop="msgCategory"
@@ -117,13 +117,10 @@
         >
           <j-select-user-by-dep v-model="userIds" :multi="true"></j-select-user-by-dep>
         </a-form-model-item>
-        <a-form-model-item
-          :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-          label="选择用户类别"
-          v-if="userType == 'TYPE'"
-        >
-          <a-textarea placeholder="请输入摘要" v-model="type" />
+        <!-- 按用户类别发送 -->
+        <a-form-model-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="选择用户类别" v-if="userType == 'TYPE'">
+          <j-multi-select-tag v-model="model.peopleType" dictCode="office_type" placeholder="请选择用户类别">
+          </j-multi-select-tag>
         </a-form-model-item>
         <a-form-model-item
           label="选择部门"
@@ -300,27 +297,32 @@ export default {
       //   return
       // }
 
+      console.log(this.type)
+
       if (this.sendType === '2') {
         console.log(this.smsMsg)
         const tmp = {}
         tmp.msgType = this.model.msgType
         tmp.userIds = this.userIds
         tmp.departIds = this.departIds
+        tmp.peopleType = this.model.peopleType
         Object.assign(this.smsMsg, tmp)
         console.log(this.smsMsg)
-        that.$message.success('短信发送成功')
-        that.visible = false
-        that.$emit('ok')
-        that.resetUser()
+        // that.$message.success('短信发送成功')
+        // that.visible = false
+        // that.$emit('ok')
+        // that.resetUser()
         // this.confirmLoading = false
         // this.close()
-        // getAction('/sys/annountCement/sendSmsMsg', this.smsMsg).then((res) => {
-        //   if(res.success) {
-        //     this.$message.success(res.message)
-        //     this.$emit('ok')
-        //     this.resetUser()
-        //   }
-        // })
+        getAction('/sys/annountCement/sendSmsMsg', this.smsMsg).then((res) => {
+          if (res.success) {
+            this.$message.success(res.message)
+            this.$emit('ok')
+            this.resetUser()
+            this.confirmLoading = false
+            this.close()
+          }
+        })
       } else {
         // 触发表单验证
         this.$refs.form.validate((valid) => {
