@@ -65,15 +65,15 @@ export default {
           timeDivider: true,
           durationDisplay: true,
           remainingTimeDisplay: false,
-          fullscreenToggle: true  //全屏按钮
+          fullscreenToggle: true,  //全屏按钮
         }
       }
     }
   },
   created() {
     //获取视频的url
-    this.get_num()
-    //this.url = require("D:/soft_ware/Idea_Project/[HYSUB]Ganbare Douki-chan[10][BIG5_MP4][1920X1080].mp4");
+     this.get_num()
+     //this.url = require("D:/soft_ware/Idea_Project/[HYSUB]Ganbare Douki-chan[10][BIG5_MP4][1920X1080].mp4");
     // this.url = require("D:\\doc\\study\\Code\\Java\\smart-system-server\\upload_file"+this.getUrlKey("url"));
     this.playerOptions['sources'][0]['src'] = this.url;
     this.onPlayerPlay()
