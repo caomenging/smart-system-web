@@ -63,7 +63,7 @@
         this.visible = false;
       },
       handleOk () {
-        this.$refs.realForm.submitForm();
+        this.$refs.realForm.handleOk();
       },
       submitCallback(){
         this.$emit('ok');
