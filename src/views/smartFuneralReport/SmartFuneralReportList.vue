@@ -10,11 +10,6 @@
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="会议名称">
-              <j-input placeholder="请输入会议名称" v-model="queryParam.meetingName"></j-input>
-            </a-form-item>
-          </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
@@ -28,19 +23,19 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('述责述廉表')">导出</a-button>
+      <a-button @click="handleAdd" type="primary" icon="plus" v-show="roleId.indexOf('f6817f48af4fb3af11b9e8bf182f618b') != -1">新增</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('丧事口头报备表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
       <!-- 高级查询区域 -->
       <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
-      <a-dropdown v-if="selectedRowKeys.length > 0">
+      <a-dropdown v-if="selectedRowKeys.length > 0 && roleId.indexOf('f6817f48af4fb3af11b9e8bf182f618b') != -1">
         <a-menu slot="overlay">
-          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
+<!--          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>-->
         </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
@@ -56,15 +51,15 @@
       <a-table
         ref="table"
         size="middle"
+        :scroll="{x:true}"
         bordered
         rowKey="id"
-        class="j-table-force-nowrap"
-        :scroll="{x:true}"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        class="j-table-force-nowrap"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -88,39 +83,47 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a v-show="record.verifyStatus == '3'" @click="handleEdit(record)">编辑</a>
+        <a  @click="postAdd(record)">进行事后报备</a>
+           <a-divider type="vertical" />
+          <a v-show=" record.verifyStatus == '3' && roleId.indexOf('f6817f48af4fb3af11b9e8bf182f618b') != -1" @click="handleEdit(record)">编辑</a>
+          <a-divider v-show="record.verifyStatus == '3' && roleId.indexOf('f6817f48af4fb3af11b9e8bf182f618b') != -1" type="vertical" />
+                <a @click="handleDetail(record)">详情</a>
+              <a-divider v-show="record.verifyStatus == '3' && roleId.indexOf('f6817f48af4fb3af11b9e8bf182f618b') != -1" type="vertical" />
+                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+                  <a v-show="record.verifyStatus == '3' && roleId.indexOf('f6817f48af4fb3af11b9e8bf182f618b') != -1">删除</a>
+                </a-popconfirm>
 
-          <a-divider type="vertical" />
-          <a @click="handleDetail(record)">详情</a>
-          <a-divider type="vertical" />
-          <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-            <a v-show="record.verifyStatus == '3'">删除</a>
-          </a-popconfirm>
+
+
         </span>
 
       </a-table>
     </div>
-
-    <smart-evaluate-meeting-modal ref="modalForm" @ok="modalFormOk"/>
+    <smart-post-funeral-report-modal ref="postForm"></smart-post-funeral-report-modal>
+    <smart-funeral-report-modal ref="modalForm" @ok="modalFormOk"></smart-funeral-report-modal>
   </a-card>
 </template>
 
 <script>
 
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SmartEvaluateMeetingModal from './modules/SmartEvaluateMeetingModal'
   import '@/assets/less/TableExpand.less'
-  import { mapActions, mapGetters,mapState } from 'vuex'
+  import { mixinDevice } from '@/utils/mixin'
+  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import SmartFuneralReportModal from './modules/SmartFuneralReportModal'
+  import SmartPostFuneralReportModal from './module/SmartPostFuneralReportModal'
+  import { mapGetters } from 'vuex'
+
 
   export default {
-    name: "SmartEvaluateMeetingList",
-    mixins:[JeecgListMixin],
+    name: 'SmartFuneralReportList',
+    mixins:[JeecgListMixin, mixinDevice],
     components: {
-      SmartEvaluateMeetingModal
+      SmartFuneralReportModal,
+      SmartPostFuneralReportModal
     },
     data () {
       return {
-        description: '述责述廉表管理页面',
+        description: '丧事口头报备表管理页面',
         // 表头
         columns: [
           {
@@ -134,44 +137,39 @@
             }
           },
           {
-            title:'单位',
+            title:'人员姓名',
             align:"center",
-            dataIndex: 'departId'
+            dataIndex: 'peopleId_dictText'
           },
           {
-            title:'会议名称',
+            title:'工作单位',
             align:"center",
-            dataIndex: 'meetingName'
+            dataIndex: 'departId_dictText'
           },
           {
-            title:'会议地点',
+            title:'操办时间',
             align:"center",
-            dataIndex: 'meetingPlace'
+            dataIndex: 'funeralTime'
           },
           {
-            title:'检查时间',
+            title:'地点',
             align:"center",
-            dataIndex: 'checkTime',
+            dataIndex: 'address'
           },
           {
-            title:'对象类型',
+            title:'宴请人数',
+            align:"center",
+            dataIndex: 'peopleAccount'
+          },
+          {
+            title:'宴请人员范围',
             align:"center",
             dataIndex: 'peopleType'
           },
           {
-            title:'备注',
+            title:'报告时间',
             align:"center",
-            dataIndex: 'meetingRemarks'
-          },
-          {
-            title:'创建人',
-            align:"center",
-            dataIndex: 'createBy'
-          },
-          {
-            title:'创建日期',
-            align:"center",
-            dataIndex: 'createTime'
+            dataIndex: 'reportTime'
           },
           {
             title: '审核状态',
@@ -195,16 +193,16 @@
             align:"center",
             fixed:"right",
             width:147,
-            scopedSlots: { customRender: 'action' },
+            scopedSlots: { customRender: 'action' }
           }
         ],
         roleId: [],
         url: {
-          list: "/smartEvaluateMeeting/smartEvaluateMeeting/list",
-          delete: "/smartEvaluateMeeting/smartEvaluateMeeting/delete",
-          deleteBatch: "/smartEvaluateMeeting/smartEvaluateMeeting/deleteBatch",
-          exportXlsUrl: "/smartEvaluateMeeting/smartEvaluateMeeting/exportXls",
-          importExcelUrl: "smartEvaluateMeeting/smartEvaluateMeeting/importExcel",
+          list: "/smartFuneralReport/smartFuneralReport/list",
+          delete: "/smartFuneralReport/smartFuneralReport/delete",
+          deleteBatch: "/smartFuneralReport/smartFuneralReport/deleteBatch",
+          exportXlsUrl: "/smartFuneralReport/smartFuneralReport/exportXls",
+          importExcelUrl: "smartFuneralReport/smartFuneralReport/importExcel",
           
         },
         dictOptions:{},
@@ -212,31 +210,37 @@
       }
     },
     created() {
+    this.getSuperFieldList();
       this.roleId = this.userInfo().roleId
-      this.getSuperFieldList();
     },
     computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      }
+      },
     },
     methods: {
-      ...mapGetters(["userInfo"]),
       postAdd(record){
-        this.$refs.postForm.postAdd(record)
+        if(record.ifReport == 1)
+        {
+          this.$message.error("请勿重复报备！");
+        }
+        else{
+          this.$refs.postForm.postAdd(record);
+        }
+
       },
+      ...mapGetters(["userInfo"]),
       initDictConfig(){
       },
       getSuperFieldList(){
         let fieldList=[];
-         fieldList.push({type:'string',value:'departId',text:'单位',dictCode:''})
-         fieldList.push({type:'string',value:'meetingName',text:'会议名称',dictCode:''})
-         fieldList.push({type:'string',value:'meetingPlace',text:'会议地点',dictCode:''})
-         fieldList.push({type:'datetime',value:'checkTime',text:'检查时间'})
-         fieldList.push({type:'string',value:'peopleType',text:'对象类型',dictCode:''})
-         fieldList.push({type:'Text',value:'meetingRemarks',text:'备注',dictCode:''})
-         fieldList.push({type:'string',value:'createBy',text:'创建人',dictCode:''})
-         fieldList.push({type:'datetime',value:'createTime',text:'创建日期'})
+        fieldList.push({type:'string',value:'peopleId',text:'人员姓名',dictCode:''})
+        fieldList.push({type:'string',value:'departId',text:'工作单位',dictCode:''})
+        fieldList.push({type:'datetime',value:'funeralTime',text:'操办时间'})
+        fieldList.push({type:'string',value:'address',text:'地点',dictCode:''})
+        fieldList.push({type:'string',value:'peopleAccount',text:'宴请人数',dictCode:''})
+        fieldList.push({type:'string',value:'peopleType',text:'宴请人员范围',dictCode:''})
+        fieldList.push({type:'datetime',value:'reportTime',text:'报告时间'})
         this.superFieldList = fieldList
       }
     }

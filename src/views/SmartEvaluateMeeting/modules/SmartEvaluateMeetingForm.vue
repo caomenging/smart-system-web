@@ -31,17 +31,17 @@
           </a-col>
           <a-col :span="24" >
             <a-form-model-item label="附件" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="files">
-              <a-button icon="camera" v-on:click="imgClick()">手机拍照</a-button>
+<!--              <a-button icon="camera" v-on:click="imgClick()">手机拍照</a-button>-->
               <a-button icon="camera" @click="eloamScan">高拍仪拍照</a-button>
-              <input
-                style="float: left; display: none"
-                type="file"
-                id="uploadFile"
-                accept="image/*"
-                capture="camera"
-                v-on:change="readLocalFile()"
-              />
-              <j-upload v-model="model.files" :biz-path="bizPath"  ></j-upload>
+<!--              <input-->
+<!--                style="float: left; display: none"-->
+<!--                type="file"-->
+<!--                id="uploadFile"-->
+<!--                accept="image/*"-->
+<!--                capture="camera"-->
+<!--                v-on:change="readLocalFile()"-->
+<!--              />-->
+<!--              <j-upload v-model="model.files" :biz-path="bizPath"  ></j-upload>-->
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -61,19 +61,19 @@
           :rowSelection="true"
           :actionButton="true"/>
       </a-tab-pane>
-<!--      <a-tab-pane tab="述责述廉附件表" :key="refKeys[1]" :forceRender="true">-->
-<!--        <j-editable-table-->
-<!--          :ref="refKeys[1]"-->
-<!--          :loading="smartEvaluateMeetingAnnexTable.loading"-->
-<!--          :columns="smartEvaluateMeetingAnnexTable.columns"-->
-<!--          :dataSource="smartEvaluateMeetingAnnexTable.dataSource"-->
-<!--          :maxHeight="300"-->
-<!--          :disabled="formDisabled"-->
-<!--          :rowNumber="true"-->
-<!--          :rowSelection="true"-->
-<!--          :actionButton="true"-->
-<!--          :rootUrl="rootUrl"/>-->
-<!--      </a-tab-pane>-->
+      <a-tab-pane tab="述责述廉附件表" :key="refKeys[1]" :forceRender="true">
+        <j-editable-table
+          :ref="refKeys[1]"
+          :loading="smartEvaluateMeetingAnnexTable.loading"
+          :columns="smartEvaluateMeetingAnnexTable.columns"
+          :dataSource="smartEvaluateMeetingAnnexTable.dataSource"
+          :maxHeight="300"
+          :disabled="formDisabled"
+          :rowNumber="true"
+          :rowSelection="true"
+          :actionButton="true"
+          :rootUrl="rootUrl"/>
+      </a-tab-pane>
     </a-tabs>
     <eloam-modal ref="modalForm" @ok='scanOk'></eloam-modal>
   </a-spin>
@@ -95,7 +95,7 @@
     },
     data() {
       return {
-        bizPath: 'evaMeeting',
+        bizPath: 'edu',
         rootUrl: "/smartEvaluateMeeting/smartEvaluateMeeting",
         labelCol: {
           xs: { span: 24 },
@@ -150,59 +150,59 @@
           ]
         },
         // 述责述廉附件表
-        // smartEvaluateMeetingAnnexTable: {
-        //   loading: false,
-        //   dataSource: [],
-        //   columns: [
-        //     // {
-        //     //   title: '序号',
-        //     //   key: 'annexIndex',
-        //     //   type: FormTypes.inputNumber,
-        //     //   width:"200px",
-        //     //   placeholder: '请输入${title}',
-        //     //   defaultValue:'',
-        //     //   validateRules: [{ required: true, message: '${title}不能为空' }],
-        //     // },
-        //     {
-        //       title: '附件说明',
-        //       key: 'description',
-        //       type: FormTypes.input,
-        //       width:"200px",
-        //       placeholder: '请输入${title}',
-        //       defaultValue:'',
-        //       validateRules: [{ required: true, message: '${title}不能为空' }],
-        //     },
-        //     {
-        //       title: '附件',
-        //       key: 'annexPath',
-        //       type: FormTypes.file,
-        //       token:true,
-        //       responseName:"message",
-        //       width:"200px",
-        //       placeholder: '请选择文件',
-        //       defaultValue:'',
-        //       validateRules: [{ required: true, message: '${title}不能为空' }],
-        //     },
-        //     {
-        //       title: '上传时间',
-        //       key: 'createTime',
-        //       type: FormTypes.datetime,
-        //       disabled:true,
-        //       width:"200px",
-        //       placeholder: '请输入${title}',
-        //       defaultValue:'',
-        //     },
-        //     {
-        //       title: '下载次数',
-        //       key: 'downloadTimes',
-        //       type: FormTypes.inputNumber,
-        //       disabled:true,
-        //       width:"200px",
-        //       placeholder: '请输入${title}',
-        //       defaultValue:'',
-        //     },
-        //   ]
-        // },
+        smartEvaluateMeetingAnnexTable: {
+          loading: false,
+          dataSource: [],
+          columns: [
+            // {
+            //   title: '序号',
+            //   key: 'annexIndex',
+            //   type: FormTypes.inputNumber,
+            //   width:"200px",
+            //   placeholder: '请输入${title}',
+            //   defaultValue:'',
+            //   validateRules: [{ required: true, message: '${title}不能为空' }],
+            // },
+            {
+              title: '附件说明',
+              key: 'description',
+              type: FormTypes.input,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
+              validateRules: [{ required: true, message: '${title}不能为空' }],
+            },
+            {
+              title: '附件',
+              key: 'annexPath',
+              type: FormTypes.file,
+              token:true,
+              responseName:"message",
+              width:"200px",
+              placeholder: '请选择文件',
+              defaultValue:'',
+              validateRules: [{ required: true, message: '${title}不能为空' }],
+            },
+            {
+              title: '上传时间',
+              key: 'createTime',
+              type: FormTypes.datetime,
+              disabled:true,
+              width:"200px",
+              placeholder: '请输入${title}',
+              defaultValue:'',
+            },
+            // {
+            //   title: '下载次数',
+            //   key: 'downloadTimes',
+            //   type: FormTypes.inputNumber,
+            //   disabled:true,
+            //   width:"200px",
+            //   placeholder: '请输入${title}',
+            //   defaultValue:'',
+            // },
+          ]
+        },
         url: {
           add: "/smartEvaluateMeeting/smartEvaluateMeeting/add",
           edit: "/smartEvaluateMeeting/smartEvaluateMeeting/edit",
@@ -210,9 +210,9 @@
           smartEvaluateMeetingPacpa: {
             list: '/smartEvaluateMeeting/smartEvaluateMeeting/querySmartEvaluateMeetingPacpaByMainId'
           },
-          // smartEvaluateMeetingAnnex: {
-          //   list: '/smartEvaluateMeeting/smartEvaluateMeeting/querySmartEvaluateMeetingAnnexByMainId'
-          // },
+          smartEvaluateMeetingAnnex: {
+            list: '/smartEvaluateMeeting/smartEvaluateMeeting/querySmartEvaluateMeetingAnnexByMainId'
+          },
         }
       }
     },
