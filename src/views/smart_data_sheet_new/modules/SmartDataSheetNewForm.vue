@@ -30,12 +30,14 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="上传文件" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="file">
-              <eloam-modal ref="modalForm" @ok='scanOk' biz-path='eloam'></eloam-modal>
               <j-upload v-model="model.file"   ></j-upload>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="高拍仪附件上传" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="files">
+              <eloam-modal ref="modalForm" @ok='scanOk' biz-path='eloam'></eloam-modal>
               <a-button icon="camera" @click="eloamScan">高拍仪拍照</a-button>
             </a-form-model-item>
-
-
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="下载次数" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="times">
@@ -53,7 +55,6 @@
   import { httpAction, getAction } from '@/api/manage'
   import { validateDuplicateValue } from '@/utils/util'
   import EloamModal from "../../eloam/modules/EloamModal";
-  import store from "@/store"
 
   export default {
     name: 'SmartDataSheetNewForm',
@@ -117,23 +118,25 @@
       this.modelDefault = JSON.parse(JSON.stringify(this.model));
 
     },
-    eloamScan() {
-      this.$refs.modalForm.open()
-    },
-    scanOk(url) {
-      let image = url
-      if (image) {
-        let arr = []
-        // 考虑如果存在已经上传的文件，则拼接起来，没有则直接添加
-        if (this.model.files) {
-          arr.push(this.model.files)
-        }
-        arr.push(image)
-        // 更新表单中文件url字段, files 为字段名称
-        this.$set(this.model, 'files', arr.join())
-      }
-    },
+
     methods: {
+      eloamScan() {
+        this.$refs.modalForm.open()
+      },
+      scanOk(url) {
+        let image = url
+        // 请根据自己表单中的字段名称修改 field 变量的值
+        let field = 'files'
+        if (image) {
+          let arr = []
+          // 考虑如果存在已经上传的文件，则拼接起来，没有则直接添加
+          if (this.model[field]) {
+            arr.push(this.model[field])
+          }
+          arr.push(image)
+          this.$set(this.model, field, arr.join())
+        }
+      },
       add () {
         this.edit(this.modelDefault);
       },
