@@ -58,8 +58,9 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="高拍仪附件上传" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="files">
-              <eloam-modal ref="modalForm" @ok='scanOk' biz-path='eloam'></eloam-modal>
               <a-button icon="camera" @click="eloamScan">高拍仪拍照</a-button>
+              <eloam-modal ref="modalForm" @ok='scanOk' ></eloam-modal>
+<!--              <j-upload v-model="model.files"  ></j-upload>-->
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
